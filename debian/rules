@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export DH_ALWAYS_EXCLUDE=COPYING:CHANGES
+
+%:
+	dh $@ --with quilt
+
+override_dh_auto_install:
+	python common/setup.py install --root=debian/numeter-common --install-layout=deb
+	rm -rf build
+	python poller/setup.py install --root=debian/numeter-poller --install-layout=deb
+	rm -rf build
+	$(MAKE) -f munin-plugins/Makefile install DESTDIR=$(CURDIR)/debian/munin-plugins-numeter
+
+#override_dh_installchangelogs:
+#	dh_installchangelogs CHANGES
+override_dh_auto_build:

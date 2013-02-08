@@ -1,0 +1,29 @@
+#!/bin/sh
+# postinst script for numeter
+#
+# $Id: numeter.postinst,v 1.5 2009/07/28 18:46:43 gaelL Exp $
+#
+
+#DEBHELPER#
+
+set -e
+
+case "$1" in
+    configure)
+    # create symbolic link for nginx
+    if [ -e /etc/numeter/numeter_poller.cfg ]; then
+        genID=$(date +%s)-$(echo $(date +%s)-$(hostname) | md5sum | cut -d" " -f1)
+        sed -i "s/@HOST_ID@/$genID/g" /etc/numeter/numeter_poller.cfg
+    fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

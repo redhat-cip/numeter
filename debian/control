@@ -1,0 +1,39 @@
+Source: numeter
+Section: net
+Priority: optional
+Maintainer: Gaël Lambert <gael.lambert@enovance.com>
+DM-Upload-Allowed: yes
+Build-Depends: debhelper, python, quilt
+X-Python-Version: >=2.5, <=2.7
+Standards-Version: 3.9.3
+Homepage: https://github.com/numeter
+
+Package: numeter-poller
+Architecture: all
+Homepage: https://github.com/numeter/poller
+Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, munin-node, redis-server (>= 2:2.4.14)
+XB-Python-Version: ${python:Versions}
+Description: restricts a user's shell environment to limited sets of commands
+ numeter is a shell coded in Python that lets you restrict a user's environment
+ to limited sets of commands, choose to enable/disable any command over SSH 
+ (e.g. SCP, SFTP, rsync, etc.), log user's commands, implement timing 
+ restrictions, and more.
+
+Package: numeter-common
+Architecture: all
+Homepage: https://github.com/numeter
+Depends: ${misc:Depends}, ${python:Depends}, python, python-redis (>= 2.4.9)
+XB-Python-Version: ${python:Versions}
+Description: restricts a user's shell environment to limited sets of commands
+ numeter is a shell coded in Python that lets you restrict a user's environment
+ to limited sets of commands, choose to enable/disable any command over SSH 
+ (e.g. SCP, SFTP, rsync, etc.), log user's commands, implement timing 
+ restrictions, and more.
+
+Package: munin-plugins-numeter
+Architecture: all
+Homepage: https://github.com/numeter
+Depends: ${misc:Depends}, ${python:Depends}, python, munin-node
+XB-Python-Version: ${python:Versions}
+Description: restricts a user's shell environment to limited sets of commands
+ numeter is a shell coded in Python that lets you restrict a user's environment
