@@ -1,0 +1,3 @@
+storage/README
+storage/storage-web/numeter-storage-uwsgi.ini.example
+storage/storage-web/numeter-storage-web.nginx.example

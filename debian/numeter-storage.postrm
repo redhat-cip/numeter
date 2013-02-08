@@ -1,0 +1,35 @@
+#!/bin/sh
+# postinst script for numeter
+#
+# $Id: numeter.postinst,v 1.5 2009/07/28 18:46:43 gaelL Exp $
+#
+
+#DEBHELPER#
+
+#case "$1" in
+#    remove|purge|disappear)
+#
+#    # delete symbolic link for nginx
+#    if [ -e /etc/nginx/sites-enabled/numeter-storage-web ]; then
+#        rm /etc/nginx/sites-enabled/numeter-storage-web
+#        invoke-rc.d nginx reload
+#    fi
+#    # delete symbolic link for uwsgi
+#    if [ -e /etc/uwsgi/apps-enabled/numeter-storage-uwsgi.ini ]; then
+#        rm /etc/uwsgi/apps-enabled/numeter-storage-uwsgi.ini
+#        invoke-rc.d uwsgi restart
+#    fi
+#
+#    ;;
+#
+#    upgrade|failed-upgrade|abort-upgrade|abort-install)
+#        # do nothing
+#    ;;
+#
+#    *)
+#        echo "postrm called with unknown argument \`$1'" >&2
+#        exit 1
+#    ;;
+#esac
+
+exit 0

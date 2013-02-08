@@ -1,0 +1,34 @@
+#!/bin/sh
+# postinst script for numeter
+#
+# $Id: numeter.postinst,v 1.5 2009/07/28 18:46:43 gaelL Exp $
+#
+
+#DEBHELPER#
+
+#set -e
+#
+#case "$1" in
+#    configure)
+#    # create symbolic link for nginx
+#    if ! [ -e /etc/nginx/sites-enabled/numeter-storage-web ]; then
+#        ln -s /etc/nginx/sites-available/numeter-storage-web /etc/nginx/sites-enabled/
+#        invoke-rc.d nginx reload
+#    fi
+#    # create symbolic link for uwsgi
+#    if ! [ -e /etc/uwsgi/apps-enabled/numeter-storage-uwsgi.ini ]; then
+#        ln -s /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini /etc/uwsgi/apps-enabled/
+#        invoke-rc.d uwsgi restart
+#    fi
+#    ;;
+#
+#    abort-upgrade|abort-remove|abort-deconfigure)
+#    ;;
+#
+#    *)
+#        echo "postinst called with unknown argument \`$1'" >&2
+#        exit 1
+#    ;;
+#esac
+
+exit 0

@@ -1,0 +1,49 @@
+numeter (0.2.3.4) numeter-wheezy; urgency=low
+
+  * Add regex in myMuninModule
+
+ -- gael <gael@gael-debian.enovance.com>  Tue, 26 Aug 2012 11:00:08 +0200
+
+numeter (0.2.3.3) numeter-wheezy; urgency=low
+
+  * Add category
+  * Add stack order
+  * Add collector host -> hostID clean bug
+
+ -- gael <gael@gael-debian.enovance.com>  Tue, 26 Aug 2012 11:00:08 +0200
+
+numeter (0.2.3.1) numeter-wheezy; urgency=low
+
+  * Add exp in webapp
+
+ -- gael <gael@gael-debian.enovance.com>  Tue, 26 Aug 2012 11:00:08 +0200
+
+numeter (0.2.3) numeter-wheezy; urgency=low
+
+  * Fixe munin module
+
+ -- gael <gael@gael-debian.enovance.com>  Tue, 26 Aug 2012 11:00:08 +0200
+
+numeter (0.2.2) numeter-wheezy; urgency=low
+
+  * add new php sources
+
+ -- gael <gael@gael-debian.enovance.com>  Tue, 26 Aug 2012 11:00:08 +0200
+
+numeter (0.2.1) numeter-wheezy; urgency=low
+
+  * Fixe regex Munin module
+
+ -- gael <gael@gael-debian.enovance.com>  Tue, 26 Aug 2012 11:00:08 +0200
+
+numeter (0.2) numeter-wheezy; urgency=low
+
+  * New name
+
+ -- gael <gael@gael-debian.enovance.com>  Tue, 14 Aug 2012 11:26:49 +0200
+
+numeter (0.1) unstable; urgency=low
+
+  * Initial release. (Closes: #XXXXXX)
+
+ -- gael <gael@gael-debian.enovance.com>  Thu, 19 Jul 2012 12:18:32 +0200

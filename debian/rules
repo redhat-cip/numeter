@@ -1,0 +1,26 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export DH_ALWAYS_EXCLUDE=COPYING:CHANGES
+
+%:
+	dh $@ --with quilt
+	#dh $@ --with python2
+
+override_dh_auto_install:
+	#python common/setup.py sdist --dist-dir debian/numeter-common --prune 
+	#python collector/setup.py sdist --dist-dir debian/numeter-collector --prune 
+	python common/setup.py install --root=debian/numeter-common --install-layout=deb
+	rm -rf build
+	python collector/setup.py install --root=debian/numeter-collector --install-layout=deb
+	rm -rf build
+	python poller/setup.py install --root=debian/numeter-poller --install-layout=deb
+	rm -rf build
+	python storage/setup.py install --root=debian/numeter-storage --install-layout=deb
+	rm -rf build
+	$(MAKE) -f web-app/Makefile install DESTDIR=$(CURDIR)/debian/numeter-web-app
+	$(MAKE) -f munin-plugins/Makefile install DESTDIR=$(CURDIR)/debian/munin-plugins-numeter
+
+#override_dh_installchangelogs:
+#	dh_installchangelogs CHANGES
+override_dh_auto_build:

@@ -1,0 +1,32 @@
+#!/bin/sh
+# postinst script for numeter
+#
+# $Id: numeter.postinst,v 1.5 2009/07/28 18:46:43 gaelL Exp $
+#
+
+#DEBHELPER#
+
+set -e
+
+case "$1" in
+    configure)
+    #Appli group and right
+    chown root:www-data -R /usr/share/numeter/web-app
+    chmod g+w -R /usr/share/numeter/web-app/app/tmp
+    # create symbolic link for nginx
+    #if ! [ -e /etc/nginx/sites-enabled/numeter-web-app ]; then
+    #    ln -s /etc/nginx/sites-available/numeter-web-app /etc/nginx/sites-enabled/
+    #    invoke-rc.d nginx reload
+    #fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

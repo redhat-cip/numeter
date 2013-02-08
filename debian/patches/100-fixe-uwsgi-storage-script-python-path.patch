@@ -1,0 +1,16 @@
+fixe-uwsgi-storage-script-python-path
+--- p.orig/storage/storage-web/numeter_uwsgi.py
++++ p/storage/storage-web/numeter_uwsgi.py
+@@ -1,5 +1,11 @@
+ #!/usr/bin/env python
+ 
++# 100-fixe-uwsgi-storage-script-python-path
++import sys
++sys.path.append('/usr/lib/pymodules/python2.6')
++sys.path.append('/usr/lib/pymodules/python2.7')
++sys.path.append('/usr/lib/python2.6/dist-packages')
++sys.path.append('/usr/lib/python2.7/dist-packages')
+ 
+ from myRedisConnect import *
+ import ConfigParser
+
