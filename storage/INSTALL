@@ -1,0 +1,140 @@
+#############################################
+#         Numeter - storage - INSTALL         #
+#############################################
+
+# Need : 
+  * numeter-common (redis module)
+  * apt python redis
+  * (python mysql) si vous voulez utiliser collector-list dans mysql
+  * redis > 2:1.2.6-1
+  * nginx (>=0.8.40) + uwsgi + flask
+
+
+#===== script storage
+
+Mettre le storage dans cron
+  */5 * * * *  root  /opt/numeter/numeter-storage
+
+Fichier de configuration :
+  vim /etc/numeter/numeter_storage.cfg
+
+
+#===== api python
+
+Depuis les paquets :
+  apt-get install python-redis
+
+Depuis les sources : 
+  git clone https://github.com/andymccurdy/redis-py
+  cd redis-py
+  python setup.py install
+
+
+#===== python mysql
+
+Decommenter import mysql du script numeter_collector.py
+  import MySQLdb
+
+Depuis les paquets : 
+  apt-get install python-mysqldb
+
+
+#===== redis > 2:1.2.6-1
+
+# Debian squeeze
+Ajouter les backports :
+  deb http://backports.debian.org/debian-backports squeeze-backports main
+
+Pinning : 
+  Package: *
+  Pin: release o=Debian Backports,a=squeeze-backports
+  Pin-Priority: 200
+
+Installation : 
+  apt-get install -t squeeze-backports redis-server
+
+#===== Installation nginx + uwsgi + flask (in progress)
+
+  apt-get install -t squeeze-backports nginx # backport pour uwsgi (the uwsgi module is included in 0.8.x starting from 0.8.40)
+
+# uwsgi
+http://projects.unbit.it/uwsgi/wiki/Install
+http://projects.unbit.it/uwsgi/wiki/RunOnNginx
+http://projects.unbit.it/uwsgi/wiki/Quickstart
+http://flask.pocoo.org/docs/deploying/uwsgi/
+apt-get install build-essential python-dev libxml2-dev python-pip
+git clone https://github.com/unbit/uwsgi
+cd uwsgi
+make
+
+ou
+
+pip install uwsgi
+
+
+
+# flask
+http://flask.pocoo.org/docs/quickstart/
+apt-get install python-flask
+
+
+===Configuration
+Nginx : 
+    location = /storage { rewrite ^ /storage/; }
+    location /storage { try_files $uri @myapp; }
+    location @myapp {
+        include uwsgi_params;
+        uwsgi_param SCRIPT_NAME /storage;
+        uwsgi_modifier1 30; 
+        uwsgi_pass 127.0.0.1:3031;
+    }   
+
+uwsgi : 
+  # uwsgi --uid 33 --gid 33 --socket 127.0.0.1:3031 -d /var/log/uwsgi.log --plugin python --module numeter_uwsgi --wsgi-file /var/www/storage-web/numeter_uwsgi.py --callable app
+  -> (script /etc/init.d/uwsgi)
+
+
+install du script numeter_uwsgi.py
+ln -s /opt/numeter_storage/myRedisConnect.py /usr/lib/python2.6/
+
+
+#===== collector-list configuration
+
+# collector-list in file
+Exemple de host sans mot de passe :
+  10.0.0.p
+Exemple de host avec un password sur redis :
+  10.0.0.p:mypassword
+
+# collector-list in mysql
+
+Dans le fichier de configuration numeter_collector.cfg :
+  host_list_mysql_query = select name,password from matable;
+
+Exemple de table :
++----+-------------+----------+
+| id | name        | password |
++----+-------------+----------+
+|  3 | 10.66.6.216 | password |    <- valid
+|  4 | 10.66.6.217 |          |    <- Ne sera pas utilisé
+|  5 | 10.66.6.215 | NULL     |    <- Ne sera pas utilisé
++----+-------------+----------+
+
+Vous pouvez aussi utiliser une liste sans password : 
++----+-------------+
+| id | name        |
++----+-------------+
+|  3 | 10.66.6.216 |
+|  4 | 10.66.6.217 |
+|  5 | 10.66.6.215 |
++----+-------------+
+
+Si vous avez une liste et que le password est unique, vous pouvez le forcer par defaut :
+  host_list_mysql_query = select name,(@password:='password') from hosts;    
+
+
+
+
+
+
+

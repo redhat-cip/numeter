@@ -1,0 +1,89 @@
+#############################################
+#        Numeter - collector - INSTALL        #
+#############################################
+
+# Need : 
+  * numeter-common (redis module)
+  * apt python redis
+  * (python mysql) si vous voulez utiliser poller-list dans mysql
+  * redis > 2:1.2.6-1
+
+
+#===== script collector
+
+Mettre le collector dans cron
+  */5 * * * *  root  /opt/numeter/numeter-collector
+
+Fichier de configuration :
+  vim /etc/numeter/numeter_collector.cfg
+
+#===== api python
+
+Depuis les paquets :
+  apt-get install python-redis
+
+Depuis les sources : 
+  git clone https://github.com/andymccurdy/redis-py
+  cd redis-py
+  python setup.py install
+
+
+#===== python mysql
+
+Decommenter import mysql du script numeter_collector.py
+  import MySQLdb
+
+Depuis les paquets : 
+  apt-get install python-mysqldb
+
+
+#===== redis > 2:1.2.6-1
+
+# Debian squeeze
+Ajouter les backports :
+  deb http://backports.debian.org/debian-backports squeeze-backports main
+
+Pinning : 
+  Package: *
+  Pin: release o=Debian Backports,a=squeeze-backports
+  Pin-Priority: 200
+
+Installation : 
+  apt-get install -t squeeze-backports redis-server
+
+
+#===== poller-list configuration
+
+# poller-list in file
+Exemple de host sans mot de passe :
+  10.0.0.p
+Exemple de host avec un password sur redis :
+  10.0.0.p:mypassword
+
+# poller-list in mysql
+
+Dans le fichier de configuration numeter_collector.cfg :
+  host_list_mysql_query = select name,password from matable;
+
+Exemple de table :
++----+-------------+----------+
+| id | name        | password |
++----+-------------+----------+
+|  3 | 10.66.6.216 | password |    <- valid
+|  4 | 10.66.6.217 |          |    <- Ne sera pas utilisé
+|  5 | 10.66.6.215 | NULL     |    <- Ne sera pas utilisé
++----+-------------+----------+
+
+Vous pouvez aussi utiliser une liste sans password : 
++----+-------------+
+| id | name        |
++----+-------------+
+|  3 | 10.66.6.216 |
+|  4 | 10.66.6.217 |
+|  5 | 10.66.6.215 |
++----+-------------+
+
+Si vous avez une liste et que le password est unique, vous pouvez le forcer par defaut :
+  host_list_mysql_query = select name,(@password:='password') from hosts;    
+
+

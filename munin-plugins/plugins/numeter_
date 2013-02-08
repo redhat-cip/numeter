@@ -1,0 +1,150 @@
+#!/usr/bin/env python
+#
+# Plugin to monitor time of numeter
+#
+# E.g.
+#    ln -s /usr/share/munin/plugins/numeter_ /etc/munin/plugins/glance_size_<all|poller|collector|storage>
+#
+# Magic markers
+#%# capabilities=autoconf suggest
+#%# family=auto
+#
+#  [numeter_*]
+#  env.pollerLog
+#  env.collectorLog
+#  env.storageLog
+#  env.pollerPattern
+#  env.collectorPattern
+#  env.storagePattern
+#  env.grepPattern
+
+import sys
+import os
+import subprocess
+import re
+
+try: 
+    from numeter_poller import myPoller
+except ImportError:
+    import_poller = False
+else:
+    import_poller = True
+
+try: 
+    from numeter_collector import myCollector
+except ImportError:
+    import_collector = False
+else:
+    import_collector = True
+
+try: 
+    from numeter_storage import myStorage
+except ImportError:
+    import_storage = False
+else:
+    import_storage = True
+
+def print_config(check_type):
+    print 'graph_title Numeter %s stats' % check_type
+    print 'graph_info This graph shows %s execution time' % check_type
+    print 'graph_vlabel Secondes'
+    print 'graph_args --base 1000 --lower-limit 0'
+    print 'graph_category numeter'
+    if check_type == "all":
+        check_type="poller collector storage"
+    for name in check_type.split():
+        print '%s.label %s' % (name, name)
+        print '%s.draw LINE' % name
+        print '%s.info %s Time' % (name, name)
+        if name == "poller":
+            print '%s.color #909122' % name
+        if name == "collector":
+            print '%s.color #67809e' % name
+        if name == "storage":
+            print '%s.color #53b73a' % name
+
+def print_suggest():
+    if import_poller:
+        print "poller"
+    if import_collector:
+        print "collector"
+    if import_storage:
+        print "storage"
+    if import_poller and import_collector and import_storage:
+        print "all"
+
+def load_params():
+    global POLLER_LOG, POLLER_PATTERN
+    global COLLECTOR_LOG, COLLECTOR_PATTERN
+    global  STORAGE_LOG, STORAGE_PATTERN
+    global  GREP_PATTERN
+    POLLER_LOG        = os.getenv('pollerLog','/var/log/numeter/numeter-poller.log')
+    COLLECTOR_LOG     = os.getenv('collectorLog','/var/log/numeter/numeter-collector.log')
+    STORAGE_LOG       = os.getenv('storageLog','/var/log/numeter/numeter-storage.log')
+    POLLER_PATTERN    = os.getenv('pollerPattern','.*---- End : numeter_.*in ([0-9\.]+), seconds')
+    COLLECTOR_PATTERN = os.getenv('collectorPattern','.*---- End : numeter_.*in ([0-9\.]+), seconds')
+    STORAGE_PATTERN   = os.getenv('storagePattern','.*---- End : numeter_.*in ([0-9\.]+), seconds')
+    GREP_PATTERN      = os.getenv('grepPattern',' End : numeter_') # For performance 
+
+def get_time_in_log(name, logfile, pattern):
+    stdout = subprocess.Popen('grep "'+GREP_PATTERN+'" '+logfile+' | tail -1', shell=True, stdout=subprocess.PIPE)
+    out = stdout.communicate()[0]
+    # 0 data / 1 error
+    regex = pattern
+    if re.match(regex, out):
+        result = re.match(regex, out)
+        if result.group(1) != None:
+            return str(result.group(1))
+            #return 'yes'
+    else:
+        return 'U'
+
+def print_values_poller():
+    if not os.path.isfile(POLLER_LOG):
+        print "poller.value U"
+        return
+    print 'poller.value ' + get_time_in_log('poller', POLLER_LOG, POLLER_PATTERN)
+
+def print_values_collector():
+    if not os.path.isfile(COLLECTOR_LOG):
+        print "collector.value U"
+        return
+    print 'collector.value ' + get_time_in_log('collector', COLLECTOR_LOG, COLLECTOR_PATTERN)
+
+def print_values_storage():
+    if not os.path.isfile(STORAGE_LOG):
+        print "storage.value U"
+        return
+    print 'storage.value ' + get_time_in_log('storage', STORAGE_LOG, STORAGE_PATTERN)
+
+
+if __name__ == '__main__':
+    argv = sys.argv[:]
+    #check_type = argv[0].split('numeter_').pop() or 'Global'
+    check_type = argv[0].split('numeter_').pop()
+    if len(argv) > 1:
+        if argv[1] == 'config':
+            print_config(check_type)
+        elif argv[1] == 'suggest' and ( import_poller or import_collector or import_storage ):
+            print_suggest()
+        elif argv[1] == 'autoconf':
+            if not import_poller and import_collector and import_storage:  
+                print 'no (failed import poller or collector or storage module)'
+                sys.exit(0)
+            print 'yes'
+
+    elif import_poller and check_type == "poller":
+        load_params()
+        print_values_poller()
+    elif import_collector and check_type == "collector":
+        load_params()
+        print_values_collector()
+    elif import_storage and check_type == "storage":
+        load_params()
+        print_values_storage()
+    elif import_storage and import_collector and import_poller and check_type == "all":
+        load_params()
+        print_values_poller()
+        print_values_collector()
+        print_values_storage()
+

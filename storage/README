@@ -1,0 +1,51 @@
+# zcat /usr/share/doc/numeter-storage/README | bash
+
+# After install package you need to do something like that :
+cp /usr/share/doc/numeter-storage/numeter-storage-web.nginx.example /etc/nginx/sites-available/numeter-storage-web
+ln -s /etc/nginx/sites-available/numeter-storage-web /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+/etc/init.d/nginx reload
+cp /usr/share/doc/numeter-storage/numeter-storage-uwsgi.ini.example /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini
+ln -s /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini /etc/uwsgi/apps-enabled/
+/etc/init.d/uwsgi restart
+
+
+##############################################
+##         Numeter - storage - README          #
+##############################################
+#
+## ===== Dev infos
+#
+## ===== Format de la db redis
+#+--------+         +-------------+
+#|  HSET  |         | INFOS@Host1 | ----->  if   : {JSON:Value:ID:...}
+#+--------+         +-------------+   |-->  df   : {JSON:Value:ID:...}
+#                   +-------------+
+#                   | INFOS@Host2 | ----->  if   : {JSON:Value:ID:...}
+#                   +-------------+   |-->  df   : {JSON:Value:ID:...}
+#
+#+--------+         +-------------+
+#|  HSET  |         |   HOSTS     | ----->  Host1   : { MyInfos }
+#+--------+         +-------------+   |-->  Host2   : { MyInfos }
+#
+#+--------+         +-------------+
+#|  HSET  |         |  RRD_PATH   | ----->  Host1   : /opt/rrd/1
+#+--------+         +-------------+   |-->  Host2   : /opt/rrd/2
+#
+## ===== Debug
+#
+## Lire les infos d'un plugin pour un host :
+#redis-cli hget "INFOS@10.0.0.p" MyInfo
+#redis-cli hget "INFOS@10.0.0.p" df
+#
+## Connaitre le path des rrd pour un host :
+#redis-cli hget "RRD_PATH" 10.0.0.p
+#
+#
+##===== Test web app rest
+#curl http://127.0.0.1:8080/numeter-storage/hosts
+#curl http://127.0.0.1:8080/numeter-storage/list?host=1349792119-d753e11726b68a08dbb5847f0d4b8f8e
+#
+#numeter-storage configured in /usr/share/numeter/storage/numeter_uwsgi.py
+#
+

@@ -1,0 +1,40 @@
+#############################################
+#          Numeter - poller - README          #
+#############################################
+
+# ===== Redis database format
++--------+         +-----------+
+|  HSET  |         |  SERVER   | ----->  collector1   : "123456500" 
++--------+         +-----------+   |-->  collector2   : "123456700" 
+
++--------+         +-----------+
+|  HSET  |         |   INFOS   | ----->  if   : {JSON:Value:ID:...}
++--------+         +-----------+   |-->  df   : {JSON:Value:ID:...}
+
++--------+         +-----------+
+|  ZADD  |         |   DATAS   | ----->  [ 123456700 ]  ---->  if   : {JSON:Value:ID:...}
++--------+         +-----------+   |                     |-->  df   : {JSON:Value:ID:...}
+                                   |
+                                   |-->  [ 123456800 ]  ---->  if   : {JSON:Value:ID:...}
+                                                         |-->  df   : {JSON:Value:ID:...}
++--------+         +-----------+
+|  ZADD  |         | TimeStamp | ----->  [ 123456700 ]  ---->  123456700
++--------+         +-----------+   |-->  [ 123456800 ]  ---->  123456800
+
+
+# ===== Debug
+
+# Get datas in redis
+redis-cli -p 5959 zrangebyscore DATAS -inf +inf
+
+# Get availables Timestamp
+redis-cli -p 5959 zrangebyscore TimeStamp -inf +inf
+
+# Count the number of datas
+redis-cli -p 5959 zcard DATAS
+
+# Get list of all plugins
+redis-cli -p 5959 hkeys INFOS
+
+# Get informations of all plugins
+redis-cli -p 5959 hgetall INFOS

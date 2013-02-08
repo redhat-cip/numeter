@@ -1,0 +1,59 @@
+#############################################
+#          Numeter - poller - INSTALL         #
+#############################################
+
+# Need : 
+  * numeter-common (redis module)
+  * python-redis 2.4.9
+  * redis >= 2:2.4.14
+
+
+#===== script numeter-poller
+
+in your server cron : 
+  * * * * *   root    /opt/numeter/numeter-poller
+
+Put config file in /etc/numeter :
+  vim /etc/numeter/numeter_poller.cfg
+
+===== api python
+
+Depuis les paquets :
+  apt-get install python-redis
+
+Depuis les sources : 
+  git clone https://github.com/andymccurdy/redis-py
+  cd redis-py
+  python setup.py install
+
+===== Installation api python
+git clone https://github.com/andymccurdy/redis-py
+python setup.py install
+ou
+apt-get install python-redis
+
+Redis need squeeze backport version
+redis > 2:1.2.6-1
+deb http://backports.debian.org/debian-backports squeeze-backports main
+Package: *
+Pin: release o=Debian Backports,a=squeeze-backports
+Pin-Priority: 200
+
+apt-get install -t squeeze-backports redis-server
+
+Configuration redis client :
+bind 0.0.0.0 
+
+===== redis > 2:1.2.6-1
+
+# Debian squeeze
+Ajouter les backports :
+  deb http://backports.debian.org/debian-backports squeeze-backports main
+
+Pinning : 
+  Package: *
+  Pin: release o=Debian Backports,a=squeeze-backports
+  Pin-Priority: 200
+
+Installation : 
+  apt-get install -t squeeze-backports redis-server

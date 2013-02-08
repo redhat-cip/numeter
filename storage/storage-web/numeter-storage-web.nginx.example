@@ -1,0 +1,29 @@
+server {
+    #index index.html index.htm;
+    listen 0.0.0.0:8080;
+    server_name numeter-storage-web;
+    access_log  /tmp/nginx-access.log;
+    error_log /tmp/nginx-error.log info;
+    root /usr/share/numeter/storage;
+    location = /numeter-storage { rewrite ^ /numeter-storage/; }
+    location /numeter-storage { try_files $uri @numeter-storage; }
+    location @numeter-storage {
+        include uwsgi_params;
+        uwsgi_param SCRIPT_NAME /;
+        uwsgi_pass 127.0.0.1:3031;
+    }
+}
+#server {
+#    root /var/www;
+#    index index.html index.htm;
+#
+#    location = /storage { rewrite ^ /storage/; }
+#    location /storage { try_files $uri @storage; }
+#    location @storage {
+#        include uwsgi_params;
+#        uwsgi_param SCRIPT_NAME /storage;
+#        uwsgi_modifier1 30; 
+#        uwsgi_pass 127.0.0.1:3031;
+#    }  
+#
+#}

@@ -1,0 +1,21 @@
+[uwsgi]
+plugins = python
+socket = 127.0.0.1:3031
+module = numeter_uwsgi:app
+
+chdir = /usr/share/numeter/storage
+#app = numeter_uwsgi
+#module = numeter_uwsgi
+#base = /usr/share/numeter
+#pp = /usr/share/numeter
+#home = /usr/share/numeter/numeter-env
+#pythonpath = %(base)
+#app = app
+#module = numeter_uwsgi:app
+
+master = True
+vacuum = True
+max-requests = 5000
+processes  = 4
+no-site = True
+enable-threads = True
