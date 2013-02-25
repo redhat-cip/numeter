@@ -9,9 +9,9 @@ Overview
 .. image:: img/architecture.svg
     :align: right
 
-*********
+***********
 Components
-*********
+***********
 
 Actual Numeter architecture :
 
