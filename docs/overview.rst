@@ -6,8 +6,9 @@
 Overview
 ############
 
-.. image:: img/architecture.svg
-    :align: right
+.. image:: img/numeter_banner.png
+    :align: center
+    :width: 300px
 
 ***********
 Components
@@ -21,8 +22,9 @@ Actual Numeter architecture :
 Features
 *********
 
-  * test
-  * test2
+  * Autoconfigure display with plugin datas
+  * Get datas from external sources like munin
+  * Keep data if network fail between poller and collector
 
 
 ************************
