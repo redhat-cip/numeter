@@ -1,59 +1,56 @@
-#############################################
-#          Numeter - poller - INSTALL         #
-#############################################
+*************
+Installation
+*************
 
-# Need : 
+Build debian packages
+======================
+
+Manual
+========
+
+**Depends:**
   * numeter-common (redis module)
   * python-redis 2.4.9
   * redis >= 2:2.4.14
 
+Python-redis api
+-----------------
 
-#===== script numeter-poller
+Quick exemple of python-redis installation
 
-in your server cron : 
-  * * * * *   root    /opt/numeter/numeter-poller
+**From packages :** ::
 
-Put config file in /etc/numeter :
-  vim /etc/numeter/numeter_poller.cfg
+  apt-get install -t squeeze-backports python-redis
 
-===== api python
+**From sources :** ::
 
-Depuis les paquets :
-  apt-get install python-redis
-
-Depuis les sources : 
   git clone https://github.com/andymccurdy/redis-py
   cd redis-py
   python setup.py install
 
-===== Installation api python
-git clone https://github.com/andymccurdy/redis-py
-python setup.py install
-ou
-apt-get install python-redis
+Redis server
+-------------
 
-Redis need squeeze backport version
-redis > 2:1.2.6-1
-deb http://backports.debian.org/debian-backports squeeze-backports main
-Package: *
-Pin: release o=Debian Backports,a=squeeze-backports
-Pin-Priority: 200
+**From packages :** ::
 
-apt-get install -t squeeze-backports redis-server
+    apt-get install -t squeeze-backports redis-server
 
-Configuration redis client :
-bind 0.0.0.0 
+You also need to configure redis to allow collector fetch datas : ::
 
-===== redis > 2:1.2.6-1
+    bind 0.0.0.0 
 
-# Debian squeeze
-Ajouter les backports :
-  deb http://backports.debian.org/debian-backports squeeze-backports main
+Numeter common
+---------------
 
-Pinning : 
-  Package: *
-  Pin: release o=Debian Backports,a=squeeze-backports
-  Pin-Priority: 200
 
-Installation : 
-  apt-get install -t squeeze-backports redis-server
+Numeter poller
+---------------
+
+in your server cron : ::
+
+    * * * * *   root    /opt/numeter/numeter-poller
+
+Put config file in /etc/numeter : ::
+
+    vim /etc/numeter/numeter_poller.cfg
+
