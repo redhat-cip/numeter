@@ -17,6 +17,8 @@ Components
 Actual Numeter architecture :
 
 .. image:: img/architecture.svg
+    :width: 720px
+    :height: 370px
 
 *********
 Features
@@ -34,4 +36,6 @@ Functional architecture
 Functional architecture :
 
 .. image:: img/fonctional_architecture.svg
+    :width: 100%
+    :height: 380px
 
