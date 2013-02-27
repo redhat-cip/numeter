@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
-
 import ConfigParser
 import time
 import os
@@ -14,17 +13,7 @@ import sys
 import threading
 import signal
 import math
-
 import pprint # Debug (dumper)
-
-
-#
-# NEED apt-get install python-mysqldb
-#
-
-
-
-
 
 #
 # myCollector
@@ -72,43 +61,35 @@ class myCollector:
         self._sigint                     = False
         # Default server_name : hostname
         self._server_name                = os.uname()[1]
-
-        # Read de la conf
+        # Read configuration file
         self._configFile = configFile
         self.readConf()
 
-
-
     def startCollector(self):
         "Start the Collector"
-        # collector enable ?
+        # Check that the collector is enabled
         if not self._enable:
             self._logger.warning("Numeter cron disable : "
                 + "configuration enable = false")
             exit(2)
-
         if not self._simulate:
-            # Open redis connexion
+            # Open a connection to Redis
             self._logger.debug("Simulate=false : start redis connection")
-            self._redis_connexion = self.redisStartConnexion()
+            self._redis_connection = self.redisStartConnexion()
 
-            if self._redis_connexion._error:
-                self._logger.critical("Redis server connexion ERROR - "
+            if self._redis_connection._error:
+                self._logger.critical("Redis server connection ERROR - "
                     + "Check server access or the password")
                 exit(1)
-
         if not self.getHostsList():
             self._logger.critical("Numeter cron get hosts list fail")
             exit(1)
-
-        # Time and thread param verification
+        # Verify time and thread parameters
         if not self.paramsVerification():
             self._logger.critical("Args verification error")
             exit(1)
-
         # Start threads
         self.startThreads()
-
         # End log time execution
         self._logger.warning("---- End : numeter_collector, "
             + str(self._pluginsNumber) + " plugins, "
@@ -116,26 +97,21 @@ class myCollector:
             + str(self._datasNumber) + " datas in "
             + str(time.time()-self._startTime) + ", seconds.")
 
-
-
     def redisStartConnexion(self):
-        # Open redis connexion
-        redis_connexion = myRedisConnect(host=self._redis_server_host, \
+        # Open redis connection
+        redis_connection = myRedisConnect(host=self._redis_server_host, \
                                     port=self._redis_server_port, \
                                     socket_timeout=self._redis_server_timeout, \
                                     password=self._redis_server_password, \
                                     db=self._redis_server_db)
-        if redis_connexion._error:
-            self._logger.critical("Redis server connexion ERROR - "
+        if redis_connection._error:
+            self._logger.critical("Redis server connection ERROR - "
                 + "Check server access or the password")
             exit(1)
-        return redis_connexion
-
-
-
+        return redis_connection
 
     def getgloballog(self):
-        "Init du logger (fichier et stdr)"
+        "Logger initialization (file and stdr)"
         # set file logger
         logger = logging.getLogger('numeter')
         fh = logging.FileHandler(self._log_path)
@@ -169,13 +145,10 @@ class myCollector:
         else:
             logsterr.setLevel(logging.DEBUG)
         return logger
-  
-
 
     def readConf(self):
         "Read configuration file"
         self._configParse = ConfigParser.RawConfigParser()
-
         # If empty or not exist
         if self._configParse.read(self._configFile) == []: 
             print ("CRIT - Read Config file " + self._configFile
@@ -194,11 +167,9 @@ class myCollector:
         if self._configParse.has_option('global', 'log_level_stdr') \
         and self._configParse.get('global', 'log_level_stdr'):
             self._log_level_stdr = self._configParse.get('global', 'log_level_stdr')
-
         # Start logger
         self._logger = self.getgloballog()
         self._logger.info("----- Start Numeter Cron -----")
-
         # enable
         if  self._configParse.has_option('global', 'enable') \
         and self._configParse.getboolean('global', 'enable'):
@@ -218,7 +189,6 @@ class myCollector:
         and self._configParse.get('global', 'simulate_file'):
             self._simulate_file = self._configParse.get('global', 'simulate_file')
             self._logger.info("Config : simulate_file = "+self._simulate_file)
-
         # max_host_by_thread
         if  self._configParse.has_option('global', 'max_host_by_thread') \
         and self._configParse.getint('global', 'max_host_by_thread'):
@@ -240,13 +210,11 @@ class myCollector:
                                             'thread_wait_timeout')
             self._logger.info("Config : thread_wait_timeout = "
                 + str(self._thread_wait_timeout))
-
         # server_name
         if  self._configParse.has_option('global', 'server_name') \
         and self._configParse.get('global', 'server_name'):
             self._server_name = self._configParse.get('global', 'server_name')
             self._logger.info("Config : server_name = "+self._server_name)
-
 #        #  cacti_poller_time
 #        if  self._configParse.has_option('global', 'cacti_poller_time') \
 #        and self._configParse.getint('global', 'cacti_poller_time'):
@@ -259,7 +227,6 @@ class myCollector:
                                               'max_data_collect_time')
             self._logger.info("Config : max_data_collect_time = "
                 + str(self._max_data_collect_time))
-
         # host_list_type
         if  self._configParse.has_option('global', 'host_list_type') \
         and self._configParse.get('global', 'host_list_type'):
@@ -314,7 +281,6 @@ class myCollector:
                                               'host_list_mysql_query')
             self._logger.info("Config : host_list_mysql_query = "
                 + self._host_list_mysql_query)
-
         # redis_server_host
         if  self._configParse.has_option('global', 'redis_server_host') \
         and self._configParse.get('global', 'redis_server_host'):
@@ -350,7 +316,6 @@ class myCollector:
                                         'redis_server_db')
             self._logger.info("Config : redis_server_db = "
                 + str(self._redis_server_db))
-
         # munin_port
         if  self._configParse.has_option('client', 'munin_port') \
         and self._configParse.getint('client', 'munin_port'):
@@ -363,7 +328,6 @@ class myCollector:
                                              'munin_socket_timeout')
             self._logger.info("Config : munin_socket_timeout = "
                 + str(self._munin_socket_timeout))
-
         # redis_client_port
         if  self._configParse.has_option('client', 'redis_client_port') \
         and self._configParse.getint('client', 'redis_client_port'):
@@ -379,7 +343,6 @@ class myCollector:
             self._logger.info("Config : redis_client_timeout = "
                 + str(self._redis_client_timeout))
 
-
     def jsonToPython(self,data):
         "Convert json to python"
         try:
@@ -388,7 +351,6 @@ class myCollector:
             pythonData = {}
         return pythonData
 
-
     def pythonToJson(self,data):
         "Convert python to json"
         try:
@@ -396,7 +358,6 @@ class myCollector:
         except:
             jsonData = {}
         return jsonData
-
 
     def getHostsList(self):
         "Get host list"
@@ -466,8 +427,6 @@ class myCollector:
 
         return True
 
-
-
     def paramsVerification(self):
         "Args verification"
         if not self._concurrency_thread >= 1:
@@ -485,22 +444,17 @@ class myCollector:
         self._logger.debug("Threads paramsVerification : OK")
         return True
 
-
-
     def sighandler(self,num, frame):
         "Start threads"
 #        global self._sigint
         self._sigint = True
         self._logger.warning("Thread Get sighandler !")
 
-
-
     def workerGetLastFetch(self,pollerRedisConnect,threadId,host):
         "Return lastFetch, fetchEnd"
         # Init 
         fetchEnd  = None
         lastFetch = None
-        
         lastFetch = pollerRedisConnect.redis_hget("SERVER",self._server_name)
         
         if lastFetch == None: # Default never fetched
@@ -509,12 +463,12 @@ class myCollector:
 
             if fetchEnd == []:  # If empty next -> 
                 self._logger.warning("Worker "+str(threadId) 
-                    + " Redis client - connexion OK for host : " + host
+                    + " Redis client - connection OK for host : " + host
                     + " Last check : None  //  End check : None")
                 lastFetch = fetchEnd = None
             else :
                 self._logger.info("Worker " + str(threadId) 
-                    + " Redis client - connexion OK for host : " + host 
+                    + " Redis client - connection OK for host : " + host 
                     + " Last check : None  //  End check : "
                     + str(fetchEnd[-1]))
                 lastFetch = "-inf" # Default TimeStamp
@@ -525,42 +479,36 @@ class myCollector:
                 num=self._max_data_collect_time)
             if fetchEnd == []:  # If empty next -> 
                 self._logger.warning("Worker "+str(threadId)
-                    + " Redis client - connexion OK for host : " + host
+                    + " Redis client - connection OK for host : " + host
                     + " Last check : " + str(lastFetch)
                     + "  //  End check : None")
                 lastFetch = fetchEnd = None
             else:
                 self._logger.info("Worker " + str(threadId)
-                    + " Redis client - connexion OK for host : "
+                    + " Redis client - connection OK for host : "
                     + host + " Last check : " + str(lastFetch)
                     + "  //  End check : "+str(fetchEnd[-1]))
                 fetchEnd = fetchEnd[-1]
 
         return lastFetch,fetchEnd
 
-
-
     def workerFetchDatas(self, pollerRedisConnect, threadId, host, hostID,
                         lastFetch, fetchEnd):
         "Fetch and write data"
-
         # Check hostID 
         if not hostID:
             self._logger.warning("Worker " + str(threadId) 
                 + " Write host " + host + " error no hostID")
             return False
-
         # Check param
         if lastFetch == None or fetchEnd == None:
             return False
-
         # Fetch datas
         hostDatas = pollerRedisConnect.redis_zrangebyscore("DATAS",
                     "(" + lastFetch, fetchEnd)
 
         simulateBuffer=[]
-
-        # - Format all data
+        # Format all data
         W_TS = {}
         for redisJSONdata in hostDatas:
             pythonData = self.jsonToPython(redisJSONdata)
@@ -583,7 +531,7 @@ class myCollector:
 
             # Write data in server
             if not self._simulate:
-                self._redis_connexion.redis_zadd("DATAS@" + hostID,
+                self._redis_connection.redis_zadd("DATAS@" + hostID,
                     redisJSONdata, pythonData["TimeStamp"])
             else :
                 simulateBuffer.append("Worker "
@@ -595,17 +543,17 @@ class myCollector:
             W_TS[pythonData["TimeStamp"]] = pythonData["TimeStamp"]
             self._datasNumber = self._datasNumber + 1
 
-        # - Write all data
+        # Write all data
         if not self._simulate:
             for timeS in sorted(W_TS):  # Add timestamp to TS@hostname
                 self._logger.info('Worker '
                     + str(threadId) + ' Redis server - ADD Timestamp : '
                     + timeS + ' in ' + 'TS@' + hostID)
-                self._redis_connexion.redis_zadd("TS@" + hostID, timeS , timeS )
+                self._redis_connection.redis_zadd("TS@" + hostID, timeS , timeS )
             # Write hostname in HOSTS
             self._logger.info('Worker ' + str(threadId)
                 + ' Redis server - ADD HOSTS : ' + host + "->" + hostID)
-            self._redis_connexion.redis_hset("HOSTS", host, hostID)
+            self._redis_connection.redis_hset("HOSTS", host, hostID)
 
             # Write last fetched timestamp in client redis key SERVER
             self._logger.info("Worker " + str(threadId)
@@ -631,8 +579,6 @@ class myCollector:
                 simulateFileOpen.write(line+"\n")
             self.verrou.release()
         return True
-
-
 
     def workerFetchInfos(self,pollerRedisConnect,threadId,host):
         "Fetch and write data"
@@ -673,7 +619,7 @@ class myCollector:
             writedInfos.append(key)
             # Write info in redis server
             if not self._simulate:
-                self._redis_connexion.redis_hset("INFOS@"
+                self._redis_connection.redis_hset("INFOS@"
                     + hostID, key, valueJson)
             else :
                 simulateBuffer.append("###Write INFOS : "
@@ -690,13 +636,10 @@ class myCollector:
 
         return writedInfos, hostID
 
-
-
     def workerCleanInfo(self,writedInfos,host,threadId):
         "Clean info in redis"
-
         # Get current plugin list
-        currentPlugin = self._redis_connexion.redis_hkeys("INFOS@" + host)
+        currentPlugin = self._redis_connection.redis_hkeys("INFOS@" + host)
         if currentPlugin == []:
             self._logger.info("Worker " + str(threadId)
                 + " Redis - Clean info -- nothing to do" )
@@ -719,9 +662,7 @@ class myCollector:
                 self.verrou.release()
             else:
                 for plugin in toDelete:
-                     self._redis_connexion.redis_hdel("INFOS@" + host, plugin)
-
-
+                     self._redis_connection.redis_hdel("INFOS@" + host, plugin)
 
     def cleanHosts(self):
         "Clean Hosts in redis"
@@ -730,10 +671,8 @@ class myCollector:
         allHosts = []
         for hostLine in self._hostList:
             allHosts.append(hostLine['host'])
-
         # Get current hosts list
-        currentHosts = self._redis_connexion.redis_hkeys("HOSTS")
-
+        currentHosts = self._redis_connection.redis_hkeys("HOSTS")
         if currentHosts == []:
             self._logger.info("Clean info -- nothing to do" )
             return
@@ -752,25 +691,21 @@ class myCollector:
             else:
                 # Delete hosts
                 for host in toDelete:
-                    self._redis_connexion.redis_hdel("HOSTS", host)
+                    self._redis_connection.redis_hdel("HOSTS", host)
                     # Delete Datas
-                    self._redis_connexion.redis_zremrangebyscore("DATAS@"
+                    self._redis_connection.redis_zremrangebyscore("DATAS@"
                         + host, '-inf', '+inf')
                     # Delete Infos
-                    for plugin in self._redis_connexion.redis_hkeys("INFOS@"
+                    for plugin in self._redis_connection.redis_hkeys("INFOS@"
                                                                     + host):
-                        self._redis_connexion.redis_hdel("INFOS@"+host,plugin)
-
-
+                        self._redis_connection.redis_hdel("INFOS@"+host,plugin)
 
     def workerRedis(self,threadId, sema,myHosts,simulateFileOpen=None):
         "Thread"
         #time.sleep(0)  # Debug add time
-
         self._logger.debug("Thread worker " + str(threadId)
             + " with host : " + str(myHosts))
         for hostLine in myHosts:
-            
             # Get password and db
             host        = hostLine['host']
             redis_pass  = None
@@ -779,7 +714,6 @@ class myCollector:
                 redis_db = hostLine['db']
             if hostLine.has_key('password'):
                 redis_pass = hostLine['password']
-
             pollerRedisConnect = myRedisConnect(host=host,
                                     port=self._redis_client_port,
                                     socket_timeout=self._redis_client_timeout,
@@ -787,17 +721,14 @@ class myCollector:
             # If error goto next
             if pollerRedisConnect._error:
                 self._logger.error("Worker " + str(threadId)
-                    + " Redis client connexion ERROR for host : " + host)
+                    + " Redis client connection ERROR for host : " + host)
                 continue
-
-            # - Get Last fetch (SERVER) and fetch new data
+            # Get Last fetch (SERVER) and fetch new data
             hostDatas = {}
-
             # Get last fetch and fetch end
             (lastFetch, fetchEnd) = self.workerGetLastFetch(pollerRedisConnect,
                                         threadId,host)
-
-            # --- Fetch data and info if the host have new datas
+            # Fetch data and info if the host have new datas
             if fetchEnd == None:
                 self._logger.warning("Worker " + str(threadId)
                     + " Redis client - TimeStamp list for " + host
@@ -816,21 +747,15 @@ class myCollector:
         # Thread End
         sema.release()
 
-
-
-
     def startThreads(self):
         "Start threads"
-
         # If simulate open file and make Lock
         if self._simulate:
             simulateFileOpen = open(self._simulate_file,'a')
             self.verrou=threading.Lock()
-
-        # Nombre de threads necessaire
+        # Number of needed threads
         numberOfThreads = math.ceil((self._hostListNumber+0.0) /
                               self._max_host_by_thread)
-
         self._logger.debug("Thread - Max host by thread : "
             + str(self._max_host_by_thread))
         self._logger.debug("Thread - Max concurrency thread : "
@@ -839,14 +764,12 @@ class myCollector:
             + str(self._hostListNumber))
         self._logger.debug("Thread - Number of threads : "
             + str(numberOfThreads))
-
         # threads configuration
         signal.signal(signal.SIGINT, self.sighandler)
-        # Max de threads
+        # max numbers of threads
         sema = threading.BoundedSemaphore(value=self._concurrency_thread)
         threads = []
-
-        # On lance le bon nombre de threads
+        # launch numbers of thread
         for threadId in range(int(numberOfThreads)):
             hostMin = threadId * self._max_host_by_thread
             hostMax = hostMin + self._max_host_by_thread
@@ -856,7 +779,7 @@ class myCollector:
                 + str(hostMin) + " / max : " + str(hostMax) + " / args : "
                 + str(threadHost))
 
-           # Start des threads
+           # Start threads
             sema.acquire()
             if self._sigint:
                 sys.exit()
@@ -874,7 +797,7 @@ class myCollector:
         # Clean HOSTS
         self.cleanHosts()
 
-        # Wait des threads avec timeout self._thread_wait_timeout
+        # Wait for threads with timeout self._thread_wait_timeout
         i=1
         for thread in threads:
             if ( self._thread_wait_timeout > 0 ):
@@ -889,10 +812,6 @@ class myCollector:
             i+=1
 
         return True
-
-
-
-
 #
 # Main
 #
@@ -901,8 +820,3 @@ class myCollector:
 #    collector.startCollector()
 ##    collector = myCollector("/home/gael/Bureau/git/numeter/db/collector/numeter_collector.cfg")
 #    exit(0)
-
-
-
-
-
