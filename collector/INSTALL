@@ -2,79 +2,71 @@
 #        Numeter - collector - INSTALL        #
 #############################################
 
-# Need : 
-  * numeter-common (redis module)
-  * apt python redis
-  * (python mysql) si vous voulez utiliser poller-list dans mysql
-  * redis > 2:1.2.6-1
+# Needed requirements : 
+    * numeter-common
+    * python-redis
+    * redis >= 2.4.15
 
+# Optional requirements :
+    * python-mysql if you want to use MySQL to store hosts list.
 
-#===== script collector
+# Setup the Collector
 
-Mettre le collector dans cron
-  */5 * * * *  root  /opt/numeter/numeter-collector
+You need to setup a crontab for it. For example every 5 minutes:
+    */5 * * * *  root  /opt/numeter/numeter-collector
 
-Fichier de configuration :
-  vim /etc/numeter/numeter_collector.cfg
+You need to write a configuration file. Default is:
+    /etc/numeter/numeter_collector.cfg
 
-#===== api python
+# Python Redis
 
-Depuis les paquets :
-  apt-get install python-redis
+For Debian :
+    apt-get install python-redis
 
-Depuis les sources : 
-  git clone https://github.com/andymccurdy/redis-py
-  cd redis-py
-  python setup.py install
+From sources :
+    git clone https://github.com/andymccurdy/redis-py
+    cd redis-py
+    python setup.py install
 
+# Python MySQL
 
-#===== python mysql
+You need to uncomment the "import MySQLdb" on numeter_collector.py script. You also need to install python-mysqldb
+For debian :
+    apt-get install python-mysqldb
 
-Decommenter import mysql du script numeter_collector.py
-  import MySQLdb
+# Redis > 2:1.2.6-1
 
-Depuis les paquets : 
-  apt-get install python-mysqldb
-
-
-#===== redis > 2:1.2.6-1
-
-# Debian squeeze
-Ajouter les backports :
-  deb http://backports.debian.org/debian-backports squeeze-backports main
-
-Pinning : 
-  Package: *
-  Pin: release o=Debian Backports,a=squeeze-backports
-  Pin-Priority: 200
+For Debian Squeeze:
+    echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
 
 Installation : 
-  apt-get install -t squeeze-backports redis-server
+    apt-get install -t squeeze-backports redis-server
 
+# Configure the poller-list
 
-#===== poller-list configuration
+## poller-list stored in a file
 
-# poller-list in file
-Exemple de host sans mot de passe :
-  10.0.0.p
-Exemple de host avec un password sur redis :
-  10.0.0.p:mypassword
+For an host (10.0.0.1) without password (on Redis), just add it's ip:
+    10.0.0.1
 
-# poller-list in mysql
+For the same host with a password on Redis
+    10.0.0.1:my_password
 
-Dans le fichier de configuration numeter_collector.cfg :
-  host_list_mysql_query = select name,password from matable;
+## poller-list stored in mysql
 
-Exemple de table :
+You have to setup the query for getting the host list in the numeter_collector.cfg file.
+    host_list_mysql_query = select name,password from table_name;
+
+Table example:
 +----+-------------+----------+
 | id | name        | password |
 +----+-------------+----------+
 |  3 | 10.66.6.216 | password |    <- valid
-|  4 | 10.66.6.217 |          |    <- Ne sera pas utilisé
-|  5 | 10.66.6.215 | NULL     |    <- Ne sera pas utilisé
+|  4 | 10.66.6.217 |          |    <- not valid
+|  5 | 10.66.6.215 | NULL     |    <- not valid
 +----+-------------+----------+
 
-Vous pouvez aussi utiliser une liste sans password : 
+You can also use a list without any password, in this case don't create a column for password :
 +----+-------------+
 | id | name        |
 +----+-------------+
@@ -83,7 +75,5 @@ Vous pouvez aussi utiliser une liste sans password :
 |  5 | 10.66.6.215 |
 +----+-------------+
 
-Si vous avez une liste et que le password est unique, vous pouvez le forcer par defaut :
-  host_list_mysql_query = select name,(@password:='password') from hosts;    
-
-
+If you want to use a single password for every hosts, you can setup directly like in the configuration file:
+    host_list_mysql_query = select name,(@password:='password') from hosts;    
