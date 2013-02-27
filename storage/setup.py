@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # $Id: setup.py,v 0.2.3.4 2013-02-27 09:56:56 gaelL Exp $
 #
@@ -41,7 +42,7 @@ if __name__ == '__main__':
           packages = [''],
           package_dir = {'':'storage/module'},
           #package_data={'': ['storage/numeter_storage.py']},
-          #data_files = [('/etc', ['etc/numeter.conf']),                                                                                                                                                                                   
+          #data_files = [('/etc', ['etc/numeter.conf']),
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),
           #              ('share/man/man1/', ['man/numeter.1']) ],
