@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 from redis_Unittest import RedisTestCase
 from poller_Unittest import PollerTestCase
