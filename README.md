@@ -15,6 +15,6 @@ Documentation is available here: https://numeter.readthedocs.org
 
 **Roadmap :**
 
-include:: ./docs/roadmap.rst
+.. include:: ./docs/roadmap.rst
 
 **License : AGPLv3**
