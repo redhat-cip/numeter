@@ -21,11 +21,11 @@ stored in a Redis DB and written to disk in RRD files. The webapp is written in 
 **Mailing List :**
 
 ***For devs :***
-* Suscribe to Mailing List in sending an e-mail to numeter-dev+subscribe@googlegroups.com
+* Join the group : https://groups.google.com/group/numeter-dev/subscribe?hl=en
 * Read e-mail archives : http://www.mail-archive.com/numeter-dev@googlegroups.com/
 
 ***For users :***
-* Suscribe to Mailing List in sending an e-mail to numeter-user+subscribe@googlegroups.com
+* Join the group : https://groups.google.com/group/numeter-user/subscribe?hl=en
 * Read e-mail archives : http://www.mail-archive.com/numeter-user@googlegroups.com/
 
 
