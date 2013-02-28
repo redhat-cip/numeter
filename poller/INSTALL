@@ -5,6 +5,8 @@ Installation
 Build debian packages
 ======================
 
+Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com
+
 Manual
 ========
 
@@ -39,12 +41,21 @@ You also need to configure redis to allow collector fetch datas : ::
 
     bind 0.0.0.0 
 
-Numeter common
----------------
+Numeter
+--------
 
+Get Numeter sources : ::
 
-Numeter poller
----------------
+    git clone https://github.com/enovance/numeter
+    cd numeter
+
+**Numeter common :** ::
+
+    python common/setup.py install
+
+**Numeter poller :** ::
+
+    python poller/setup.py install
 
 in your server cron : ::
 
