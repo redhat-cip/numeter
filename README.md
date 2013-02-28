@@ -13,8 +13,4 @@ Documentation is available here: https://numeter.readthedocs.org
 * Poller Keep datas in cache in case of network failure
 * Scalable architecture
 
-**Roadmap :**
-
-.. include:: ./docs/roadmap.rst
-
 **License : AGPLv3**
