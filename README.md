@@ -7,9 +7,16 @@ stored in a Redis DB and written to disk in RRD files. The webapp is written in 
 **How to get started :**
 * Visit the Official Website : http://enovance.github.com/numeter/
 * Explore the Documentation : https://numeter.readthedocs.org
-* Suscribe to Mailing List : [in progress]
-* Join us on IRC : [in progress]
-* Download the code
+
+**Mailing List :**
+
+***For devs :***
+* Suscribe to Mailing List in sending an e-mail to numeter-dev+subscribe@googlegroups.com
+* Read e-mail archives : http://www.mail-archive.com/numeter-dev@googlegroups.com/
+
+***For users :***
+* Suscribe to Mailing List in sending an e-mail to numeter-user+subscribe@googlegroups.com
+* Read e-mail archives : http://www.mail-archive.com/numeter-user@googlegroups.com/
 
 **Features :**
 * Graphs with dygraphs and highcharts
