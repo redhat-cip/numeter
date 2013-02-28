@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # $Id: setup.py,v 0.2.3.4 2013-02-27 09:56:56 gaelL Exp $
 #
