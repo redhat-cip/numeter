@@ -2,6 +2,17 @@
 Installation
 **************
 
+
+# zcat /usr/share/doc/numeter-storage/INSTALL | bash
+# After install package you need to do something like that :
+cp /usr/share/doc/numeter-storage/numeter-storage-web.nginx.example /etc/nginx/sites-available/numeter-storage-web
+ln -s /etc/nginx/sites-available/numeter-storage-web /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+/etc/init.d/nginx reload
+cp /usr/share/doc/numeter-storage/numeter-storage-uwsgi.ini.example /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini
+ln -s /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini /etc/uwsgi/apps-enabled/
+/etc/init.d/uwsgi restart
+
 # Need : 
   * numeter-common (redis module)
   * apt python redis
