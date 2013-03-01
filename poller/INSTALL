@@ -2,10 +2,13 @@
 Installation
 *************
 
-Build debian packages
+Debian packages
 ======================
 
 Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com
+::
+
+    apt-get install numeter-poller
 
 Manual
 ========
@@ -57,11 +60,19 @@ Get Numeter sources : ::
 
     python poller/setup.py install
 
-in your server cron : ::
-
-    * * * * *   root    /opt/numeter/numeter-poller
-
-Put config file in /etc/numeter : ::
+Enable numeter poller: ::
 
     vim /etc/numeter/numeter_poller.cfg
+    enable = false -> true
 
+Also add a uniq id in host_id : ::
+
+    host_id = 123456789
+
+Start numeter-poller : ::
+
+    /etc/init.d/numeter-poller start
+
+Try to launch numeter-poller : ::
+
+    numeter-poller
