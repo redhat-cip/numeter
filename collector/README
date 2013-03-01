@@ -40,21 +40,23 @@ Local database format
 
 
 
-# ===== Debug and troubleshooting
+Troubleshooting
+================
 
-# Flush redis databases :
-redis-cli -a password FLUSHALL
+Get all datas in collector  a host::
 
-# Get all datas in the collector for a host :
-redis-cli zrangebyscore DATAS@<hostid> -inf +inf
+    redis-cli zrangebyscore DATAS@<hostid> -inf +inf
 
-# Count the number of datas for a host :
-redis-cli zcard DATAS@<hostid>
+Count the number of datas for a host::
 
-# Get availables Timestamp in the collector
-redis-cli zrangebyscore TS@<hostid> -inf +inf
+    redis-cli zcard DATAS@<hostid>
 
-# Get plugins infos for a host
-redis-cli hkeys INFOS@<hostid>
-redis-cli hgetall INFOS@<hostid>
+Get availables Timestamp in the collector::
+
+    redis-cli zrangebyscore TS@<hostid> -inf +inf
+
+Get plugins infos for a host::
+
+    redis-cli hkeys INFOS@<hostid>
+    redis-cli hgetall INFOS@<hostid>
 
