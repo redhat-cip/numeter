@@ -1,3 +1,7 @@
+**************
+Documentation
+**************
+
 # zcat /usr/share/doc/numeter-storage/README | bash
 
 # After install package you need to do something like that :
@@ -10,9 +14,6 @@ ln -s /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini /etc/uwsgi/apps-enable
 /etc/init.d/uwsgi restart
 
 
-##############################################
-##         Numeter - storage - README          #
-##############################################
 #
 ## ===== Dev infos
 #
