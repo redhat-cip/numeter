@@ -21,10 +21,21 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from distutils.core import setup
+from distutils.command.install_data import install_data
+import shutil
+
+class my_install(install_data):
+    def run(self):
+        install_data.run(self)
+        for script in self.get_outputs():
+            # Rename name.init in name                                                                                                                                                            
+            if script.endswith(".init"):
+                shutil.move(script, script[:-5])
 
 if __name__ == '__main__':
 
     setup(name='numeter-poller',
+          cmdclass={"install_data": my_install},
           version='0.2.3.4',
           description='Numeter Poller',
           long_description="""Numeter is a new graphing solution (like Cacti for \
@@ -44,6 +55,7 @@ if __name__ == '__main__':
           #package_data={'': ['collector/numeter_collector.py']},
           data_files = [('/etc/numeter', ['poller/numeter_poller.cfg', 'poller/redis-poller.conf']), 
                         ('/var/log/numeter', ''),
+                        ('/etc/init.d', ['poller/numeter-poller.init']),
                         ('/etc/cron.d', ['poller/numeter-poller-cron']) ],
           classifiers=[
               'Development Status :: 4 - Beta',
