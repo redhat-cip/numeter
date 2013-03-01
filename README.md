@@ -16,7 +16,7 @@ stored in a Redis DB and written to disk in RRD files. The webapp is written in 
 * Visit the Official Website : http://enovance.github.com/numeter/
 * Explore the Documentation : https://numeter.readthedocs.org
 * Subscribe to Mailing Lists
-* Join us on IRC : in progress
+* Join us on IRC : #numeter (on OFTC) 
 
 **Mailing List :**
 
