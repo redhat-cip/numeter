@@ -28,7 +28,7 @@ class my_install(install_data):
     def run(self):
         install_data.run(self)
         for script in self.get_outputs():
-            # Rename name.init in name                                                                                                                                                            
+            # Rename name.init in name
             if script.endswith(".init"):
                 shutil.move(script, script[:-5])
 
