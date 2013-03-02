@@ -10,7 +10,7 @@ class modulesGeneric:
         "Load configuration and start connexion"
         raise NotImplementedError
     
-    def pluginsRefresh():
+    def pluginsRefresh(self):
         "Return plugins info for refresh"
         raise NotImplementedError
 #        infos=   {    'Plugin': plugin, 
@@ -27,7 +27,7 @@ class modulesGeneric:
 # /!\ Attention chaque DS doit avoir une entré dans Infos pour ne pas étre ignoré. par exemple "id":{"id": "up"} au moins !
 
 
-    def getData():
+    def getData(self):
         "get and return all data collected"
         raise NotImplementedError
 #        data=   [{      'TimeStamp': nowTimestamp, 
