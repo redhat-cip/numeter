@@ -13,7 +13,7 @@ class modulesGeneric:
     def pluginsRefresh(self):
         "Return plugins info for refresh"
         raise NotImplementedError
-#        infos=   {    'Plugin': plugin, 
+#        infos=   [{    'Plugin': plugin, 
 #                      'Base': '1000', 
 #                      'Describ': '', 
 #                      'Title': plugin, 
@@ -23,7 +23,7 @@ class modulesGeneric:
 #                            "id":{"type": "COUNTER", "id": "down", "label": "received"},
 #                            "id":{"type": "COUNTER", "id": "up", "label": "upload"},
 #                       
-#                 }
+#                 }]
 # /!\ Attention chaque DS doit avoir une entré dans Infos pour ne pas étre ignoré. par exemple "id":{"id": "up"} au moins !
 
 
