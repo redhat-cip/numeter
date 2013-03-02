@@ -13,6 +13,8 @@ Contents:
 
     overview.rst
     poller.rst
+    collector.rst
+    storage.rst
     roadmap.rst
 
 

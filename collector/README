@@ -1,57 +1,62 @@
-#############################################
-#        Numeter - collector - README         #
-#############################################
+**************
+Documentation
+**************
+
+Local database format
+======================
+
+::
+
+    +--------+         +-------------+
+    |  HSET  |         | INFOS@Host1 | ----->  if   : {JSON:Value:ID:...}
+    +--------+         +-------------+   |-->  df   : {JSON:Value:ID:...}
+                       +-------------+
+                       | INFOS@Host2 | ----->  if   : {JSON:Value:ID:...}
+                       +-------------+   |-->  df   : {JSON:Value:ID:...}
+    
+    +--------+         +-------------+
+    |  ZADD  |         | DATAS@Host1  | ----->  [ 123456700 ]  ---->  if   : {JSON:Value:ID:...}
+    +--------+         +-------------+   |                     |-->  df   : {JSON:Value:ID:...}
+                                         |
+                                         |-->  [ 123456800 ]  ---->  if   : {JSON:Value:ID:...}
+                                                               |-->  df   : {JSON:Value:ID:...}
+                       +-------------+
+                       | TS@Host1    | ----->  [ 123456700 ]  ---->  123456700
+                       +-------------+   |-->  [ 123456800 ]  ---->  123456800
+    
+                       +-------------+
+                       | DATAS@Host2  | ----->  [ 123456700 ]  ---->  if   : {JSON:Value:ID:...}
+                       +-------------+   |                     |-->  df   : {JSON:Value:ID:...}
+                                         |
+                                         |-->  [ 123456800 ]  ---->  if   : {JSON:Value:ID:...}
+                                                               |-->  df   : {JSON:Value:ID:...}
+                       +-------------+
+                       | TS@Host2    | ----->  [ 123456700 ]  ---->  123456700
+                       +-------------+   |-->  [ 123456800 ]  ---->  123456800
+    
+    +--------+         +-------------+
+    |  HSET  |         |   SERVER    | ----->  Host1   : Host1
+    +--------+         +-------------+   |-->  Host2   : Host2
 
 
-# ===== Redis database information (deprecated)
-+--------+         +-------------+
-|  HSET  |         | INFOS@Host1 | ----->  if   : {JSON:Value:ID:...}
-+--------+         +-------------+   |-->  df   : {JSON:Value:ID:...}
-                   +-------------+
-                   | INFOS@Host2 | ----->  if   : {JSON:Value:ID:...}
-                   +-------------+   |-->  df   : {JSON:Value:ID:...}
 
-+--------+         +-------------+
-|  ZADD  |         | DATAS@Host1  | ----->  [ 123456700 ]  ---->  if   : {JSON:Value:ID:...}
-+--------+         +-------------+   |                     |-->  df   : {JSON:Value:ID:...}
-                                     |
-                                     |-->  [ 123456800 ]  ---->  if   : {JSON:Value:ID:...}
-                                                           |-->  df   : {JSON:Value:ID:...}
-                   +-------------+
-                   | TS@Host1    | ----->  [ 123456700 ]  ---->  123456700
-                   +-------------+   |-->  [ 123456800 ]  ---->  123456800
+Troubleshooting
+================
 
-                   +-------------+
-                   | DATAS@Host2  | ----->  [ 123456700 ]  ---->  if   : {JSON:Value:ID:...}
-                   +-------------+   |                     |-->  df   : {JSON:Value:ID:...}
-                                     |
-                                     |-->  [ 123456800 ]  ---->  if   : {JSON:Value:ID:...}
-                                                           |-->  df   : {JSON:Value:ID:...}
-                   +-------------+
-                   | TS@Host2    | ----->  [ 123456700 ]  ---->  123456700
-                   +-------------+   |-->  [ 123456800 ]  ---->  123456800
+Get all datas in collector  a host::
 
-+--------+         +-------------+
-|  HSET  |         |   SERVER    | ----->  Host1   : Host1
-+--------+         +-------------+   |-->  Host2   : Host2
+    redis-cli zrangebyscore DATAS@<hostid> -inf +inf
 
+Count the number of datas for a host::
 
+    redis-cli zcard DATAS@<hostid>
 
-# ===== Debug and troubleshooting
+Get availables Timestamp in the collector::
 
-# Flush redis databases :
-redis-cli -a password FLUSHALL
+    redis-cli zrangebyscore TS@<hostid> -inf +inf
 
-# Get all datas in the collector for a host :
-redis-cli zrangebyscore DATAS@<hostid> -inf +inf
+Get plugins infos for a host::
 
-# Count the number of datas for a host :
-redis-cli zcard DATAS@<hostid>
-
-# Get availables Timestamp in the collector
-redis-cli zrangebyscore TS@<hostid> -inf +inf
-
-# Get plugins infos for a host
-redis-cli hkeys INFOS@<hostid>
-redis-cli hgetall INFOS@<hostid>
+    redis-cli hkeys INFOS@<hostid>
+    redis-cli hgetall INFOS@<hostid>
 
