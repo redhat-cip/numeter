@@ -4,9 +4,13 @@
     <li class="nav-header">
         Plugins
     </li>
+    <?php function sortTitle($a, $b) {
+        return (strcmp (strtolower($a['Title']), strtolower($b['Title'])));
+    } ?>$
     <?php foreach ($plugins as $category => $cat_contenent): 
             $plugin = json_decode($plugin,true);
             echo $category;
+            uasort($cat_contenent, 'sortTitle');
         foreach ($cat_contenent as $plugin):
             if( $plugin['Plugin'] == $cur_plugin)
                 echo "<li style='padding-left: 20px' class=active>";
