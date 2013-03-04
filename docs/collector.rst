@@ -2,9 +2,9 @@
 
 .. _collector:
 
-#######
+###########
 Collector
-#######
+###########
 
 .. include:: ../collector/README
 .. include:: ../collector/INSTALL

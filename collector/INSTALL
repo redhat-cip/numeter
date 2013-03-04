@@ -2,78 +2,94 @@
 Installation
 **************
 
-# Needed requirements : 
-    * numeter-common
-    * python-redis
-    * redis >= 2.4.15
+Debian packages
+=================
 
-# Optional requirements :
-    * python-mysql if you want to use MySQL to store hosts list.
+Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com
+::
 
-# Setup the Collector
+    apt-get install numeter-collector
 
-You need to setup a crontab for it. For example every 5 minutes:
-    */5 * * * *  root  /opt/numeter/numeter-collector
+.. seealso:: :ref:`quick_config_collector`
 
-You need to write a configuration file. Default is:
-    /etc/numeter/numeter_collector.cfg
+Manual
+========
 
-# Python Redis
+**Depends:**
+  * numeter-common (redis module)
+  * python-redis >= 2.4.9
+  * redis >= 2:2.4.14
 
-For Debian :
-    apt-get install python-redis
+**Optional requirements:**
+  * python-mysql if you want to use MySQL to store poller list.
 
-From sources :
-    git clone https://github.com/andymccurdy/redis-py
-    cd redis-py
-    python setup.py install
+Python-redis api 
+-----------------
 
-# Python MySQL
+Quick exemple of python-redis installation
 
-You need to uncomment the "import MySQLdb" on numeter_collector.py script. You also need to install python-mysqldb
-For debian :
-    apt-get install python-mysqldb
+**From packages :** ::
 
-# Redis > 2:1.2.6-1
+  apt-get install -t squeeze-backports python-redis
 
-For Debian Squeeze:
-    echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
+**From sources :** ::
 
-Installation : 
+  git clone https://github.com/andymccurdy/redis-py
+  cd redis-py
+  python setup.py install
+
+Redis server
+-------------
+
+**From packages :** ::
+
     apt-get install -t squeeze-backports redis-server
 
-# Configure the poller-list
+Numeter collector
+------------------
 
-## poller-list stored in a file
+Get Numeter sources : ::
 
-For an host (10.0.0.1) without password (on Redis), just add it's ip:
-    10.0.0.1
+    git clone https://github.com/enovance/numeter
+    cd numeter
 
-For the same host with a password on Redis
-    10.0.0.1:my_password
+**Numeter common :** ::
 
-## poller-list stored in mysql
+    python common/setup.py install
 
-You have to setup the query for getting the host list in the numeter_collector.cfg file.
-    host_list_mysql_query = select name,password from table_name;
+**Numeter collector :** ::
 
-Table example:
-+----+-------------+----------+
-| id | name        | password |
-+----+-------------+----------+
-|  3 | 10.66.6.216 | password |    <- valid
-|  4 | 10.66.6.217 |          |    <- not valid
-|  5 | 10.66.6.215 | NULL     |    <- not valid
-+----+-------------+----------+
+    python collector/setup.py install
 
-You can also use a list without any password, in this case don't create a column for password :
-+----+-------------+
-| id | name        |
-+----+-------------+
-|  3 | 10.66.6.216 |
-|  4 | 10.66.6.217 |
-|  5 | 10.66.6.215 |
-+----+-------------+
+.. seealso:: :ref:`quick_config_collector`
 
-If you want to use a single password for every hosts, you can setup directly like in the configuration file:
-    host_list_mysql_query = select name,(@password:='password') from hosts;    
+.. _quick_config_collector:
+
+Quick config
+=============
+
+Redis server
+-------------
+
+You also need to configure redis to allow collector fetch datas : ::
+
+    bind 0.0.0.0
+
+Numeter collector
+------------------
+
+Enable numeter collector: ::
+
+    vim /etc/numeter/numeter_collector.cfg
+    enable = false -> true
+
+Add a poller in poller-list file: ::
+
+    vim /etc/numeter/poller-list
+    #Poller address[:db num:password]
+    127.0.0.1:0
+
+Try to launch numeter-collector : ::
+
+    numeter-collector
+

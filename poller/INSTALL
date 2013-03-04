@@ -10,12 +10,14 @@ Build your own Debian packages with git-buildpackage or pbuilder for exemple or 
 
     apt-get install numeter-poller
 
+.. seealso:: :ref:`quick_config_poller`
+
 Manual
 ========
 
 **Depends:**
   * numeter-common (redis module)
-  * python-redis 2.4.9
+  * python-redis >= 2.4.9
   * redis >= 2:2.4.14
 
 Python-redis api
@@ -40,12 +42,10 @@ Redis server
 
     apt-get install -t squeeze-backports redis-server
 
-You also need to configure redis to allow collector fetch datas : ::
+Numeter poller launch a redis-server on port **5959**.
 
-    bind 0.0.0.0 
-
-Numeter
---------
+Numeter poller
+---------------
 
 Get Numeter sources : ::
 
@@ -59,6 +59,16 @@ Get Numeter sources : ::
 **Numeter poller :** ::
 
     python poller/setup.py install
+
+.. seealso:: :ref:`quick_config_poller`
+
+.. _quick_config_poller:
+
+Quick config
+=============
+
+Numeter poller
+---------------
 
 Enable numeter poller: ::
 

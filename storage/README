@@ -23,6 +23,51 @@ Local database format
     +--------+         +-------------+   |-->  Host2   : /opt/rrd/2
 
 
+Example of collector-list file
+===============================
+
+Example of host without password : ::
+
+    10.0.0.1
+
+Exemple de host avec un password sur redis :
+
+Example of host with redis password : ::
+
+    10.0.0.1:mypassword
+
+Use collector list in sql
+==========================
+
+Configure your query in **numeter_storage.cfg** : ::
+
+    host_list_mysql_query = select name,password from mytable;
+
+Example of sql table : ::
+
+    +----+-------------+----------+
+    | id | name        | password |
+    +----+-------------+----------+
+    |  3 | 10.66.6.216 | password |    <- valid
+    |  4 | 10.66.6.217 |          |    <- not valid
+    |  5 | 10.66.6.215 | NULL     |    <- not valid
+    +----+-------------+----------+
+
+You can also use a list without any password, in this case don't create a column for password : ::
+
+    +----+-------------+
+    | id | name        |   
+    +----+-------------+
+    |  3 | 10.66.6.216 |
+    |  4 | 10.66.6.217 |
+    |  5 | 10.66.6.215 |
+    +----+-------------+
+
+If you want to use a single password for every hosts, you can setup directly like in the configuration file: ::
+
+    host_list_mysql_query = select name,(@password:='password') from hosts;
+
+
 Troubleshooting
 ================
 
@@ -43,6 +88,7 @@ Get hosts list from the rest api ::
     curl http://127.0.0.1:8080/numeter-storage/hosts
 
 Get plugin list from the rest api for a host ::
+
     curl http://127.0.0.1:8080/numeter-storage/list?host=1349792119-d753e11726b68a08dbb5847f0d4b8f8e
 
 The rest api code can be found in **/usr/share/numeter/storage/numeter_uwsgi.py**

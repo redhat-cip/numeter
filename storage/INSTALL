@@ -2,150 +2,103 @@
 Installation
 **************
 
+.. note::
 
-# zcat /usr/share/doc/numeter-storage/INSTALL | bash
-# After install package you need to do something like that :
-cp /usr/share/doc/numeter-storage/numeter-storage-web.nginx.example /etc/nginx/sites-available/numeter-storage-web
-ln -s /etc/nginx/sites-available/numeter-storage-web /etc/nginx/sites-enabled/
-rm /etc/nginx/sites-enabled/default
-/etc/init.d/nginx reload
-cp /usr/share/doc/numeter-storage/numeter-storage-uwsgi.ini.example /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini
-ln -s /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini /etc/uwsgi/apps-enabled/
-/etc/init.d/uwsgi restart
+    Numeter storage use **nginx**, **python-flask**  and **uwsgi** to provide a "rest" api.
 
-# Need : 
+Debian packages
+======================
+
+Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com
+::
+
+    apt-get install numeter-storage
+
+.. seealso:: :ref:`quick_config_storage`
+
+Manual
+========
+
+**Depends:**
   * numeter-common (redis module)
-  * apt python redis
-  * (python mysql) si vous voulez utiliser collector-list dans mysql
-  * redis > 2:1.2.6-1
-  * nginx (>=0.8.40) + uwsgi + flask
+  * python-redis >= 2.4.9
+  * redis >= 2:2.4.14
 
+**Optional requirements:**
+  * python-mysql if you want to use MySQL to store collector list.
 
-#===== script storage
+Python-redis api 
+-----------------
 
-Mettre le storage dans cron
-  */5 * * * *  root  /opt/numeter/numeter-storage
+Quick exemple of python-redis installation
 
-Fichier de configuration :
-  vim /etc/numeter/numeter_storage.cfg
+**From packages :** ::
 
+  apt-get install -t squeeze-backports python-redis
 
-#===== api python
+**From sources :** ::
 
-Depuis les paquets :
-  apt-get install python-redis
-
-Depuis les sources : 
   git clone https://github.com/andymccurdy/redis-py
   cd redis-py
   python setup.py install
 
+Redis server
+-------------
 
-#===== python mysql
+**From packages :** ::
 
-Decommenter import mysql du script numeter_collector.py
-  import MySQLdb
+    apt-get install -t squeeze-backports redis-server
 
-Depuis les paquets : 
-  apt-get install python-mysqldb
+Numeter storage
+------------------
 
+Get Numeter sources : ::
 
-#===== redis > 2:1.2.6-1
+    git clone https://github.com/enovance/numeter
+    cd numeter
 
-# Debian squeeze
-Ajouter les backports :
-  deb http://backports.debian.org/debian-backports squeeze-backports main
+**Numeter common :** ::
 
-Pinning : 
-  Package: *
-  Pin: release o=Debian Backports,a=squeeze-backports
-  Pin-Priority: 200
+    python common/setup.py install
 
-Installation : 
-  apt-get install -t squeeze-backports redis-server
+**Numeter storage :** ::
 
-#===== Installation nginx + uwsgi + flask (in progress)
+    python storage/setup.py install
 
-  apt-get install -t squeeze-backports nginx # backport pour uwsgi (the uwsgi module is included in 0.8.x starting from 0.8.40)
+.. seealso:: :ref:`quick_config_storage`
 
-# uwsgi
-http://projects.unbit.it/uwsgi/wiki/Install
-http://projects.unbit.it/uwsgi/wiki/RunOnNginx
-http://projects.unbit.it/uwsgi/wiki/Quickstart
-http://flask.pocoo.org/docs/deploying/uwsgi/
-apt-get install build-essential python-dev libxml2-dev python-pip
-git clone https://github.com/unbit/uwsgi
-cd uwsgi
-make
+.. _quick_config_storage:
 
-ou
+Quick config
+=============
 
-pip install uwsgi
+Numeter storage
+------------------
 
+Enable numeter storage: ::
 
+    vim /etc/numeter/numeter_storage.cfg
+    enable = false -> true
 
-# flask
-http://flask.pocoo.org/docs/quickstart/
-apt-get install python-flask
+Add a collector in collector-list file: ::
 
+    vim /etc/numeter/collector-list
+    #Poller address[:db num:password]
+    127.0.0.1:0
 
-===Configuration
-Nginx : 
-    location = /storage { rewrite ^ /storage/; }
-    location /storage { try_files $uri @myapp; }
-    location @myapp {
-        include uwsgi_params;
-        uwsgi_param SCRIPT_NAME /storage;
-        uwsgi_modifier1 30; 
-        uwsgi_pass 127.0.0.1:3031;
-    }   
+After that you need to configure **nginx** : ::
 
-uwsgi : 
-  # uwsgi --uid 33 --gid 33 --socket 127.0.0.1:3031 -d /var/log/uwsgi.log --plugin python --module numeter_uwsgi --wsgi-file /var/www/storage-web/numeter_uwsgi.py --callable app
-  -> (script /etc/init.d/uwsgi)
+    cp /usr/share/doc/numeter-storage/numeter-storage-web.nginx.example /etc/nginx/sites-available/numeter-storage-web
+    ln -s /etc/nginx/sites-available/numeter-storage-web /etc/nginx/sites-enabled/
+    /etc/init.d/nginx reload
 
+Same thing for **uwsgi** : ::
 
-install du script numeter_uwsgi.py
-ln -s /opt/numeter_storage/myRedisConnect.py /usr/lib/python2.6/
+    cp /usr/share/doc/numeter-storage/numeter-storage-uwsgi.ini.example /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini
+    ln -s /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini /etc/uwsgi/apps-enabled/
+    /etc/init.d/uwsgi restart
 
+Try to launch numeter-collector : ::
 
-#===== collector-list configuration
-
-# collector-list in file
-Exemple de host sans mot de passe :
-  10.0.0.p
-Exemple de host avec un password sur redis :
-  10.0.0.p:mypassword
-
-# collector-list in mysql
-
-Dans le fichier de configuration numeter_collector.cfg :
-  host_list_mysql_query = select name,password from matable;
-
-Exemple de table :
-+----+-------------+----------+
-| id | name        | password |
-+----+-------------+----------+
-|  3 | 10.66.6.216 | password |    <- valid
-|  4 | 10.66.6.217 |          |    <- Ne sera pas utilisé
-|  5 | 10.66.6.215 | NULL     |    <- Ne sera pas utilisé
-+----+-------------+----------+
-
-Vous pouvez aussi utiliser une liste sans password : 
-+----+-------------+
-| id | name        |
-+----+-------------+
-|  3 | 10.66.6.216 |
-|  4 | 10.66.6.217 |
-|  5 | 10.66.6.215 |
-+----+-------------+
-
-Si vous avez une liste et que le password est unique, vous pouvez le forcer par defaut :
-  host_list_mysql_query = select name,(@password:='password') from hosts;    
-
-
-
-
-
-
+    numeter-storage
 
