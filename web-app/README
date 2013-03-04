@@ -1,183 +1,30 @@
-# zcat /usr/share/doc/numeter-web-app/README.gz  | bash
+**************
+Documentation
+**************
 
-# After install package you need to do something like that :
-cp /usr/share/doc/numeter-web-app/numeter-web-app.nginx.example /etc/nginx/sites-available/numeter-web-app
-ln -s /etc/nginx/sites-available/numeter-web-app /etc/nginx/sites-enabled/
-rm /etc/nginx/sites-enabled/default
-/etc/init.d/nginx reload
-sed -i 's@;date.timezone =@date.timezone = "Europe/Paris"@g' /etc/php5/fpm/php.ini
-/etc/init.d/php5-fpm restart
-mysqladmin create numeter
-cat <<EOF | mysql numeter
-CREATE USER 'numeter'@'localhost' IDENTIFIED BY 'ieRe9Hid';
-GRANT ALL ON numeter.* TO 'numeter'@'%';
-FLUSH privileges;
-EOF
-mysql numeter < /usr/share/doc/numeter-web-app/web-app.sql
-sed -i "s/'password' => 'password',/'password' => 'ieRe9Hid',/g" /usr/share/numeter/web-app/app/Config/database.php
+Informations
+=============
 
-#TODO - http://twitter.github.com/bootstrap/components.html#alerts utilisation pour confirmer la creation d'un user par exemple
-#TODO : http://devheart.org/examples/jquery-customizable-layout-using-drag-and-drop/1-getting-started-with-sortable-lists/index.html
+  * http://twitter.github.com/bootstrap/
 
-#INSTALL NEW WEB APP
-#--------Install avec mysql
-#apt-get install mysql-server php5-mysql
-#
-#
-#rsync -rv -e "ssh -l root"  web-app/src-new/  numeter.com:/usr/share/numeter/web-app-new
-#chown 33:33 -R /usr/share/numeter/web-app-new/lib/Cake/Cache
-#chown 33:33 -R /usr/share/numeter/web-app-new/app/tmp/
-#
-#vim /etc/php5/fpm/php.ini
-#date.timezone = "Europe/Paris"
-#
-#vim /usr/share/numeter/web-app/app/Config/storage.php
-#vim /usr/share/numeter/web-app/app/Config/database.php
-#
-#Nginx : 
-## Nginx configuration for numeter-web-app (using php-fpm)
-#server {
-#
-#    listen [::]:80;
-#    server_name numeter-web-app-new.fr numeter-web-app-new;
-#    #server_name numeter-web-app-new numeter-web-app-new.fr;
-#
-#
-#    root /usr/share/numeter/web-app-new/app/webroot;
-#
-#
-#    access_log  /var/log/nginx/numeter-web-app-new_access.log;
-#    error_log   /var/log/nginx/numeter-web-app-new_error.log;
-#
-#
-#    index  index.php index.html;
-#    try_files $uri $uri/ /index.php?$args;
-#
-#
-#    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-#    #   
-#    location ~ \.php$ {
-#       #fastcgi_pass   127.0.0.1:9000;
-#       fastcgi_pass   unix:/var/run/php5-fpm.sock;
-#       fastcgi_index  index.php;
-#       include         fastcgi_params;
-#       fastcgi_param   SCRIPT_FILENAME    $document_root$fastcgi_script_name;
-#       fastcgi_param   SCRIPT_NAME        $fastcgi_script_name;
-#    }   
-#
-#    # deny access to .htaccess files, if Apache's document root
-#    # concurs with nginx's one
-#    #   
-#    location ~ /\.ht {
-#       deny  all;
-#    }   
-#}
+Small customize in bootstrap twitter theme : ::
+
+    --- Links
+    @btnPrimaryBackground = #666
+
+External Links
+================
+  * http://twitter.github.com/bootstrap/components.html#alerts
+  * http://devheart.org/examples/jquery-customizable-layout-using-drag-and-drop/1-getting-started-with-sortable-lists/index.html
 
 
+Troubleshooting
+================
 
+Use storage api to get informations.
 
-
-
-#mysqladmin -uroot -ppassword  create numeter
-#
-#mysql -uroot -ppassword numeter 
-#CREATE USER 'numeter'@'localhost' IDENTIFIED BY 'password';
-#GRANT ALL ON numeter.* TO 'numeter'@'%' IDENTIFIED BY 'password';
-#FLUSH privileges;
-#
-#mysql numter < web-app.sql
-#
-#----
-#
-#Debug :
-#cat <<EOF | mysql -ppassword numeter
-#use numeter
-#select * from users;
-#select * from groups;
-#select * from group_user_memberships;
-#select * from group_host_memberships;
-#select * from hosts;
-#EOF
-#
-#SELECT  `users`.`username` ,  `Host`.`name` 
-#FROM  `numeter`.`hosts` AS  `Host`  
-#INNER JOIN  `numeter`.`group_host_memberships` ON (  `Host`.`hostID` =  `group_host_memberships`.`host_id` ) 
-#INNER JOIN  `numeter`.`group_user_memberships` ON (  `group_host_memberships`.`group_id` =  `group_user_memberships`.`group_id` ) 
-#INNER JOIN  `numeter`.`users` ON (  `group_user_memberships`.`user_id` =  `users`.`id` );
-#
-#
-###### Bootstrap customize
-#--- Links
-#@btnPrimaryBackground
-#-> #666
-#
-#
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#--------Install avec mongodb (deprecated)
-#apt-get install php-pear php5-dev 
-#
-#
-#php.ini
-#[Date]
-#; Defines the default timezone used by the date functions
-#; http://php.net/date.timezone
-#date.timezone = "Europe/Paris"
-#
-#extension=mongo.so
-#
-#pecl install mongo
-#
-#build-essential -> package .so
-#chmod 777 -R  /var/www/app/tmp/
-#
-#
-#mongo
-#use numeter
-#db.users.remove();
-#db.hosts.remove();
-#db.groups.remove();
-#db.users.insert( { "graph" : "0", "password" : "d1f4724929e796ee348c0a18677b4a1389f84a8e", "username" : "test" } )
-#db.users.update( {},{$set : { 'isadmin' : 1 }})
-#db.hosts.insert( { "hostID" : "1344936647-eeb90470b84e8d05a7cbbca4b00da283", "name" : "redis", "addr" : "127.0.0.1" } )
-#db.hosts.insert( { "hostID" : "1344937981-4e48cff280ad88c44036be19ea2dd6cb", "name" : "git-test", "addr" : "localhost" } )
-#db.groups.insert( { "hosts" : [ "1344936647-eeb90470b84e8d05a7cbbca4b00da283", "1344937981-4e48cff280ad88c44036be19ea2dd6cb" ], "name" : "group1" } )
-#db.groups.insert( { "hosts" : [], "name" : "group2" } )
-#db.users.find()
-#db.hosts.find()
-#db.groups.find()
-#exit
-#
-#
-#Test url :
-#http://numeter-web-app-new/storageapi/get/hosts
-#http://numeter-web-app-new/storageapi/get/list/0/127.0.0.1
-#http://numeter-web-app-new/storageapi/get/info/0/127.0.0.1/cpu
-#http://numeter-web-app-new/storageapi/get/data/0/127.0.0.1/cpu/idle,user/Daily
-#
-#
-#Debug numeter cli : http://numeter-web-app-new:3031/numeter-storage/data?host=127.0.0.1&plugin=cpu&ds=idle,user&res=Daily
-#
-#
-## Installation ACL
-#./Console/cake schema create DbAcl
-#
-#
-#IN PROGRESS !!!
-
-
+    * http://demo.numeter.com/storageapi/get/hosts
+    * http://demo.numeter.com/storageapi/get/list/0/127.0.0.1
+    * http://demo.numeter.com/storageapi/get/info/0/127.0.0.1/cpu
+    * http://demo.numeter.com/storageapi/get/data/0/127.0.0.1/cpu/idle,user/Daily
 

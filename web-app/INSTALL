@@ -1,0 +1,115 @@
+**************
+Installation
+**************
+
+**Depends:**
+  * Nginx | Apache
+  * PHP
+  * Mysql server
+
+Debian packages
+=================
+
+Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com
+::
+
+    apt-get install numeter-web-app
+
+Import the default datas in your database : ::
+
+    mysql numeter_db < /usr/share/doc/numeter-web-app/web-app.sql
+
+After that you need to configure **nginx** : ::
+
+    cp /usr/share/doc/numeter-web-app/numeter-web-app.nginx.example /etc/nginx/sites-available/numeter-web-app
+    ln -s /etc/nginx/sites-available/numeter-web-app /etc/nginx/sites-enabled/
+    /etc/init.d/nginx reload
+
+.. seealso:: :ref:`quick_config_webapp`
+
+
+Manual with nginx and php-fpm
+==============================
+
+Nginx
+---------------
+
+**From packages :** ::
+
+    apt-get install nginx
+
+Php fpm
+----------
+
+**From packages :** ::
+
+    apt-get install php5-fpm
+
+Mysql server
+-------------
+
+**From packages :** ::
+
+    apt-get install mysql-server php5-mysql
+
+Numeter webapp
+------------------
+
+Get Numeter sources : ::
+
+    git clone https://github.com/enovance/numeter
+    cd numeter
+
+**Numeter webapp :** ::
+
+    make -f web-app/Makefile
+
+Import the default datas in your database : ::
+
+    mysql numeter_db < web-app/docs/web-app.sql
+
+After that you need to configure **nginx** : ::
+
+    cp web-app/docs/numeter-web-app.nginx.example /etc/nginx/sites-available/numeter-web-app
+    ln -s /etc/nginx/sites-available/numeter-web-app /etc/nginx/sites-enabled/
+    /etc/init.d/nginx reload
+
+.. _quick_config_webapp:
+
+Quick config
+=============
+
+Make sure your timezone is ok in your **php.ini** example : ::
+
+    date.timezone = "Europe/Paris"
+
+Configure user and database in numeter webapp : ::
+
+    vim /usr/share/numeter/web-app/app/Config/database.php
+
+        'login' => 'numeter',
+        'password' => 'password',
+        'database' => 'numeter_db',
+
+Add the list of your numeter storages example with storage in the same host : ::
+
+    vim /usr/share/numeter/web-app/app/Config/storage.php
+
+    $config['Storage']['address'] = array(
+        '127.0.0.1:8080'
+    );
+
+Example of all things you will do :
+
+.. sourcecode:: bash
+
+    sed -i 's@;date.timezone =@date.timezone = "Europe/Paris"@g' /etc/php5/fpm/php.ini
+    /etc/init.d/php5-fpm restart
+    mysqladmin create numeter
+    cat <<EOF | mysql numeter
+    CREATE USER 'numeter'@'localhost' IDENTIFIED BY 'password';
+    GRANT ALL ON numeter.* TO 'numeter'@'%';
+    FLUSH privileges;
+    EOF
+    mysql numeter < /usr/share/doc/numeter-web-app/web-app.sql
+    sed -i "s/'password' => 'password',/'password' => 'password',/g" /usr/share/numeter/web-app/app/Config/database.php
