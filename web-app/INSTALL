@@ -74,6 +74,8 @@ After that you need to configure **nginx** : ::
     ln -s /etc/nginx/sites-available/numeter-web-app /etc/nginx/sites-enabled/
     /etc/init.d/nginx reload
 
+.. seealso:: :ref:`quick_config_webapp`
+
 .. _quick_config_webapp:
 
 Quick config
