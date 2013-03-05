@@ -17,6 +17,7 @@ Contents:
     storage.rst
     webapp.rst
     roadmap.rst
+    about.rst
 
 
 Indices and tables
