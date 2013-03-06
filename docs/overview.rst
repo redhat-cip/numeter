@@ -31,10 +31,10 @@ Actual Numeter architecture :
 Cela permet de ne pas perdre de valeurs en cas de coupure réseau entre le poller et le collector.
 
 
-**Collector :**
+**Collector :** Récoltent les données des poller toute les 5 min par exemple et stock les résultats dans une base redis le temps qu'un storage les récupére.
 
 
-**Storage :**
+**Storage :** Récoltent les données des collecteurs et les stock dans des base RRD. Le storage offre aussi une API web pour consulter les valeurs données.
 
 
 **Webapp :** La webapp est en php et fonctionne avec highcharts et dygraphs
