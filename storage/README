@@ -6,21 +6,41 @@ Local database format
 ======================
 
 ::
-
-    +--------+         +-------------+
-    |  HSET  |         | INFOS@Host1 | ----->  if   : {JSON:Value:ID:...}
-    +--------+         +-------------+   |-->  df   : {JSON:Value:ID:...}
-                       +-------------+
-                       | INFOS@Host2 | ----->  if   : {JSON:Value:ID:...}
-                       +-------------+   |-->  df   : {JSON:Value:ID:...}
+    
+    +--------+         +---------------+
+    |  HSET  |         | INFOS@HostID1 | ----->  if   : {JSON:Value:ID:...}
+    +--------+         +---------------+   |-->  df   : {JSON:Value:ID:...}
+                       +---------------+
+                       | INFOS@HostID2 | ----->  if   : {JSON:Value:ID:...}
+                       +---------------+   |-->  df   : {JSON:Value:ID:...}
     
     +--------+         +-------------+
     |  HSET  |         |   HOSTS     | ----->  Host1   : { MyInfos }
     +--------+         +-------------+   |-->  Host2   : { MyInfos }
-    
+
+    +--------+         +---------------+
+    |  HSET  |         |   HOST_ID     | ----->  HostID1   : md5sum(HostID1)
+    +--------+         +---------------+   |-->  HostID2   : md5sum(HostID2)
+
     +--------+         +-------------+
-    |  HSET  |         |  RRD_PATH   | ----->  Host1   : /opt/rrd/1
-    +--------+         +-------------+   |-->  Host2   : /opt/rrd/2
+    |  HSET  |         |  RRD_PATH   | ----->  HostID1   : /opt/rrd/1
+    +--------+         +-------------+   |-->  HostID2   : /opt/rrd/2
+
+    +--------+         +------------------+
+    |  HSET  |         |  DELETED_HOSTS   | ----->  HostID3   : RRD_PATH
+    +--------+         +------------------+   |-->  HostID4   : RRD_PATH
+
+    +--------+         +--------------------+
+    |  HSET  |         |  DELETED_PLUGINS   | ----->  HostID1@plugin   : RRD_PATH/plugin
+    +--------+         +--------------------+   |-->  HostID2@plugin   : RRD_PATH/plugin
+
+    +-------+         +------------+
+    |  SET  |         |  OLD_RRD   | ----->  [RRD_PATH/plugin/rrd1, RRD_PATH/plugin/rrd2]
+    +-------+         +------------+
+
+    +-------+         +-------------------+
+    |  SET  |         |  LAST_RRD_CLEAN   | ----->  TimeStamp
+    +-------+         +-------------------+
 
 
 Example of collector-list file
