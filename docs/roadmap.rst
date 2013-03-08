@@ -8,7 +8,9 @@ Roadmap
 
 
 **roadmap :**
-  * Change poller pull tu push with rabbitmq for example (Need to design and test solutions)
+  * Keep in mind the idea is to write independent blocks that can be used separately
+  * Change poller pull tu push with rabbitmq or twisted for example (Need to design and test solutions) ?
+     * rabbitmq allow you to have 2 product : poller get datas from munin, ... and push them in a queue. And storage, Just read datas form a queue.
   * Daemonize Numeter. Remove scripts in cron
   * Poller : SQLlite support or directly store a file in RAM
   * Storage : Use a different storage for datas (like carbon or mongodb)
