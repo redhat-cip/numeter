@@ -6,19 +6,20 @@
 Roadmap
 #######
 
-**Features roadmap :**
+
+**roadmap :**
+  * Change poller pull tu push with rabbitmq for example (Need to design and test solutions)
+  * Daemonize Numeter. Remove scripts in cron
+  * Poller : SQLlite support or directly store a file in RAM
+  * Storage : Use a different storage for datas (like carbon or mongodb)
+  * Hosts management :
+     * Who resolve a duplicate host
+     * Who add new host and dynamicaly choose the collector or storage
+  * poller : Make poller module or break the poller to allow Split datas from configuration (which able to push RAW datas without configuration like carbon)
+  * poller : Different precision per Plugin
+  * webapp : Rebuild or not the webapp in Django ?
+  * Poller : add threads for modules and myMuninModule
   * Webapp : Link a comment on a host for a timestamp
   * Webapp : Override graph template
   * Webapp : REST api to manage hosts / users datas and get it in JSON format
-  * Poller : OpenStack polling like Ceilometer
-
-**Architecture roadmap :**
-  * Customize fetch time for a plugin
-  * Use a different storage for datas (like carbon or mongodb)
-  * Change poller pull tu push (with rabbitmq for example)
-  * Use sqlite in poller insted of redis
-  * Whisper / carbon support
-  * Push mode for pollers with RabbitMQ
-  * Different precision per Plugin
-  * Poller : SQLlite support or directly store a file in RAM
-  * Split datas from configuration (which able to push RAW datas without configuration)
+  * Poller : OpenStack poller module get datas from Ceilometer, ...
