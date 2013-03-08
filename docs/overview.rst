@@ -30,17 +30,22 @@ Actual Numeter architecture :
 **Poller :** Agent installé sur les machines à grapher. Il se charge de la collecte des données et les garde en cache dans redis et permet une récupération de façon asynchrone.
 Cela permet de ne pas perdre de valeurs en cas de coupure réseau entre le poller et le collector.
 
+.. image:: img/poller.png
 
 **Collector :** Récoltent les données des poller toute les 5 min par exemple et stock les résultats dans une base redis le temps qu'un storage les récupére.
 
+.. image:: img/collector.png
 
 **Storage :** Récoltent les données des collecteurs et les stock dans des base RRD. Le storage offre aussi une API web pour consulter les valeurs données.
 
+.. image:: img/storage.png
 
 **Webapp :** La webapp est en php et fonctionne avec highcharts et dygraphs
 
     * http://www.highcharts.com/
     * http://dygraphs.com/
+
+.. image:: img/webapp.png
 
 *********
 Features
