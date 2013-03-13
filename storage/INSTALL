@@ -142,7 +142,7 @@ Add a collector in collector-list file: ::
 
     vim /etc/numeter/collector-list
     #Poller address[:db num:password]
-    127.0.0.1:0
+    127.0.0.1:1
 
 Try to launch numeter-collector : ::
 
