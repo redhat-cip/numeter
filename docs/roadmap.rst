@@ -15,7 +15,8 @@ Roadmap
   * Daemonize Numeter. Remove scripts in cron
   * ? Poller : SQLlite ( + SQLAlchemy ?) support or directly store a file like cPickle
   * ? Storage : Use a different storage for datas (like carbon or mongodb)
-  * ? continuous integration best practices
+  * ? continuous integration best practices (and packages build)
+  * ? keystone auth and acl
   * Hosts management :
      * How resolve a duplicate host
      * How add new host and dynamicaly choose the collector or storage
