@@ -205,9 +205,11 @@ class myMuninModule(modulesGeneric):
 
 
     def munin_list(self): # TODO si bug timeout : list $node
+	# Get node name
+	node = self.munin_nodes()
         # Start munin connexion
         self.munin_connect()
-        self.munin_connection.sendall("list\n")
+        self.munin_connection.sendall("list %s\n" % node)
         return_list = self._readline().split(' ')
         # Close munin connexion to avoid fucked plugin
         self.munin_close()
