@@ -6,7 +6,7 @@
     </li>
     <?php function sortTitle($a, $b) {
         return (strcmp (strtolower($a['Title']), strtolower($b['Title'])));
-    } ?>$
+    } ?>
     <?php foreach ($plugins as $category => $cat_contenent): 
             $plugin = json_decode($plugin,true);
             echo $category;
