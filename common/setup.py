@@ -39,8 +39,8 @@ if __name__ == '__main__':
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
           #scripts = ['bin/numeter'],
-          packages = [''],
-          package_dir = {'':'common/module'},
+          packages = ['myRedisConnect'],
+          package_dir = {'myRedisConnect':'common/myRedisConnect'}
           #data_files = [('/etc', ['etc/numeter.conf']),
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),
