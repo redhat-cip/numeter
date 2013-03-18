@@ -40,7 +40,7 @@ if __name__ == '__main__':
           license='GNU Affero General Public License v3',
           #scripts = ['bin/numeter'],
           packages = ['myRedisConnect'],
-          package_dir = {'myRedisConnect':'common/myRedisConnect'}
+          package_dir = {'myRedisConnect':'common/myRedisConnect'},
           #data_files = [('/etc', ['etc/numeter.conf']),
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),
