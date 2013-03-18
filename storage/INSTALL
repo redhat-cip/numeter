@@ -57,7 +57,7 @@ Uwsgi
 
 **From packages :** ::
 
-    apt-get install uwsgi
+    apt-get install uwsgi uwsgi-plugin-python
 
 Python flask
 ---------------
