@@ -101,6 +101,12 @@ Add the list of your numeter storages example with storage in the same host : ::
         '127.0.0.1:8080'
     );
 
+The default webapp perms is www-data but if this group don't exist you must to chown
+with your group like httpd, ... ::
+
+    chown -R root:www-data /usr/share/numeter/web-app/app/tmp/cache/;\
+    chmod -R g+w /usr/share/numeter/web-app/app/tmp/cache/;\
+
 Example of all things you will do :
 
 .. sourcecode:: bash
