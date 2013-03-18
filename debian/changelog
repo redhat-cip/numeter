@@ -1,3 +1,12 @@
+numeter (0.2.3.5) numeter-squeeze; urgency=low
+
+  * Cosmetic patch
+  * Munin module use nodes
+  * Update README
+  * Webapp sort by plugin title
+
+ -- Gael Lambert <gael@enovance.com>  Mon, 18 Mar 2013 11:20:58 +0100
+
 numeter (0.2.3.4) numeter-squeeze; urgency=low
 
   * Add regex in myMuninModule
