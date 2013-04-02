@@ -10,7 +10,7 @@ Roadmap
 **roadmap :**
   * Fixe licence problem highchart, dygraph, ...?
   * Keep in mind the idea is to write independent blocks that can be used separately
-  * ? Change poller pull tu push with rabbitmq (oslo / kombu) or twisted for example (Need to design and test solutions) ?
+  * ? Change poller pull tu push with rabbitmq (oslo / kombu and persistance with json file msgpack) or twisted for example (Need to design and test solutions) ?
      * rabbitmq allow you to have 2 product : poller get datas from munin, ... and push them in a queue. And storage, Just read datas form a queue.
   * Daemonize Numeter. Remove scripts in cron
   * ? Poller : SQLlite ( + SQLAlchemy ?) support or directly store a file like cPickle
