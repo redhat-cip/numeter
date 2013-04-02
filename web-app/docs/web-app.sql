@@ -16,7 +16,7 @@ CREATE TABLE users (
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL
 );
-INSERT INTO  `numeter`.`users` (`id` ,`username` ,`password` ,`isadmin`, `graph` ,`created` ,`modified`)VALUES (1 ,  'admin',  'f99550a09dda1afdc4e8e5dd22e9bcae75db7b1d',  '1', 1, NULL , NULL);
+INSERT INTO  `numeter`.`users` (`id` ,`username` ,`password` ,`isadmin`, `graph` ,`created` ,`modified`)VALUES (1 ,  'admin',  'f99550a09dda1afdc4e8e5dd22e9bcae75db7b1d',  '1', 0, NULL , NULL);
 
 drop table IF EXISTS groups;
 CREATE TABLE groups (

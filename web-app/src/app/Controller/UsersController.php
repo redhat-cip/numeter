@@ -94,6 +94,12 @@
     public function profile() {
         
         $this->set('authUser', $this->Auth->user());
+
+        // Get graph display
+        Configure::load('graph');
+        $graphConfig = Configure::read('Graph');
+        $this->set('graphs',$graphConfig["display"]);
+
         if($this->request->is('post')) {
             //$User = $this->Auth->user();
             //$this->User->create();
