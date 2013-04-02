@@ -8,7 +8,7 @@ Roadmap
 
 
 **roadmap :**
-  * Fixe licence problem highchart, dygraph, ...?
+  * split highcharts (plugin) and dygraph upstream
   * Keep in mind the idea is to write independent blocks that can be used separately
   * ? Change poller pull tu push with rabbitmq or twisted for example (Need to design and test solutions) ?
      * rabbitmq allow you to have 2 product : poller get datas from munin, ... and push them in a queue. And storage, Just read datas form a queue.
@@ -17,6 +17,7 @@ Roadmap
   * ? Storage : Use a different storage for datas (like carbon or mongodb)
   * ? continuous integration best practices (and packages build)
   * ? keystone auth and acl
+  * Improve unit test
   * Hosts management :
      * How resolve a duplicate host
      * How add new host and dynamicaly choose the collector or storage
@@ -28,5 +29,4 @@ Roadmap
   * Webapp : Override graph template
   * Webapp : REST api to manage hosts / users datas and get it in JSON format
   * Poller : OpenStack poller module get datas from Ceilometer, ...
-  * Improve unit test
   * ? Provide puppet module for numeter
