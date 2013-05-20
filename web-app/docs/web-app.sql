@@ -2,9 +2,9 @@
 -- Current Database: `numeter`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `numeter` /*!40100 DEFAULT CHARACTER SET latin1 */;
+-- CREATE DATABASE /*!32312 IF NOT EXISTS*/ `numeter` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `numeter`;
+-- USE `numeter`;
 
 drop table IF EXISTS users;
 CREATE TABLE users (
