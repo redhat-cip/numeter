@@ -131,7 +131,6 @@ class myStorage:
         self._redis_storage_host              = "127.0.0.1"
         self._redis_storage_db                = 0
         self._rrd_path                        = "/opt/numeter/rrd"
-        self._rrd_module                      = "rrdtool"
         self._rrd_path_md5_char               = 2
         self._rrd_clean_time                  = 48 # 48h
         self._rrd_delete                      = False
@@ -391,12 +390,6 @@ class myStorage:
         and self._configParse.getint('global', 'redis_storage_db'):
             self._redis_storage_db = self._configParse.getint('global', 'redis_storage_db')
             self._logger.info("Config : redis_storage_db = "+str(self._redis_storage_db))
-
-        # rrd_module
-        if self._configParse.has_option('global', 'rrd_module') \
-        and self._configParse.get('global', 'rrd_module'):
-            self._rrd_module = self._configParse.get('global', 'rrd_module')
-            self._logger.info("Config : rrd_module = "+self._rrd_module)
         # rrd_path
         if self._configParse.has_option('global', 'rrd_path') \
         and self._configParse.get('global', 'rrd_path'):
@@ -1218,15 +1211,10 @@ class myStorage:
                 continue
             else:
                 # Write rrd
-                if self._rrd_module == "pyrrd":
-                    self._logger.info( "Worker " + str(threadId) + " host : "
-                        + hostID + " writePyrrd")
-                    self.writePyrrd(sortedTS, hostAllDatas, hostID, hostRRDPath)
-                else:
-                    self._logger.info( "Worker " + str(threadId) + " host : "
-                        + hostID + " writeRrdtool")
-                    self.writeRrdtool(sortedTS, hostAllDatas,
-                                      hostID, hostRRDPath)
+                self._logger.info( "Worker " + str(threadId) + " host : "
+                    + hostID + " writeRrdtool")
+                self.writeRrdtool(sortedTS, hostAllDatas,
+                                  hostID, hostRRDPath)
                 # Clear data 
                 redisCollector.redis_zremrangebyscore("TS@" + hostID,
                                                       sortedTS[0],sortedTS[-1])
