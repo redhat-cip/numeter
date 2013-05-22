@@ -42,11 +42,11 @@
             echo '<script type="text/javascript" src="/highcharts/js/modules/exporting.js"></script>';
             echo '<script type="text/javascript" src="/highcharts/js/themes/gray.js"></script>'; // Comment for default theme
 		    echo $this->Html->script('numeter');
-		    echo $this->Html->css('numeter');
         } else {  // 0 dygraphs
 		    echo $this->Html->script('dygraph-combined');
         }
 
+		echo $this->Html->css('numeter');
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
