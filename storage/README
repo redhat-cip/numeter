@@ -91,14 +91,18 @@ If you want to use a single password for every hosts, you can setup directly lik
 Troubleshooting
 ================
 
+Get the host list in the storage :
+
+    redis-cli -n 2 HGETALL HOSTS
+
 Get plugin info for a host ::
 
-    redis-cli hget "INFOS@<hostid>" MyInfo
-    redis-cli hget "INFOS@<hostid>" df
+    redis-cli -n 2 hget "INFOS@<hostid>" MyInfo
+    redis-cli -n 2 hget "INFOS@<hostid>" df
 
 Get the rrd path for a host ::
 
-    redis-cli hget "RRD_PATH" <hostid>
+    redis-cli -n 2 hget "RRD_PATH" <hostid>
 
 Test the storage
 =================
