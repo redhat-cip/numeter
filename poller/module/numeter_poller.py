@@ -69,7 +69,7 @@ class myPoller:
             # Clear old datas
             self.rediscleanDataExpired()
 
-        # Lancement des modules + écriture des data dans redmine
+        # Lancement des modules + écriture des data dans redis
         self.loadModules()
 
         # End log time execution
@@ -80,7 +80,10 @@ class myPoller:
 
     def redisStartConnexion(self):
         "start redis connexion"
-        redis_connexion = myRedisConnect(host=self._redis_host, port=self._redis_port, password=self._redis_password,db=self._redis_db)
+        redis_connexion = myRedisConnect(host=self._redis_host,
+                                         port=self._redis_port,
+                                         password=self._redis_password,
+                                         db=self._redis_db)
         if redis_connexion._error:
             self._logger.critical("Redis connexion ERROR - Check server access or the password")
             exit(1)
@@ -104,18 +107,27 @@ class myPoller:
             self._logger.info("Write data in redis")
             allTimeStamps=[]
             for data in allDatas:
-                if data.has_key("TimeStamp") and data.has_key("Plugin") and re.match("[0-9]+",data["TimeStamp"]):
+                if data.has_key("TimeStamp") \
+                and data.has_key("Plugin") \
+                and re.match("[0-9]+",data["TimeStamp"]):
                     dataJson = self.convertToJson(data)
-                    self._logger.info("Write TimeStamp " + data["TimeStamp"] + " -- plugin : "+data["Plugin"] )
-                    self._logger.debug("Write TimeStamp " + data["TimeStamp"] + " -- plugin : "+data["Plugin"] + " -- value :"+str(dataJson))
-                    self._redis_connexion.redis_zadd("DATAS",dataJson,int(data["TimeStamp"]))
+                    self._logger.info("Write TimeStamp " + data["TimeStamp"]
+                                      + " -- plugin : "+data["Plugin"] )
+                    self._logger.debug("Write TimeStamp " + data["TimeStamp"]
+                                       + " -- plugin : " + data["Plugin"]
+                                       + " -- value :"+str(dataJson))
+                    self._redis_connexion.redis_zadd("DATAS",
+                                                     dataJson,
+                                                     int(data["TimeStamp"]))
                     allTimeStamps.append(data["TimeStamp"])
                     self._plugin_number = self._plugin_number+1
             # Write all timeStamps
             seen=[]
             for timeStamp in allTimeStamps:
                 if timeStamp not in seen:
-                    self._redis_connexion.redis_zadd("TimeStamp",timeStamp,int(timeStamp))
+                    self._redis_connexion.redis_zadd("TimeStamp",
+                                                     timeStamp,
+                                                     int(timeStamp))
                     seen.append(timeStamp)
 
 
@@ -135,9 +147,14 @@ class myPoller:
             for info in allInfos:
                 if info.has_key("Plugin"):
                     infoJson = self.convertToJson(info)
-                    self._logger.info("Write info -- plugin : "+info["Plugin"] )
-                    self._logger.debug("Write info -- plugin : "+info["Plugin"] + " -- value :"+str(info))
-                    self._redis_connexion.redis_hset("INFOS",info["Plugin"],infoJson)
+                    self._logger.info("Write info -- plugin : "
+                                      + info["Plugin"] )
+                    self._logger.debug("Write info -- plugin : "
+                                       + info["Plugin"]
+                                       + " -- value :" + str(info))
+                    self._redis_connexion.redis_hset("INFOS",
+                                                     info["Plugin"],
+                                                     infoJson)
                     writedInfos.append(info["Plugin"])
             return writedInfos
 
@@ -149,22 +166,22 @@ class myPoller:
         # Get current plugin list
         currentPlugin = self._redis_connexion.redis_hkeys("INFOS")
         if currentPlugin == []:
-            self._logger.info("Clean info -- nothing to do" )
+            self._logger.info("Clean info -- nothing to do")
             return
         # Get the gap
-        toDelete=list(set(currentPlugin)-set(writedInfos))
+        toDelete=list(set(currentPlugin) - set(writedInfos))
         # Same list do nothing
         if toDelete == []:
-            self._logger.info("Clean info -- nothing to do : same Infos" )
+            self._logger.info("Clean info -- nothing to do : same Infos")
             return
         else: # Erase some plugin
-            self._logger.info("Clean info -- clean plugins : "+str(toDelete) )
+            self._logger.info("Clean info -- clean plugins : " + str(toDelete))
             if self._simulate:
                 self.writeInSimulateFile("===== Clean INFOS =====")
                 self.writeInSimulateFile(str(toDelete))
             else:
                 for plugin in toDelete:
-                     self._redis_connexion.redis_hdel("INFOS",plugin)
+                     self._redis_connexion.redis_hdel("INFOS", plugin)
 
 
 
@@ -182,11 +199,11 @@ class myPoller:
         writedInfos=[]
         for module in self._modules.split("|"):
             allDatas = allInfos = []
-            self._logger.info("Try to launch module : "+module)
+            self._logger.info("Try to launch module : " + module)
             modImport = __import__(module)
             try:
                 modClass = getattr(modImport, module)
-                modObj = modClass(self._logger,self._configParse)
+                modObj = modClass(self._logger, self._configParse)
                 # Get DATAS
                 self._logger.info("Call plugin get data")
                 allDatas = modObj.getData()
@@ -198,11 +215,11 @@ class myPoller:
                     allInfos = modObj.pluginsRefresh()
                     # Write all infos
                     writedInfos.extend(self.writeInfo(allInfos))
-                self._logger.info("Module : "+module+" Success")
+                self._logger.info("Module : " + module + " Success")
                 del(modObj)
 
             except (AttributeError, TypeError), e:
-                self._logger.error("Module : "+module+" error :"+str(e))
+                self._logger.error("Module : " + module + " error :" + str(e))
                 continue 
         # Exec fixe module
         # loadModules getMyInfo
@@ -222,7 +239,7 @@ class myPoller:
         info={}
         info["Plugin"]      = "MyInfo"
         info['Name']        = self._myInfo_name
-        info['ID']      = self._myInfo_hostID
+        info['ID']          = self._myInfo_hostID
         info['Description'] = self._myInfo_description
 #        info['Step']        = str(self._poller_time)
         infos = []
@@ -248,7 +265,9 @@ class myPoller:
         else:
             logger.setLevel(logging.DEBUG)
         scriptname = sys.argv[0].split('/')[-1]
-        formatter = logging.Formatter('%(asctime)s (' + scriptname + ') %(levelname)s -: %(message)s')
+        formatter = logging.Formatter('%(asctime)s ('
+                                      + scriptname
+                                      + ') %(levelname)s -: %(message)s')
         fh.setFormatter(formatter)
         # set log to output error on stderr
         logsterr = logging.StreamHandler()
@@ -276,7 +295,7 @@ class myPoller:
         if not os.path.isfile(self._poller_time_file):
             self._logger.info("Poller pollerTimeToGo ok now")
             lastTimeFile = open(self._poller_time_file, 'w')
-            lastTimeFile.write(nowTimestamp+" "+nowTimestamp)
+            lastTimeFile.write(nowTimestamp + " " + nowTimestamp)
             lastTimeFile.close()
             self._need_refresh = True
             return True
@@ -301,14 +320,17 @@ class myPoller:
                     self._need_refresh = True
 
                 lastTimeFile = open(self._poller_time_file, 'w')
-                lastTimeFile.write(nowTimestamp+" "+lastRefresh)
+                lastTimeFile.write(nowTimestamp + " " + lastRefresh)
                 lastTimeFile.close()
                 self._logger.info("Poller pollerTimeToGo ok now")
                 return True
             # Si c'est pas bon
             else:
-                self._logger.warning("Poller to soon. pollerTimeToGo poller_time : " \
-                + str(self._poller_time)+" sec and refresh time : "+ str(self._plugins_refresh_time)+" sec")
+                self._logger.warning("Poller to soon. pollerTimeToGo poller_time : " 
+                                     + str(self._poller_time)
+                                     + " sec and refresh time : "
+                                     + str(self._plugins_refresh_time)
+                                     + " sec")
                 self._need_refresh = False
                 return False
 
@@ -318,7 +340,9 @@ class myPoller:
         self._configParse = ConfigParser.RawConfigParser()
 
         if self._configParse.read(self._configFile) == []: # If empty or not exist
-            print ("CRIT - Read Config file "+self._configFile+"- ERROR (empty or doesn't exist)")
+            print ("CRIT - Read Config file "
+                   + self._configFile
+                   + " - ERROR (empty or doesn't exist)")
             exit(1)
         # GLOBAL
         # log_path
@@ -342,81 +366,81 @@ class myPoller:
         if self._configParse.has_option('global', 'enable') \
         and self._configParse.getboolean('global', 'enable'):
             self._enable = self._configParse.getboolean('global', 'enable')
-            self._logger.info("Config : enable = "+str(self._enable))
+            self._logger.info("Config : enable = " + str(self._enable))
         else:
-            self._logger.info("Config : enable = "+str(self._enable))
+            self._logger.info("Config : enable = " + str(self._enable))
         # simulate
         if self._configParse.has_option('global', 'simulate') \
         and self._configParse.getboolean('global', 'simulate'):
             self._simulate = self._configParse.getboolean('global', 'simulate')
-            self._logger.info("Config : simulate = "+str(self._simulate))
+            self._logger.info("Config : simulate = " + str(self._simulate))
         else:
-            self._logger.info("Config : simulate = "+str(self._simulate))
+            self._logger.info("Config : simulate = " + str(self._simulate))
         # simulate_file
         if self._configParse.has_option('global', 'simulate_file') \
         and self._configParse.get('global', 'simulate_file'):
             self._simulate_file = self._configParse.get('global', 'simulate_file')
-            self._logger.info("Config : simulate_file = "+self._simulate_file)
+            self._logger.info("Config : simulate_file = " + self._simulate_file)
         # modules
         if self._configParse.has_option('global', 'modules') \
         and self._configParse.get('global', 'modules'):
             self._modules = self._configParse.get('global', 'modules')
-            self._logger.info("Config : modules = "+self._modules)
+            self._logger.info("Config : modules = " + self._modules)
         # poller_time
         if self._configParse.has_option('global', 'poller_time') \
         and self._configParse.getint('global', 'poller_time'):
             self._poller_time = self._configParse.getint('global', 'poller_time')
-            self._logger.info("Config : poller_time = "+str(self._poller_time))
+            self._logger.info("Config : poller_time = " + str(self._poller_time))
         # poller_time_file
         if self._configParse.has_option('global', 'poller_time_file') \
         and self._configParse.get('global', 'poller_time_file'):
             self._poller_time_file = self._configParse.get('global', 'poller_time_file')
-            self._logger.info("Config : poller_time_file = "+self._poller_time_file)
+            self._logger.info("Config : poller_time_file = " + self._poller_time_file)
         # plugins_refresh_time
         if self._configParse.has_option('global', 'plugins_refresh_time') \
         and self._configParse.getint('global', 'plugins_refresh_time'):
             self._plugins_refresh_time = self._configParse.getint('global', 'plugins_refresh_time')
-            self._logger.info("Config : plugins_refresh_time = "+str(self._plugins_refresh_time))
+            self._logger.info("Config : plugins_refresh_time = " + str(self._plugins_refresh_time))
         # redis_host
         if self._configParse.has_option('global', 'redis_host') \
         and self._configParse.get('global', 'redis_host'):
             self._redis_host = self._configParse.get('global', 'redis_host')
-            self._logger.info("Config : redis_host = "+self._redis_host)
+            self._logger.info("Config : redis_host = " + self._redis_host)
         # redis_password
         if self._configParse.has_option('global', 'redis_password') \
         and self._configParse.get('global', 'redis_password'):
             self._redis_password = self._configParse.get('global', 'redis_password')
-            self._logger.info("Config : redis_password = "+self._redis_password)
+            self._logger.info("Config : redis_password = " + self._redis_password)
         # redis_port
         if self._configParse.has_option('global', 'redis_port') \
         and self._configParse.getint('global', 'redis_port'):
             self._redis_port = self._configParse.getint('global', 'redis_port')
-            self._logger.info("Config : redis_port = "+str(self._redis_port))
+            self._logger.info("Config : redis_port = " + str(self._redis_port))
         # redis_db
         if self._configParse.has_option('global', 'redis_db') \
         and self._configParse.getint('global', 'redis_db'):
             self._redis_db = self._configParse.getint('global', 'redis_db')
-            self._logger.info("Config : redis_db = "+str(self._redis_db))
+            self._logger.info("Config : redis_db = " + str(self._redis_db))
         # redis_data_expire_time
         if self._configParse.has_option('global', 'redis_data_expire_time') \
         and self._configParse.getint('global', 'redis_data_expire_time'):
             self._redis_data_expire_time = self._configParse.getint('global', 'redis_data_expire_time')
-            self._logger.info("Config : redis_data_expire_time = "+str(self._redis_data_expire_time))
+            self._logger.info("Config : redis_data_expire_time = " + str(self._redis_data_expire_time))
         # getMyInfo - Name
         if self._configParse.has_option('MyInfo', 'name') \
         and self._configParse.get('MyInfo', 'name'):
             self._myInfo_name = self._configParse.get('MyInfo', 'name')
-            self._logger.info("Config : myInfo_name = "+self._myInfo_name)
+            self._logger.info("Config : myInfo_name = " + self._myInfo_name)
         # getMyInfo - hostID
         if self._configParse.has_option('MyInfo', 'host_id') \
         and self._configParse.get('MyInfo', 'host_id'):
             self._myInfo_hostID = self._configParse.get('MyInfo', 'host_id')
-            self._logger.info("Config : myInfo_host_id = "+self._myInfo_hostID)
+            self._logger.info("Config : myInfo_host_id = " + self._myInfo_hostID)
         # getMyInfo - Description
         if self._configParse.has_option('MyInfo', 'description') \
         and self._configParse.get('MyInfo', 'description'):
             self._myInfo_description = self._configParse.get('MyInfo', 'description')
-            self._logger.info("Config : myInfo_description = "+self._myInfo_description)
+            self._logger.info("Config : myInfo_description = " + self._myInfo_description)
 
 
     def rediscleanDataExpired(self):
@@ -424,66 +448,15 @@ class myPoller:
         now              = time.strftime("%Y %m %d %H:%M", time.localtime())
         nowTimestamp     = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M')) # "%.0f" % supprime le .0 aprés le
         expireInSeconde  = self._redis_data_expire_time * 60
-        dateMax          = str(int(nowTimestamp)-expireInSeconde)
+        dateMax          = str(int(nowTimestamp) - expireInSeconde)
 
         deleted = str(self._redis_connexion.redis_zremrangebyscore('DATAS', '-inf', dateMax))
-        self._logger.info("Clear des data <= à "+dateMax+" Data deleted : "+deleted)
+        self._logger.info("Clear des data <= à " + dateMax
+                          + " Data deleted : " + deleted)
         
         deleted = str(self._redis_connexion.redis_zremrangebyscore('TimeStamp', '-inf', dateMax))
-        self._logger.info("Clear des timestamp <= à "+dateMax+" Data deleted : "+deleted)
+        self._logger.info("Clear des timestamp <= à " + dateMax
+                          + " Data deleted : " + deleted)
 
 
-
-
-
-
-
-
-#
-# Main
-#
-#if __name__ == "__main__":
-#    poller = myPoller("/opt/numeter_poller/numeter_poller.cfg")
-#    poller.startPoller()
-##    poller = myPoller("/home/gael/Bureau/git/numeter/db/poller/numeter_poller.cfg")
-#    exit(0)
-
-
-
-#    rediss.redis_zadd('DATAS','plugin1:val1:val2:121',121)
-#    rediss.redis_zadd('DATAS','plugin2:val1:val2:121',121)
-#    rediss.redis_zadd('DATAS','plugin1:val1:val2:122',122)
-#    rediss.redis_zadd('DATAS','plugin2:val1:val2:122',122)
-#    rediss.redis_zadd('DATAS','plugin1:val1:val2:123',123)
-#    rediss.redis_zadd('DATAS','plugin1:val1:val2:123',123)
-#    rediss.redis_zadd('DATAS','plugin1:val1:val2:124',124)
-#    rediss.redis_zadd('DATAS','plugin2:val1:val2:124',124)
-#    rediss.redis_zadd('DATAS','plugin1:val1:val2:125',125)
-#    rediss.redis_zadd('DATAS','plugin2:val1:val2:125',125)
-
-
-
-## Import dégeu 
-#        className = "myMuninModule"
-#        exec("from " + className + " import *")
-#        module = eval(className)(self._logger,self._configParse)
-#        module.getData()
-## Iport propre http://stackoverflow.com/questions/547829/how-to-dynamically-load-a-python-class
-#        module = __import__("myMuninModule")
-#        the_class = getattr(module, "myMuninModule")
-#        obj = the_class(self._logger,self._configParse)
-#        obj.getData()
-
-
-
-
-
-#    def log(self,message,level="DEBU"): 
-#        "Log dans un fichier"
-#        if self._logLevel != self._logLevel:
-#            now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-#            print "|"+level+"| "+now+" -- "+message
-#            logfile = open(self._log_path, 'a')
-#            logfile.write("|"+level+"| "+now+" -- "+message+"\n")
-#            logfile.close()
 

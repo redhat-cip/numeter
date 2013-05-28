@@ -33,70 +33,8 @@ import pprint # Debug (dumper)
 #
 
 
-#Chargement de la liste de cache md5
-# Storage ajouter dans les conf la policy rra
-# X Connexion aux redis collectors
-# X Recupération de la liste des hosts
-# X Pour chaque hosts : 
-#    Get des infos myhost
-#-----------------------
-#    Pour chaque plugin :
-#        Pour chaque plugin / infos 
-#            Mettre a jour la base
-#    Get la liste des TS à prendre
-#    Lecture des data entre les TS trouvé + stocké dans un hash plug[name][idval].append(ts:value)
-#    For each plugin:
-#        Verif si le rrd_plugin_path existe si non le creer
-#        Avant l'update d'un ID verif si rrdpath/plugin/rrd existe. Si non creer le rrd
-#        C'est une valeur qui n'a pas d'infos alors pas prise en compte.
-#        update des rrd rrdpath[host@plugin@valudID] avec les value dans plug[name][idval]
-#    suppression des datas
-
-
-#Penser de l'autre sens get les datas et créer les rrd puis aprés les infos ?
-
-
-#"{\"Description\": \"\", \"Client\": \"not assigned\", \"Name\": \"numeter-host-3\", \"Plugin\": \"MyInfo\"}"
-
-#{"Describ": "",
-# "Title": "Disk usage in percent",
-# "Plugin": "df",
-# "Vlabel": "%",
-# "Base": "1000",
-# "Infos": [{"id": "_dev_simfs", "label": "/"},
-#     {"id": "_lib_init_rw", "label": "/lib/init/rw"},
-#     {"id": "_dev_shm", "label": "/dev/shm"}],
-# "Order": ""}
-
-#{\"Describ\": \"\",
-# \"Title\": \"CPU usage\",
-# \"Plugin\": \"cpu\",
-# \"Vlabel\": \"%\",
-# \"Base\": \"1000\",
-# \"Infos\": [
-#    {\"info\": \"CPU time spent handling \\\"batched\\\" interrupts\", \"draw\": \"STACK\", \"min\": \"0\", \"label\": \"softirq\", \"type\": \"DERIVE\", \"id\": \"softirq\"},
-#    {\"info\": \"CPU time spent waiting for I/Ore is nothing else to do.\", \"draw\": \"STACK\", \"min\": \"0\", \"label\": \"iowait\", \"type\": \"DERIVE\", \"id\": \"iowait\"},
-#    {\"info\": \"CPU time spent by the kernel in system activities\", \"draw\": \"AREA\", \"min\": \"0\", \"label\": \"system\", \"type\": \"DERIVE\", \"id\": \"system\"},
-#    {\"info\": \"Idle CPU time\", \"draw\": \"STACK\", \"min\": \"0\", \"label\": \"idle\", \"type\": \"DERIVE\", \"id\": \"idle\"},
-#    {\"info\": \"CPU time spent by normal programs and daemons\", \"draw\": \"STACK\", \"min\": \"0\", \"label\": \"user\", \"type\": \"DERIVE\", \"id\": \"user\"},
-#    {\"info\": \"CPU time spent handling interrupts\", \"draw\": \"STACK\", \"min\": \"0\", \"label\": \"irq\", \"type\": \"DERIVE\", \"id\": \"irq\"},
-#    {\"info\": \"The time that a virtual Clf was not running\", \"draw\": \"STACK\", \"min\": \"0\", \"label\": \"steal\", \"type\": \"DERIVE\", \"id\": \"steal\"},
-#    {\"info\": \"CPU time spent by nice(1)d programs\", \"draw\": \"STACK\", \"min\": \"0\", \"label\": \"nice\", \"type\": \"DERIVE\", \"id\": \"nice\"}],
-# \"Order\": \"system user nice idle iowait irq softirq\"}
-
-#"{\"Describ\": \"\",
-# \"Title\": \"eth1 traffic\",
-# \"Plugin\": \"if_eth1\",
-# \"Vlabel\": \"bits in (-) / out (+) per ${graph_period}\",
-# \"Base\": \"1000\",
-# \"Infos\": [
-#    {\"type\": \"COUNTER\", \"id\": \"down\", \"label\": \"received\"},
-#    {\"info\": \"Traffic of the eth1 interface. Unable to deiiropriate for the interface.\",\"type\": \"COUNTER\", \"id\": \"up\", \"label\": \"bps\"}],
-#\"Order\": \"down up\"}"
-
-
 #
-# myCollector
+# myStorage
 #
 class myStorage:
     def __init__(self,configFile="/etc/numeter_storage.cfg"):
@@ -635,11 +573,6 @@ class myStorage:
 
                 ## For each TS
                 for TS in sortedTS:
-                    # Add data in buffer
-#                    if hostAllDatas["Datas"].has_key(plugin) \
-#                    and hostAllDatas["Datas"][plugin].has_key(TS) \
-#                    and hostAllDatas["Datas"][plugin][TS].has_key(DSname):
-                    # Note : One DS so one value, if + DS use --template
                     try:
                         rrdOpen.bufferValue(TS,
                             str(hostAllDatas["Datas"][plugin][TS][DSname]))
@@ -1302,15 +1235,5 @@ class myStorage:
         return True
 
 
-
-
-#
-# Main
-#
-#if __name__ == "__main__":
-#    storage = myStorage("/opt/numeter_storage/numeter_storage.cfg")
-#    storage.startStorage()
-#    #####storage = myStorage("/home/gael/Bureau/git/numeter/db/storage/numeter_storage.cfg")
-#    exit(0)
 
 
