@@ -73,7 +73,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'numeter',
 		'password' => 'password',
-		'database' => 'numeter',
+		'database' => 'numeter_db',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);

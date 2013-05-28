@@ -3,7 +3,7 @@
 #
 # $Id: setup.py,v 0.2.3.4 2013-02-27 09:56:56 gaelL Exp $
 #
-# Copyright (C) 2010-2013  Gaël Lambert (gaelL) <gael@gael-lambert.org>
+# Copyright (C) 2010-2013  Gaël Lambert (gaelL) <gael.lambert@enovance.com>
 #
 # This file is part of numeter
 #
@@ -32,9 +32,9 @@ if __name__ == '__main__':
           written in Python and datas are stored in a Redis DB. The webapp is written in PHP.\
           Documentation is available here: https://numeter.readthedocs.org""", 
           author='Gaël Lambert (gaelL)',
-          author_email='gael@gael-lambert.org',
+          author_email='gael.lambert@enovance.com',
           maintainer='Gaël Lambert (gaelL)',
-          maintainer_email='gael@gael-lambert.org',
+          maintainer_email='gael.lambert@enovance.com',
           keywords=['numeter','graphing','poller','collector'],
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',

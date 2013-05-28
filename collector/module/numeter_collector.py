@@ -446,7 +446,6 @@ class myCollector:
 
     def sighandler(self,num, frame):
         "Start threads"
-#        global self._sigint
         self._sigint = True
         self._logger.warning("Thread Get sighandler !")
 
@@ -812,11 +811,4 @@ class myCollector:
             i+=1
 
         return True
-#
-# Main
-#
-#if __name__ == "__main__":
-#    collector = myCollector("/opt/numeter_collector/numeter_collector.cfg")
-#    collector.startCollector()
-##    collector = myCollector("/home/gael/Bureau/git/numeter/db/collector/numeter_collector.cfg")
-#    exit(0)
+

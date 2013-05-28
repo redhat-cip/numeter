@@ -29,7 +29,7 @@ host_list_file = /etc/numeter/poller-list                 ; Emplacement du fichi
 #host_list_mysql_dbName = cacti              ; Nom de la db cacti
 #host_list_mysql_dbUser = root          ; User de la db cacti
 #host_list_mysql_dbPassword = root        ; Password de la db cacti
-#host_list_mysql_host = 10.142.32.156        ; host de la db cacti
+#host_list_mysql_host = 127.0.0.1        ; host de la db cacti
 #host_list_mysql_port = 3306                 ; Port de la db cacti
 #host_list_mysql_query = select hostname from host,host_template where host.host_template_id=host_template.id and host_template.name='redis';
 ## host_list_mysql_query = select hostname,password from host,host_template where host.host_template_id=host_template.id and host_template.name='redis';
