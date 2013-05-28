@@ -1,3 +1,12 @@
+numeter (0.2.3.6) numeter-wheezy; urgency=low
+
+  * Remove pyrrd from config
+  * Change dbfilename to avoid conflict with another redis instance
+  * Group modification css with dygraph
+  * Fixe webapp sql file
+
+ -- Gael Lambert <gael@enovance.com>  Tue, 28 May 2013 14:24:55 +0200
+
 numeter (0.2.3.5) numeter-wheezy; urgency=low
 
   * Cosmetic patch
