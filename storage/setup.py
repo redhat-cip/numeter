@@ -25,7 +25,7 @@ from distutils.core import setup
 if __name__ == '__main__':
 
     setup(name='redmon-storage',
-          version='0.2.3.4',
+          version='0.2.3.5',
           description='Numeter Storage',
           long_description="""Numeter is a new graphing solution (like Cacti for \
           example) made by some guys working at eNovance. Poller and collector are \
