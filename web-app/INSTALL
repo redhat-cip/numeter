@@ -17,6 +17,7 @@ Build your own Debian packages with git-buildpackage or pbuilder for exemple or 
 
 Import the default datas in your database : ::
 
+    mysqladmin create numeter_db
     mysql numeter_db < /usr/share/doc/numeter-web-app/web-app.sql
 
 After that you need to configure **nginx** : ::
@@ -66,6 +67,7 @@ Get Numeter sources : ::
 
 Import the default datas in your database : ::
 
+    mysqladmin create numeter_db
     mysql numeter_db < web-app/docs/web-app.sql
 
 After that you need to configure **nginx** : ::
