@@ -33,9 +33,6 @@ class StorageTestCase(unittest.TestCase):
         os.system("kill $(cat /var/run/redis/redis-unittest.pid)")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
 
-#    def test_getHostsList_mysql(self):
-#        TODO
-
     def test_storage_redisStartConnexion(self):
         # Connect with 0
         self.storage._redis_storage_db = 0
@@ -50,11 +47,6 @@ class StorageTestCase(unittest.TestCase):
         self.assertEquals(result, "bar0")
         result = oneConnect.redis_hget("DB","foo")
         self.assertEquals(result, "bar1")
-
-
-#    def test_storage_getcollectorList_mysql(self):
-#    # TODO 
-
 
     def test_storage_getcollectorList_file(self):
         self.storage._collector_list_type = "file" 
@@ -1130,14 +1122,6 @@ class StorageTestCase(unittest.TestCase):
         self.assertFalse(result)
         result = os.path.isdir(rrdPath+'/bar')
         self.assertFalse(result)
-
-
-#    def jsonToPython(self,data):
-#    def pythonToJson(self,data):
-
-# TODO test
-#    def startThreads(self):
-
 
 
 # Fake log

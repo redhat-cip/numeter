@@ -29,9 +29,6 @@ class CollectorTestCase(unittest.TestCase):
         os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid)")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
 
-#    def test_collector_getHostsList_mysql(self):
-#        TODO
-
     def test_collector_getHostsList_file(self):
         self.collector._host_list_type = "file" 
         self.collector._host_list_file = "/tmp/hostList.unittest"
@@ -396,10 +393,6 @@ class CollectorTestCase(unittest.TestCase):
         self.assertEquals(result, ['df','if'])
 
 
-
-
-# TODO test
-#    def startThreads(self):
 
 
 

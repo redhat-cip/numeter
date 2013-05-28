@@ -55,10 +55,6 @@ import pprint # Debug (dumper)
 
 #Penser de l'autre sens get les datas et créer les rrd puis aprés les infos ?
 
-#TODO check redis messaging
-#redisq resq 
-
-
 
 #"{\"Description\": \"\", \"Client\": \"not assigned\", \"Name\": \"numeter-host-3\", \"Plugin\": \"MyInfo\"}"
 
@@ -737,29 +733,12 @@ class myStorage:
                         + str(e))
                         continue
 
-                #try: TODO clean this part
-                #else :
-                #    pass
-                    #    rrdOpen = RRD(str(rrdPath+"/"+DSname+".rrd"))
-                    #    self._logger.debug("writerrdtool host : " + host
-                    #        + " Update rrd file : "+rrdPath)
-                    #except Exception as e:
-                    #    # Add delete rrd if update error ? (bad format) 
-                    #    self._logger.error("writerrdtool host : " + host +" Open rrd Error "
-                    #    +str(e) )
-                    #    continue
-
                 self._logger.info("writerrdtool host : " + host
                         + " Update rrd file : "+rrdPath+"/"+DSname+".rrd")
 
                 ## For each TS
                 rrdUpdateBuffer = []
                 for TS in sortedTS:
-                    # Add data in buffer
-#                    if hostAllDatas["Datas"].has_key(plugin) \
-#                    and hostAllDatas["Datas"][plugin].has_key(TS) \
-#                    and hostAllDatas["Datas"][plugin][TS].has_key(DSname):
-                        # Note : One DS so one value, if + DS use --template
                     try:
                         rrdUpdateBuffer.append(str(TS) + ':'
                             + str(hostAllDatas["Datas"][plugin][TS][DSname]))

@@ -204,7 +204,7 @@ class myMuninModule(modulesGeneric):
         return ret
 
 
-    def munin_list(self): # TODO si bug timeout : list $node
+    def munin_list(self):
         # Get node name
         node = self.munin_nodes()
         # Start munin connexion

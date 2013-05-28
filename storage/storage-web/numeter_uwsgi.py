@@ -141,7 +141,7 @@ def info():
         return "Error"
 
 
-# Test url http://10.142.32.75:8080/numeter-storage/data?host=127.0.0.1&plugin=cpu&ds=nice&res=Daily
+# Test url http://127.0.0.1:8080/numeter-storage/data?host=127.0.0.1&plugin=cpu&ds=nice&res=Daily
 @app.route(baseURL + '/data', methods=['GET', 'POST'])
 def data():
     if request.method == 'GET':
