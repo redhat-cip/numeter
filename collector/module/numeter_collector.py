@@ -446,7 +446,6 @@ class myCollector:
 
     def sighandler(self,num, frame):
         "Start threads"
-#        global self._sigint
         self._sigint = True
         self._logger.warning("Thread Get sighandler !")
 
