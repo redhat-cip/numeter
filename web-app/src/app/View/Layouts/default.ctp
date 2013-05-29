@@ -37,7 +37,7 @@
 		echo $this->Html->script('bootstrap.min');
 
 
-        if ($graphType) { // 1 highcharts
+        if ($graphType) { 
             echo '<script type="text/javascript" src="/highcharts/js/highstock.js"></script>';
             echo '<script type="text/javascript" src="/highcharts/js/modules/exporting.js"></script>';
             echo '<script type="text/javascript" src="/highcharts/js/themes/gray.js"></script>'; // Comment for default theme

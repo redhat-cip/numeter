@@ -38,7 +38,7 @@
         ?>
 </ul><br>
 <?
-if ($graphType) { //if highcharts
+if ($graphType) { 
     echo "<!-- Graphs config and div -->";
     echo "<script language='javascript' type='text/javascript'>";
     echo "    var config_host    ='$hostID';";
