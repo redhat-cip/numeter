@@ -40,9 +40,8 @@ Cela permet de ne pas perdre de valeurs en cas de coupure réseau entre le polle
 
 .. image:: img/storage.png
 
-**Webapp :** La webapp est en php et fonctionne avec highcharts et dygraphs
+**Webapp :** La webapp est en php et fonctionne avec dygraphs
 
-    * http://www.highcharts.com/
     * http://dygraphs.com/
 
 .. image:: img/webapp.png
