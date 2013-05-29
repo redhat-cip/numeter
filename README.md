@@ -5,7 +5,7 @@ stored in a Redis DB and written to disk in RRD files. The webapp is written in 
 
 
 **Features :**
-* Graphs with dygraphs and highcharts
+* Graphs with dygraphs
 * User and group management
 * Use graph template configuration give by poller
 * Already works with munin-node
