@@ -10,7 +10,7 @@ Installation
 Debian packages
 =================
 
-Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com
+Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com (coming soon)
 ::
 
     apt-get install numeter-web-app

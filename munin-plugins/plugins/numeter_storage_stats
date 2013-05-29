@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #
-# Plugin to monitor time of numeter
+# Plugin to monitor numeter storage
 #
 # E.g.
-#    ln -s /usr/share/munin/plugins/numeter_ /etc/munin/plugins/glance_size_<all|poller|collector|storage>
+#    ln -s /usr/share/munin/plugins/numeter_storage_stats /etc/munin/plugins/numeter_storage_stats
 #
 # Magic markers
-#%# capabilities=autoconf suggest
+#%# capabilities=autoconf
 #%# family=auto
 #
 #  [numeter_*]
@@ -51,21 +51,27 @@ def print_config(check_type):
         elif name == "seconds":
             print '%s.color #7347ba' % name
 
-
-def print_suggest():
-        print "all"
-
 def load_params():
 # Sample log output:
 # ---- End : numeter_storage, 1 collector, 1 Hosts, 31 Plugins, 150 Datas in 0.0824151039124, seconds.
     global  STORAGE_LOG, STORAGE_PATTERN
     global  GREP_PATTERN
-    STORAGE_LOG       = os.getenv('storageLog','/var/log/numeter/numeter-storage.log')
-    STORAGE_PATTERN   = os.getenv('storagePattern','.*---- End : numeter_storage, ([0-9\.]+) collector, ([0-9\.]+) Hosts, ([0-9\.]+) Plugins, ([0-9\.]+) Datas in ([0-9\.]+), seconds')
-    GREP_PATTERN      = os.getenv('grepPattern',' End : numeter_') # For performance 
+    STORAGE_LOG      = os.getenv('storageLog',
+                                 '/var/log/numeter/numeter-storage.log')
+    STORAGE_PATTERN  = os.getenv('storagePattern',
+                                 '.*---- End : numeter_storage, ([0-9\.]+) '
+                                 + 'collector, ([0-9\.]+)'
+                                 + ' Hosts, ([0-9\.]+) '
+                                 + 'Plugins, ([0-9\.]+) '
+                                 + 'Datas in ([0-9\.]+), seconds')
+    GREP_PATTERN     = os.getenv('grepPattern',
+                                 ' End : numeter_') # For performance 
 
 def get_time_in_log(name, logfile, pattern):
-    stdout = subprocess.Popen('grep "'+GREP_PATTERN+'" '+logfile+' | tail -1', shell=True, stdout=subprocess.PIPE)
+    stdout = subprocess.Popen('grep "' + GREP_PATTERN + '" ' + logfile
+                              + ' | tail -1',
+                              shell=True,
+                              stdout=subprocess.PIPE)
     out = stdout.communicate()[0]
     # 0 data / 1 error
     regex = pattern
