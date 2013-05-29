@@ -51,9 +51,9 @@ Example of sql table : ::
     +----+-------------+----------+
     | id | name        | password |
     +----+-------------+----------+
-    |  3 | 10.66.6.216 | password |    <- valid
-    |  4 | 10.66.6.217 |          |    <- not valid
-    |  5 | 10.66.6.215 | NULL     |    <- not valid
+    |  3 | 10.0.0.1    | password |    <- valid
+    |  4 | 10.0.0.2    |          |    <- not valid
+    |  5 | 10.0.0.3    | NULL     |    <- not valid
     +----+-------------+----------+
 
 You can also use a list without any password, in this case don't create a column for password : ::
@@ -61,9 +61,9 @@ You can also use a list without any password, in this case don't create a column
     +----+-------------+
     | id | name        |
     +----+-------------+
-    |  3 | 10.66.6.216 |
-    |  4 | 10.66.6.217 |
-    |  5 | 10.66.6.215 |
+    |  3 | 10.0.0.1    |
+    |  4 | 10.0.0.2    |
+    |  5 | 10.0.0.3    |
     +----+-------------+
 
 If you want to use a single password for every hosts, you can setup directly like in the configuration file: ::

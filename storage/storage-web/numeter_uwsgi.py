@@ -80,7 +80,7 @@ app = Flask(__name__)
 @app.route(baseURL + '/')
 def index(): return 'index pass'
 
-# test url http://10.66.6.213:3031/hosts
+# test url http://127.0.0.1:3031/hosts
 @app.route(baseURL + '/hosts')
 def hosts():
     myConnect = redisStartConnexion()
@@ -92,7 +92,7 @@ def hosts():
         response[addr] = value
     return pythonToJson(response)
 
-# test url http://10.66.6.213:3031/hinfo?host=10.66.6.216
+# test url http://127.0.0.1:3031/hinfo?host=1350646673-fe526c202a1812c0640877cebe801cc3
 @app.route(baseURL + '/hinfo', methods=['GET', 'POST'])
 def hinfo():
     if request.method == 'GET':
@@ -107,7 +107,7 @@ def hinfo():
     else:
         return "Error"
 
-# test url http://10.66.6.213:3031/list?host=10.66.6.216
+# test url http://127.0.0.1:3031/list?host=127.0.0.1
 @app.route(baseURL + '/list', methods=['GET', 'POST'])
 def list():
     if request.method == 'GET':
@@ -141,7 +141,7 @@ def info():
         return "Error"
 
 
-# Test url http://127.0.0.1:8080/numeter-storage/data?host=127.0.0.1&plugin=cpu&ds=nice&res=Daily
+# Test url http://127.0.0.1:8080/numeter-storage/data?host=1350646673-fe526c202a1812c0640877cebe801cc3&plugin=cpu&ds=nice&res=Daily
 @app.route(baseURL + '/data', methods=['GET', 'POST'])
 def data():
     if request.method == 'GET':
@@ -221,132 +221,6 @@ def data():
 
 
 
-
-
-
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=3031,debug=True)
 
-
-##!/usr/bin/env python
-## -*- coding: utf8 -*-
-#
-#import os
-#import json
-#import re
-#import sys
-#import rrdtool
-#import subprocess
-#
-#print sys.argv
-#
-#try:
-#    host = sys.argv[1]
-#    plugin = sys.argv[2]
-#    allDS = sys.argv[3]
-#    resolution = sys.argv[4]
-#    #print "{'host':'"+host+"', 'plugin': '"+plugin+"', 'allDS': '"+allDS+"'}"
-#except:
-#    print "{}"
-#    exit(0)
-#
-##print plugin
-#
-#process = subprocess.Popen("/usr/bin/redis-cli -a password HGET RRD_PATH "+host , shell=True, stdout=subprocess.PIPE)
-#(result, stderr) = process.communicate()
-#
-#rrd_path=[]
-#
-#
-## Pour chaques ds : 
-#path = result.rstrip()
-#for ds in allDS.split(','):
-#    rrd_path.append(path+'/'+plugin+'/'+ds+'.rrd')
-#
-#if resolution == "Daily":
-#    startPoint = '-24h'
-#elif resolution == "Weekly":
-#    startPoint = '-7day'
-#elif resolution == "Monthly":
-#    startPoint = '-31day'
-#elif resolution == "Yearly":
-#    startPoint = '-1y'
-#
-## Get values
-#VALUES={}
-#for rrds in rrd_path:
-#    result_rrd = rrdtool.fetch(rrds, 'AVERAGE', '-s '+startPoint, '-e N')
-#    #result_rrd = rrdtool.fetch(rrds, 'AVERAGE', '-s -1h', '-e N')
-#    #result_rrd = rrdtool.fetch(rrds, 'AVERAGE', '-s -24h', '-e N')
-#    #result_rrd = rrdtool.fetch(rrds, 'AVERAGE', '-s -24h', '-e N', '--resolution', '300')
-#    #result_rrd = rrdtool.fetch(rrds, 'AVERAGE', '-s -6d', '-e N')
-#    #result_rrd = rrdtool.fetch(rrds, 'AVERAGE', '-s -60min', '-e N')
-#    TS_START = result_rrd[0][0]
-#    TS_END = result_rrd[0][1]
-#    TS_STEP = result_rrd[0][2]
-#    DS = result_rrd[1][0]
-#    VALUES[DS] = result_rrd[2]
-#   
-## Format all datas :
-#formatedDatas = {}
-#for (ds, values) in VALUES.items():
-#    tmp_data="["
-#    for value in values:
-#        if value[0] == None:
-#            tmp_data = tmp_data + "null,"
-#        else:
-#            tmp_data = tmp_data + str(value[0]) + ","
-#    tmp_data = tmp_data.rstrip(",")
-#    tmp_data = tmp_data + "]"
-#    formatedDatas[ds] = tmp_data
-#
-#all_datas = ""
-#for ds in VALUES.keys():
-#    all_datas = all_datas + '\n    "'+ds+'" : '+formatedDatas[ds]+','
-#all_datas = all_datas.rstrip(',')
-#
-## Make Json return :
-#print '{'
-#print '    "TS_start" : '+str(TS_START)+','
-#print '    "TS_step" : '+str(TS_STEP)+','
-#print '    "DATAS" : {'
-#print all_datas
-#print '    }'
-#print '}'
-#
-
-#rrd_path = result.rstrip()+"/"+sys.argv[1]+"/_dev_simfs.rrd"
-
-#print TS_START
-#print TS_END
-#print TS_STEP
-#print DS
-#print VALUES
-
-#
-##{
-##    Plugin : "name",
-##    Base : "...",
-##    Title : "...",
-##    Vlabel : "...",
-##    Order : "...",
-##    TS_start : "123456789",
-##    TS_step : "60",
-##    Infos : {
-##        id : { label : "...", Type : "..."},
-##        id : { label : "...", Type : "..."}
-##    },
-##    DATAS : {
-##        id : [1,2,3,4,5,6,7,8,9],
-##        id : [1,2,3,4,5,6,7,8,9]
-##    }
-##}
-#
-#
-#
-#
-#
-##result_rrd = rrdtool.info(rrd_path)
-#
-#

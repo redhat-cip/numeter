@@ -729,7 +729,7 @@ class StorageTestCase(unittest.TestCase):
                     },
                 }
             }
-        host = "10.66.6.206"
+        host = "127.0.0.1"
         os.system("rm -Rf /tmp/numeter_rrds")
         rrdPath = "/tmp/numeter_rrds/ac/123456"
         return sortedTS, hostAllDatas, host, rrdPath
@@ -835,113 +835,6 @@ class StorageTestCase(unittest.TestCase):
 #        self.assertRaises(Exception,rrdtool.info(rrdPath+"/load/load.rrd"))
 
 
-
-# Disable this tests. I think i will remove this function
-#    def test_storage_writePyrrd(self):
-#        # Init
-#        # False if no MyInfo
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        del hostAllDatas['Infos']['MyInfo']
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host)
-#        self.assertFalse(result)
-#        # Empty plugin info -> True but no write
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        del hostAllDatas['Infos']['df_inode']
-#        del hostAllDatas['Infos']['load']
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host)
-#        self.assertTrue(result)
-#        result = os.path.exists("/tmp/numeter_rrds")
-#        self.assertFalse(result)
-#        # Write good datas
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host)
-#        self.assertTrue(result)
-#        result = os.path.isfile(rrdPath+"/load/load.rrd")
-#        self.assertTrue(result)
-#        result = rrdtool.info(rrdPath+"/load/load.rrd")
-#        self.assertEqual(result['last_update'], 1329131160)
-#        self.assertEqual(result['ds[load].last_ds'], "2.00")
-#        self.assertEqual(result['ds[load].type'], "GAUGE")
-#        # Write good datas + DS type DERIVE
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        hostAllDatas['Infos']['load']['Infos']['load']['type'] = 'DERIVE'
-#        result = self.storage.writeRrdtool(sortedTS, hostAllDatas, host)
-#        self.assertTrue(result)
-#        result = rrdtool.info(rrdPath+"/load/load.rrd")
-#        self.assertEqual(result['ds[load].type'], "DERIVE")
-#        # Write good datas + bad DS type
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        hostAllDatas['Infos']['load']['Infos']['load']['type'] = 'bad'
-#        result = self.storage.writeRrdtool(sortedTS, hostAllDatas, host)
-#        self.assertTrue(result)
-#        result = rrdtool.info(rrdPath+"/load/load.rrd")
-#        self.assertEqual(result['ds[load].type'], "GAUGE")
-#        # Try with plugin and no infos
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        del hostAllDatas['Infos']['load']['Infos']
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host)
-#        self.assertTrue(result)
-#        result = os.path.exists(rrdPath+"/load/")
-#        self.assertFalse(result)
-#        # Try with lost datas for load plugin
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        del hostAllDatas['Datas']['load']
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host)
-#        self.assertTrue(result)
-#        result = os.path.isfile(rrdPath+"/load/load.rrd")
-#        self.assertTrue(result)
-#        # Try with lost timestamp for load plugin
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        del hostAllDatas['Datas']['load']['1329131160']
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host)
-#        self.assertTrue(result)
-#        result = os.path.exists(rrdPath+"/load/")
-#        self.assertTrue(result)
-#        result = rrdtool.info(rrdPath+"/load/load.rrd")
-#        self.assertEqual(result['last_update'], 1329131100)
-#        self.assertEqual(result['ds[load].last_ds'], "1.00")
-#        # Try write error
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-#        os.system("touch /tmp/numeter_rrds")
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host)
-#        self.assertTrue(result)
-#        result = os.path.isfile(rrdPath+"/load/load.rrd")
-#        self.assertFalse(result)
-##        # Try unsorted datas   (hide this test : beacause alwayse say rrdtool update /tmp/numeter_rrds/ac/foo/10.66.6.2 ...
-##        (sortedTS, hostAllDatas, host) = self.sorage_write_init()
-##        sortedTS = ['1329131160','1329131100']
-##        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host)
-##        self.assertTrue(result)
-##        result = os.path.isfile(rrdPath+"/load/load.rrd")
-##        self.assertTrue(result)
-##        result = rrdtool.info(rrdPath+"/load/load.rrd")
-##        self.assertEqual(result['last_update'], 1329131160)
-##        self.assertEqual(result['ds[load].last_ds'], "2.00")
-#        # Update an fake rrd
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init() 
-#        os.system("mkdir -p /tmp/numeter_rrds/ac/foo/10.66.6.206/load")
-#        os.system("echo 1 > /tmp/numeter_rrds/ac/foo/10.66.6.206/load/load.rrd")
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host) # Update
-#        self.assertTrue(result)
-#        try:
-#            rrdtool.info(rrdPath+"/load/load.rrd")
-#            self.assertTrue(False)
-#        except:
-#            self.assertTrue(True)
-##        self.assertRaises(Exception,rrdtool.info(rrdPath+"/load/load.rrd"))
-#        #
-#        (sortedTS, hostAllDatas, host) = self.sorage_write_init() 
-#        os.system("mkdir -p /tmp/numeter_rrds/ac/foo/10.66.6.206/load")
-#        os.system("touch /tmp/numeter_rrds/ac/foo/10.66.6.206/load/load.rrd")
-#        result = self.storage.writePyrrd(sortedTS, hostAllDatas, host) # Update
-#        self.assertTrue(result)
-#        try:
-#            rrdtool.info(rrdPath+"/load/load.rrd")
-#            self.assertTrue(False)
-#        except:
-#            self.assertTrue(True)
-##        self.assertRaises(Exception,rrdtool.info(rrdPath+"/load/load.rrd"))
-#
 
 
     def test_storage_workerRedis(self):
@@ -1144,29 +1037,4 @@ class myFakeSema():
         return
     def release(self):
         return
-
-
-## Fake log
-#class myFakeLogger():
-#    def __init__(self):
-#        return
-#    def critical(self,string):
-#        print string
-#        return
-#    def error(self,string):
-#        print string
-#        return
-#    def warning(self,string):
-#        print string
-#        return
-#    def info(self,string):
-#        print string
-#        return
-#    def debug(self,string):
-#        print string
-#        return
-
-
-
-
 
