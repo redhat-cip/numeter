@@ -6,7 +6,7 @@
 #%# capabilities=autoconf
 #%# family=auto
 #
-#  [numeter_*]
+#  [numeter_collector_redis_datas]
 #  env.redisHost
 #  env.redisPort
 #  env.redisTimeout
@@ -69,16 +69,16 @@ def print_values():
         + "Check server access or the password")
         exit(1)
 
-    lastFetch = redis_connexion.redis_get(REDIS_KEY)
+    keys  = redis_connexion.redis_hkeys('HOSTS')
+    if not keys:
+        print 'datas.value U'
+        return
+    num_ts = 0
+    for key in keys:
+         id = redis_connexion.redis_hget('HOSTS',key)
+         num_ts += int(redis_connexion.redis_zcount('DATAS@' + id, '-inf', '+inf'))
 
-    if not lastFetch:
-        print "lastrrdcleanclean.value U"
-        sys.exit(1)
-    t = datetime.datetime.now()
-    t = time.mktime(t.timetuple())
-    lastClean = t - int(lastFetch)
-
-    print 'datas.value %s' % lastClean
+    print 'datas.value %s' % num_ts
 
 
 if __name__ == '__main__':
