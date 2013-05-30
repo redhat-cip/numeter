@@ -58,6 +58,7 @@ def load_params():
     global  GREP_PATTERN
     STORAGE_LOG      = os.getenv('storageLog',
                                  '/var/log/numeter/numeter-storage.log')
+                                 #'/var/log/numeter/numeter-storage.log')
     STORAGE_PATTERN  = os.getenv('storagePattern',
                                  '.*---- End : numeter_storage, ([0-9\.]+) '
                                  + 'collector, ([0-9\.]+)'
@@ -67,45 +68,46 @@ def load_params():
     GREP_PATTERN     = os.getenv('grepPattern',
                                  ' End : numeter_') # For performance 
 
-def get_time_in_log(name, logfile, pattern):
-    stdout = subprocess.Popen('grep "' + GREP_PATTERN + '" ' + logfile
-                              + ' | tail -1',
+def get_file_line():
+    "Return the last matching line in log file"
+    stdout = subprocess.Popen('grep "' + GREP_PATTERN + '" ' + STORAGE_LOG
+                              + ' 2>/dev/null | tail -1',
                               shell=True,
                               stdout=subprocess.PIPE)
-    out = stdout.communicate()[0]
+    return stdout.communicate()[0]
+
+def get_value_in_line(name,line):
     # 0 data / 1 error
-    regex = pattern
-    if re.match(regex, out):
-        result = re.match(regex, out)
-        idx = check_type.index(name)+1
-        if result.group(idx) != None:
+    result = re.match(STORAGE_PATTERN, line)
+    if result is not None:
+        idx = check_type.index(name) + 1
+        if result.group(idx) is not None:
             return str(result.group(idx))
-            #return 'yes'
     else:
         return 'U'
 
-def print_values_storage(name):
-    if not os.path.isfile(STORAGE_LOG):
-        print name+".value U"
-        return
-    print name+'.value ' + get_time_in_log(name, STORAGE_LOG, STORAGE_PATTERN)
+def print_value_storage(name, value):
+    if value is None:
+        value = 'U'
+    print '%s.value %s' % (name, value)
 
 
 if __name__ == '__main__':
     argv = sys.argv[:]
-    check_type = ['collectors','hosts','plugins','datas','seconds']
+    # Disable seconds
+    #check_type = ['collectors','hosts','plugins','datas','seconds']
+    check_type = ['collectors','hosts','plugins','datas']
     if len(argv) > 1:
         if argv[1] == 'config':
             print_config(check_type)
-        elif argv[1] == 'suggest' and ( import_storage ):
-            print_suggest()
         elif argv[1] == 'autoconf':
             if not import_storage:  
-                print 'no (failed import poller or collector or storage module)'
+                print 'no (failed import storage module)'
                 sys.exit(0)
             print 'yes'
-
     elif import_storage:
         load_params()
+        fileline = get_file_line()
         for name in check_type: 
-            print_values_storage(name)
+            value = get_value_in_line(name,fileline)
+            print_value_storage(name,value)
