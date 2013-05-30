@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+#
+# Nagios plugin to monitor numeter
+#
+
+import sys
+import os
+import subprocess
+import re
+import time
+import datetime
+
+try: 
+    from myRedisConnect import *
+except ImportError:
+    print "STATE UNKNOWN: unable to load redis module"
+    sys.exit(3)
+
+REDIS_KEY       = 'LAST_RRD_CLEAN'
+REDIS_HOST      = '127.0.0.1'
+REDIS_PORT      =  6379
+REDIS_TIMEOUT   =  10
+REDIS_DB        =  1
+REDIS_PASSWORD  =  None
+
+critical = 30
+warning = 15
+
+redis_connexion = myRedisConnect(host=REDIS_HOST,
+                  port=REDIS_PORT,
+                  socket_timeout=REDIS_TIMEOUT,
+                  db=REDIS_DB,
+                  password=REDIS_PASSWORD)
+
+if redis_connexion._error:
+    print "STATE UNKNOWN: Unable to connect to redis server"
+    sys.exit(3)
+
+
+keys  = redis_connexion.redis_hkeys('HOSTS')
+
+if not keys:
+    print "STATE UNKNOWN: Unable to fetch keys"
+    sys.exit(3)
+
+for key in keys:
+    id = redis_connexion.redis_hget('HOSTS',key)
+    num_ts = redis_connexion.redis_zcount('TS@' + id, '-inf', '+inf')
+
+    if num_ts >= critical:
+        print "COLLECTOR CRITICAL: %d timestamps in redis" % (num_ts)
+        sys.exit(2)
+    elif num_ts >= warning:
+        print "COLLECTOR WARNING: %d timestamps in redis" % (num_ts)
+        sys.exit(1)
+
+print "COLLECTOR OK: %d timestamps in redis" % (num_ts)
+sys.exit(0)

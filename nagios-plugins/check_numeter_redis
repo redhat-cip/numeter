@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+#
+# Nagios plugin to monitor numeter
+#
+
+import sys
+import os
+import subprocess
+import re
+import time
+import datetime
+
+try: 
+    from myRedisConnect import *
+except ImportError:
+    print "STATE UNKNOWN: unable to load redis module"
+    sys.exit(3)
+
+REDIS_KEY       = 'LAST_RRD_CLEAN'
+REDIS_HOST      = '127.0.0.1'
+REDIS_PORT      =  6379
+REDIS_TIMEOUT   =  10
+REDIS_DB        =  2
+REDIS_PASSWORD  =  None
+
+critical = 72
+warning = 48
+
+redis_connexion = myRedisConnect(host=REDIS_HOST,
+                  port=REDIS_PORT,
+                  socket_timeout=REDIS_TIMEOUT,
+                  db=REDIS_DB,
+                  password=REDIS_PASSWORD)
+
+if redis_connexion._error:
+    print "STATE UNKNOWN: Unable to connect to redis server"
+    sys.exit(3)
+
+
+lastFetch = redis_connexion.redis_get(REDIS_KEY)
+
+if not lastFetch:
+    print "STATE UNKNOWN: Unable to fetch value"
+    sys.exit(3)
+
+t = datetime.datetime.now()
+t = time.mktime(t.timetuple())
+# Time delta in seconds / 3600 = hours
+lastClean = (t - int(lastFetch)) / 3600
+
+if lastClean >= critical:
+    print "LASTRRDCLEAN CRITICAL: %d hours ago" % (lastClean)
+    sys.exit(2)
+elif lastClean >= warning:
+    print "LASTRRDCLEAN WARNING: %d hours ago" % (lastClean)
+    sys.exit(1)
+else:
+    print "LASTRRDCLEAN OK: %d hours ago" % (lastClean)
+    sys.exit(0)
