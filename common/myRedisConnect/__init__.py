@@ -50,6 +50,12 @@ class myRedisConnect:
         except redis.exceptions.ConnectionError, e:
             print "GET - error redis"
 
+    def redis_keys(self,key):
+        try:
+            return self._conn.keys(key)
+        except redis.exceptions.ConnectionError, e:
+            print "KEYS - error redis"
+
     def redis_zadd(self,name,value,score):
 #        print "-ZADD "+name+", "+str(score)
 #        print "-ZADD "+name+", "+str(score)+", "+value
