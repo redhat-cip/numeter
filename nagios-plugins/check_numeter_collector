@@ -16,7 +16,6 @@ except ImportError:
     print "STATE UNKNOWN: unable to load redis module"
     sys.exit(3)
 
-REDIS_KEY       = 'LAST_RRD_CLEAN'
 REDIS_HOST      = '127.0.0.1'
 REDIS_PORT      =  6379
 REDIS_TIMEOUT   =  10
