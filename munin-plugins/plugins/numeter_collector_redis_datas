@@ -78,7 +78,7 @@ def print_values():
     t = time.mktime(t.timetuple())
     lastClean = t - int(lastFetch)
 
-    print 'lastrrdcleanclean.value',lastClean
+    print 'datas.value %s' % lastClean
 
 
 if __name__ == '__main__':
