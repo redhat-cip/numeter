@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #
 # E.g.
-#    ln -s /usr/share/munin/plugins/numeter_redis_ /etc/munin/plugins/numeter_redis_<collector|storage>
+#    ln -s /usr/share/munin/plugins/numeter_storage_old_datas /etc/munin/plugins/numeter_storage_old_datas
 #
 # Magic markers
-#%# capabilities=autoconf suggest
+#%# capabilities=autoconf
 #%# family=auto
 #
 #  [numeter_time_*]
@@ -18,15 +18,7 @@ import sys
 import os
 import subprocess
 import re
-import time
-import datetime
-
-try: 
-    from numeter_collector import myCollector
-except ImportError:
-    import_collector = False
-else:
-    import_collector = True
+import json
 
 try: 
     from numeter_storage import myStorage
@@ -42,16 +34,13 @@ except ImportError:
 else:
     import_redis = True
 
-def print_config(type):
+def print_config():
     print 'graph_title Numeter redis %s' % type
     print 'graph_info This graph shows redis size in MB and number of keys'
     print 'graph_vlabel Size in MB / Num'
     print 'graph_args --base 1000 --lower-limit 0'
     print 'graph_category numeter'
-    if type == 'storage':
-        print_storage_configs()
-    if type == 'collector':
-        print_collector_configs()
+    print_storage_configs()
 
 def load_params():
     global REDIS_HOST
@@ -63,10 +52,10 @@ def load_params():
     REDIS_HOST      = os.getenv('redisHost','127.0.0.1')
     REDIS_PORT      = os.getenv('redisPort', 6379)
     REDIS_TIMEOUT   = os.getenv('redisTimeout',10)
-    REDIS_DB        = os.getenv('redisDb', 1)
+    REDIS_DB        = os.getenv('redisDb', 2)
     REDIS_PASSWORD  = os.getenv('redisPassword', None)
 
-def get_redis_size():
+def get_deleted_hosts():
     redis_connexion = myRedisConnect(host=REDIS_HOST,
                       port=REDIS_PORT,
                       socket_timeout=REDIS_TIMEOUT,
@@ -78,11 +67,11 @@ def get_redis_size():
         + "Check server access or the password")
         exit(1)
     try:
-        return float(redis_connexion.redis_info()['used_memory'])/1024/1024
+        return redis_connexion.redis_hlen('DELETED_HOSTS')
     except:
         return None
 
-def get_redis_keys():
+def get_deleted_plugins():
     redis_connexion = myRedisConnect(host=REDIS_HOST,
                       port=REDIS_PORT,
                       socket_timeout=REDIS_TIMEOUT,
@@ -93,40 +82,51 @@ def get_redis_keys():
         self._logger.critical("Redis server connexion ERROR - "
         + "Check server access or the password")
         exit(1)
-    return redis_connexion.redis_info()['db%s' % REDIS_DB]['keys']
+    try:
+        return redis_connexion.redis_hlen('DELETED_PLUGIN')
+    except:
+        return None
+
+def get_old_rrds():
+    redis_connexion = myRedisConnect(host=REDIS_HOST,
+                      port=REDIS_PORT,
+                      socket_timeout=REDIS_TIMEOUT,
+                      db=REDIS_DB,
+                      password=REDIS_PASSWORD)
+
+    if redis_connexion._error:
+        self._logger.critical("Redis server connexion ERROR - "
+        + "Check server access or the password")
+        exit(1)
+    return len(json.loads(redis_connexion.redis_get('OLD_RRD')))
 
 
 def print_storage_values():
-    # Redis size
-    print_values('redis_size',get_redis_size())
-    # Redis num of keys
-    print_values('redis_num_keys',get_redis_keys())
-
-def print_collector_values():
-    # Redis size
-    print_values('redis_size',get_redis_size())
-    # Redis num of keys
-    print_values('redis_num_keys',get_redis_keys())
+    # Deleted hosts
+    print_values('deleted_hosts',get_deleted_hosts())
+    # Deleted plugins
+    print_values('deleted_plugins',get_deleted_plugins())
+    # OLD_RRDS
+    print_values('old_rrds',get_old_rrds())
 
 def print_storage_configs():
-    # Redis size
-    print '%s.label %s' % ('redis_size','Redis database size')
-    print '%s.draw LINE' % 'redis_size'
-    print '%s.color %s' % ('redis_size','#909122')
-    # Redis num of keys
-    print '%s.label %s' % ('redis_num_keys','Number of redis keys')
-    print '%s.draw LINE' % 'redis_num_keys'
-    print '%s.color %s' % ('redis_num_keys','#0327ca')
+    # Deleted hosts
+    name = 'deleted_hosts'
+    print '%s.label %s' % (name,'Deleted hosts')
+    print '%s.draw LINE' % name
+    print '%s.color %s' % (name,'#909122')
+    # Deleted plugins
+    name = 'deleted_plugins'
+    print '%s.label %s' % (name,'Deleted plugins')
+    print '%s.draw LINE' % name
+    print '%s.color %s' % (name,'#67809e')
+    # OLD_RRDS
+    name = 'old_rrds'
+    print '%s.label %s' % (name,'Old rrds')
+    print '%s.draw LINE' % name
+    print '%s.color %s' % (name,'#53b73a')
 
-def print_collector_configs():
-    # Redis size
-    print '%s.label %s' % ('redis_size','Redis database size')
-    print '%s.draw LINE' % 'redis_size'
-    print '%s.color %s' % ('redis_size','#909122')
-    # Redis num of keys
-    print '%s.label %s' % ('redis_num_keys','Number of redis keys')
-    print '%s.draw LINE' % 'redis_num_keys'
-    print '%s.color %s' % ('redis_num_keys','#0327ca')
+
 
 def print_values(name,value):
     if value is None:
@@ -135,25 +135,16 @@ def print_values(name,value):
 
 if __name__ == '__main__':
     argv = sys.argv[:]
-    check_type = argv[0].split('numeter_redis_').pop()
     if len(argv) > 1:
         if argv[1] == 'config':
-            print_config(type=check_type)
-        elif argv[1] == 'suggest' and ( import_collector or import_storage ):
-            if import_collector:
-                print "collector"
-            if import_storage:
-                print "storage"
+            print_config()
         elif argv[1] == 'autoconf':
-            if not import_redis and (import_collector or import_storage):
+            if not import_redis and import_storage:
                 print 'no (failed import redis and collector or storage module)'
                 sys.exit(0)
             print 'yes'
 
-    elif import_redis and import_collector and check_type == "collector":
-        load_params()
-        print_collector_values()
-    elif import_redis and import_storage and check_type == "storage":
+    elif import_redis and import_storage:
         load_params()
         print_storage_values()
 

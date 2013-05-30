@@ -3,7 +3,7 @@
 # Plugin to monitor time of numeter
 #
 # E.g.
-#    ln -s /usr/share/munin/plugins/numeter_time_ /etc/munin/plugins/glance_size_<all|poller|collector|storage>
+#    ln -s /usr/share/munin/plugins/numeter_time_ /etc/munin/plugins/numeter_time_<all|poller|collector|storage>
 #
 # Magic markers
 #%# capabilities=autoconf suggest
