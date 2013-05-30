@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 #
-# Plugin to monitor numeter storage
+# Plugin to monitor numeter poller
 #
 # E.g.
-#    ln -s /usr/share/munin/plugins/numeter_storage_stats /etc/munin/plugins/numeter_storage_stats
+#    ln -s /usr/share/munin/plugins/numeter_poller_stats /etc/munin/plugins/numeter_poller_stats
 #
 # Magic markers
 #%# capabilities=autoconf
 #%# family=auto
 #
 #  [numeter_*]
-#  env.storageLog
-#  env.storagePattern
+#  env.pollerLog
+#  env.pollerPattern
 #  env.grepPattern
 
 import sys
@@ -20,15 +20,15 @@ import subprocess
 import re
 
 try: 
-    from numeter_storage import myStorage
+    from numeter_poller import myPoller
 except ImportError:
-    import_storage = False
+    import_poller = False
 else:
-    import_storage = True
+    import_poller = True
 
 def print_config(check_type):
-    print 'graph_title Numeter storage stats'
-    print 'graph_info This graph shows storage stats'
+    print 'graph_title Numeter poller stats'
+    print 'graph_info This graph shows poller stats'
     print 'graph_vlabel value'
     print 'graph_args --base 1000 --lower-limit 0'
     print 'graph_category numeter'
@@ -36,7 +36,7 @@ def print_config(check_type):
         print '%s.label %s' % (name, name)
         print '%s.draw LINE' % name
         print '%s.info %s value' % (name, name)
-        if name == "collectors":
+        if name == "pollers":
             print '%s.color #909122' % name
         elif name == "hosts":
             print '%s.color #67809e' % name
@@ -49,24 +49,21 @@ def print_config(check_type):
 
 def load_params():
 # Sample log output:
-# ---- End : numeter_storage, 1 collector, 1 Hosts, 31 Plugins, 150 Datas in 0.0824151039124, seconds.
-    global  STORAGE_LOG, STORAGE_PATTERN
+# ---- End : numeter_poller, 1 poller, 1 Hosts, 31 Plugins, 150 Datas in 0.0824151039124, seconds.
+    global  POLLER_LOG, POLLER_PATTERN
     global  GREP_PATTERN
-    STORAGE_LOG      = os.getenv('storageLog',
-                                 '/var/log/numeter/numeter-storage.log')
-    STORAGE_PATTERN  = os.getenv('storagePattern',
-                                 '.*---- End : numeter_storage, '
-                                 + '([0-9\.]+) collector, '
-                                 + '([0-9\.]+) Hosts, '
-                                 + '([0-9\.]+) Plugins, '
-                                 + '([0-9\.]+) Datas in '
+    POLLER_LOG      = os.getenv('pollerLog',
+                                 '/var/log/numeter/numeter-poller.log')
+    POLLER_PATTERN  = os.getenv('pollerPattern',
+                                 '.*---- End : numeter_poller, '
+                                 + '([0-9\.]+) Plugins in '
                                  + '([0-9\.]+), seconds')
     GREP_PATTERN     = os.getenv('grepPattern',
                                  ' End : numeter_') # For performance 
 
 def get_file_line():
     "Return the last matching line in log file"
-    stdout = subprocess.Popen('grep "' + GREP_PATTERN + '" ' + STORAGE_LOG
+    stdout = subprocess.Popen('grep "' + GREP_PATTERN + '" ' + POLLER_LOG
                               + ' 2>/dev/null | tail -1',
                               shell=True,
                               stdout=subprocess.PIPE)
@@ -74,7 +71,7 @@ def get_file_line():
 
 def get_value_in_line(name,line):
     # 0 data / 1 error
-    result = re.match(STORAGE_PATTERN, line)
+    result = re.match(POLLER_PATTERN, line)
     if result is not None:
         idx = check_type.index(name) + 1
         if result.group(idx) is not None:
@@ -82,7 +79,7 @@ def get_value_in_line(name,line):
     else:
         return None
 
-def print_value_storage(name, value):
+def print_value_poller(name, value):
     if value is None:
         value = 'U'
     print '%s.value %s' % (name, value)
@@ -91,19 +88,18 @@ def print_value_storage(name, value):
 if __name__ == '__main__':
     argv = sys.argv[:]
     # Disable seconds
-    #check_type = ['collectors','hosts','plugins','datas','seconds']
-    check_type = ['collectors','hosts','plugins','datas']
+    check_type = ['plugins','seconds']
     if len(argv) > 1:
         if argv[1] == 'config':
             print_config(check_type)
         elif argv[1] == 'autoconf':
-            if not import_storage:  
-                print 'no (failed import storage module)'
+            if not import_poller:  
+                print 'no (failed import poller module)'
                 sys.exit(0)
             print 'yes'
-    elif import_storage:
+    elif import_poller:
         load_params()
         fileline = get_file_line()
         for name in check_type: 
             value = get_value_in_line(name,fileline)
-            print_value_storage(name,value)
+            print_value_poller(name,value)

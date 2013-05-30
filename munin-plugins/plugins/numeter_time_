@@ -3,13 +3,13 @@
 # Plugin to monitor time of numeter
 #
 # E.g.
-#    ln -s /usr/share/munin/plugins/numeter_ /etc/munin/plugins/glance_size_<all|poller|collector|storage>
+#    ln -s /usr/share/munin/plugins/numeter_time_ /etc/munin/plugins/numeter_time_<all|poller|collector|storage>
 #
 # Magic markers
 #%# capabilities=autoconf suggest
 #%# family=auto
 #
-#  [numeter_*]
+#  [numeter_time_*]
 #  env.pollerLog
 #  env.collectorLog
 #  env.storageLog
@@ -121,7 +121,7 @@ def print_values_storage():
 if __name__ == '__main__':
     argv = sys.argv[:]
     #check_type = argv[0].split('numeter_').pop() or 'Global'
-    check_type = argv[0].split('numeter_').pop()
+    check_type = argv[0].split('numeter_time_').pop()
     if len(argv) > 1:
         if argv[1] == 'config':
             print_config(check_type)

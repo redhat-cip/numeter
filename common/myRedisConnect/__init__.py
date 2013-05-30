@@ -35,6 +35,17 @@ class myRedisConnect:
             print "Redis connexion - ping() ResponseError Try to check the password"
             self._error = True
 
+    def redis_zcount(self,name,valmin,valmax):
+        try:
+            return self._conn.zcount(name,valmin,valmax)
+        except redis.exceptions.ConnectionError, e:
+            print "ZCOUNT - error redis"
+
+    def redis_hlen(self,name):
+        try:
+            return self._conn.hlen(name)
+        except redis.exceptions.ConnectionError, e:
+            print "HLEN - error redis"
 
     def redis_set(self,key,value):
 #        print "-SET "+key+", "+value
@@ -49,6 +60,18 @@ class myRedisConnect:
             return self._conn.get(key)
         except redis.exceptions.ConnectionError, e:
             print "GET - error redis"
+
+    def redis_keys(self,key):
+        try:
+            return self._conn.keys(key)
+        except redis.exceptions.ConnectionError, e:
+            print "KEYS - error redis"
+
+    def redis_info(self):
+        try:
+            return self._conn.info()
+        except redis.exceptions.ConnectionError, e:
+            print "INFO - error redis"
 
     def redis_zadd(self,name,value,score):
 #        print "-ZADD "+name+", "+str(score)

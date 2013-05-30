@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+#
+# Plugin to monitor time of numeter
+#
+# Magic markers
+#%# capabilities=autoconf
+#%# family=auto
+#
+#  [numeter_collector_redis_datas]
+#  env.redisHost
+#  env.redisPort
+#  env.redisTimeout
+#  env.redisDb
+#  env.redisPassword
+
+import sys
+import os
+import subprocess
+import re
+
+try: 
+    from numeter_collector import myCollector
+except ImportError:
+    import_collector = False
+else:
+    import_collector = True
+
+try: 
+    from myRedisConnect import *
+except ImportError:
+    import_redis = False
+else:
+    import_redis = True
+
+def print_config():
+    print 'graph_title Numeter collector hosts datas in redis'
+    print 'graph_info This graph show the number of datas in collector for all hosts'
+    print 'graph_vlabel Number'
+    print 'graph_args --base 1000 --lower-limit 0'
+    print 'graph_category numeter'
+    # Data
+    print 'datas.label Datas in redis'
+    print 'datas.draw AREA'
+    print 'datas.color #909122'
+
+def load_params():
+    global REDIS_HOST
+    global REDIS_PORT
+    global REDIS_TIMEOUT
+    global REDIS_DB
+    global REDIS_PASSWORD
+
+    REDIS_HOST      = os.getenv('redisHost','127.0.0.1')
+    REDIS_PORT      = os.getenv('redisPort', 6379)
+    REDIS_TIMEOUT   = os.getenv('redisTimeout',10)
+    REDIS_DB        = os.getenv('redisDb', 1)
+    REDIS_PASSWORD  = os.getenv('redisPassword', None)
+
+
+def print_values():
+    redis_connexion = myRedisConnect(host=REDIS_HOST,
+                      port=REDIS_PORT,
+                      socket_timeout=REDIS_TIMEOUT,
+                      db=REDIS_DB,
+                      password=REDIS_PASSWORD)
+
+    if redis_connexion._error:
+        self._logger.critical("Redis server connexion ERROR - "
+        + "Check server access or the password")
+        exit(1)
+
+    keys  = redis_connexion.redis_hkeys('HOSTS')
+    if not keys:
+        print 'datas.value U'
+        return
+    num_ts = 0
+    for key in keys:
+         id = redis_connexion.redis_hget('HOSTS',key)
+         num_ts += int(redis_connexion.redis_zcount('DATAS@' + id, '-inf', '+inf'))
+
+    print 'datas.value %s' % num_ts
+
+
+if __name__ == '__main__':
+    argv = sys.argv[:]
+    if len(argv) > 1:
+        if argv[1] == 'config':
+            print_config()
+        elif argv[1] == 'autoconf':
+            if not import_redis or import_collector:
+                print 'no (failed import redis or collector module)'
+                sys.exit(0)
+            print 'yes'
+
+    elif import_redis and import_collector:
+        load_params()
+        print_values()
