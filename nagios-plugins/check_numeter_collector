@@ -5,12 +5,21 @@
 
 import sys
 import os
+import argparse
 
-try: 
+try:
     from myRedisConnect import *
 except ImportError:
     print "STATE UNKNOWN: unable to load redis module"
     sys.exit(3)
+
+# Get args
+parser = argparse.ArgumentParser()
+parser.add_argument("-c","--critical", 
+            help="Sets a critical level for connect try. Default 30", type=int)
+parser.add_argument("-w","--warning", 
+            help="Sets a warning level for connect try. Default 15", type=int)
+args = parser.parse_args()
 
 REDIS_HOST      = '127.0.0.1'
 REDIS_PORT      =  6379
@@ -18,8 +27,9 @@ REDIS_TIMEOUT   =  10
 REDIS_DB        =  1
 REDIS_PASSWORD  =  None
 
-critical = 30
-warning = 15
+# Set warning and critical
+critical = args.critical or 30
+warning = args.warning or 15
 
 redis_connexion = myRedisConnect(host=REDIS_HOST,
                   port=REDIS_PORT,
