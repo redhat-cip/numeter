@@ -45,7 +45,7 @@ else:
     import_storage = True
 
 def print_config(check_type):
-    print 'graph_title Numeter %s stats' % check_type
+    print 'graph_title Numeter %s execution time' % check_type
     print 'graph_info This graph shows %s execution time' % check_type
     print 'graph_vlabel Secondes'
     print 'graph_args --base 1000 --lower-limit 0'
