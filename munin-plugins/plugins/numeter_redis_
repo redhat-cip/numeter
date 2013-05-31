@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 #
+# This plugin monitor redis size and number of keys
+#
 # E.g.
 #    ln -s /usr/share/munin/plugins/numeter_redis_ /etc/munin/plugins/numeter_redis_<collector|storage>
 #
@@ -7,7 +9,7 @@
 #%# capabilities=autoconf suggest
 #%# family=auto
 #
-#  [numeter_time_*]
+#  [numeter_redis_*]
 #  env.redisHost
 #  env.redisPort
 #  env.redisTimeout
@@ -16,10 +18,6 @@
 
 import sys
 import os
-import subprocess
-import re
-import time
-import datetime
 
 try: 
     from numeter_collector import myCollector
