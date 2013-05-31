@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+#
+# Nagios plugin to monitor numeter
+#
+
+import sys
+import os
+import subprocess
+import time
+import datetime
+import json
+import argparse
+
+try: 
+    from myRedisConnect import *
+except ImportError:
+    print "STATE UNKNOWN: unable to load redis module"
+    sys.exit(3)
+
+# Get args
+parser = argparse.ArgumentParser()
+parser.add_argument("-w","--warning", 
+            help="Warning delay since last collector polling. Default 600s", type=int)
+parser.add_argument("-c","--critical", 
+            help="Critical delay since last collector polling. Default 1200s", type=int)
+args = parser.parse_args()
+
+REDIS_HOST      = '127.0.0.1'
+REDIS_PORT      =  5959 
+REDIS_TIMEOUT   =  10
+REDIS_DB        =  0
+REDIS_PASSWORD  =  None
+
+# Set values
+warn_delay = args.warning or 600
+crit_delay = args.critical or 1200
+
+def get_delay():
+    redis_connexion = myRedisConnect(host=REDIS_HOST,
+                  port=REDIS_PORT,
+                  socket_timeout=REDIS_TIMEOUT,
+                  db=REDIS_DB,
+                  password=REDIS_PASSWORD)
+
+    if redis_connexion._error:
+        connection_error()
+
+    server_list = redis_connexion.redis_hkeys('SERVER')
+
+    for server in server_list:
+        last_visit = redis_connexion.redis_hget('SERVER',server)
+
+        t = datetime.datetime.now()
+        t = time.mktime(t.timetuple())
+        delay = (t - int(last_visit))
+
+        if delay > crit_delay:
+            print "CRITICAL: server %s collected data %ds ago " % (server,delay)
+            sys.exit(2)
+        elif delay > warn_delay:
+            print "WARNING: server %s collected data %ds ago " % (server,delay)
+            sys.exit(1)
+
+
+def connection_error():
+    print "STATE UNKNOWN: Unable to connect to redis server"
+    sys.exit(3)
+
+
+# main program
+get_delay()
+
+print "OK"
+
