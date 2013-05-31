@@ -1,0 +1,142 @@
+#!/usr/bin/env python
+#
+# Nagios plugin to monitor numeter
+#
+
+import sys
+import os
+import subprocess
+import time
+import datetime
+import json
+import argparse
+
+try: 
+    from myRedisConnect import *
+except ImportError:
+    print "STATE UNKNOWN: unable to load redis module"
+    sys.exit(3)
+
+# Get args
+parser = argparse.ArgumentParser()
+parser.add_argument("-p","--plugins", 
+            help="Max deleted plugins. Default 1", type=int)
+parser.add_argument("-H","--hosts", 
+            help="Max deleted hosts. Default 1", type=int)
+parser.add_argument("-c","--clean",
+            help="Max days since last RRD clean. Default 2", type=int)
+parser.add_argument("-o","--oldrrd",
+            help="Max old RRDs. Default 1", type=int)
+args = parser.parse_args()
+
+REDIS_HOST      = '127.0.0.1'
+REDIS_PORT      =  6379
+REDIS_TIMEOUT   =  10
+REDIS_DB        =  2
+REDIS_PASSWORD  =  None
+
+# Set critical values
+max_deleted_plugins = args.plugins or 1
+max_deleted_hosts = args.hosts or 1
+max_rrd_clean = args.clean or 2
+max_old_rrds = args.oldrrd or 1
+
+
+def get_deleted_plugins():
+    redis_connexion = myRedisConnect(host=REDIS_HOST,
+                      port=REDIS_PORT,
+                      socket_timeout=REDIS_TIMEOUT,
+                      db=REDIS_DB,
+                      password=REDIS_PASSWORD)
+
+    if redis_connexion._error:
+	    connection_error()
+
+    try:
+        deleted_plugins = redis_connexion.redis_hlen('DELETED_PLUGIN')
+    except:
+	    query_error()
+
+    if deleted_plugins > max_deleted_plugins:
+        print "CRITICAL: %d deleted plugins (%d allowed)" % (deleted_plugins, max_deleted_plugins)
+        sys.exit(2)
+
+
+def get_last_rrd_clean():
+	redis_connexion = myRedisConnect(host=REDIS_HOST,
+       	          port=REDIS_PORT,
+                  socket_timeout=REDIS_TIMEOUT,
+                  db=REDIS_DB,
+                  password=REDIS_PASSWORD)
+
+	if redis_connexion._error:
+		connection_error()
+
+	try:
+		lastFetch = redis_connexion.redis_get('LAST_RRD_CLEAN')
+	except: 
+		query_error()
+
+	t = datetime.datetime.now()
+	t = time.mktime(t.timetuple())
+	# Time delta in seconds / 3600 = hours
+	lastClean = (t - int(lastFetch)) / 3600
+
+	if lastClean > max_rrd_clean * 24:
+	    print "CRITICAL: rrd clean %d hours ago" % (lastClean)
+	    sys.exit(2)
+
+
+def get_deleted_hosts():
+    redis_connexion = myRedisConnect(host=REDIS_HOST,
+                      port=REDIS_PORT,
+                      socket_timeout=REDIS_TIMEOUT,
+                      db=REDIS_DB,
+                      password=REDIS_PASSWORD)
+
+    if redis_connexion._error:
+	    connection_error()
+    try:
+        deleted_hosts = redis_connexion.redis_hlen('DELETED_HOSTS')
+    except:
+	    query_error()
+
+    if deleted_hosts > max_deleted_hosts:
+        print "CRITICAL: %d deleted hosts (%d allowed)" % (deleted_hosts, max_deleted_hosts)
+        sys.exit(2)
+
+def get_old_rrds():
+    redis_connexion = myRedisConnect(host=REDIS_HOST,
+                      port=REDIS_PORT,
+                      socket_timeout=REDIS_TIMEOUT,
+                      db=REDIS_DB,
+                      password=REDIS_PASSWORD)
+
+    if redis_connexion._error:
+	    connection_error()
+
+    try:
+    	old_rrds =  len(json.loads(redis_connexion.redis_get('OLD_RRD')))
+    except:
+	    query_error()
+
+    if old_rrds > max_old_rrds:
+        print "CRITICAL: %d old_rrds (%d allowed)" % (old_rrds, max_old_rrds)
+        sys.exit(2) 
+
+def connection_error():
+    print "STATE UNKNOWN: Unable to connect to redis server"
+    sys.exit(3)
+
+def query_error():
+    print "STATE UNKNOWN: Unable to fetch value"
+
+
+# main program
+get_deleted_plugins()
+get_deleted_hosts()
+get_last_rrd_clean()
+get_old_rrds()
+
+print "OK"
+
