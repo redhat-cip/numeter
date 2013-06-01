@@ -10,7 +10,6 @@ set -e
 
 case "$1" in
     configure)
-    # create symbolic link for nginx
     if [ -e /etc/numeter/numeter_poller.cfg ]; then
         genID=$(date +%s)-$(echo $(date +%s)-$(hostname) | md5sum | cut -d" " -f1)
         sed -i "s/@HOST_ID@/$genID/g" /etc/numeter/numeter_poller.cfg
