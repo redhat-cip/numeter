@@ -20,6 +20,11 @@ case "$1" in
   start)
     echo "Starting server"
     numeter-pollerd start
+    sleep 0.2
+    ps -p $(cat /var/run/numeter_poller.pid 2> /dev/null) > /dev/null 2>&1
+    if [ $? -eq 1 ]; then
+        echo "Numeter don't start. Check the logs"
+    fi
     ;;
   stop)
     echo "Stopping server"

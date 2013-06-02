@@ -19,7 +19,7 @@ class App():
         #self.stderr_path = '/dev/tty'
         self.stderr_path = '/dev/null'
         self.pidfile_path =  '/var/run/numeter_poller.pid'
-        self.pidfile_timeout = 5
+        self.pidfile_timeout = 0.1
         self._poller_time = 60
         # Read poller conf time
         self.poller_configFile = "/etc/numeter/numeter_poller.cfg"
