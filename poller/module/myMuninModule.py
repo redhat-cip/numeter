@@ -142,21 +142,18 @@ class myMuninModule(modulesGeneric):
                 infos["Infos"][key] = value
             else: continue
 
+	# If the munin plugin doesn't provide a graph order we define one
         if infos['Order'] == '':
             tmplist=[]
             for key, value in pluginInfo.iteritems():
                 if type(value) == type(dict()): 
                     if 'draw' in value:
                         if value['draw'] != 'STACK':
-                            msg = "draw != STACK, for value:", value, "key:", key
-                            self._logger.warning(msg)    
                             tmplist.append(key)
             for key, value in pluginInfo.iteritems():
                 if type(value) == type(dict()): 
                     if 'draw' in value:
                         if value['draw'] == 'STACK':
-                            msg = "draw = STACK, for value:", value, "key:", key
-                            self._logger.warning(msg)  
                             tmplist.append(key)
             infos['Order'] = ' '.join(tmplist)
 
