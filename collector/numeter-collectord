@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+
+# Need apt-get install python-daemon
+
+import sys
+import time
+from daemon import runner
+from lockfile import LockTimeout
+import logging
+import time
+
+from numeter_collector import myCollector
+import ConfigParser
+
+class App():
+    def __init__(self):
+        self.stdin_path = '/dev/null'
+        self.stdout_path = '/dev/tty'
+        #self.stderr_path = '/dev/tty'
+        self.stderr_path = '/dev/null'
+        self.pidfile_path =  '/var/run/numeter_collector.pid'
+        self.pidfile_timeout = 0.1
+        self._collector_time = 60
+        # Read collector conf time
+        self.collector_configFile = "/etc/numeter/numeter_collector.cfg"
+        self._readConf()
+
+    def _readConf(self):
+        "Read configuration file"
+        configParse = ConfigParser.RawConfigParser()
+
+        if configParse.read(self.collector_configFile) == []:
+            print ("CRIT - Read Config file "
+                   + self.collector_configFile
+                   + " - ERROR (empty or doesn't exist)")
+            exit(1)
+        # Get collector time
+        if configParse.has_option('global', 'collector_time') \
+        and configParse.getint('global', 'collector_time'):
+            self._collector_time = configParse.getint('global', 'collector_time')
+
+    def run(self):
+        collector = myCollector(self.collector_configFile)
+        lastCheckTime = None
+        while True:
+            nowTimestamp = "%.0f" % time.time()
+            # +5 give you an accuracy of 5 sec more or less between fetch
+            if lastCheckTime is None \
+            or (int(lastCheckTime)+self._collector_time) <= (int(nowTimestamp)+5):
+                collector.startCollector()
+                lastCheckTime = nowTimestamp
+            time.sleep(1)
+
+app = App()
+daemon_runner = runner.DaemonRunner(app)
+
+try:
+    daemon_runner.do_action()
+except (runner.DaemonRunnerStopFailureError, TypeError):
+    print 'PID not found, Already stop.'
+except LockTimeout:
+    print 'Lock file found, Already start.'
+except Exception as e:
+    print "Error : %s %s" % (e, str(sys.exc_info()))
+
