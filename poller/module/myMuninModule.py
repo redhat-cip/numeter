@@ -142,6 +142,24 @@ class myMuninModule(modulesGeneric):
                 infos["Infos"][key] = value
             else: continue
 
+        if infos['Order'] == '':
+            tmplist=[]
+            for key, value in pluginInfo.iteritems():
+                if type(value) == type(dict()): 
+                    if 'draw' in value:
+                        if value['draw'] != 'STACK':
+                            msg = "draw != STACK, for value:", value, "key:", key
+                            self._logger.warning(msg)    
+                            tmplist.append(key)
+            for key, value in pluginInfo.iteritems():
+                if type(value) == type(dict()): 
+                    if 'draw' in value:
+                        if value['draw'] == 'STACK':
+                            msg = "draw = STACK, for value:", value, "key:", key
+                            self._logger.warning(msg)  
+                            tmplist.append(key)
+            infos['Order'] = ' '.join(tmplist)
+
         # Get DS with no infos
         fetchResult = self.formatFetchData(plugin)
         if fetchResult != None:
