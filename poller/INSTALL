@@ -19,8 +19,18 @@ Manual
   * numeter-common (redis module)
   * python-redis >= 2.4.9
   * redis >= 2:2.4.14
+  * python-daemon
 
-Python-redis api
+Python-daemon
+-----------------
+
+Quick exemple of python-daemon installation
+
+**From packages :** ::
+
+  apt-get install python-daemon
+
+Python-redis
 -----------------
 
 Quick exemple of python-redis installation
@@ -79,10 +89,14 @@ Also add a uniq id in host_id : ::
 
     host_id = 123456789
 
-Start numeter-poller : ::
+Start redis numeter-poller : ::
 
-    /etc/init.d/numeter-poller start
+    /etc/init.d/numeter-redis-poller start
 
-Try to launch numeter-poller : ::
+Try to launch numeter-poller one time : ::
 
     numeter-poller
+
+Start numeter-poller daemon : ::
+
+    /etc/init.d/numeter-poller start
