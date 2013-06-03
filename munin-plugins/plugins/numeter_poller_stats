@@ -9,7 +9,7 @@
 #%# capabilities=autoconf
 #%# family=auto
 #
-#  [numeter_*]
+#  [numeter_poller_stats]
 #  env.pollerLog
 #  env.pollerPattern
 #  env.grepPattern

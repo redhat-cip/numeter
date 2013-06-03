@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+
+# Need apt-get install python-daemon
+
+import sys
+import time
+from daemon import runner
+from lockfile import LockTimeout
+import logging
+import time
+
+from numeter_poller import myPoller
+import ConfigParser
+
+class App():
+    def __init__(self):
+        self.stdin_path = '/dev/null'
+        self.stdout_path = '/dev/tty'
+        #self.stderr_path = '/dev/tty'
+        self.stderr_path = '/dev/null'
+        self.pidfile_path =  '/var/run/numeter_poller.pid'
+        self.pidfile_timeout = 0.1
+        self._poller_time = 60
+        # Read poller conf time
+        self.poller_configFile = "/etc/numeter/numeter_poller.cfg"
+        self._readConf()
+
+    def _readConf(self):
+        "Read configuration file"
+        configParse = ConfigParser.RawConfigParser()
+
+        if configParse.read(self.poller_configFile) == []:
+            print ("CRIT - Read Config file "
+                   + self.poller_configFile
+                   + " - ERROR (empty or doesn't exist)")
+            exit(1)
+        # Get poller time
+        if configParse.has_option('global', 'poller_time') \
+        and configParse.getint('global', 'poller_time'):
+            self._poller_time = configParse.getint('global', 'poller_time')
+
+    def run(self):
+        poller = myPoller(self.poller_configFile)
+        poller.disable_pollerTimeToGo = True
+        lastCheckTime = None
+        while True:
+            nowTimestamp = "%.0f" % time.time()
+            # +5 give you an accuracy of 5 sec more or less between fetch
+            if lastCheckTime is None \
+            or (int(lastCheckTime)+self._poller_time) <= (int(nowTimestamp)+5):
+                poller.startPoller()
+                lastCheckTime = nowTimestamp
+            time.sleep(1)
+
+app = App()
+daemon_runner = runner.DaemonRunner(app)
+
+try:
+    daemon_runner.do_action()
+except (runner.DaemonRunnerStopFailureError, TypeError):
+    print 'PID not found, Already stop.'
+except LockTimeout:
+    print 'Lock file found, Already start.'
+except Exception as e:
+    print "Error : %s %s" % (e, str(sys.exc_info()))
+

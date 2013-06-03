@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #
-# Plugin to monitor time of numeter
+# Plugin to monitor the time since the last rrd clean for the numeter storage
 #
 # Magic markers
 #%# capabilities=autoconf
 #%# family=auto
 #
-#  [numeter_*]
+#  [numeter_storage_last_rrd_clean]
 #  env.redisKey
 #  env.redisHost
 #  env.redisPort
@@ -16,8 +16,6 @@
 
 import sys
 import os
-import subprocess
-import re
 import time
 import datetime
 

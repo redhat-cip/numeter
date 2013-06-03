@@ -1,0 +1,40 @@
+*************
+Installation
+*************
+
+Debian packages
+======================
+
+Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com (coming soon)
+::
+
+    apt-get install numeter-common
+
+Manual
+========
+
+**Depends:**
+  * python-redis >= 2.4.9
+
+Python-redis api
+-----------------
+
+Quick exemple of python-redis installation
+
+**From packages :** ::
+
+  apt-get install -t squeeze-backports python-redis
+
+**From sources :** ::
+
+  git clone https://github.com/andymccurdy/redis-py
+  cd redis-py
+  python setup.py install
+
+
+Numeter common
+---------------
+
+**Numeter common :** ::
+
+    python common/setup.py install

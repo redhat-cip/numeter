@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Plugin to monitor time of numeter
+# Plugin to monitor redis data in numeter collector
 #
 # Magic markers
 #%# capabilities=autoconf
@@ -15,8 +15,6 @@
 
 import sys
 import os
-import subprocess
-import re
 
 try: 
     from numeter_collector import myCollector

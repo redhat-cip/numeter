@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     setup(name='numeter-poller',
           cmdclass={"install_data": my_install},
-          version='0.2.3.6',
+          version='0.2.3.7',
           description='Numeter Poller',
           long_description="""Numeter is a new graphing solution (like Cacti for \
           example) made by some guys working at eNovance. Poller and collector are \
@@ -49,14 +49,16 @@ if __name__ == '__main__':
           keywords=['numeter','graphing','poller','collector'],
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
-          scripts = ['poller/numeter-poller'],
+          scripts = ['poller/numeter-poller', 'poller/numeter-pollerd'],
           packages = [''],
           package_dir = {'':'poller/module'},
           #package_data={'': ['collector/numeter_collector.py']},
           data_files = [('/etc/numeter', ['poller/numeter_poller.cfg', 'poller/redis-poller.conf']), 
                         ('/var/log/numeter', ''),
                         ('/etc/init.d', ['poller/numeter-poller.init']),
-                        ('/etc/cron.d', ['poller/numeter-poller-cron']) ],
+                        ('/etc/init.d', ['poller/numeter-redis-poller.init']),
+                        #('/etc/cron.d', ['poller/numeter-poller-cron'])
+                        ],
           classifiers=[
               'Development Status :: 4 - Beta',
               'Environment :: Console',
