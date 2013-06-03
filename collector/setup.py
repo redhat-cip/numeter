@@ -21,10 +21,21 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from distutils.core import setup
+from distutils.command.install_data import install_data
+import shutil
+
+class my_install(install_data):
+    def run(self):
+        install_data.run(self)
+        for script in self.get_outputs():
+            # Rename name.init in name
+            if script.endswith(".init"):
+                shutil.move(script, script[:-5])
 
 if __name__ == '__main__':
 
     setup(name='redmon-collector',
+          cmdclass={"install_data": my_install},
           version='0.2.3.7',
           description='Numeter Collector',
           long_description="""Numeter is a new graphing solution (like Cacti for \
@@ -38,7 +49,7 @@ if __name__ == '__main__':
           keywords=['numeter','graphing','poller','collector'],
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
-          scripts = ['collector/numeter-collector'],
+          scripts = ['collector/numeter-collector', 'collector/numeter-collectord'],
           packages = [''],
           package_dir = {'':'collector/module'},
           #package_data={'': ['collector/numeter_collector.py']},
@@ -47,7 +58,9 @@ if __name__ == '__main__':
           #              ('share/man/man1/', ['man/numeter.1']) ],
           data_files = [('/etc/numeter', ['collector/numeter_collector.cfg','collector/poller-list']),
                         ('/var/log/numeter', ''),
-                        ('/etc/cron.d', ['collector/numeter-collector-cron']) ],
+                        ('/etc/init.d', ['collector/numeter-collector.init']),
+                        #('/etc/cron.d', ['collector/numeter-collector-cron'])
+                        ],
           classifiers=[
               'Development Status :: 4 - Beta',
               'Environment :: Console',
