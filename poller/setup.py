@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     setup(name='numeter-poller',
           cmdclass={"install_data": my_install},
-          version='0.2.3.6',
+          version='0.2.3.7',
           description='Numeter Poller',
           long_description="""Numeter is a new graphing solution (like Cacti for \
           example) made by some guys working at eNovance. Poller and collector are \
