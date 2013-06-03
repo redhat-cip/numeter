@@ -21,7 +21,7 @@ import pprint # Debug (dumper)
 class myPoller:
     def __init__(self,configFile="/etc/numeter_poller.cfg"):
 
-        self._startTime              = time.time()
+        self._startTime              = None
         self._poller_time_file       = "/var/run/numeter-poller"
         self._enable                 = False
         self._simulate               = False
@@ -38,6 +38,7 @@ class myPoller:
         self._redis_port             = 6379
         self._redis_host             = "127.0.0.1"
         self._plugin_number          = 0
+        self.disable_pollerTimeToGo  = False
 
         # myInfo default value
         self._myInfo_name = socket.gethostname()
@@ -51,13 +52,16 @@ class myPoller:
 
     def startPoller(self):
         "Start the poller"
+
+        self._startTime = time.time()
+
         # Poller enable ?
         if not self._enable:
             self._logger.warning("Poller disable, configuration enable = false")
             exit(2)
         # Test du dernier poller
         if not self.pollerTimeToGo():
-            exit(0)
+            return False
 
         if not self._myInfo_hostID:
             self._logger.warning("Poller disable, configuration host_id = None")
@@ -309,7 +313,8 @@ class myPoller:
             # Si le temps est ok
             (lastPoller, lastRefresh) = lastTime.split(" ")
             # +10 temps de battement de cron offre 10 sec de souplesse
-            if (int(lastPoller)+self._poller_time) <= (int(nowTimestamp)+10):
+            if (int(lastPoller)+self._poller_time) <= (int(nowTimestamp)+10) \
+            or self.disable_pollerTimeToGo:
                 # Besoin d'un refresh ou non ?
                 if (int(lastRefresh)+self._plugins_refresh_time) > int(nowTimestamp):
                     self._need_refresh = False
