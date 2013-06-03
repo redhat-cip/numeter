@@ -1,3 +1,9 @@
+numeter (0.2.3.7) numeter-wheezy; urgency=low
+
+  * Poller cron -> poller daemon
+
+ -- Gael Lambert <gael@enovance.com>  Mon, 03 Jun 2013 11:13:43 +0200
+
 numeter (0.2.3.6) numeter-wheezy; urgency=low
 
   * Remove pyrrd from config
