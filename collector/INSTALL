@@ -93,3 +93,6 @@ Try to launch numeter-collector : ::
 
     numeter-collector
 
+Launch collector daemon : ::
+
+    /etc/init.d/numeter-collector start
