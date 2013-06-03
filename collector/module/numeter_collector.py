@@ -22,19 +22,18 @@ class myCollector:
     def __init__(self,configFile="/etc/numeter_collector.cfg"):
 
         # Default configuration
-        self._startTime                  = time.time()
+        self._startTime                  = None
         self._enable                     = False
         self._simulate                   = False
         self._logger                     = None
         self._logLevel                   = "debug"
         self._log_level_stdr             = "debug"
-        self._log_path                   = "/var/log/cron_numeter.log"
+        self._log_path                   = "/var/log/numeter_collector.log"
         self._simulate_file              = "/tmp/numeter.simulate"
-#        self._cron_time                  = 60
         self._thread_wait_timeout        = 60
-        self._concurrency_thread                = 10
+        self._collector_time             = 60
+        self._concurrency_thread         = 10
         self._max_host_by_thread         = 20
-#        self._cacti_poller_time          = 300
         self._max_data_collect_time      = 20
         self._host_list_type             = "file"
         self._host_list_all_refresh      = 300   
@@ -67,6 +66,10 @@ class myCollector:
 
     def startCollector(self):
         "Start the Collector"
+        self._startTime                  = time.time()
+        self._hostListNumber             = 0
+        self._datasNumber                = 0
+        self._pluginsNumber              = 0
         # Check that the collector is enabled
         if not self._enable:
             self._logger.warning("Numeter cron disable : "
@@ -203,6 +206,13 @@ class myCollector:
                                            'concurrency_thread')
             self._logger.info("Config : concurrency_thread = "
                 + str(self._concurrency_thread))
+        # collector_time
+        if  self._configParse.has_option('global', 'collector_time') \
+        and self._configParse.getint('global', 'collector_time'):
+            self._collector_time = self._configParse.getint('global',
+                                           'collector_time')
+            self._logger.info("Config : collector_time = "
+                + str(self._collector_time))
         #  thread_wait_timeout
         if self._configParse.has_option('global', 'thread_wait_timeout') \
         and self._configParse.getint('global', 'thread_wait_timeout'):
@@ -215,11 +225,6 @@ class myCollector:
         and self._configParse.get('global', 'server_name'):
             self._server_name = self._configParse.get('global', 'server_name')
             self._logger.info("Config : server_name = "+self._server_name)
-#        #  cacti_poller_time
-#        if  self._configParse.has_option('global', 'cacti_poller_time') \
-#        and self._configParse.getint('global', 'cacti_poller_time'):
-#            self._cacti_poller_time = self._configParse.getint('global', 'cacti_poller_time')
-#            self._logger.info("Config : cacti_poller_time = "+str(self._cacti_poller_time))
         #  max_data_collect_time
         if  self._configParse.has_option('global', 'max_data_collect_time') \
         and self._configParse.getint('global', 'max_data_collect_time'):

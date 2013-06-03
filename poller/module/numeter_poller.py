@@ -54,6 +54,7 @@ class myPoller:
         "Start the poller"
 
         self._startTime = time.time()
+        self._plugin_number = 0
 
         # Poller enable ?
         if not self._enable:
