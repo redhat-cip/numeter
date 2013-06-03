@@ -19,12 +19,16 @@ parser.add_argument("-c","--critical",
             help="Sets a critical level for connect try. Default 30", type=int)
 parser.add_argument("-w","--warning", 
             help="Sets a warning level for connect try. Default 15", type=int)
+parser.add_argument("-d","--database",
+            help="Database to use. Default 1", type=int)
+parser.add_argument("-p","--port",
+            help="Port number to use. Default 6379", type=int)
 args = parser.parse_args()
 
 REDIS_HOST      = '127.0.0.1'
-REDIS_PORT      =  6379
+REDIS_PORT      =  args.port or 6379
 REDIS_TIMEOUT   =  10
-REDIS_DB        =  1
+REDIS_DB        =  args.database or 1
 REDIS_PASSWORD  =  None
 
 # Set warning and critical
