@@ -142,21 +142,6 @@ class myMuninModule(modulesGeneric):
                 infos["Infos"][key] = value
             else: continue
 
-	# If the munin plugin doesn't provide a graph order we define one
-        if infos['Order'] == '':
-            tmplist=[]
-            for key, value in pluginInfo.iteritems():
-                if type(value) == type(dict()): 
-                    if 'draw' in value:
-                        if value['draw'] != 'STACK':
-                            tmplist.append(key)
-            for key, value in pluginInfo.iteritems():
-                if type(value) == type(dict()): 
-                    if 'draw' in value:
-                        if value['draw'] == 'STACK':
-                            tmplist.append(key)
-            infos['Order'] = ' '.join(tmplist)
-
         # Get DS with no infos
         fetchResult = self.formatFetchData(plugin)
         if fetchResult != None:
@@ -166,6 +151,18 @@ class myMuninModule(modulesGeneric):
                 tmp_ds[key] = {'id': key}
             tmp_ds.update(infos["Infos"])
             infos["Infos"] = tmp_ds
+
+        # If the munin plugin doesn't provide a graph order we define one
+        if infos['Order'] == '':
+            orderlist=[]
+            for key, value in pluginInfo.iteritems():
+                if type(value) == type(dict()):
+                    if 'draw' in value:
+                        if value['draw'] != 'STACK':
+                            orderlist.insert(0, key)
+			else:
+			    orderlist.append(key)
+            infos['Order'] = ' '.join(orderlist)
 
         if infos["Infos"] == {}:
             return None
