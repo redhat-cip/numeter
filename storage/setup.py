@@ -21,10 +21,21 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from distutils.core import setup
+from distutils.command.install_data import install_data
+import shutil
+
+class my_install(install_data):
+    def run(self):
+        install_data.run(self)
+        for script in self.get_outputs():
+            # Rename name.init in name
+            if script.endswith(".init"):
+                shutil.move(script, script[:-5])
 
 if __name__ == '__main__':
 
     setup(name='redmon-storage',
+          cmdclass={"install_data": my_install},
           version='0.2.3.8',
           description='Numeter Storage',
           long_description="""Numeter is a new graphing solution (like Cacti for \
@@ -35,10 +46,10 @@ if __name__ == '__main__':
           author_email='gael.lambert@enovance.com',
           maintainer='Gaël Lambert (gaelL)',
           maintainer_email='gael.lambert@enovance.com',
-          keywords=['numeter','graphing','poller','collector'],
+          keywords=['numeter','graphing','poller','collector', 'storage'],
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
-          scripts = ['storage/numeter-storage'],
+          scripts = ['storage/numeter-storage', 'storage/numeter-storaged'],
           packages = [''],
           package_dir = {'':'storage/module'},
           #package_data={'': ['storage/numeter_storage.py']},
@@ -51,8 +62,10 @@ if __name__ == '__main__':
                         #              ('/etc/uwsgi/apps-available', ['storage/storage-web/numeter-storage-uwsgi.ini']) ,
                         ('/usr/share/numeter/storage', ['storage/storage-web/numeter_uwsgi.py']) ,
                         ('/var/log/numeter', '') ,
+                        ('/etc/init.d', ['storage/numeter-storage.init']),
                         ('/var/lib/numeter/rrds', ''),
-                        ('/etc/cron.d', ['storage/numeter-storage-cron']) ],
+                        #('/etc/cron.d', ['storage/numeter-storage-cron'])
+                        ],
           classifiers=[
               'Development Status :: 4 - Beta',
               'Environment :: Console',
