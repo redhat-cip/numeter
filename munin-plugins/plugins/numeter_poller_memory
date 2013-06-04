@@ -9,10 +9,6 @@
 #%# capabilities=autoconf
 #%# family=auto
 #
-#  [numeter_storage_stats]
-#  env.storageLog
-#  env.storagePattern
-#  env.grepPattern
 
 #
 # VmPeak                      peak virtual memory size
@@ -52,26 +48,8 @@ def print_config(data_list):
     print 'graph_args --base 1000 --lower-limit 0'
     print 'graph_category numeter'
     for name in data_list:
-        if name == 'VmHWM':
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-            print '%s.color %s' % (name,'#909122')
-        if name == 'VmRSS':
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-            print '%s.color %s' % (name,'#67809e')
-        if name == 'VmPeak':
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-            print '%s.color %s' % (name,'#9091ee')
-        if name == 'VmSize':
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-            print '%s.color %s' % (name,'#e1809e')
-        else:
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-
+        print '%s.label %s' % (name,name)
+        print '%s.draw LINE' % name
 
 def get_data_from_file(pid):
     FILE = '/proc/' + pid + '/status'
