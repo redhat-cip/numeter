@@ -24,15 +24,14 @@ class myRedisConnect:
 
     def redis_connect(self):
         self.conn=None
-#        print "-Connect"
         try:
             self._conn=redis.Redis(host=self._host, port=self._port, db=self._db, socket_timeout=self._socket_timeout, password=self.password)
             self._conn.ping()
         except redis.exceptions.ConnectionError, e:
-            print "Redis connexion - ERROR"
+            #print "Redis connexion - ERROR"
             self._error = True
         except redis.exceptions.ResponseError, e:
-            print "Redis connexion - ping() ResponseError Try to check the password"
+            #print "Redis connexion - ping() ResponseError Try to check the password"
             self._error = True
 
     def redis_zcount(self,name,valmin,valmax):
