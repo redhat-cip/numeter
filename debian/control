@@ -11,7 +11,7 @@ Homepage: https://github.com/numeter
 Package: numeter-collector
 Architecture: all
 Homepage: https://github.com/numeter/collector
-Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, python-daemon, redis-server (>= 2:2.4.14)
+Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, redis-server (>= 2:2.4.14)
 XB-Python-Version: ${python:Versions}
 Description: restricts a user's shell environment to limited sets of commands
  numeter is a shell coded in Python that lets you restrict a user's environment
@@ -22,7 +22,7 @@ Description: restricts a user's shell environment to limited sets of commands
 Package: numeter-poller
 Architecture: all
 Homepage: https://github.com/numeter/poller
-Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, python-daemon, munin-node, redis-server (>= 2:2.4.14)
+Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, munin-node, redis-server (>= 2:2.4.14)
 XB-Python-Version: ${python:Versions}
 Description: restricts a user's shell environment to limited sets of commands
  numeter is a shell coded in Python that lets you restrict a user's environment
@@ -44,7 +44,7 @@ Description: restricts a user's shell environment to limited sets of commands
 Package: numeter-common
 Architecture: all
 Homepage: https://github.com/numeter
-Depends: ${misc:Depends}, ${python:Depends}, python, python-redis (>= 2.4.9)
+Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-redis (>= 2.4.9)
 XB-Python-Version: ${python:Versions}
 Description: restricts a user's shell environment to limited sets of commands
  numeter is a shell coded in Python that lets you restrict a user's environment
