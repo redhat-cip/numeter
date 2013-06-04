@@ -18,9 +18,6 @@ import hashlib
 import random
 import subprocess # Clean old rrd
 
-#Python-pyrrd
-#from pyrrd.rrd import RRD, RRA, DS 
-
 #Python-rrdtool
 import rrdtool
 
@@ -84,6 +81,11 @@ class myStorage:
 
 
     def startStorage(self):
+        self._startTime = time.time()
+        self._collectorListNumber = 0
+        self._hostNumber = 0
+        self._dataNumber = 0
+        self._pluginNumber = 0
         "Start storage"
         # storage enable ?
         if not self._enable:

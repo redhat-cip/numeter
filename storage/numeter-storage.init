@@ -1,0 +1,44 @@
+#! /bin/bash
+# Copyright (c) 1996-2012 My Company.
+# All rights reserved.
+#
+# /etc/init.d/numeter-storage
+#
+### BEGIN INIT INFO
+# Provides: numeter-storage
+# Required-Start:
+# Should-Start:
+# Required-Stop:
+# Should-Stop:
+# Default-Start:  3 5
+# Default-Stop:   0 1 2 6
+# Short-Description: numeter-storage daemon process
+# Description:    Runs up numeter-storage daemon process
+### END INIT INFO
+
+case "$1" in
+  start)
+    echo "Starting server"
+    numeter-storaged start
+    sleep 0.2
+    ps -p $(cat /var/run/numeter_storage.pid 2> /dev/null) > /dev/null 2>&1
+    if [ $? -eq 1 ]; then
+        echo "Numeter don't start. Check the logs"
+    fi
+    ;;
+  stop)
+    echo "Stopping server"
+    numeter-storaged stop
+    ;;
+  restart)
+    echo "Restarting server"
+    numeter-storaged restart
+    ;;
+  *)
+    # Refuse to do other stuff
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

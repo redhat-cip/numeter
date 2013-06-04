@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     setup(name='redmon-collector',
           cmdclass={"install_data": my_install},
-          version='0.2.3.8',
+          version='0.2.3.9',
           description='Numeter Collector',
           long_description="""Numeter is a new graphing solution (like Cacti for \
           example) made by some guys working at eNovance. Poller and collector are \
@@ -46,7 +46,7 @@ if __name__ == '__main__':
           author_email='gael.lambert@enovance.com',
           maintainer='Gaël Lambert (gaelL)',
           maintainer_email='gael.lambert@enovance.com',
-          keywords=['numeter','graphing','poller','collector'],
+          keywords=['numeter','graphing','poller','collector','storage'],
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
           scripts = ['collector/numeter-collector', 'collector/numeter-collectord'],

@@ -23,12 +23,16 @@ parser.add_argument("-w","--warning",
             help="Warning delay since last collector polling. Default 600s", type=int)
 parser.add_argument("-c","--critical", 
             help="Critical delay since last collector polling. Default 1200s", type=int)
+parser.add_argument("-d","--database",
+            help="Database to use. Default 0", type=int)
+parser.add_argument("-p","--port",
+            help="Port number to use. Default 5959", type=int)
 args = parser.parse_args()
 
 REDIS_HOST      = '127.0.0.1'
-REDIS_PORT      =  5959 
+REDIS_PORT      =  args.port or 5959 
 REDIS_TIMEOUT   =  10
-REDIS_DB        =  0
+REDIS_DB        =  args.database or 0
 REDIS_PASSWORD  =  None
 
 # Set values
