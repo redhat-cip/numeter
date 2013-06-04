@@ -6,29 +6,37 @@
 
 #DEBHELPER#
 
-#set -e
-#
-#case "$1" in
-#    configure)
-#    # create symbolic link for nginx
-#    if ! [ -e /etc/nginx/sites-enabled/numeter-storage-web ]; then
-#        ln -s /etc/nginx/sites-available/numeter-storage-web /etc/nginx/sites-enabled/
-#        invoke-rc.d nginx reload
-#    fi
-#    # create symbolic link for uwsgi
-#    if ! [ -e /etc/uwsgi/apps-enabled/numeter-storage-uwsgi.ini ]; then
-#        ln -s /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini /etc/uwsgi/apps-enabled/
-#        invoke-rc.d uwsgi restart
-#    fi
-#    ;;
-#
-#    abort-upgrade|abort-remove|abort-deconfigure)
-#    ;;
-#
-#    *)
-#        echo "postinst called with unknown argument \`$1'" >&2
-#        exit 1
-#    ;;
-#esac
+set -e
+
+case "$1" in
+    configure)
+    OLD_VERSION=$2
+    if `dpkg --compare-versions "$OLD_VERSION" le '0.2.3.8-0+wheezy'` && [ $OLD_VERSION ] ; then
+        echo "Upgrade from version under or equal to 0.2.3.8-0+wheezy"
+        if [ -f "/etc/cron.d/numeter-storage-cron" ]; then
+            echo "delete numeter storage cron file : /etc/cron.d/numeter-storage-cron"
+            rm /etc/cron.d/numeter-storage-cron
+        fi
+    fi
+    ## create symbolic link for nginx
+    #if ! [ -e /etc/nginx/sites-enabled/numeter-storage-web ]; then
+    #    ln -s /etc/nginx/sites-available/numeter-storage-web /etc/nginx/sites-enabled/
+    #    invoke-rc.d nginx reload
+    #fi
+    ## create symbolic link for uwsgi
+    #if ! [ -e /etc/uwsgi/apps-enabled/numeter-storage-uwsgi.ini ]; then
+    #    ln -s /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini /etc/uwsgi/apps-enabled/
+    #    invoke-rc.d uwsgi restart
+    #fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
 
 exit 0
