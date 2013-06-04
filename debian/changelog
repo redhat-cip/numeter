@@ -1,3 +1,9 @@
+numeter (0.2.3.9) numeter-wheezy; urgency=low
+
+  * Storage cron -> storage daemon
+
+ -- Gael Lambert <gael@enovance.com>  Tue, 04 Jun 2013 12:30:19 +0200
+
 numeter (0.2.3.8) numeter-wheezy; urgency=low
 
   * Collector cron -> collector daemon
