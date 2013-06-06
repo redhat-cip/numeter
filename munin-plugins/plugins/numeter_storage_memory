@@ -46,7 +46,7 @@ def print_config(data_list):
     print 'graph_args --base 1000 --lower-limit 0'
     print 'graph_category numeter'
     for name in data_list:
-        print '%s.label %s' % (name,name)
+        print '%s.label %s' % (name, name)
         print '%s.draw LINE' % name
 
 
@@ -64,7 +64,7 @@ def get_data_from_file(pid):
             datas[key] = value
     return datas
 
-def print_values(key,datas):
+def print_values(key, datas):
     try:
         print "%s.value %s" % (key, datas[key])
     except:
@@ -86,6 +86,6 @@ if __name__ == '__main__':
         pid = get_pid()
         datas = get_data_from_file(pid)
         for data_name in data_list:
-            print_values(data_name,datas)
+            print_values(data_name, datas)
     else:
         sys.exit(0)
