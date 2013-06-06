@@ -7,7 +7,6 @@ import time
 from daemon import runner
 from lockfile import LockTimeout
 import logging
-import time
 
 from numeter_poller import myPoller
 import ConfigParser
