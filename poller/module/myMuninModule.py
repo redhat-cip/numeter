@@ -11,13 +11,13 @@ import re
 #
 class myMuninModule(modulesGeneric): 
 
-    def __init__(self,logger,configParser=None):
-        self._logger= logger
+    def __init__(self, logger, configParser=None):
+        self._logger = logger
         self._logger.info("Plugin Munin start")
-        self._configParser=configParser
-        self._munin_host="127.0.0.1"
-        self._munin_port=4949
-        self._plugins_enable=".*"
+        self._configParser = configParser
+        self._munin_host = "127.0.0.1"
+        self._munin_port = 4949
+        self._plugins_enable = ".*"
         self.munin_connection = None
         self.watchdog = 1000 # watchdog for munin socket error
 
@@ -75,7 +75,7 @@ class myMuninModule(modulesGeneric):
 
 
 
-    def formatFetchData(self,plugin):
+    def formatFetchData(self, plugin):
         "Execute fetch() and format data"
         # Fetch munin
 
@@ -91,7 +91,7 @@ class myMuninModule(modulesGeneric):
         # "%.0f" % supprime le .0 aprés le timestamp
         nowTimestamp = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M'))
         # Set plugin informations
-        data=   {  'TimeStamp': nowTimestamp, 
+        data = {  'TimeStamp': nowTimestamp, 
                    'Plugin': plugin, 
                    'Values': pluginData
         }
@@ -99,7 +99,7 @@ class myMuninModule(modulesGeneric):
         return data
 
 
-    def formatFetchInfo(self,plugin):
+    def formatFetchInfo(self, plugin):
 
         "Execute config() and format infos"
         # Config munin
@@ -110,7 +110,7 @@ class myMuninModule(modulesGeneric):
             return None
 
         # Set plugin informations (defaul values)
-        infos=   {    'Plugin': plugin, 
+        infos =  {    'Plugin': plugin, 
                       'Base': '1000', 
                       'Describ': '', 
                       'Title': plugin, 
@@ -120,7 +120,7 @@ class myMuninModule(modulesGeneric):
                  }
 
         # Set plugin info
-        valueInfos = {}
+        #valueInfos = {} #unused
         for key, value in pluginInfo.iteritems():
             if key == "graph_title":
                 infos['Title'] = value
@@ -147,21 +147,21 @@ class myMuninModule(modulesGeneric):
         if fetchResult != None:
             # Concatenate
             tmp_ds = {}
-            for key,value in fetchResult["Values"].iteritems():
+            for key, value in fetchResult["Values"].iteritems():
                 tmp_ds[key] = {'id': key}
             tmp_ds.update(infos["Infos"])
             infos["Infos"] = tmp_ds
 
         # If the munin plugin doesn't provide a graph order we define one
         if infos['Order'] == '':
-            orderlist=[]
+            orderlist = []
             for key, value in pluginInfo.iteritems():
                 if type(value) == type(dict()):
                     if 'draw' in value:
                         if value['draw'] != 'STACK':
                             orderlist.insert(0, key)
-			else:
-			    orderlist.append(key)
+                        else:
+                            orderlist.append(key)
             infos['Order'] = ' '.join(orderlist)
 
         if infos["Infos"] == {}:
