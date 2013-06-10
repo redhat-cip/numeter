@@ -4,7 +4,6 @@
 #
 
 import sys
-import subprocess
 import time
 import datetime
 import json
@@ -17,32 +16,32 @@ except ImportError:
     sys.exit(3)
 
 # Get args
-parser = argparse.ArgumentParser()
-parser.add_argument("-P", "--plugins", 
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument("-P", "--plugins", 
             help="Max deleted plugins. Default 1", type=int)
-parser.add_argument("-H", "--hosts", 
+PARSER.add_argument("-H", "--hosts", 
             help="Max deleted hosts. Default 1", type=int)
-parser.add_argument("-c", "--clean",
+PARSER.add_argument("-c", "--clean",
             help="Max days since last RRD clean. Default 2", type=int)
-parser.add_argument("-o", "--oldrrd",
+PARSER.add_argument("-o", "--oldrrd",
             help="Max old RRDs. Default 1", type=int)
-parser.add_argument("-d", "--database",
+PARSER.add_argument("-d", "--database",
             help="Database to use. Default 2", type=int)
-parser.add_argument("-p", "--port",
+PARSER.add_argument("-p", "--port",
             help="Port number to use. Default 6379", type=int)
-args = parser.parse_args()
+ARGS = PARSER.parse_args()
 
 REDIS_HOST      = '127.0.0.1'
-REDIS_PORT      =  args.port or 6379
+REDIS_PORT      =  ARGS.port or 6379
 REDIS_TIMEOUT   =  10
-REDIS_DB        =  args.database or 2
+REDIS_DB        =  ARGS.database or 2
 REDIS_PASSWORD  =  None
 
 # Set critical values
-MAX_DELETED_PLUGINS = args.plugins or 1
-MAX_DELETED_HOSTS = args.hosts or 1
-MAX_RRD_CLEAN = args.clean or 2
-MAX_OLD_RRDS = args.oldrrd or 1
+MAX_DELETED_PLUGINS = ARGS.plugins or 1
+MAX_DELETED_HOSTS = ARGS.hosts or 1
+MAX_RRD_CLEAN = ARGS.clean or 2
+MAX_OLD_RRDS = ARGS.oldrrd or 1
 
 
 def get_deleted_plugins():
@@ -76,17 +75,17 @@ def get_last_rrd_clean():
         connection_error()
 
         try:
-            lastFetch = redis_connexion.redis_get('LAST_RRD_CLEAN')
+            lastfetch = redis_connexion.redis_get('LAST_RRD_CLEAN')
         except: 
             query_error()
 
         timenow = datetime.datetime.now()
         timenow = time.mktime(timenow.timetuple())
         # Time delta in seconds / 3600 = hours
-        lastClean = (timenow - int(lastFetch)) / 3600
+        lastclean = (timenow - int(lastfetch)) / 3600
 
-        if lastClean > MAX_RRD_CLEAN * 24:
-            print "CRITICAL: rrd clean %d hours ago" % (lastClean)
+        if lastclean > MAX_RRD_CLEAN * 24:
+            print "CRITICAL: rrd clean %d hours ago" % (lastclean)
             sys.exit(2)
 
 
