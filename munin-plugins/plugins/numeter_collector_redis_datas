@@ -19,16 +19,16 @@ import os
 try: 
     from numeter_collector import myCollector
 except ImportError:
-    import_collector = False
+    IMPORT_COLLECTOR = False
 else:
-    import_collector = True
+    IMPORT_COLLECTOR = True
 
 try: 
     from myRedisConnect import *
 except ImportError:
-    import_redis = False
+    IMPORT_REDIS = False
 else:
-    import_redis = True
+    IMPORT_REDIS = True
 
 def print_config():
     print 'graph_title Numeter collector hosts datas in redis'
@@ -50,7 +50,7 @@ def load_params():
 
     REDIS_HOST      = os.getenv('redisHost','127.0.0.1')
     REDIS_PORT      = os.getenv('redisPort', 6379)
-    REDIS_TIMEOUT   = os.getenv('redisTimeout',10)
+    REDIS_TIMEOUT   = os.getenv('redisTimeout', 10)
     REDIS_DB        = os.getenv('redisDb', 1)
     REDIS_PASSWORD  = os.getenv('redisPassword', None)
 
@@ -62,8 +62,8 @@ def print_values():
                       db=REDIS_DB,
                       password=REDIS_PASSWORD)
 
-    if redis_connexion._error:
-        self._logger.critical("Redis server connexion ERROR - "
+    if not redis_connexion.redis_info():
+        print("Redis server connexion ERROR - "
         + "Check server access or the password")
         exit(1)
 
@@ -73,23 +73,23 @@ def print_values():
         return
     num_ts = 0
     for key in keys:
-         id = redis_connexion.redis_hget('HOSTS',key)
-         num_ts += int(redis_connexion.redis_zcount('DATAS@' + id, '-inf', '+inf'))
+        hostid = redis_connexion.redis_hget('HOSTS', key)
+        num_ts += int(redis_connexion.redis_zcount('DATAS@' + hostid, '-inf', '+inf'))
 
     print 'datas.value %s' % num_ts
 
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
-    if len(argv) > 1:
-        if argv[1] == 'config':
+    ARGV = sys.argv[:]
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
             print_config()
-        elif argv[1] == 'autoconf':
-            if not import_redis or import_collector:
+        elif ARGV[1] == 'autoconf':
+            if not (IMPORT_REDIS and IMPORT_COLLECTOR):
                 print 'no (failed import redis or collector module)'
                 sys.exit(0)
             print 'yes'
 
-    elif import_redis and import_collector:
+    elif IMPORT_REDIS and IMPORT_COLLECTOR:
         load_params()
         print_values()
