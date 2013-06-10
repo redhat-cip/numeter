@@ -102,6 +102,6 @@ if __name__ == '__main__':
     elif IMPORT_COLLECTOR:
         load_params()
         FILELINE = get_file_line()
-        for name in CHECK_TYPE: 
-            VALUE = get_value_in_line(name, FILELINE)
-            print_value_collector(name, VALUE)
+        for NAME in CHECK_TYPE: 
+            VALUE = get_value_in_line(NAME, FILELINE)
+            print_value_collector(NAME, VALUE)

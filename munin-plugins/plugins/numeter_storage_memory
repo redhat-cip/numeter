@@ -23,19 +23,18 @@
 #
 
 import sys
-import os
 import subprocess
 import re
 
 try:
-    fpid = open('/var/run/numeter_storage.pid', 'r')
-    pidok = True
+    FPID = open('/var/run/numeter_storage.pid', 'r')
+    PIDOK = True
 except IOError:
     print 'storage not running or pid file missing'
-    pidok = False
+    PIDOK = False
 
 def get_pid():
-    pid = fpid.readline()
+    pid = FPID.readline()
     pid = pid.rstrip()
     return pid
     
@@ -51,11 +50,11 @@ def print_config(data_list):
 
 
 def get_data_from_file(pid):
-    FILE = '/proc/' + pid + '/status'
-    stdout = subprocess.Popen('cat %s 2>/dev/null' % FILE,
+    fname = '/proc/' + pid + '/status'
+    stdout = subprocess.Popen('cat %s 2>/dev/null' % fname,
                               shell=True,
                               stdout=subprocess.PIPE)
-    datas={}
+    datas = {}
     for line in stdout.communicate()[0].split('\n'):
         match = re.match("^([^:]+):\s+([^ ]+)", line)
         if match is not None:
@@ -71,21 +70,21 @@ def print_values(key, datas):
         print "%s.value U" % (key)
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
-    data_list = ['VmPeak', 'VmSize', 'VmLck',
+    ARGV = sys.argv[:]
+    DATA_LIST = ['VmPeak', 'VmSize', 'VmLck',
                  'VmHWM', 'VmRSS', 'VmData',
                  'VmStk', 'VmExe', 'VmLib',
                  'VmPTE', 'VmPTD', 'VmSwap',
                  'Threads']
-    if len(argv) > 1:
-        if argv[1] == 'config':
-            print_config(data_list)
-        elif argv[1] == 'autoconf':
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
+            print_config(DATA_LIST)
+        elif ARGV[1] == 'autoconf':
             print 'yes'
-    elif pidok:
-        pid = get_pid()
-        datas = get_data_from_file(pid)
-        for data_name in data_list:
-            print_values(data_name, datas)
+    elif PIDOK:
+        PID = get_pid()
+        DATAS = get_data_from_file(PID)
+        for data_name in DATA_LIST:
+            print_values(data_name, DATAS)
     else:
         sys.exit(0)
