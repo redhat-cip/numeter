@@ -14,9 +14,9 @@ except ImportError:
 
 # Get args
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument("-c", "--CRITICAL", 
+PARSER.add_argument("-c", "--critical", 
             help="Sets a CRITICAL level for connect try. Default 30", type=int)
-PARSER.add_argument("-w", "--WARNING", 
+PARSER.add_argument("-w", "--warning", 
             help="Sets a WARNING level for connect try. Default 15", type=int)
 PARSER.add_argument("-d", "--database",
             help="Database to use. Default 1", type=int)
