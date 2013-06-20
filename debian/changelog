@@ -1,3 +1,10 @@
+numeter (0.2.3.10) numeter-squeeze; urgency=low
+
+  * Fixe init scripts for daemon
+  * Improve nagios and munin plugins
+
+ -- Gael Lambert <gael@enovance.com>  Thu, 20 Jun 2013 13:25:05 +0200
+
 numeter (0.2.3.9) numeter-squeeze; urgency=low
 
   * Storage cron -> storage daemon
