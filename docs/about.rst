@@ -6,17 +6,13 @@
 About
 ############
 
-Au départ, comme beaucoup nous avons commencé il y a longtemps sur
-cacti / munin. Nous avons réuni ces deux produits pour en faire un : Mucti.
+Like many, we started with Cacti and Munin a long time ago. Then, we joined these two software packages into one and we called it Mucti.
 
-Avec le temps et le nombre de hosts augmentant, nous avons vite vu les limites.
-Nous avons alors lancé le projet Numeter avec pour but d'être plus scalable et modulaire pour
-permettre de s'interfacer avec chaque élément facilement. 
+Over time and with an increasing number of hosts, we have seen the limitations of this approach. 
+We launched the Numeter project, aiming for more modularity and scalability.
 
-L'architecture actuelle de numeter permet d'installer chaque élément séparément et garde comme
-politique d'utiliser des technologies standard comme par exemple le format JSON pour les données
-entre le poller, collector, storage, webapp. Ou l'accessibilité des données des storages par une
-API HTTP servant du JSON.
+Each component of the Numeter architecture can be installed separately.
+Our policy for the project is to rely on standard technologies and therefore JSON is used for communication between the components and to access data using the HTTP API
 
-Libre à vous d'utiliser uniquement le poller avec vos modules ou de développer votre propre application
-pour traiter les données du storage.
+You are free to use only the components you need. 
+For example, the poller with your modules or develop your own application to process the data contained in the storage component.

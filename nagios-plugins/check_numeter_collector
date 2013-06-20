@@ -4,7 +4,6 @@
 #
 
 import sys
-import os
 import argparse
 
 try:
@@ -14,54 +13,54 @@ except ImportError:
     sys.exit(3)
 
 # Get args
-parser = argparse.ArgumentParser()
-parser.add_argument("-c","--critical", 
-            help="Sets a critical level for connect try. Default 30", type=int)
-parser.add_argument("-w","--warning", 
-            help="Sets a warning level for connect try. Default 15", type=int)
-parser.add_argument("-d","--database",
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument("-c", "--critical", 
+            help="Sets a CRITICAL level for connect try. Default 30", type=int)
+PARSER.add_argument("-w", "--warning", 
+            help="Sets a WARNING level for connect try. Default 15", type=int)
+PARSER.add_argument("-d", "--database",
             help="Database to use. Default 1", type=int)
-parser.add_argument("-p","--port",
+PARSER.add_argument("-p", "--port",
             help="Port number to use. Default 6379", type=int)
-args = parser.parse_args()
+ARGS = PARSER.parse_args()
 
 REDIS_HOST      = '127.0.0.1'
-REDIS_PORT      =  args.port or 6379
+REDIS_PORT      =  ARGS.port or 6379
 REDIS_TIMEOUT   =  10
-REDIS_DB        =  args.database or 1
+REDIS_DB        =  ARGS.database or 1
 REDIS_PASSWORD  =  None
 
-# Set warning and critical
-critical = args.critical or 30
-warning = args.warning or 15
+# Set WARNING and CRITICAL
+CRITICAL = ARGS.critical or 30
+WARNING = ARGS.warning or 15
 
-redis_connexion = myRedisConnect(host=REDIS_HOST,
+REDIS_CONNECTION = myRedisConnect(host=REDIS_HOST,
                   port=REDIS_PORT,
                   socket_timeout=REDIS_TIMEOUT,
                   db=REDIS_DB,
                   password=REDIS_PASSWORD)
 
-if redis_connexion._error:
+if REDIS_CONNECTION._error:
     print "STATE UNKNOWN: Unable to connect to redis server"
     sys.exit(3)
 
 
-keys  = redis_connexion.redis_hkeys('HOSTS')
+KEYS  = REDIS_CONNECTION.redis_hkeys('HOSTS')
 
-if not keys:
-    print "STATE UNKNOWN: Unable to fetch keys"
+if not KEYS:
+    print "STATE UNKNOWN: Unable to fetch KEYS"
     sys.exit(3)
 
-for key in keys:
-    id = redis_connexion.redis_hget('HOSTS',key)
-    num_ts = redis_connexion.redis_zcount('TS@' + id, '-inf', '+inf')
+for key in KEYS:
+    hostid = REDIS_CONNECTION.redis_hget('HOSTS', key)
+    num_ts = REDIS_CONNECTION.redis_zcount('TS@' + hostid, '-inf', '+inf')
 
-    if num_ts >= critical:
-        print "COLLECTOR CRITICAL: %d timestamps in redis |num_ts=%d" % (num_ts,num_ts)
+    if num_ts >= CRITICAL:
+        print "COLLECTOR CRITICAL: %d timestamps in redis |num_ts=%d" % (num_ts, num_ts)
         sys.exit(2)
-    elif num_ts >= warning:
-        print "COLLECTOR WARNING: %d timestamps in redis |num_ts=%d" % (num_ts,num_ts) 
+    elif num_ts >= WARNING:
+        print "COLLECTOR WARNING: %d timestamps in redis |num_ts=%d" % (num_ts, num_ts) 
         sys.exit(1)
 
-print "COLLECTOR OK: %d timestamps in redis |num_ts=%d" % (num_ts,num_ts)
+print "COLLECTOR OK: %d timestamps in redis |num_ts=%d" % (num_ts, num_ts)
 sys.exit(0)

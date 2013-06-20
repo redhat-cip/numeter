@@ -22,26 +22,26 @@ import os
 try: 
     from numeter_collector import myCollector
 except ImportError:
-    import_collector = False
+    IMPORT_COLLECTOR = False
 else:
-    import_collector = True
+    IMPORT_COLLECTOR = True
 
 try: 
     from numeter_storage import myStorage
 except ImportError:
-    import_storage = False
+    IMPORT_STORAGE = False
 else:
-    import_storage = True
+    IMPORT_STORAGE = True
 
 try: 
     from myRedisConnect import *
 except ImportError:
-    import_redis = False
+    IMPORT_REDIS = False
 else:
-    import_redis = True
+    IMPORT_REDIS = True
 
-def print_config(type):
-    print 'graph_title Numeter redis %s' % type
+def print_config(check_type):
+    print 'graph_title Numeter redis %s' % check_type
     print 'graph_info This graph shows redis size in MB and number of keys'
     print 'graph_vlabel Size in MB / Num'
     print 'graph_args --base 1000 --lower-limit 0'
@@ -58,9 +58,9 @@ def load_params():
     global REDIS_DB
     global REDIS_PASSWORD
 
-    REDIS_HOST      = os.getenv('redisHost','127.0.0.1')
+    REDIS_HOST      = os.getenv('redisHost', '127.0.0.1')
     REDIS_PORT      = os.getenv('redisPort', 6379)
-    REDIS_TIMEOUT   = os.getenv('redisTimeout',10)
+    REDIS_TIMEOUT   = os.getenv('redisTimeout', 10)
     REDIS_DB        = os.getenv('redisDb', 1)
     REDIS_PASSWORD  = os.getenv('redisPassword', None)
 
@@ -72,7 +72,7 @@ def get_redis_size():
                       password=REDIS_PASSWORD)
 
     if redis_connexion._error:
-        self._logger.critical("Redis server connexion ERROR - "
+        print("Redis server connexion ERROR - "
         + "Check server access or the password")
         exit(1)
     try:
@@ -88,7 +88,7 @@ def get_redis_keys():
                       password=REDIS_PASSWORD)
 
     if redis_connexion._error:
-        self._logger.critical("Redis server connexion ERROR - "
+        print("Redis server connexion ERROR - "
         + "Check server access or the password")
         exit(1)
     return redis_connexion.redis_info()['db%s' % REDIS_DB]['keys']
@@ -96,62 +96,62 @@ def get_redis_keys():
 
 def print_storage_values():
     # Redis size
-    print_values('redis_size',get_redis_size())
+    print_values('redis_size', get_redis_size())
     # Redis num of keys
-    print_values('redis_num_keys',get_redis_keys())
+    print_values('redis_num_keys', get_redis_keys())
 
 def print_collector_values():
     # Redis size
-    print_values('redis_size',get_redis_size())
+    print_values('redis_size', get_redis_size())
     # Redis num of keys
-    print_values('redis_num_keys',get_redis_keys())
+    print_values('redis_num_keys', get_redis_keys())
 
 def print_storage_configs():
     # Redis size
-    print '%s.label %s' % ('redis_size','Redis database size')
+    print '%s.label %s' % ('redis_size', 'Redis database size')
     print '%s.draw LINE' % 'redis_size'
-    print '%s.color %s' % ('redis_size','#909122')
+    print '%s.color %s' % ('redis_size', '#909122')
     # Redis num of keys
-    print '%s.label %s' % ('redis_num_keys','Number of redis keys')
+    print '%s.label %s' % ('redis_num_keys', 'Number of redis keys')
     print '%s.draw LINE' % 'redis_num_keys'
-    print '%s.color %s' % ('redis_num_keys','#0327ca')
+    print '%s.color %s' % ('redis_num_keys', '#0327ca')
 
 def print_collector_configs():
     # Redis size
-    print '%s.label %s' % ('redis_size','Redis database size')
+    print '%s.label %s' % ('redis_size', 'Redis database size')
     print '%s.draw LINE' % 'redis_size'
-    print '%s.color %s' % ('redis_size','#909122')
+    print '%s.color %s' % ('redis_size', '#909122')
     # Redis num of keys
-    print '%s.label %s' % ('redis_num_keys','Number of redis keys')
+    print '%s.label %s' % ('redis_num_keys', 'Number of redis keys')
     print '%s.draw LINE' % 'redis_num_keys'
-    print '%s.color %s' % ('redis_num_keys','#0327ca')
+    print '%s.color %s' % ('redis_num_keys', '#0327ca')
 
-def print_values(name,value):
+def print_values(name, value):
     if value is None:
         value = 'U'
     print "%s.value %s" % (name, value)
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
-    check_type = argv[0].split('numeter_redis_').pop()
-    if len(argv) > 1:
-        if argv[1] == 'config':
-            print_config(type=check_type)
-        elif argv[1] == 'suggest' and ( import_collector or import_storage ):
-            if import_collector:
+    ARGV = sys.argv[:]
+    CHECK_TYPE = ARGV[0].split('numeter_redis_').pop()
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
+            print_config(check_type=CHECK_TYPE)
+        elif ARGV[1] == 'suggest' and ( IMPORT_COLLECTOR or IMPORT_STORAGE ):
+            if IMPORT_COLLECTOR:
                 print "collector"
-            if import_storage:
+            if IMPORT_STORAGE:
                 print "storage"
-        elif argv[1] == 'autoconf':
-            if not import_redis and (import_collector or import_storage):
+        elif ARGV[1] == 'autoconf':
+            if not IMPORT_REDIS and (IMPORT_COLLECTOR or IMPORT_STORAGE):
                 print 'no (failed import redis and collector or storage module)'
                 sys.exit(0)
             print 'yes'
 
-    elif import_redis and import_collector and check_type == "collector":
+    elif IMPORT_REDIS and IMPORT_COLLECTOR and CHECK_TYPE == "collector":
         load_params()
         print_collector_values()
-    elif import_redis and import_storage and check_type == "storage":
+    elif IMPORT_REDIS and IMPORT_STORAGE and CHECK_TYPE == "storage":
         load_params()
         print_storage_values()
 

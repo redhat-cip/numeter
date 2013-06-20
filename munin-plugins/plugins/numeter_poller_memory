@@ -9,10 +9,6 @@
 #%# capabilities=autoconf
 #%# family=auto
 #
-#  [numeter_storage_stats]
-#  env.storageLog
-#  env.storagePattern
-#  env.grepPattern
 
 #
 # VmPeak                      peak virtual memory size
@@ -29,19 +25,18 @@
 #
 
 import sys
-import os
 import subprocess
 import re
 
 try:
-    fpid = open('/var/run/numeter_poller.pid', 'r')
-    pidok = True
+    FPID = open('/var/run/numeter_poller.pid', 'r')
+    PIDOK = True
 except IOError:
     print 'poller not running or pid file missing'
-    pidok = False
+    PIDOK = False
 
 def get_pid():
-    pid = fpid.readline()
+    pid = FPID.readline()
     pid = pid.rstrip()
     return pid
     
@@ -52,33 +47,15 @@ def print_config(data_list):
     print 'graph_args --base 1000 --lower-limit 0'
     print 'graph_category numeter'
     for name in data_list:
-        if name == 'VmHWM':
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-            print '%s.color %s' % (name,'#909122')
-        if name == 'VmRSS':
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-            print '%s.color %s' % (name,'#67809e')
-        if name == 'VmPeak':
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-            print '%s.color %s' % (name,'#9091ee')
-        if name == 'VmSize':
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-            print '%s.color %s' % (name,'#e1809e')
-        else:
-            print '%s.label %s' % (name,name)
-            print '%s.draw LINE' % name
-
+        print '%s.label %s' % (name, name)
+        print '%s.draw LINE' % name
 
 def get_data_from_file(pid):
-    FILE = '/proc/' + pid + '/status'
-    stdout = subprocess.Popen('cat %s 2>/dev/null' % FILE,
+    fname = '/proc/' + pid + '/status'
+    stdout = subprocess.Popen('cat %s 2>/dev/null' % fname,
                               shell=True,
                               stdout=subprocess.PIPE)
-    datas={}
+    datas = {}
     for line in stdout.communicate()[0].split('\n'):
         match = re.match("^([^:]+):\s+([^ ]+)", line)
         if match is not None:
@@ -87,28 +64,28 @@ def get_data_from_file(pid):
             datas[key] = value
     return datas
 
-def print_values(key,datas):
+def print_values(key, datas):
     try:
         print "%s.value %s" % (key, datas[key])
     except:
         print "%s.value U" % (key)
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
-    data_list = ['VmPeak', 'VmSize', 'VmLck',
+    ARGV = sys.argv[:]
+    DATA_LIST = ['VmPeak', 'VmSize', 'VmLck',
                  'VmHWM', 'VmRSS', 'VmData',
                  'VmStk', 'VmExe', 'VmLib',
                  'VmPTE', 'VmPTD', 'VmSwap',
                  'Threads']
-    if len(argv) > 1:
-        if argv[1] == 'config':
-            print_config(data_list)
-        elif argv[1] == 'autoconf':
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
+            print_config(DATA_LIST)
+        elif ARGV[1] == 'autoconf':
             print 'yes'
-    elif pidok:
-        pid = get_pid()
-        datas = get_data_from_file(pid)
-        for data_name in data_list:
-            print_values(data_name,datas)
+    elif PIDOK:
+        PID = get_pid()
+        DATAS = get_data_from_file(PID)
+        for DATA_NAME in DATA_LIST:
+            print_values(DATA_NAME, DATAS)
     else:
         sys.exit(0)

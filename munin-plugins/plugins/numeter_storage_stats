@@ -22,9 +22,9 @@ import re
 try: 
     from numeter_storage import myStorage
 except ImportError:
-    import_storage = False
+    IMPORT_STORAGE = False
 else:
-    import_storage = True
+    IMPORT_STORAGE = True
 
 def print_config(check_type):
     print 'graph_title Numeter storage stats'
@@ -72,11 +72,11 @@ def get_file_line():
                               stdout=subprocess.PIPE)
     return stdout.communicate()[0]
 
-def get_value_in_line(name,line):
+def get_value_in_line(name, line):
     # 0 data / 1 error
     result = re.match(STORAGE_PATTERN, line)
     if result is not None:
-        idx = check_type.index(name) + 1
+        idx = CHECK_TYPE.index(name) + 1
         if result.group(idx) is not None:
             return str(result.group(idx))
     else:
@@ -89,21 +89,21 @@ def print_value_storage(name, value):
 
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
+    ARGV = sys.argv[:]
     # Disable seconds
-    #check_type = ['collectors','hosts','plugins','datas','seconds']
-    check_type = ['collectors','hosts','plugins','datas']
-    if len(argv) > 1:
-        if argv[1] == 'config':
-            print_config(check_type)
-        elif argv[1] == 'autoconf':
-            if not import_storage:  
+    #CHECK_TYPE = ['collectors','hosts','plugins','datas','seconds']
+    CHECK_TYPE = ['collectors', 'hosts', 'plugins', 'datas']
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
+            print_config(CHECK_TYPE)
+        elif ARGV[1] == 'autoconf':
+            if not IMPORT_STORAGE:  
                 print 'no (failed import storage module)'
                 sys.exit(0)
             print 'yes'
-    elif import_storage:
+    elif IMPORT_STORAGE:
         load_params()
-        fileline = get_file_line()
-        for name in check_type: 
-            value = get_value_in_line(name,fileline)
-            print_value_storage(name,value)
+        FILELINE = get_file_line()
+        for NAME in CHECK_TYPE: 
+            VALUE = get_value_in_line(NAME, FILELINE)
+            print_value_storage(NAME, VALUE)

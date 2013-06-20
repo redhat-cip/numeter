@@ -19,7 +19,7 @@ import pprint # Debug (dumper)
 # Poller
 #
 class myPoller:
-    def __init__(self,configFile="/etc/numeter_poller.cfg"):
+    def __init__(self, configFile="/etc/numeter_poller.cfg"):
 
         self._startTime              = None
         self._poller_time_file       = "/var/run/numeter-poller"
@@ -80,7 +80,7 @@ class myPoller:
         # End log time execution
         self._logger.warning("---- End : numeter_poller, "
             + str(self._plugin_number) + " Plugins in "
-            + str(time.time()-self._startTime) + ", seconds.")
+            + str(time.time() - self._startTime) + ", seconds.")
 
 
     def redisStartConnexion(self):
@@ -95,22 +95,22 @@ class myPoller:
         return redis_connexion
 
 
-    def convertToJson(self,data):
+    def convertToJson(self, data):
         "Convert data to json"
         return json.dumps(data)
 
 
 
-    def writeData(self,allDatas):
+    def writeData(self, allDatas):
         "Write data in redis or file"
         if self._simulate:
-            self._logger.info("Write data in file : "+ self._simulate_file)
+            self._logger.info("Write data in file : " + self._simulate_file)
             self.writeInSimulateFile("===== Write DATAS =====")
             allDatasJson = self.convertToJson(allDatas)
             self.writeInSimulateFile(str(allDatasJson))
         else:
             self._logger.info("Write data in redis")
-            allTimeStamps=[]
+            allTimeStamps = []
             for data in allDatas:
                 if data.has_key("TimeStamp") \
                 and data.has_key("Plugin") \
@@ -125,9 +125,9 @@ class myPoller:
                                                      dataJson,
                                                      int(data["TimeStamp"]))
                     allTimeStamps.append(data["TimeStamp"])
-                    self._plugin_number = self._plugin_number+1
+                    self._plugin_number = self._plugin_number + 1
             # Write all timeStamps
-            seen=[]
+            seen = []
             for timeStamp in allTimeStamps:
                 if timeStamp not in seen:
                     self._redis_connexion.redis_zadd("TimeStamp",
@@ -138,10 +138,10 @@ class myPoller:
 
 
 
-    def writeInfo(self,allInfos):
+    def writeInfo(self, allInfos):
         "Write infos in redis or file"
         if self._simulate:
-            self._logger.info("Write Infos in file : "+ self._simulate_file)
+            self._logger.info("Write Infos in file : " + self._simulate_file)
             self.writeInSimulateFile("===== Write INFOS =====")
             allInfosJson = self.convertToJson(allInfos)
             self.writeInSimulateFile(str(allInfosJson))
@@ -165,7 +165,7 @@ class myPoller:
 
 
 
-    def cleanInfo(self,writedInfos):
+    def cleanInfo(self, writedInfos):
         "Clean infos in redis"
 
         # Get current plugin list
@@ -174,7 +174,7 @@ class myPoller:
             self._logger.info("Clean info -- nothing to do")
             return
         # Get the gap
-        toDelete=list(set(currentPlugin) - set(writedInfos))
+        toDelete = list(set(currentPlugin) - set(writedInfos))
         # Same list do nothing
         if toDelete == []:
             self._logger.info("Clean info -- nothing to do : same Infos")
@@ -186,11 +186,11 @@ class myPoller:
                 self.writeInSimulateFile(str(toDelete))
             else:
                 for plugin in toDelete:
-                     self._redis_connexion.redis_hdel("INFOS", plugin)
+                    self._redis_connexion.redis_hdel("INFOS", plugin)
 
 
 
-    def writeInSimulateFile(self,message): 
+    def writeInSimulateFile(self, message): 
         "Write in simulate file"
         logfile = open(self._simulate_file, 'a')
         logfile.write(message+"\n")
@@ -201,7 +201,7 @@ class myPoller:
     def loadModules(self):
         "Get and write data / infos of all modules"
         # Load dynammic modules
-        writedInfos=[]
+        writedInfos = []
         for module in self._modules.split("|"):
             allDatas = allInfos = []
             self._logger.info("Try to launch module : " + module)
@@ -241,7 +241,7 @@ class myPoller:
 
     def getMyInfo(self):
         "Read my infos in conf file"
-        info={}
+        info = {}
         info["Plugin"]      = "MyInfo"
         info['Name']        = self._myInfo_name
         info['ID']          = self._myInfo_hostID
@@ -309,7 +309,7 @@ class myPoller:
             lastTime     = lastTimeFile.read()
             lastTimeFile.close()
             # If file is corrupt, reset
-            if not re.match("^[0-9]{10} [0-9]{10}$",lastTime):
+            if not re.match("^[0-9]{10} [0-9]{10}$", lastTime):
                 lastTime = "0000000000 0000000000"
             # Si le temps est ok
             (lastPoller, lastRefresh) = lastTime.split(" ")

@@ -4,8 +4,6 @@
 #
 
 import sys
-import os
-import subprocess
 import time
 import datetime
 import json
@@ -18,32 +16,32 @@ except ImportError:
     sys.exit(3)
 
 # Get args
-parser = argparse.ArgumentParser()
-parser.add_argument("-P","--plugins", 
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument("-P", "--plugins", 
             help="Max deleted plugins. Default 1", type=int)
-parser.add_argument("-H","--hosts", 
+PARSER.add_argument("-H", "--hosts", 
             help="Max deleted hosts. Default 1", type=int)
-parser.add_argument("-c","--clean",
+PARSER.add_argument("-c", "--clean",
             help="Max days since last RRD clean. Default 2", type=int)
-parser.add_argument("-o","--oldrrd",
+PARSER.add_argument("-o", "--oldrrd",
             help="Max old RRDs. Default 1", type=int)
-parser.add_argument("-d","--database",
+PARSER.add_argument("-d", "--database",
             help="Database to use. Default 2", type=int)
-parser.add_argument("-p","--port",
+PARSER.add_argument("-p", "--port",
             help="Port number to use. Default 6379", type=int)
-args = parser.parse_args()
+ARGS = PARSER.parse_args()
 
 REDIS_HOST      = '127.0.0.1'
-REDIS_PORT      =  args.port or 6379
+REDIS_PORT      =  ARGS.port or 6379
 REDIS_TIMEOUT   =  10
-REDIS_DB        =  args.database or 2
+REDIS_DB        =  ARGS.database or 2
 REDIS_PASSWORD  =  None
 
 # Set critical values
-max_deleted_plugins = args.plugins or 1
-max_deleted_hosts = args.hosts or 1
-max_rrd_clean = args.clean or 2
-max_old_rrds = args.oldrrd or 1
+MAX_DELETED_PLUGINS = ARGS.plugins or 1
+MAX_DELETED_HOSTS = ARGS.hosts or 1
+MAX_RRD_CLEAN = ARGS.clean or 2
+MAX_OLD_RRDS = ARGS.oldrrd or 1
 
 
 def get_deleted_plugins():
@@ -54,41 +52,41 @@ def get_deleted_plugins():
                       password=REDIS_PASSWORD)
 
     if redis_connexion._error:
-	    connection_error()
+        connection_error()
 
     try:
         deleted_plugins = redis_connexion.redis_hlen('DELETED_PLUGIN')
     except:
-	    query_error()
+        query_error()
 
-    if deleted_plugins > max_deleted_plugins:
-        print "CRITICAL: %d deleted plugins (%d allowed)" % (deleted_plugins, max_deleted_plugins)
+    if deleted_plugins > MAX_DELETED_PLUGINS:
+        print "CRITICAL: %d deleted plugins (%d allowed)" % (deleted_plugins, MAX_DELETED_PLUGINS)
         sys.exit(2)
 
 
 def get_last_rrd_clean():
-	redis_connexion = myRedisConnect(host=REDIS_HOST,
+    redis_connexion = myRedisConnect(host=REDIS_HOST,
        	          port=REDIS_PORT,
                   socket_timeout=REDIS_TIMEOUT,
                   db=REDIS_DB,
                   password=REDIS_PASSWORD)
 
-	if redis_connexion._error:
-		connection_error()
+    if redis_connexion._error:
+        connection_error()
 
-	try:
-		lastFetch = redis_connexion.redis_get('LAST_RRD_CLEAN')
-	except: 
-		query_error()
+        try:
+            lastfetch = redis_connexion.redis_get('LAST_RRD_CLEAN')
+        except: 
+            query_error()
 
-	t = datetime.datetime.now()
-	t = time.mktime(t.timetuple())
-	# Time delta in seconds / 3600 = hours
-	lastClean = (t - int(lastFetch)) / 3600
+        timenow = datetime.datetime.now()
+        timenow = time.mktime(timenow.timetuple())
+        # Time delta in seconds / 3600 = hours
+        lastclean = (timenow - int(lastfetch)) / 3600
 
-	if lastClean > max_rrd_clean * 24:
-	    print "CRITICAL: rrd clean %d hours ago" % (lastClean)
-	    sys.exit(2)
+        if lastclean > MAX_RRD_CLEAN * 24:
+            print "CRITICAL: rrd clean %d hours ago" % (lastclean)
+            sys.exit(2)
 
 
 def get_deleted_hosts():
@@ -99,14 +97,14 @@ def get_deleted_hosts():
                       password=REDIS_PASSWORD)
 
     if redis_connexion._error:
-	    connection_error()
+        connection_error()
     try:
         deleted_hosts = redis_connexion.redis_hlen('DELETED_HOSTS')
     except:
-	    query_error()
+        query_error()
 
-    if deleted_hosts > max_deleted_hosts:
-        print "CRITICAL: %d deleted hosts (%d allowed)" % (deleted_hosts, max_deleted_hosts)
+    if deleted_hosts > MAX_DELETED_HOSTS:
+        print "CRITICAL: %d deleted hosts (%d allowed)" % (deleted_hosts, MAX_DELETED_HOSTS)
         sys.exit(2)
 
 def get_old_rrds():
@@ -117,15 +115,15 @@ def get_old_rrds():
                       password=REDIS_PASSWORD)
 
     if redis_connexion._error:
-	    connection_error()
+        connection_error()
 
-    try:
-    	old_rrds =  len(json.loads(redis_connexion.redis_get('OLD_RRD')))
+    try: 
+        old_rrds =  len(json.loads(redis_connexion.redis_get('OLD_RRD')))
     except:
-	    query_error()
+        query_error()
 
-    if old_rrds > max_old_rrds:
-        print "CRITICAL: %d old_rrds (%d allowed)" % (old_rrds, max_old_rrds)
+    if old_rrds > MAX_OLD_RRDS:
+        print "CRITICAL: %d old_rrds (%d allowed)" % (old_rrds, MAX_OLD_RRDS)
         sys.exit(2) 
 
 def connection_error():

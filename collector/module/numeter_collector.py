@@ -19,7 +19,7 @@ import pprint # Debug (dumper)
 # myCollector
 #
 class myCollector:
-    def __init__(self,configFile="/etc/numeter_collector.cfg"):
+    def __init__(self, configFile="/etc/numeter_collector.cfg"):
 
         # Default configuration
         self._startTime                  = None
@@ -348,7 +348,7 @@ class myCollector:
             self._logger.info("Config : redis_client_timeout = "
                 + str(self._redis_client_timeout))
 
-    def jsonToPython(self,data):
+    def jsonToPython(self, data):
         "Convert json to python"
         try:
             pythonData = json.loads(data)
@@ -356,7 +356,7 @@ class myCollector:
             pythonData = {}
         return pythonData
 
-    def pythonToJson(self,data):
+    def pythonToJson(self, data):
         "Convert python to json"
         try:
             jsonData = json.dumps(data)
@@ -449,21 +449,21 @@ class myCollector:
         self._logger.debug("Threads paramsVerification : OK")
         return True
 
-    def sighandler(self,num, frame):
+    def sighandler(self, num, frame):
         "Start threads"
         self._sigint = True
         self._logger.warning("Thread Get sighandler !")
 
-    def workerGetLastFetch(self,pollerRedisConnect,threadId,host):
+    def workerGetLastFetch(self, pollerRedisConnect, threadId, host):
         "Return lastFetch, fetchEnd"
         # Init 
         fetchEnd  = None
         lastFetch = None
-        lastFetch = pollerRedisConnect.redis_hget("SERVER",self._server_name)
+        lastFetch = pollerRedisConnect.redis_hget("SERVER", self._server_name)
         
         if lastFetch == None: # Default never fetched
             fetchEnd = pollerRedisConnect.redis_zrangebyscore("TimeStamp", 
-                "(-inf", "+inf",start=0, num=self._max_data_collect_time)
+                "(-inf", "+inf", start=0, num=self._max_data_collect_time)
 
             if fetchEnd == []:  # If empty next -> 
                 self._logger.warning("Worker "+str(threadId) 
@@ -494,7 +494,7 @@ class myCollector:
                     + "  //  End check : "+str(fetchEnd[-1]))
                 fetchEnd = fetchEnd[-1]
 
-        return lastFetch,fetchEnd
+        return lastFetch, fetchEnd
 
     def workerFetchDatas(self, pollerRedisConnect, threadId, host, hostID,
                         lastFetch, fetchEnd):
@@ -511,7 +511,7 @@ class myCollector:
         hostDatas = pollerRedisConnect.redis_zrangebyscore("DATAS",
                     "(" + lastFetch, fetchEnd)
 
-        simulateBuffer=[]
+        simulateBuffer = []
         # Format all data
         W_TS = {}
         for redisJSONdata in hostDatas:
@@ -520,7 +520,7 @@ class myCollector:
             if not pythonData.has_key("TimeStamp") \
             or not pythonData.has_key("Plugin") \
             or not pythonData.has_key("Values") \
-            or not re.match('[0-9]+',pythonData["TimeStamp"]):
+            or not re.match('[0-9]+', pythonData["TimeStamp"]):
                 continue
 
             self._logger.info("Worker " 
@@ -563,7 +563,7 @@ class myCollector:
             self._logger.info("Worker " + str(threadId)
                 + " Redis client - SET last fetch for " + self._server_name
                 + " at : " + fetchEnd)
-            pollerRedisConnect.redis_hset("SERVER",self._server_name,fetchEnd)
+            pollerRedisConnect.redis_hset("SERVER", self._server_name, fetchEnd)
         else :
             for timeS in sorted(W_TS):  # Add timestamp to TS@hostname
                 simulateBuffer.append("Worker " + str(threadId)
@@ -584,7 +584,7 @@ class myCollector:
             self.verrou.release()
         return True
 
-    def workerFetchInfos(self,pollerRedisConnect,threadId,host):
+    def workerFetchInfos(self, pollerRedisConnect, threadId, host):
         "Fetch and write data"
         # Get INFOS
         allInfos = pollerRedisConnect.redis_hgetall("INFOS")
@@ -592,7 +592,7 @@ class myCollector:
         if allInfos == {}:
             return [], None
 
-        simulateBuffer=[]
+        simulateBuffer = []
         writedInfos = []
 
         if not "MyInfo" in allInfos:
@@ -612,7 +612,7 @@ class myCollector:
         MyInfoJSON = self.pythonToJson(MyInfo)
         allInfos["MyInfo"] = MyInfoJSON
 
-        for key,valueJson in allInfos.iteritems():
+        for key, valueJson in allInfos.iteritems():
             self._pluginsNumber = self._pluginsNumber + 1
             self._logger.info("Worker " + str(threadId)
                 + " Redis - update host " + host + " INFOS@" + hostID
@@ -640,7 +640,7 @@ class myCollector:
 
         return writedInfos, hostID
 
-    def workerCleanInfo(self,writedInfos,host,threadId):
+    def workerCleanInfo(self, writedInfos, host, threadId):
         "Clean info in redis"
         # Get current plugin list
         currentPlugin = self._redis_connection.redis_hkeys("INFOS@" + host)
@@ -649,7 +649,7 @@ class myCollector:
                 + " Redis - Clean info -- nothing to do" )
             return
         # Get the gap
-        toDelete = list(set(currentPlugin)-set(writedInfos))
+        toDelete = list(set(currentPlugin) - set(writedInfos))
         # Same list do nothing
         if toDelete == []:
             self._logger.info("Worker " + str(threadId)
@@ -681,7 +681,7 @@ class myCollector:
             self._logger.info("Clean info -- nothing to do" )
             return
         # Get the gap
-        toDelete=list(set(currentHosts)-set(allHosts))
+        toDelete = list(set(currentHosts) - set(allHosts))
         # Same list do nothing
         if toDelete == []:
             self._logger.info("Clean Hosts -- nothing to do : same Hosts" )
@@ -702,9 +702,9 @@ class myCollector:
                     # Delete Infos
                     for plugin in self._redis_connection.redis_hkeys("INFOS@"
                                                                     + host):
-                        self._redis_connection.redis_hdel("INFOS@"+host,plugin)
+                        self._redis_connection.redis_hdel("INFOS@" + host, plugin)
 
-    def workerRedis(self,threadId, sema,myHosts,simulateFileOpen=None):
+    def workerRedis(self, threadId, sema, myHosts, simulateFileOpen=None):
         "Thread"
         #time.sleep(0)  # Debug add time
         self._logger.debug("Thread worker " + str(threadId)
@@ -743,7 +743,7 @@ class myCollector:
                 hostID = None
                 writedInfos, hostID = self.workerFetchInfos(pollerRedisConnect,
                                           threadId,host)
-                self.workerCleanInfo(writedInfos,hostID,threadId)
+                self.workerCleanInfo(writedInfos, hostID, threadId)
                 # Fetch and write datas
                 self.workerFetchDatas(pollerRedisConnect, threadId, host,
                     hostID, lastFetch, fetchEnd)
@@ -755,10 +755,10 @@ class myCollector:
         "Start threads"
         # If simulate open file and make Lock
         if self._simulate:
-            simulateFileOpen = open(self._simulate_file,'a')
-            self.verrou=threading.Lock()
+            simulateFileOpen = open(self._simulate_file, 'a')
+            self.verrou = threading.Lock()
         # Number of needed threads
-        numberOfThreads = math.ceil((self._hostListNumber+0.0) /
+        numberOfThreads = math.ceil((self._hostListNumber + 0.0) /
                               self._max_host_by_thread)
         self._logger.debug("Thread - Max host by thread : "
             + str(self._max_host_by_thread))
@@ -802,7 +802,7 @@ class myCollector:
         self.cleanHosts()
 
         # Wait for threads with timeout self._thread_wait_timeout
-        i=1
+        i = 1
         for thread in threads:
             if ( self._thread_wait_timeout > 0 ):
                 thread.join(self._thread_wait_timeout)
@@ -811,9 +811,9 @@ class myCollector:
                         + str(i) + "/" + str(int(numberOfThreads)))
             else :
                 thread.join()
-            self._logger.warning("Thread finished : "+str(i) + "/"
+            self._logger.warning("Thread finished : " + str(i) + "/"
                 + str(int(numberOfThreads)))
-            i+=1
+            i += 1
 
         return True
 

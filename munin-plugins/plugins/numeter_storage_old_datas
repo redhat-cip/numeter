@@ -23,16 +23,16 @@ import json
 try: 
     from numeter_storage import myStorage
 except ImportError:
-    import_storage = False
+    IMPORT_STORAGE = False
 else:
-    import_storage = True
+    IMPORT_STORAGE = True
 
 try: 
     from myRedisConnect import *
 except ImportError:
-    import_redis = False
+    IMPORT_REDIS = False
 else:
-    import_redis = True
+    IMPORT_REDIS = True
 
 def print_config():
     print 'graph_title Numeter redis %s' % type
@@ -49,9 +49,9 @@ def load_params():
     global REDIS_DB
     global REDIS_PASSWORD
 
-    REDIS_HOST      = os.getenv('redisHost','127.0.0.1')
+    REDIS_HOST      = os.getenv('redisHost', '127.0.0.1')
     REDIS_PORT      = os.getenv('redisPort', 6379)
-    REDIS_TIMEOUT   = os.getenv('redisTimeout',10)
+    REDIS_TIMEOUT   = os.getenv('redisTimeout', 10)
     REDIS_DB        = os.getenv('redisDb', 2)
     REDIS_PASSWORD  = os.getenv('redisPassword', None)
 
@@ -103,11 +103,11 @@ def get_old_rrds():
 
 def print_storage_values():
     # Deleted hosts
-    print_values('deleted_hosts',get_deleted_hosts())
+    print_values('deleted_hosts', get_deleted_hosts())
     # Deleted plugins
-    print_values('deleted_plugins',get_deleted_plugins())
+    print_values('deleted_plugins', get_deleted_plugins())
     # OLD_RRDS
-    print_values('old_rrds',get_old_rrds())
+    print_values('old_rrds', get_old_rrds())
 
 def print_storage_configs():
     # Deleted hosts
@@ -128,23 +128,23 @@ def print_storage_configs():
 
 
 
-def print_values(name,value):
+def print_values(name, value):
     if value is None:
         value = 'U'
     print "%s.value %s" % (name, value)
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
-    if len(argv) > 1:
-        if argv[1] == 'config':
+    ARGV = sys.argv[:]
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
             print_config()
-        elif argv[1] == 'autoconf':
-            if not import_redis and import_storage:
+        elif ARGV[1] == 'autoconf':
+            if not IMPORT_REDIS and IMPORT_STORAGE:
                 print 'no (failed import redis and collector or storage module)'
                 sys.exit(0)
             print 'yes'
 
-    elif import_redis and import_storage:
+    elif IMPORT_REDIS and IMPORT_STORAGE:
         load_params()
         print_storage_values()
 

@@ -4,11 +4,8 @@
 #
 
 import sys
-import os
-import subprocess
 import time
 import datetime
-import json
 import argparse
 
 try: 
@@ -18,26 +15,26 @@ except ImportError:
     sys.exit(3)
 
 # Get args
-parser = argparse.ArgumentParser()
-parser.add_argument("-w","--warning", 
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument("-w", "--warning", 
             help="Warning delay since last collector polling. Default 600s", type=int)
-parser.add_argument("-c","--critical", 
+PARSER.add_argument("-c", "--critical", 
             help="Critical delay since last collector polling. Default 1200s", type=int)
-parser.add_argument("-d","--database",
+PARSER.add_argument("-d", "--database",
             help="Database to use. Default 0", type=int)
-parser.add_argument("-p","--port",
+PARSER.add_argument("-p", "--port",
             help="Port number to use. Default 5959", type=int)
-args = parser.parse_args()
+ARGS = PARSER.parse_args()
 
 REDIS_HOST      = '127.0.0.1'
-REDIS_PORT      =  args.port or 5959 
+REDIS_PORT      =  ARGS.port or 5959 
 REDIS_TIMEOUT   =  10
-REDIS_DB        =  args.database or 0
+REDIS_DB        =  ARGS.database or 0
 REDIS_PASSWORD  =  None
 
 # Set values
-warn_delay = args.warning or 600
-crit_delay = args.critical or 1200
+WARN_DELAY = ARGS.warning or 600
+CRIT_DELAY = ARGS.critical or 1200
 
 def get_delay():
     redis_connexion = myRedisConnect(host=REDIS_HOST,
@@ -52,17 +49,17 @@ def get_delay():
     server_list = redis_connexion.redis_hkeys('SERVER')
 
     for server in server_list:
-        last_visit = redis_connexion.redis_hget('SERVER',server)
+        last_visit = redis_connexion.redis_hget('SERVER', server)
 
-        t = datetime.datetime.now()
-        t = time.mktime(t.timetuple())
-        delay = (t - int(last_visit))
+        timenow = datetime.datetime.now()
+        timenow = time.mktime(timenow.timetuple())
+        delay = (timenow - int(last_visit))
 
-        if delay > crit_delay:
-            print "CRITICAL: server %s collected data %ds ago " % (server,delay)
+        if delay > CRIT_DELAY:
+            print "CRITICAL: server %s collected data %ds ago " % (server, delay)
             sys.exit(2)
-        elif delay > warn_delay:
-            print "WARNING: server %s collected data %ds ago " % (server,delay)
+        elif delay > WARN_DELAY:
+            print "WARNING: server %s collected data %ds ago " % (server, delay)
             sys.exit(1)
 
 

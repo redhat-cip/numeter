@@ -22,9 +22,9 @@ import re
 try: 
     from numeter_poller import myPoller
 except ImportError:
-    import_poller = False
+    IMPORT_POLLER = False
 else:
-    import_poller = True
+    IMPORT_POLLER = True
 
 def print_config(check_type):
     print 'graph_title Numeter poller stats'
@@ -69,11 +69,11 @@ def get_file_line():
                               stdout=subprocess.PIPE)
     return stdout.communicate()[0]
 
-def get_value_in_line(name,line):
+def get_value_in_line(name, line):
     # 0 data / 1 error
     result = re.match(POLLER_PATTERN, line)
     if result is not None:
-        idx = check_type.index(name) + 1
+        idx = CHECK_TYPE.index(name) + 1
         if result.group(idx) is not None:
             return str(result.group(idx))
     else:
@@ -86,20 +86,20 @@ def print_value_poller(name, value):
 
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
+    ARGV = sys.argv[:]
     # Disable seconds
-    check_type = ['plugins','seconds']
-    if len(argv) > 1:
-        if argv[1] == 'config':
-            print_config(check_type)
-        elif argv[1] == 'autoconf':
-            if not import_poller:  
+    CHECK_TYPE = ['plugins','seconds']
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
+            print_config(CHECK_TYPE)
+        elif ARGV[1] == 'autoconf':
+            if not IMPORT_POLLER:  
                 print 'no (failed import poller module)'
                 sys.exit(0)
             print 'yes'
-    elif import_poller:
+    elif IMPORT_POLLER:
         load_params()
-        fileline = get_file_line()
-        for name in check_type: 
-            value = get_value_in_line(name,fileline)
-            print_value_poller(name,value)
+        FILELINE = get_file_line()
+        for NAME in CHECK_TYPE: 
+            VALUE = get_value_in_line(NAME, FILELINE)
+            print_value_poller(NAME, VALUE)

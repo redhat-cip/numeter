@@ -26,23 +26,23 @@ import re
 try: 
     from numeter_poller import myPoller
 except ImportError:
-    import_poller = False
+    IMPORT_POLLER = False
 else:
-    import_poller = True
+    IMPORT_POLLER = True
 
 try: 
     from numeter_collector import myCollector
 except ImportError:
-    import_collector = False
+    IMPORT_COLLECTOR = False
 else:
-    import_collector = True
+    IMPORT_COLLECTOR = True
 
 try: 
     from numeter_storage import myStorage
 except ImportError:
-    import_storage = False
+    IMPORT_STORAGE = False
 else:
-    import_storage = True
+    IMPORT_STORAGE = True
 
 def print_config(check_type):
     print 'graph_title Numeter %s execution time' % check_type
@@ -51,7 +51,7 @@ def print_config(check_type):
     print 'graph_args --base 1000 --lower-limit 0'
     print 'graph_category numeter'
     if check_type == "all":
-        check_type="poller collector storage"
+        check_type = "poller collector storage"
     for name in check_type.split():
         print '%s.label %s' % (name, name)
         print '%s.draw LINE' % name
@@ -64,13 +64,13 @@ def print_config(check_type):
             print '%s.color #53b73a' % name
 
 def print_suggest():
-    if import_poller:
+    if IMPORT_POLLER:
         print "poller"
-    if import_collector:
+    if IMPORT_COLLECTOR:
         print "collector"
-    if import_storage:
+    if IMPORT_STORAGE:
         print "storage"
-    if import_poller and import_collector and import_storage:
+    if IMPORT_POLLER and IMPORT_COLLECTOR and IMPORT_STORAGE:
         print "all"
 
 def load_params():
@@ -119,30 +119,30 @@ def print_values_storage():
 
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
+    ARGV = sys.argv[:]
     #check_type = argv[0].split('numeter_').pop() or 'Global'
-    check_type = argv[0].split('numeter_time_').pop()
-    if len(argv) > 1:
-        if argv[1] == 'config':
-            print_config(check_type)
-        elif argv[1] == 'suggest' and ( import_poller or import_collector or import_storage ):
+    CHECK_TYPE = ARGV[0].split('numeter_time_').pop()
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
+            print_config(CHECK_TYPE)
+        elif ARGV[1] == 'suggest' and ( IMPORT_POLLER or IMPORT_COLLECTOR or IMPORT_STORAGE ):
             print_suggest()
-        elif argv[1] == 'autoconf':
-            if not import_poller and import_collector and import_storage:  
+        elif ARGV[1] == 'autoconf':
+            if not IMPORT_POLLER and IMPORT_COLLECTOR and IMPORT_STORAGE:  
                 print 'no (failed import poller or collector or storage module)'
                 sys.exit(0)
             print 'yes'
 
-    elif import_poller and check_type == "poller":
+    elif IMPORT_POLLER and CHECK_TYPE == "poller":
         load_params()
         print_values_poller()
-    elif import_collector and check_type == "collector":
+    elif IMPORT_COLLECTOR and CHECK_TYPE == "collector":
         load_params()
         print_values_collector()
-    elif import_storage and check_type == "storage":
+    elif IMPORT_STORAGE and CHECK_TYPE == "storage":
         load_params()
         print_values_storage()
-    elif import_storage and import_collector and import_poller and check_type == "all":
+    elif IMPORT_STORAGE and IMPORT_COLLECTOR and IMPORT_POLLER and CHECK_TYPE == "all":
         load_params()
         print_values_poller()
         print_values_collector()

@@ -6,25 +6,24 @@
 #
 ### BEGIN INIT INFO
 # Provides: numeter-collector
-# Required-Start:
+# Required-Start: $remote_fs $syslog
 # Should-Start:
-# Required-Stop:
+# Required-Stop: $remote_fs $syslog
 # Should-Stop:
-# Default-Start:  3 5
-# Default-Stop:   0 1 2 6
+# Default-Start: 2 3 4 5
+# Default-Stop:
 # Short-Description: numeter-collector daemon process
 # Description:    Runs up numeter-collector daemon process
 ### END INIT INFO
+
+. /lib/lsb/init-functions
 
 case "$1" in
   start)
     echo "Starting server"
     numeter-collectord start
     sleep 0.2
-    ps -p $(cat /var/run/numeter_collector.pid 2> /dev/null) > /dev/null 2>&1
-    if [ $? -eq 1 ]; then
-        echo "Numeter don't start. Check the logs"
-    fi
+    status_of_proc -p /var/run/numeter_collector.pid /usr/bin/numeter-collectord numeter-collectord && exit 0 || exit $?
     ;;
   stop)
     echo "Stopping server"
@@ -34,9 +33,12 @@ case "$1" in
     echo "Restarting server"
     numeter-collectord restart
     ;;
+  status)
+    status_of_proc -p /var/run/numeter_collector.pid /usr/bin/numeter-collectord numeter-collectord && exit 0 || exit $?
+    ;;
   *)
     # Refuse to do other stuff
-    echo "Usage: $0 {start|stop|restart}"
+    echo "Usage: $0 {start|stop|restart|status}"
     exit 1
     ;;
 esac

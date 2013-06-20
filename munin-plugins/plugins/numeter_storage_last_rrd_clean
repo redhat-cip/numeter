@@ -22,9 +22,9 @@ import datetime
 try: 
     from myRedisConnect import *
 except ImportError:
-    import_redis = False
+    IMPORT_REDIS = False
 else:
-    import_redis = True
+    IMPORT_REDIS = True
 
 def print_config():
     print 'graph_title Numeter storage last rrd clean'
@@ -46,9 +46,9 @@ def load_params():
     global REDIS_PASSWORD
 
     REDIS_KEY       = os.getenv('redisKey','LAST_RRD_CLEAN')
-    REDIS_HOST      = os.getenv('redisHost','127.0.0.1')
+    REDIS_HOST      = os.getenv('redisHost', '127.0.0.1')
     REDIS_PORT      = os.getenv('redisPort', 6379)
-    REDIS_TIMEOUT   = os.getenv('redisTimeout',10)
+    REDIS_TIMEOUT   = os.getenv('redisTimeout', 10)
     REDIS_DB        = os.getenv('redisDb', 2)
     REDIS_PASSWORD  = os.getenv('redisPassword', None)
 
@@ -61,33 +61,33 @@ def print_values():
                       password=REDIS_PASSWORD)
 
     if redis_connexion._error:
-        self._logger.critical("Redis server connexion ERROR - "
+        print("Redis server connexion ERROR - "
         + "Check server access or the password")
         exit(1)
 
-    lastFetch = redis_connexion.redis_get(REDIS_KEY)
+    lastfetch = redis_connexion.redis_get(REDIS_KEY)
 
-    if not lastFetch:
+    if not lastfetch:
         print "lastrrdcleanclean.value U"
         sys.exit(1)
-    t = datetime.datetime.now()
-    t = time.mktime(t.timetuple())
-    lastClean = t - int(lastFetch)
+    timenow = datetime.datetime.now()
+    timenow = time.mktime(timenow.timetuple())
+    lastclean = timenow - int(lastfetch)
 
-    print 'lastrrdcleanclean.value',lastClean
+    print 'lastrrdcleanclean.value', lastclean
 
 
 if __name__ == '__main__':
-    argv = sys.argv[:]
-    if len(argv) > 1:
-        if argv[1] == 'config':
+    ARGV = sys.argv[:]
+    if len(ARGV) > 1:
+        if ARGV[1] == 'config':
             print_config()
-        elif argv[1] == 'autoconf':
-            if not import_redis:  
+        elif ARGV[1] == 'autoconf':
+            if not IMPORT_REDIS:  
                 print 'no (failed import redis module)'
                 sys.exit(0)
             print 'yes'
 
-    elif import_redis:
+    elif IMPORT_REDIS:
         load_params()
         print_values()

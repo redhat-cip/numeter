@@ -6,7 +6,7 @@ import time
 class modulesGeneric: 
     "Module generic"
 
-    def  __init__(self,logger,configParser=None):
+    def  __init__(self, logger, configParser=None):
         "Load configuration and start connexion"
         raise NotImplementedError
     
