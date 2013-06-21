@@ -1,7 +1,7 @@
 # Numeter
-Numeter is a new graphing solution (i.e. Cacti) made by some
-guys working at eNovance. The three components Poller, collector and storage are written in Python with datas which are
-stored in a Redis DB and written to disk in RRD files. The webapp is written in PHP.
+Numeter is a new and dynamic graphing solution made by some of the 
+folks at eNovance. We use it as part of our cloud solutions. It is 
+based on Python, sexy and highly scalable.
 
 
 **Features :**
