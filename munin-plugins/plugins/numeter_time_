@@ -128,7 +128,7 @@ if __name__ == '__main__':
         elif ARGV[1] == 'suggest' and ( IMPORT_POLLER or IMPORT_COLLECTOR or IMPORT_STORAGE ):
             print_suggest()
         elif ARGV[1] == 'autoconf':
-            if not IMPORT_POLLER and IMPORT_COLLECTOR and IMPORT_STORAGE:  
+            if not ( IMPORT_POLLER or IMPORT_COLLECTOR or IMPORT_STORAGE):  
                 print 'no (failed import poller or collector or storage module)'
                 sys.exit(0)
             print 'yes'
