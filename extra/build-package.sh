@@ -3,6 +3,10 @@
 export DIST=${1:-"wheezy"}
 export ARCH=${2:-"amd64"}
 
+# Output dir
+export GIT_PBUILDER_OUTPUT_DIR="/tmp/build-result"
+mkdir -p $GIT_PBUILDER_OUTPUT_DIR
+
 echo Build package : $DIST - $ARCH
 
 dpkg -l git-buildpackage > /dev/null 2>&1
