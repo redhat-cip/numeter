@@ -18,6 +18,11 @@ if [ $? -eq 1 ];then
     echo ERROR git-buildpackage not found
 fi
 
+dpkg -l quilt > /dev/null 2>&1
+if [ $? -eq 1 ];then
+    echo ERROR quilt not found
+fi
+
 if [ -d "/var/cache/pbuilder/base-$DIST-$ARCH.cow" ];then
     git-pbuilder update
 else
