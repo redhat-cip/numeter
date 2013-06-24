@@ -3,8 +3,11 @@
 export DIST=${1:-"wheezy"}
 export ARCH=${2:-"amd64"}
 
-# Output dir
-export GIT_PBUILDER_OUTPUT_DIR="/tmp/build-result"
+GIT_URL="https://github.com/enovance/numeter"
+UPSTREAM_BRANCH="stable"
+BUILD_DIR=$(mktemp -d)
+export GIT_PBUILDER_OUTPUT_DIR="$BUILD_DIR/build-result"
+
 mkdir -p $GIT_PBUILDER_OUTPUT_DIR
 
 echo Build package : $DIST - $ARCH
@@ -20,11 +23,12 @@ else
     git-pbuilder create
 fi
 
-BUILD_DIR=$(mktemp -d)
-
 cd $BUILD_DIR
-gbp-clone --debian-branch=debian-$DIST --upstream-branch=stable https://github.com/enovance/numeter
+gbp-clone --debian-branch=debian-$DIST --upstream-branch=$UPSTREAM_BRANCH $GIT_URL
 cd numeter
-#git-buildpackage --git-prebuild="git merge stable -m merge" --git-pbuilder --git-verbose
-git-buildpackage --git-debian-branch=debian-$DIST --git-upstream-branch=stable --git-arch=$ARCH --git-dist=$DIST --git-prebuild="git merge stable -m merge" --git-pbuilder --git-verbose
+git-buildpackage --git-debian-branch=debian-$DIST --git-upstream-branch=$UPSTREAM_BRANCH --git-arch=$ARCH --git-dist=$DIST --git-prebuild="git merge $UPSTREAM_BRANCH -m merge" --git-pbuilder --git-verbose
+
+echo "Build results : $GIT_PBUILDER_OUTPUT_DIR"
+ls -latrh $GIT_PBUILDER_OUTPUT_DIR
+
 rm -rf $BUILD_DIR
