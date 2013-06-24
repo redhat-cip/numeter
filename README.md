@@ -16,18 +16,5 @@ based on Python, sexy and highly scalable.
 **How to get started :**
 * Visit the Official Website : http://enovance.github.com/numeter/
 * Explore the Documentation : https://numeter.readthedocs.org
-* Subscribe to Mailing Lists
-* Join us on IRC : #numeter (on OFTC) 
-
-**Mailing List :**
-
-***For devs :***
-* Join the group : https://groups.google.com/group/numeter-dev/subscribe?hl=en
-* Read e-mail archives : http://www.mail-archive.com/numeter-dev@googlegroups.com/
-
-***For users :***
-* Join the group : https://groups.google.com/group/numeter-user/subscribe?hl=en
-* Read e-mail archives : http://www.mail-archive.com/numeter-user@googlegroups.com/
-
 
 **License : AGPLv3**
