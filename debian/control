@@ -13,44 +13,35 @@ Architecture: all
 Homepage: https://github.com/numeter/collector
 Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, redis-server (>= 2:2.4.14)
 XB-Python-Version: ${python:Versions}
-Description: restricts a user's shell environment to limited sets of commands
- numeter is a shell coded in Python that lets you restrict a user's environment
- to limited sets of commands, choose to enable/disable any command over SSH 
- (e.g. SCP, SFTP, rsync, etc.), log user's commands, implement timing 
- restrictions, and more.
+Description: Numeter is a new and dynamic graphing solution.
+ Collector : Data is fetched from the pollers and stored in a Redis instance
+ until it is retrieved by the Storage component.
 
 Package: numeter-poller
 Architecture: all
 Homepage: https://github.com/numeter/poller
 Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, munin-node, redis-server (>= 2:2.4.14)
 XB-Python-Version: ${python:Versions}
-Description: restricts a user's shell environment to limited sets of commands
- numeter is a shell coded in Python that lets you restrict a user's environment
- to limited sets of commands, choose to enable/disable any command over SSH 
- (e.g. SCP, SFTP, rsync, etc.), log user's commands, implement timing 
- restrictions, and more.
+Description: Numeter is a new and dynamic graphing solution.
+ Poller is an agent installed on the servers for which graphs are desired.
+ It gathers data and keeps it to allow asynchronous collection.
 
 Package: numeter-storage
 Architecture: all
 Homepage: https://github.com/numeter/storage
 Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, python-rrdtool, uwsgi, nginx, python-flask, uwsgi-plugin-python, redis-server (>= 2:2.4.14)
 XB-Python-Version: ${python:Versions}
-Description: restricts a user's shell environment to limited sets of commands
- numeter is a shell coded in Python that lets you restrict a user's environment
- to limited sets of commands, choose to enable/disable any command over SSH 
- (e.g. SCP, SFTP, rsync, etc.), log user's commands, implement timing 
- restrictions, and more.
+Description: Numeter is a new and dynamic graphing solution.
+ Storage : Data is fetched from the collectors and then stored in RRD files.
+ An HTTP API allows access to the data.
 
 Package: numeter-common
 Architecture: all
 Homepage: https://github.com/numeter
 Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-redis (>= 2.4.9)
 XB-Python-Version: ${python:Versions}
-Description: restricts a user's shell environment to limited sets of commands
- numeter is a shell coded in Python that lets you restrict a user's environment
- to limited sets of commands, choose to enable/disable any command over SSH 
- (e.g. SCP, SFTP, rsync, etc.), log user's commands, implement timing 
- restrictions, and more.
+Description: Numeter is a new and dynamic graphing solution.
+ Common tools for numeter components.
 
 Package: numeter-web-app
 Architecture: all
@@ -58,16 +49,12 @@ Homepage: https://github.com/numeter
 Depends: ${misc:Depends}, mysql-server, php5-fpm | libapache2-mod-php5, php5-mysql
 Recommends: apache2 | lighttpd | httpd
 XB-Python-Version: ${python:Versions}
-Description: restricts a user's shell environment to limited sets of commands
- numeter is a shell coded in Python that lets you restrict a user's environment
- to limited sets of commands, choose to enable/disable any command over SSH 
- (e.g. SCP, SFTP, rsync, etc.), log user's commands, implement timing 
- restrictions, and more.
+Description: Numeter is a new and dynamic graphing solution.
+ Webapp : A PHP webapp displays data using the dygraphs library
 
 Package: munin-plugins-numeter
 Architecture: all
 Homepage: https://github.com/numeter
 Depends: ${misc:Depends}, ${python:Depends}, python, munin-node
 XB-Python-Version: ${python:Versions}
-Description: restricts a user's shell environment to limited sets of commands
- numeter is a shell coded in Python that lets you restrict a user's environment
+Description: Munin plugins for Numeter.
