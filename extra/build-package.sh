@@ -25,10 +25,20 @@ fi
 
 cd $BUILD_DIR
 gbp-clone --debian-branch=debian-$DIST --upstream-branch=$UPSTREAM_BRANCH $GIT_URL
+
 cd numeter
-git-buildpackage --git-debian-branch=debian-$DIST --git-upstream-branch=$UPSTREAM_BRANCH --git-arch=$ARCH --git-dist=$DIST --git-prebuild="git merge $UPSTREAM_BRANCH -m merge" --git-pbuilder --git-verbose
+
+git-buildpackage \
+--git-debian-branch=debian-$DIST \
+--git-upstream-branch=$UPSTREAM_BRANCH \
+--git-arch=$ARCH \
+--git-dist=$DIST \
+--git-prebuild="git merge $UPSTREAM_BRANCH -m merge ; sed -i \"1s/(\(.*\))/(\\1-0+${DIST})/\" debian/changelog" \
+--git-pbuilder \
+--git-verbose
 
 echo "Build results : $GIT_PBUILDER_OUTPUT_DIR"
+
 ls -latrh $GIT_PBUILDER_OUTPUT_DIR
 
 rm -rf $BUILD_DIR
