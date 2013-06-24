@@ -3,7 +3,8 @@
 export DIST=${1:-"wheezy"}
 export ARCH=${2:-"amd64"}
 
-GIT_URL="https://github.com/enovance/numeter"
+REPO="numeter"
+GIT_URL="https://github.com/enovance/$REPO"
 UPSTREAM_BRANCH="stable"
 BUILD_DIR=$(mktemp -d)
 export GIT_PBUILDER_OUTPUT_DIR="$BUILD_DIR/build-result"
@@ -26,7 +27,7 @@ fi
 cd $BUILD_DIR
 gbp-clone --debian-branch=debian-$DIST --upstream-branch=$UPSTREAM_BRANCH $GIT_URL
 
-cd numeter
+cd $REPO
 
 git-buildpackage \
 --git-debian-branch=debian-$DIST \
