@@ -73,7 +73,7 @@ class MasterTestCase(unittest.TestCase):
         # Check info foo
 
         result = pollerRedis.redis_hget("INFOS",'foo_unittest')
-        P_INFO_foo = '{"Describ": "", "Title": "foo_test", "Plugin": "foo_unittest", "Vlabel": "foo vlabel", "Base": "1000", "Infos": {"foo": {"draw": "AREA", "id": "foo", "label": "foo label"}}, "Order": ""}'
+        P_INFO_foo = '{"Describ": "", "Title": "foo_test", "Plugin": "foo_unittest", "Vlabel": "foo vlabel", "Base": "1000", "Infos": {"foo": {"draw": "AREA", "id": "foo", "label": "foo label"}}, "Order": "foo"}'
         self.assertEquals(result,P_INFO_foo)
         # Check info bar
         result = pollerRedis.redis_hget("INFOS",'bar_unittest')
