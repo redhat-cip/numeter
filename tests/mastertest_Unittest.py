@@ -16,7 +16,7 @@ import rrdtool
 myPath = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../poller/module'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common/module'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../storage/module'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../collector/module'))
 
@@ -73,7 +73,7 @@ class MasterTestCase(unittest.TestCase):
         # Check info foo
 
         result = pollerRedis.redis_hget("INFOS",'foo_unittest')
-        P_INFO_foo = '{"Describ": "", "Title": "foo_test", "Plugin": "foo_unittest", "Vlabel": "foo vlabel", "Base": "1000", "Infos": {"foo": {"draw": "AREA", "id": "foo", "label": "foo label"}}, "Order": ""}'
+        P_INFO_foo = '{"Describ": "", "Title": "foo_test", "Plugin": "foo_unittest", "Vlabel": "foo vlabel", "Base": "1000", "Infos": {"foo": {"draw": "AREA", "id": "foo", "label": "foo label"}}, "Order": "foo"}'
         self.assertEquals(result,P_INFO_foo)
         # Check info bar
         result = pollerRedis.redis_hget("INFOS",'bar_unittest')

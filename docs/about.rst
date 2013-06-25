@@ -6,6 +6,10 @@
 About
 ############
 
+Numeter is a new and dynamic graphing solution made by some of the
+folks at eNovance. We use it as part of our cloud solutions. It is
+based on Python, sexy and highly scalable.
+
 Like many, we started with Cacti and Munin a long time ago. Then, we joined these two software packages into one and we called it Mucti.
 
 Over time and with an increasing number of hosts, we have seen the limitations of this approach. 

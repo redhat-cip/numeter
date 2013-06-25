@@ -156,12 +156,11 @@ class myMuninModule(modulesGeneric):
         if infos['Order'] == '':
             orderlist = []
             for key, value in pluginInfo.iteritems():
-                if type(value) == type(dict()):
-                    if 'draw' in value:
-                        if value['draw'] != 'STACK':
-                            orderlist.insert(0, key)
-                        else:
-                            orderlist.append(key)
+                if type(value) == type(dict()) and 'draw' in value:
+                    if value['draw'] != 'STACK':
+                        orderlist.insert(0, key)
+                    else:
+                        orderlist.append(key)
             infos['Order'] = ' '.join(orderlist)
 
         if infos["Infos"] == {}:
