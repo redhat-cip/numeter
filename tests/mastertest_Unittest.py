@@ -16,7 +16,7 @@ import rrdtool
 myPath = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../poller/module'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common/module'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../storage/module'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../collector/module'))
 
