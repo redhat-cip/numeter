@@ -2,4 +2,6 @@
 *.deb
 *.log
 *.swp
+*,cover
+.coverage
 docs/_build
