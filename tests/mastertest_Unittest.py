@@ -16,7 +16,7 @@ import rrdtool
 myPath = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../poller/module'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common/module'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../storage/module'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../collector/module'))
 
@@ -69,11 +69,11 @@ class MasterTestCase(unittest.TestCase):
         # Check infos keys
         result = pollerRedis.redis_hkeys("INFOS")
         P_KEYS = ['foo_unittest', 'bar_unittest', 'MyInfo']
-        self.assertEquals(result,P_KEYS)
+        self.assertEquals(sorted(result),sorted(P_KEYS))
         # Check info foo
 
         result = pollerRedis.redis_hget("INFOS",'foo_unittest')
-        P_INFO_foo = '{"Describ": "", "Title": "foo_test", "Plugin": "foo_unittest", "Vlabel": "foo vlabel", "Base": "1000", "Infos": {"foo": {"draw": "AREA", "id": "foo", "label": "foo label"}}, "Order": ""}'
+        P_INFO_foo = '{"Describ": "", "Title": "foo_test", "Plugin": "foo_unittest", "Vlabel": "foo vlabel", "Base": "1000", "Infos": {"foo": {"draw": "AREA", "id": "foo", "label": "foo label"}}, "Order": "foo"}'
         self.assertEquals(result,P_INFO_foo)
         # Check info bar
         result = pollerRedis.redis_hget("INFOS",'bar_unittest')
@@ -111,7 +111,7 @@ class MasterTestCase(unittest.TestCase):
         self.assertEquals(result,P_DATAS)
         # Check INFOS@host
         result = collectorRedis.redis_hkeys("INFOS@"+hostID)
-        self.assertEquals(result,P_KEYS)
+        self.assertEquals(sorted(result),sorted(P_KEYS))
         result = collectorRedis.redis_hget("INFOS@"+hostID,"bar_unittest")
         self.assertEquals(result, P_INFO_bar)
         result = collectorRedis.redis_hget("INFOS@"+hostID,"foo_unittest")

@@ -155,7 +155,7 @@ class CollectorTestCase(unittest.TestCase):
         # Start connexion poller (db1)
         self.collector._redis_server_db = 1
         collectorRedis = self.collector.redisStartConnexion()
-        self.collector._redis_connexion = collectorRedis
+        self.collector._redis_connection = collectorRedis
         # Never fetch and no data
         os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
         result = self.collector.workerFetchDatas(pollerRedis,'1','myhost','123456',None,None)
@@ -216,7 +216,7 @@ class CollectorTestCase(unittest.TestCase):
         # Start connexion poller (db1)
         self.collector._redis_server_db = 1
         collectorRedis = self.collector.redisStartConnexion()
-        self.collector._redis_connexion = collectorRedis
+        self.collector._redis_connection = collectorRedis
         # No infos
         os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
         result = self.collector.workerFetchInfos(pollerRedis,'1','myhost')
@@ -238,7 +238,7 @@ class CollectorTestCase(unittest.TestCase):
         # Start connexion poller (db1)
         self.collector._redis_server_db = 1
         collectorRedis = self.collector.redisStartConnexion()
-        self.collector._redis_connexion = collectorRedis
+        self.collector._redis_connection = collectorRedis
         sema = myFakeSema()
         # Init workerFetchDatas
         pollerRedis.redis_zadd("TimeStamp",'1000000000',1000000000)
@@ -254,8 +254,8 @@ class CollectorTestCase(unittest.TestCase):
         self.assertEqual(result, ['{"Plugin":"foo","TimeStamp":"1000000000","Values": {"bar": "42"}}'])
 
     def test_collector_workerCleanInfo(self):
-        self.collector._redis_connexion = self.collector.redisStartConnexion()
-        collectorRedis = self.collector._redis_connexion
+        self.collector._redis_connection = self.collector.redisStartConnexion()
+        collectorRedis = self.collector._redis_connection
         host = 'myhost'
         threadId = 1
         # No data before (dont delete no data after)
@@ -300,8 +300,8 @@ class CollectorTestCase(unittest.TestCase):
         self.assertEquals(result, ['foo'])
 
     def test_collector_cleanHosts(self):
-        self.collector._redis_connexion = self.collector.redisStartConnexion()
-        collectorRedis = self.collector._redis_connexion
+        self.collector._redis_connection = self.collector.redisStartConnexion()
+        collectorRedis = self.collector._redis_connection
         # Nothing before
         os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
         self.collector._hostList = [{'host': 'foo'},{'host': 'bar'}]
