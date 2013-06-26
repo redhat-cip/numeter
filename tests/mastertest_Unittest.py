@@ -69,7 +69,7 @@ class MasterTestCase(unittest.TestCase):
         # Check infos keys
         result = pollerRedis.redis_hkeys("INFOS")
         P_KEYS = ['foo_unittest', 'bar_unittest', 'MyInfo']
-        self.assertEquals(result,P_KEYS)
+        self.assertEquals(sorted(result),sorted(P_KEYS))
         # Check info foo
 
         result = pollerRedis.redis_hget("INFOS",'foo_unittest')
@@ -111,7 +111,7 @@ class MasterTestCase(unittest.TestCase):
         self.assertEquals(result,P_DATAS)
         # Check INFOS@host
         result = collectorRedis.redis_hkeys("INFOS@"+hostID)
-        self.assertEquals(result,P_KEYS)
+        self.assertEquals(sorted(result),sorted(P_KEYS))
         result = collectorRedis.redis_hget("INFOS@"+hostID,"bar_unittest")
         self.assertEquals(result, P_INFO_bar)
         result = collectorRedis.redis_hget("INFOS@"+hostID,"foo_unittest")
