@@ -1,0 +1,6 @@
+<ul class="unstyled">
+ {% for host in hosts %}
+  <li><a host-id="{{ host.id }}">{{ host }}</a></li>
+  <div id="host-{{ host.id }}-content" style="display: hidden"></div>
+ {% endfor %}
+</ul>

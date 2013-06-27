@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+ 
+<html lang="en">
+  <head>
+   <div class="container">
+   <meta charset="utf-8">
+   <title>Numeter - Authentification</title>
+   <link href="/static/css/bootstrap.css" rel="stylesheet">
+   <script src="/static/js/jquery.js"></script>
+  </head>
+
+  <body>
+    <br>
+   <div class="row">
+    <div class="span6 offset3">
+        <img style=float:left src="/static/img/numeter_banner.png" />
+    </div>
+   </div>
+
+    <br>
+    <br>
+
+    <div class="container">
+    <div class="row">
+        <div class="span4 offset4 well">
+            <legend>Please Log In</legend>
+            <div class="messages">
+                {% include "base/messages.html" %}
+            </div>
+            <form method="POST" action="{% url 'login' %}" accept-charset="UTF-8">{% csrf_token %}
+            <input type="text" class="span4" name="username" placeholder="Username">
+            <input type="password" class="span4" name="password" placeholder="Password">
+            <br><br>
+            <button type="submit" name="submit" class="btn btn-info btn-block">Log in</button>
+            </form>    
+        </div>
+    </div>
+</div>
+   
+   <div class="row">
+    <footer class="footer">
+     {% include "base/footer.html" %}
+    </footer>
+   </div>
+
+   </div>
+  </body>
+</html>
+   
+

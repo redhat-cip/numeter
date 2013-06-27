@@ -1,0 +1,17 @@
+[
+ {"pk": 1,
+  "model": "auth.user",
+  "fields": {"username": "root",
+  "first_name": "",
+  "last_name": "",
+  "is_active": true,
+  "is_superuser": true,
+  "is_staff": true,
+  "last_login": "2013-06-25T06:33:15.251Z",
+  "groups": [],
+  "user_permissions": [],
+  "password": "pbkdf2_sha256$10000$bhIhAGkvSLoR$3/pq2z+voDeePgrI1L/uD63uYMvrYk6FKkn73fjNvLU=",
+  "email": "toto@tototo.com",
+  "date_joined": "2013-06-25T06:33:15.251Z"
+ }}
+]

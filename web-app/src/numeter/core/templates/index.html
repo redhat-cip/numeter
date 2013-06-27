@@ -1,0 +1,33 @@
+{% extends "base/base.html" %}
+
+{% block body %}
+<script>
+var csrf = "{{ csrf_token }}";
+window.onload = function(e){ 
+  var host_data = {{ hosts.get_list_tree|safe }};
+}
+</script>
+
+ <div class="span2">
+  <div class="accordion" id="host-accordion">
+   {% for host in hosts %}
+    {% ifchanged host.group %}
+     <div class="accordion-group">
+      <div class="accordion-heading">
+       <a href="#group-{{ host.group.id }}" data-parent="#host-accordion" data-toggle="collapse" class="accordion-toggle" group-id="{{ host.group.id }}">
+        {{ host.group }}
+       </a>
+      </div>
+      <div class="accordion-body collapse" id="group-{{ host.group.id }}" group-id="{{ host.group.id }}" style="height: 0px;">
+       <div class="accordion-inner" id="group-{{ host.group.id }}-content"></div>
+      </div>
+     </div>
+    {% endifchanged %}
+   {% endfor %}
+  </div>
+ </div>
+
+ <div class="span9">
+  <h3 class="text-center">Welcome to Numeter Dasboard {{ user }}</h3>
+ </div>
+{% endblock %}
