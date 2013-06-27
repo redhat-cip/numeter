@@ -244,8 +244,11 @@ class myMuninModule(modulesGeneric):
         ret = {}
         for line in self._iterline():
             if line.startswith('graph_'):
-                key, value = line.split(' ', 1)
-                ret[key] = value
+                try:
+                    key, value = line.split(' ', 1)
+                    ret[key] = value
+                except ValueError:
+                    self._logger.info("myMuninModule : skipped key " + key) 
             else:
                 # less sure but faster
                 #key, rest = line.split('.', 1)
