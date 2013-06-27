@@ -3,9 +3,6 @@
 {% block body %}
 <script>
 var csrf = "{{ csrf_token }}";
-window.onload = function(e){ 
-  var host_data = {{ hosts.get_list_tree|safe }};
-}
 </script>
 
  <div class="span2">
@@ -29,5 +26,6 @@ window.onload = function(e){
 
  <div class="span9">
   <h3 class="text-center">Welcome to Numeter Dasboard {{ user }}</h3>
+  <div id="graphs"></div>
  </div>
 {% endblock %}

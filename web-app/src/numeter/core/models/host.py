@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import Group, Permission
 from urllib2 import urlopen
-from json import load as jload, dumps as jdumps
+from json import load as jload, loads as jloads, dumps as jdumps
 
 
 class Host_QuerySet(models.query.QuerySet):
-    def get_by_host(self):
+    def get_hosts_by_group(self):
         groups = list(set([ Group.objects.get(pk=g[0]) for g in self.values_list('group') ]))
         for group in groups:
             yield self.filter(id=group.id)
@@ -29,7 +29,7 @@ class Host_Manager(models.Manager):
 
 class Host(models.Model):
     name = models.CharField(max_length=200)
-    host_id = models.IntegerField()	
+    host_id = models.CharField(max_length=300)
     storage = models.ForeignKey('Storage')
     group = models.ForeignKey(Group, null=True, blank=True)
 
@@ -42,6 +42,13 @@ class Host(models.Model):
         return self.name
 
     def get_info(self):
-        f = urlopen('http://%s:%s/numeter-storage/hinfo?host=%i' % (self.storage.ip,self.storage.port,self.host_id))
+        f = urlopen('http://%s:%s/numeter-storage/hinfo?host=%s' % (self.storage.ip,self.storage.port,self.host_id))
         return jload(f)
-                
+
+    # TODO : format storage
+    def get_plugins(self):
+        f = urlopen('http://%s:%s/numeter-storage/list?host=%s' % (self.storage.ip,self.storage.port,self.host_id))
+        for p in jload(f)['list'].values():
+            yield jloads(p)
+        
+

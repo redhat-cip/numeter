@@ -12,7 +12,8 @@ urlpatterns = patterns('',
     url(r'^multiviews$', 'core.views.multiviews_index', name='multiviews'),
     url(r'^settings$', 'core.views.configuration_index', name='settings'),
 
-    url(r'^get/hosts/(?P<id>\w+)$', 'core.views.get_hosts'),
+    url(r'^get/hosts/(?P<id>\w+)?$', 'core.views.get_hosts_by_group'),
+    url(r'^get/plugins/(?P<id>\w+)?$', 'core.views.get_plugins_by_host'),
 
     # url(r'^numeter/', include('numeter.foo.urls')),
 
