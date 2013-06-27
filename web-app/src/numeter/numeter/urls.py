@@ -10,7 +10,9 @@ urlpatterns = patterns('',
     url(r'^login$', 'core.views.login', name='login'),
     url(r'^logout$', 'core.views.logout', name='logout'),
     url(r'^multiviews$', 'core.views.multiviews_index', name='multiviews'),
-    url(r'^settings$', 'core.views.configuration_index', name='settings'),
+
+    url(r'^configuration$', 'core.views.configuration_index', name='configuration'),
+    url(r'^configuration/user/(?P<user_id>\w+)$', 'core.views.configuration_profile', name='edit profile'),
 
     url(r'^get/hosts/(?P<id>\w+)?$', 'core.views.get_hosts_by_group'),
     url(r'^get/plugins/(?P<id>\w+)?$', 'core.views.get_plugins_by_host'),
