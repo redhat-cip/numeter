@@ -57,3 +57,16 @@ $(document).on('click', '.get-plugin', function() {
 });
 
 $('.dropdown-toggle').dropdown()
+
+// GET APROPOS
+$(document).on('click', '[href="/apropos"]', function() {
+  $.ajax({type:'GET', url:'/apropos', async:true,
+    success: function(data, status, xhr) {
+      $('#myModal').html(data);
+    },
+    complete: function() {
+      $('#myModal').modal('toggle');
+    },
+  });
+  return false;
+});
