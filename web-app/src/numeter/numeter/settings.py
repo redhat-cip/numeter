@@ -137,7 +137,4 @@ STATICFILES_DIRS = (
 
 from sys import argv
 if 'test' in argv :
-	try :
-		from settings_test import *
-	except ImportError:
-		pass
+    from settings_test import *
