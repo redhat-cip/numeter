@@ -15,10 +15,10 @@ import rrdtool
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../poller/module'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../storage/module'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../collector/module'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../collector/module'))
 
 from numeter_poller import *
 from numeter_collector import *
@@ -35,7 +35,7 @@ class MasterTestCase(unittest.TestCase):
 
     def setUp(self):
         os.system("rm -f /tmp/poller_last.unittest")
-        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid 2>/dev/null) 2>/dev/null")
+        os.system("kill -9 $(cat /tmp/redis-unittest.pid 2>/dev/null) 2>/dev/null")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
         os.system("redis-server "+myPath+"/redis_unittest.conf")
         os.system("while ! netstat -laputn | grep 8888 > /dev/null; do true; done ")
@@ -45,7 +45,7 @@ class MasterTestCase(unittest.TestCase):
 
 
     def tearDown(self):
-        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid)")
+        os.system("kill -9 $(cat /tmp/redis-unittest.pid)")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
         os.system("rm -f /etc/munin/plugins/bar_unittest")
         os.system("rm -f /etc/munin/plugins/foo_unittest")
@@ -148,7 +148,7 @@ class MasterTestCase(unittest.TestCase):
         result = storageRedis.redis_hkeys("INFOS@"+hostID)
         P_KEYS_without_myinfo = P_KEYS[:]
         P_KEYS_without_myinfo.remove("MyInfo")
-        self.assertEquals(result,P_KEYS_without_myinfo)
+        self.assertEquals(sorted(result),sorted(P_KEYS_without_myinfo))
         result = storageRedis.redis_hget("INFOS@"+hostID,"bar_unittest")
         self.assertEquals(result, P_INFO_bar)
         result = storageRedis.redis_hget("INFOS@"+hostID,"foo_unittest")
