@@ -1,29 +1,35 @@
 {% extends "base/base.html" %}
 
 {% block body %}
-    <div class="well">
-    <ul class="nav nav-tabs">
-      <li class="active"><a href="#profile" data-toggle="tab">Profile</a></li>
-      <li><a href="#profile" data-toggle="tab">Password</a></li>
-    </ul>
+<div class="tabbable tabs-left">
+ <ul class="nav nav-tabs">
+  <li class="active"><a href="#profile-content" data-toggle="tab">Profile</a></li>
+  <li><a href="#skin-content" data-toggle="tab">Skin</a></li>
+  {% if request.user.is_superuser %}
+   <li><a href="#users-content" data-toggle="tab">Users</a></li>
+   <li><a href="#groups-content" data-toggle="tab">Groups</a></li>
+   <li><a href="#storage-content" data-toggle="tab">Storage</a></li>
+  {% endif %}
+ </ul>
 
-    <div id="myTabContent" class="tab-content">
-     <div class="tab-pane active in" id="profile">
-      <form method="POST" action="{% url 'edit profile' Form.instance.id %}">
-       {% csrf_token %}
-       {{ Form }}
-       <input type="submit" class="btn btn-primary" value="Update">
-      </form>
-     </div>
+ <div class="tab-content">
 
-     <div class="tab-pane fade" id="profile">
-      <form id="tab2">
-       <label>New Password</label>
-        <input type="password" class="input-xlarge">
-        <div>
-         <button class="btn btn-primary">Update</button>
-        </div>
-      </form>
-     </div>
+  <div class="tab-pane active in" id="profile-content">
+   {% include "configuration/profile.html" %}
+  </div>
+
+  <div class="tab-pane fade" id="skin-content">
+  </div>
+
+  {% if request.user.is_superuser %}
+   <div class="tab-pane fade" id="users-content">
+   </div>
+
+   <div class="tab-pane fade" id="groups-content">
+   </div>
+
+   <div class="tab-pane fade" id="storage-content">
+   </div>
+  {% endif %}
  </div>
 {% endblock %}

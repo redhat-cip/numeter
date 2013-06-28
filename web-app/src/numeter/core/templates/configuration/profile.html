@@ -1,0 +1,47 @@
+<form method="POST" action="{% url 'edit profile' EditForm.instance.id %}">
+ {% csrf_token %}
+ <fieldset>
+
+  <div class="control-group">
+   <div class="controls">{{ EditForm.username }}</div>
+  </div>
+
+  <div class="control-group">
+   <div class="controls">{{ EditForm.email }}</div>
+  </div>
+
+  <div class="control-group">
+   <div class="controls">
+    <input type="submit" class="btn btn-primary" value="Update">
+   </div>
+  </div>
+
+ </fieldset>
+</form>
+
+<hr>
+
+<form method="POST" action="{% url 'edit profile' EditForm.instance.id %}">
+ {% csrf_token %}
+ <fieldset>
+
+  <div class="control-group">
+   <div class="controls">{{ EditPasswordForm.old }}</div>
+  </div>
+ 
+  <div class="control-group">
+   <div class="controls">{{ EditPasswordForm.new_1 }}</div>
+  </div>
+ 
+  <div class="control-group">
+   <div class="controls">{{ EditPasswordForm.new_2 }}</div>
+  </div>
+
+  <div class="control-group">
+   <div class="controls">
+    <input type="submit" class="btn btn-primary" value="Update">
+   </div>
+  </div>
+
+ </fieldset>
+</form>
