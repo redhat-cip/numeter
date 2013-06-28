@@ -7,7 +7,7 @@ import sys
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 from myRedisConnect import *
 
 class RedisTestCase(unittest.TestCase):
@@ -18,7 +18,7 @@ class RedisTestCase(unittest.TestCase):
         self.assertFalse(self._redis_connexion._error)
 
     def setUp(self):
-        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid 2>/dev/null) 2>/dev/null")
+        os.system("kill -9 $(cat /tmp/redis-unittest.pid 2>/dev/null) 2>/dev/null")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
         os.system("redis-server "+myPath+"/redis_unittest.conf")
         os.system("while ! netstat -laputn | grep 8888 > /dev/null; do true; done ")
@@ -28,7 +28,7 @@ class RedisTestCase(unittest.TestCase):
 
 
     def tearDown(self):
-        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid)")
+        os.system("kill -9 $(cat /tmp/redis-unittest.pid)")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
 
 

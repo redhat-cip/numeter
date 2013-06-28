@@ -9,14 +9,14 @@ import socket
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../collector/module'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../collector/module'))
 from numeter_collector import *
 
 class CollectorTestCase(unittest.TestCase):
 
 
     def setUp(self):
-        os.system("kill $(cat /var/run/redis/redis-unittest.pid 2>/dev/null) 2>/dev/null")
+        os.system("kill $(cat /tmp/redis-unittest.pid 2>/dev/null) 2>/dev/null")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
         os.system("redis-server "+myPath+"/redis_unittest.conf")
         os.system("while ! netstat -laputn | grep 8888 > /dev/null; do true; done ")
@@ -26,7 +26,7 @@ class CollectorTestCase(unittest.TestCase):
         self.collector._logger = myFakeLogger()
 
     def tearDown(self):
-        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid)")
+        os.system("kill -9 $(cat /tmp/redis-unittest.pid)")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
 
     def test_collector_getHostsList_file(self):

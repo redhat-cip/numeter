@@ -9,8 +9,8 @@ import socket
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../common'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../poller/module'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'))
 from numeter_poller import *
 
 class PollerTestCase(unittest.TestCase):
@@ -23,7 +23,7 @@ class PollerTestCase(unittest.TestCase):
 
     def setUp(self):
         os.system("rm -f /tmp/poller_last.unittest")
-        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid 2>/dev/null) 2>/dev/null")
+        os.system("kill -9 $(cat /tmp/redis-unittest.pid 2>/dev/null) 2>/dev/null")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
         os.system("redis-server "+myPath+"/redis_unittest.conf")
         os.system("while ! netstat -laputn | grep 8888 > /dev/null; do true; done ")
@@ -34,7 +34,7 @@ class PollerTestCase(unittest.TestCase):
 
 
     def tearDown(self):
-        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid)")
+        os.system("kill -9 $(cat /tmp/redis-unittest.pid)")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
         os.system("rm -f /tmp/poller_last.unittest")
 
