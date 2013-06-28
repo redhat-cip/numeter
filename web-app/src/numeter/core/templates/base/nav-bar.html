@@ -1,3 +1,6 @@
+{% load tags %}
+{% load i18n %}
+
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
@@ -6,11 +9,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand text-info" href="#" name="top"><img height="20" width="20" src=/static/img/logo.svg> Numeter</a>
+			<a class="brand text-info" href="#" name="top"><img height="20" width="20" src="{{ STATIC_URL }}img/logo.svg"> Numeter</a>
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    {% load tags %}
-                    <li class="{% active request "^/$" %}"><a href="/"><i class="icon-home"></i> Home</a></li>
+					<li class="{% active request "^/$" %}"><a href="/"><i class="icon-home"></i> {% trans "Home" %}</a></li>
                     <li class="divider-vertical"></li>
                     <li class="{% active request "^/multiviews$" %}"><a href="/multiviews"><i class="icon-signal"></i> Multi-Views</a></li>
                     <li class="divider-vertical"></li>
@@ -20,9 +22,9 @@
                     <i class="icon-user"></i> {{ user.username }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="{% url 'configuration' %}"><i class="icon-wrench"></i> Configuration</a></li>
+						<li><a href="{% url 'configuration' %}"><i class="icon-wrench"></i> {% trans "Configuration" %}</a></li>
                         <li class="divider"></li>
-                        <li><a href="{% url 'logout' %}"><i class="icon-share"></i> Logout</a></li>
+						<li><a href="{% url 'logout' %}"><i class="icon-share"></i> {% trans "Logout" %}</a></li>
                     </ul>
                 </div>
             </div>

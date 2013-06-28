@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from core.models import Host
 
@@ -80,10 +81,10 @@ class Storage(models.Model):
         r = self._connect('plugins', {'host_id': storage_id})
         for p in r['list'].values():
             yield jloads(p)
-        
-    def get_data(self, **data)
-        # TODO Add docs
+
+    def get_data(self, **data):
         return self._connect('data', **data)
+        # TODO Add docs
 
     def _update_hosts(self):
         """

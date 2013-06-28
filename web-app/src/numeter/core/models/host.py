@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import Group, Permission
+from django.utils.translation import ugettext_lazy as _
+
 from urllib2 import urlopen
 from json import load as jload, loads as jloads, dumps as jdumps
 
@@ -29,14 +31,14 @@ class Host_Manager(models.Manager):
 
 class Host(models.Model):
     name = models.CharField(max_length=200)
-    storage_id = models.CharField(max_length=300)
+    storage_id = models.CharField(max_length=300, db_column='storage_host_id')
     storage = models.ForeignKey('Storage')
     group = models.ForeignKey(Group, null=True, blank=True)
 
     objects = Host_Manager()
     class Meta:
         app_label = 'core'
-        ordering = ('group','name','host_id')
+        ordering = ('group','name','storage_id')
 
     def __unicode__(self):
         return self.name

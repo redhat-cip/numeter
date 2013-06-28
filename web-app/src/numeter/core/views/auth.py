@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as log_in, logout as log_out
 from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 
 def login(request):
@@ -12,9 +13,9 @@ def login(request):
                 log_in(request, user)
                 return redirect('index')
             else:
-                messages.add_message(request, messages.ERROR, u"Incorrect login name or password !")
+                messages.add_message(request, messages.ERROR, _(u"Incorrect login name or password !"))
         else:
-            messages.add_message(request, messages.ERROR, u"Incorrect login name or password !")
+            messages.add_message(request, messages.ERROR, _(u"Incorrect login name or password !"))
     return render(request, 'login.html', {})
 
 

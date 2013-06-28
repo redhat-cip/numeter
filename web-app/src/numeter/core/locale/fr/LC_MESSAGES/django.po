@@ -1,0 +1,103 @@
+# French translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Numeter package.
+# MONTHE Anthony anthony.monthe@enovance.com.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-29 01:18+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: MONTHE Anthony anthony.monthe@enovance.com\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: templates/apropos.html:13
+msgid "Close"
+msgstr "Fermer"
+
+#: templates/login.html:8
+msgid "Numeter - Authentification"
+msgstr "Numeter - Authentification"
+
+#: templates/login.html:29
+msgid "Please Log In"
+msgstr "Veuillez vous connecter"
+
+#: templates/login.html:34 templates/configuration/users/user.html:7
+msgid "Username"
+msgstr "Utilisateurs"
+
+#: templates/login.html:35
+msgid "Password"
+msgstr "Mot de passe"
+
+#: templates/login.html:37
+msgid "Log in"
+msgstr "Se connecter"
+
+#: templates/base/nav-bar.html:15
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/base/nav-bar.html:25
+msgid "Configuration"
+msgstr "Configuration"
+
+#: templates/base/nav-bar.html:27
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: templates/configuration/index.html:10
+msgid "Profile"
+msgstr "Profil"
+
+#: templates/configuration/index.html:11
+msgid "Skin"
+msgstr "Apparence"
+
+#: templates/configuration/index.html:13
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: templates/configuration/index.html:14
+msgid "Groups"
+msgstr "Groupes"
+
+#: templates/configuration/index.html:15
+msgid "Storage"
+msgstr "Storage"
+
+#: templates/configuration/users/manage.html:4
+msgid "Name or email"
+msgstr "Nom ou email"
+
+#: templates/configuration/users/ul.html:3
+msgid "Previous"
+msgstr "Précédent"
+
+#: templates/configuration/users/ul.html:11
+msgid "Next"
+msgstr "Suivant"
+
+#: templates/configuration/users/user.html:16
+msgid "Delete"
+msgstr "Supprimer"
+
+#: templates/configuration/users/user.html:17
+msgid "Update"
+msgstr "Mise à jour"
+
+#: templates/configuration/users/user.html:18
+msgid "Cancel"
+msgstr "Annuler"
+
+#: views/auth.py:16 views/auth.py:18
+msgid "Incorrect login name or password !"
+msgstr "Identifiant ou mot de passe incorrect !"

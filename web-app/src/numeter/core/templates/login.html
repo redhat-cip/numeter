@@ -1,49 +1,53 @@
+{% load i18n %}
 <!DOCTYPE html>
  
 <html lang="en">
   <head>
    <div class="container">
    <meta charset="utf-8">
-   <title>Numeter - Authentification</title>
-   <link href="/static/css/bootstrap.css" rel="stylesheet">
-   <script src="/static/js/jquery.js"></script>
+   <title>{% trans "Numeter - Authentification" %}</title>
+   <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+   <link rel="shortcut icon" href="{{ STATIC_URL }}img/logo.png">
+   <script src="{{ STATIC_URL }}js/jquery.js"></script>
+   <script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
   </head>
 
   <body>
-    <br>
+   <br>
    <div class="row">
     <div class="span6 offset3">
-        <img style=float:left src="/static/img/numeter_banner.png" />
+     <img style=float:left src="{{ STATIC_URL }}img/numeter_banner.png" />
     </div>
    </div>
 
-    <br>
-    <br>
+   <br><br>
 
-    <div class="container">
+   <div class="container">
+
     <div class="row">
-        <div class="span4 offset4 well">
-            <legend>Please Log In</legend>
-            <div class="messages">
-                {% include "base/messages.html" %}
-            </div>
-            <form method="POST" action="{% url 'login' %}" accept-charset="UTF-8">{% csrf_token %}
-            <input type="text" class="span4" name="username" placeholder="Username">
-            <input type="password" class="span4" name="password" placeholder="Password">
-            <br><br>
-            <button type="submit" name="submit" class="btn btn-info btn-block">Log in</button>
-            </form>    
-        </div>
+     <div class="span4 offset4 well">
+      <h4 style="text-align: center;">{% trans "Please Log In" %}</h4>
+       <div class="messages">
+        {% include "base/messages.html" %}
+       </div>
+       <form method="POST" action="{% url 'login' %}" accept-charset="UTF-8">{% csrf_token %}
+        <input type="text" class="span4" name="username" placeholder="{% trans "Username" %}">
+        <input type="password" class="span4" name="password" placeholder="{% trans "Password" %}">
+        <br><br>
+        <button type="submit" name="submit" class="btn btn-info btn-block">{% trans "Log in" %}</button>
+       </form>    
+      </div>
+     </div>
     </div>
-</div>
    
-   <div class="row">
-    <footer class="footer">
-     {% include "base/footer.html" %}
-    </footer>
-   </div>
+    <div class="row">
+     <footer class="footer">
+      {% include "base/footer.html" %}
+     </footer>
+    </div>
 
    </div>
+
   </body>
 </html>
    

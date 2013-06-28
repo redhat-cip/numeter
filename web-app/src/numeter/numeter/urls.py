@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^apropos$', 'core.views.apropos', name='apropos'),
     url(r'^login$', 'core.views.login', name='login'),
     url(r'^logout$', 'core.views.logout', name='logout'),
+
     url(r'^multiviews$', 'core.views.multiviews_index', name='multiviews'),
 
     url(r'^configuration$', 'core.views.configuration_index', name='configuration'),

@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs nav-stacked">
  {% if UsPage.has_previous %}
-  <li><a>&uarr; Previous</a></li>
+ <li><a>&uarr; {% trans "Previous" %}</a></li>
  {% endif %}
 
  {% for U in UsPage %}
@@ -8,6 +8,6 @@
  {% endfor %}
 
  {% if UsPage.has_next %}
-  <li><a>&darr; Next</a></li>
+ <li><a>&darr; {% trans "Next" %}</a></li>
  {% endif %}
 </ul>
