@@ -27,6 +27,12 @@ class Storage(models.Model):
     def __init__(self, *args, **kwargs):
         super(Storage, self).__init__(*args, **kwargs)
         self._set_proxy()
+        self.urls = {
+            'hosts': '/numeter-storage/hosts',
+            'host': '/hinfo?host={storage_id}',
+            'plugins': '/numeter-storage/list?host={storage_id}',
+            'data': '/numeter-storage/data?host={storage_id}&plugin={plugin}&ds={ds}&res={res}',
+        }
 
     def _set_proxy(self):
         """
@@ -52,10 +58,32 @@ class Storage(models.Model):
     def get_delete_url(self):
         return reverse('core.views.user_delete', args=[str(self.id)])
 
-    def get_hosts(self):
-        """Return a dictionnary representing storage's host."""
-        f = urlopen('http://%s:%s/numeter-storage/hosts' % (self.ip,self.port))
+    def _connect(self, url, data={}):
+        """Basic method for use proxy to storage."""
+        if url not in self.urls:
+            raise ValueError("URL key does not exists.")
+        r = self.proxy.open(urls[url].format(**data))
         return jload(f)
+
+    def get_hosts(self):
+        """Return a dictionnary representing storage's hosts."""
+        return self._connect('hosts')
+
+    def get_info(self, storage_id):
+        """Return a dictionnary representing an host on storage."""
+        if isinstance(storage_id, Host): storage_id = storage_id.storage_id
+        return self._connect('host', {'host_id': storage_id})
+
+    def get_plugins(self):
+        """Return a dictionnary representing an host's plugins."""
+        # TODO : WTF on JSON
+        r = self._connect('plugins', {'host_id': storage_id})
+        for p in r['list'].values():
+            yield jloads(p)
+        
+    def get_data(self, **data)
+        # TODO Add docs
+        return self._connect('data', **data)
 
     def _update_hosts(self):
         """

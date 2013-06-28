@@ -29,7 +29,7 @@ class Host_Manager(models.Manager):
 
 class Host(models.Model):
     name = models.CharField(max_length=200)
-    host_id = models.CharField(max_length=300)
+    storage_id = models.CharField(max_length=300)
     storage = models.ForeignKey('Storage')
     group = models.ForeignKey(Group, null=True, blank=True)
 
@@ -42,13 +42,7 @@ class Host(models.Model):
         return self.name
 
     def get_info(self):
-        f = urlopen('http://%s:%s/numeter-storage/hinfo?host=%s' % (self.storage.ip,self.storage.port,self.host_id))
-        return jload(f)
+        return self.storage.get_info(self.storage_id)
 
-    # TODO : format storage
     def get_plugins(self):
-        f = urlopen('http://%s:%s/numeter-storage/list?host=%s' % (self.storage.ip,self.storage.port,self.host_id))
-        for p in jload(f)['list'].values():
-            yield jloads(p)
-        
-
+        return self.storage.get_plugins(self.storage_id)
