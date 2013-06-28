@@ -23,6 +23,7 @@
 
   {% if request.user.is_superuser %}
    <div class="tab-pane fade" id="users-content">
+    {% include "configuration/users/index.html" %}
    </div>
 
    <div class="tab-pane fade" id="groups-content">

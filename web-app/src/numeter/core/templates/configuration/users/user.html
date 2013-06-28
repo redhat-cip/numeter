@@ -1,0 +1,21 @@
+<div class="row">
+ <h4 align="center">{{ U }}</h4>
+
+ <div class="span5">
+  <dl>
+   <dt>Username:</dt>
+   <dd>{{ U.username }}</dd>
+   <dt>Email:</dt>
+   <dd>{{ U.email|default:"(None)" }}</dd>
+  </dl>
+ </div>
+
+ <div class="span2">
+  <div class="btn-group btn-group-vertical">
+   <button class="btn btn-danger{% if U == user %} disabled{% endif %}">Delete</button>
+   <button class="btn btn-primary">Update</button>
+   <button class="btn" style="display:none;">Cancel</button>
+  </div>
+ </div>
+
+</div>

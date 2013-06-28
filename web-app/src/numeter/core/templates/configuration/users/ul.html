@@ -1,0 +1,13 @@
+<ul class="nav nav-tabs nav-stacked">
+ {% if UsPage.has_previous %}
+  <li><a>&uarr; Previous</a></li>
+ {% endif %}
+
+ {% for U in UsPage %}
+  <li><a id="user{{ U.pk }}Tab" class="get-user" href="#" data-toggle="tab">{{ U }}</a></li>
+ {% endfor %}
+
+ {% if UsPage.has_next %}
+  <li><a>&darr; Next</a></li>
+ {% endif %}
+</ul>

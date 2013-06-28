@@ -14,7 +14,7 @@ def index(request):
 # TODO
 # Comments, HTML, URL, JS
 def apropos(request):
-	with open(settings.BASEDIR+'/../../../../LICENSE') as LICENSE_FILE:
+	with open(settings.BASEDIR+'/../LICENSE') as LICENSE_FILE:
 		license = LICENSE_FILE.read()
 	return render(request, 'apropos.html', {
 		'license': license,
