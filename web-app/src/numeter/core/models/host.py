@@ -10,7 +10,7 @@ class Host_QuerySet(models.query.QuerySet):
         for group in groups:
             yield self.filter(id=group.id)
 
-
+    # USELESS
     def get_list_tree(self):
         data = []
         groups = list(set([ Group.objects.get(pk=g[0]) for g in self.values_list('group') ]))
