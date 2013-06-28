@@ -1,8 +1,11 @@
 {% extends "base/base.html" %}
 
 {% block body %}
+{% endblock %}
+
+{% block body %}
 <div class="tabbable tabs-left">
- <ul class="nav nav-tabs">
+ <ul class="nav nav-tabs ajax-tabs">
   <li class="active"><a href="#profile-content" data-toggle="tab">Profile</a></li>
   <li><a href="#skin-content" data-toggle="tab">Skin</a></li>
   {% if request.user.is_superuser %}

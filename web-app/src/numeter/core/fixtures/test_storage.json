@@ -1,1 +1,1 @@
-[{"pk": 1, "model": "core.storage", "fields": {"ip": "94.143.115.170", "name": "demo.numeter.com", "port": 8080}}]
+[{"pk": 1, "model": "core.storage", "fields": {"url_prefix": "", "name": "Numeter Demo", "address": "demo.numeter.com", "login": "", "password": "", "port": 8080}}]

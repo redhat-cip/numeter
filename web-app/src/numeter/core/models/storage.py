@@ -1,5 +1,8 @@
 from django.db import models
+from django.core.urlresolvers import reverse
+
 from core.models import Host
+
 from urllib2 import urlopen
 from json import load as jload
 
@@ -23,14 +26,42 @@ class Storage(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Storage, self).__init__(*args, **kwargs)
-        # TODO : Add opener snipets
-        # self.proxy = ...
+        self._set_proxy()
+
+    def _set_proxy(self):
+        """
+        Set an URL opener for the current storage.
+        """
+        from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener
+
+        if self.login:
+            passman = HTTPPasswordMgrWithDefaultRealm()
+            passman.add_password(None, self.address, self.login, self.password)
+            authhandler = HTTPBasicAuthHandler(passman)
+            self.proxy = build_opener(authhandler)
+        else:
+            self.proxy = build_opener()
+        install_opener(self.proxy)
+
+    def get_absolute_url(self):
+        return reverse('core.views.user', args=[str(self.id)])
+
+    def get_update_url(self):
+        return reverse('core.views.user_update', args=[str(self.id)])
+
+    def get_delete_url(self):
+        return reverse('core.views.user_delete', args=[str(self.id)])
 
     def get_hosts(self):
+        """Return a dictionnary representing storage's host."""
         f = urlopen('http://%s:%s/numeter-storage/hosts' % (self.ip,self.port))
         return jload(f)
 
-    def update_hosts(self):
+    def _update_hosts(self):
+        """
+        Delete storage's hosts and create new.
+        Be careful it won't remember groups.
+        """
         Host.objects.filter(storage=self).delete()
         hosts = self.get_hosts().values()
         for h in hosts:

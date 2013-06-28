@@ -5,10 +5,6 @@ var print_message = function(msg,tag,into) {
   $(into).append(html);
 }
 
-var print_reload = function(into) {
-  print_message("Utilisateur actif modifié.<br>La page va être rechargée.",'warning',into);
-}
-
 // ADD LOADING GIF
 var print_loading_gif = function(into, heigth, width) {
   if(typeof(heigth)==='undefined') heigth = 100;
@@ -19,6 +15,7 @@ var remove_loading_gif = function(from) {
   $(from+ ' .loader').remove();
 }
 
+// HOST TREE
 // GET HOSTS FOR LIST TREE
 $('.accordion-body').on('shown', function() {
   var id = $(this).attr('group-id');
@@ -45,6 +42,7 @@ $(document).on('click', '.accordion-host', function() {
   }
 });
 
+// GET PLUGIN
 $(document).on('click', '.get-plugin', function() {
   var plugin = $(this).html();
   var host = $('.accordion-body a').attr('host-id');
@@ -53,11 +51,9 @@ $(document).on('click', '.get-plugin', function() {
        $('#graphs').html(data);
     }
   });
-
 });
 
-$('.dropdown-toggle').dropdown()
-
+// MISC
 // GET APROPOS
 $(document).on('click', '[href="/apropos"]', function() {
   $.ajax({type:'GET', url:'/apropos', async:true,
