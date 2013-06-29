@@ -5,7 +5,7 @@ from django import forms
 class User_Form(forms.ModelForm):
     class Meta:
         model = User
-        widget = {
+        widgets = {
             'username': forms.TextInput({'placeholder':'Username'}),
             'email': forms.TextInput({'placeholder':'Email'}),
         }

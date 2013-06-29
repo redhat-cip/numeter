@@ -1,47 +1,64 @@
-<form method="POST" action="{% url 'edit profile' EditForm.instance.id %}">
- {% csrf_token %}
- <fieldset>
-
-  <div class="control-group">
-   <div class="controls">{{ EditForm.username }}</div>
-  </div>
-
-  <div class="control-group">
-   <div class="controls">{{ EditForm.email }}</div>
-  </div>
-
-  <div class="control-group">
-   <div class="controls">
-    <input type="submit" class="btn btn-primary" value="Update">
-   </div>
-  </div>
-
- </fieldset>
-</form>
+{% load i18n %}
+<div class="row-fluid">
+ <div class="span3">
+  <h4 class="center">{% trans "General" %}</h4>
+ </div>
+ <div class="span3">
+  <form method="POST" action="{% url 'edit profile' EditForm.instance.id %}">
+   {% csrf_token %}
+   <fieldset>
+  
+    <div class="control-group">
+     <div class="controls">{{ EditForm.username }}</div>
+    </div>
+  
+    <div class="control-group">
+     <div class="controls">{{ EditForm.email }}</div>
+    </div>
+  
+    <div class="control-group">
+     <div class="controls">
+      <input type="submit" class="btn btn-primary" value="Update">
+     </div>
+    </div>
+  
+   </fieldset>
+  </form>
+ </div>
+</div>
 
 <hr>
 
-<form method="POST" action="{% url 'edit profile' EditForm.instance.id %}">
- {% csrf_token %}
- <fieldset>
-
-  <div class="control-group">
-   <div class="controls">{{ EditPasswordForm.old }}</div>
-  </div>
- 
-  <div class="control-group">
-   <div class="controls">{{ EditPasswordForm.new_1 }}</div>
-  </div>
- 
-  <div class="control-group">
-   <div class="controls">{{ EditPasswordForm.new_2 }}</div>
-  </div>
-
-  <div class="control-group">
-   <div class="controls">
-    <input type="submit" class="btn btn-primary" value="Update">
-   </div>
-  </div>
-
- </fieldset>
-</form>
+<div class="row-fluid">
+ <div class="span3">
+  <h4 class="center">{% trans "Password" %}</h4>
+ </div>
+ <div class="span3">
+  <form method="POST" action="{% url 'edit profile' EditForm.instance.id %}">
+   {% csrf_token %}
+   <fieldset>
+  
+    <div class="control-group">
+     <div class="controls">{{ EditPasswordForm.old }}</div>
+    </div>
+   
+    <div class="control-group">
+     <div class="controls">{{ EditPasswordForm.new_1 }}</div>
+    </div>
+   
+    <div class="control-group">
+     <div class="controls">{{ EditPasswordForm.new_2 }}</div>
+    </div>
+  
+    <div class="control-group">
+     <div class="controls">
+      <input type="submit" class="btn btn-primary" value="Update">
+     </div>
+    </div>
+  
+   </fieldset>
+  </form>
+ </div>
+</div>
+</div>
+</div>
