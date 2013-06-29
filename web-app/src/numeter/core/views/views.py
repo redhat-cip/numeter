@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
+
 from core.models import Host
+from core.utils.decorators import login_required
 
 
 @login_required()

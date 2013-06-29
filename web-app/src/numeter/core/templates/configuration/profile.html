@@ -1,10 +1,10 @@
 {% load i18n %}
 <div class="row-fluid">
- <div class="span3">
+ <div id="profile-update-info" class="span3">
   <h4 class="center">{% trans "General" %}</h4>
  </div>
  <div class="span3">
-  <form method="POST" action="{% url 'edit profile' EditForm.instance.id %}">
+  <form id="profile-update-form" method="POST" action="{% url 'update profile' EditForm.instance.id %}">
    {% csrf_token %}
    <fieldset>
   
@@ -34,7 +34,7 @@
   <h4 class="center">{% trans "Password" %}</h4>
  </div>
  <div class="span3">
-  <form method="POST" action="{% url 'edit profile' EditForm.instance.id %}">
+  <form method="POST" action="{% url 'update profile' EditForm.instance.id %}">
    {% csrf_token %}
    <fieldset>
   
