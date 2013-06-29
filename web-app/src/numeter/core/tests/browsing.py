@@ -11,8 +11,13 @@ class Index_TestCase(TestCase):
 
     def test_index(self):
         url = '/'
-        response = self.client.get(url)
-        self.assertNotEqual(response.status_code, 200, "Can't get url %s." % url)
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_apropos(self):
+        url = '/apropos'
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
 
 class Multiviews_TestCase(TestCase):
@@ -24,8 +29,8 @@ class Multiviews_TestCase(TestCase):
 
     def test_index(self):
         url = '/multiviews'
-        response = self.client.get(url)
-        self.assertNotEqual(response.status_code, 200, "Can't get url %s." % url)
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
 
 class Configuration_TestCase(TestCase):
@@ -37,5 +42,5 @@ class Configuration_TestCase(TestCase):
 
     def test_index(self):
         url = '/configuration'
-        response = self.client.get(url)
-        self.assertNotEqual(response.status_code, 200, "Can't get url %s." % url)
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
