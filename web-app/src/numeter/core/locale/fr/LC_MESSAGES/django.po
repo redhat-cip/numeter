@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-30 02:34+0200\n"
+"POT-Creation-Date: 2013-06-30 16:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: MONTHE Anthony anthony.monthe@enovance.com\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,6 +46,66 @@ msgstr "Mauvais ancien mot de passe"
 #: forms.py:38
 msgid "Password and confirmation are not same"
 msgstr "Le mot de passe et la confirmation ne sont pas identiques"
+
+#: models/storage.py:12
+msgid "name"
+msgstr "nom"
+
+#: models/storage.py:13
+msgid "address"
+msgstr "adresse"
+
+#: models/storage.py:14
+msgid "port"
+msgstr ""
+
+#: models/storage.py:15
+msgid "URL prefix"
+msgstr "Préfixe d'URL"
+
+#: models/storage.py:16
+msgid "login"
+msgstr "identifiant"
+
+#: models/storage.py:17
+msgid "password"
+msgstr "mot de passe"
+
+#: models/storage.py:22
+msgid "storage"
+msgstr "storage"
+
+#: models/storage.py:23
+msgid "storages"
+msgstr "storages"
+
+#: models/user.py:31
+msgid "username"
+msgstr "Nom d'utilisateur"
+
+#: models/user.py:32
+msgid "email address"
+msgstr "Adresse email"
+
+#: models/user.py:33
+msgid "staff status"
+msgstr "membre du staff"
+
+#: models/user.py:34
+msgid "active"
+msgstr "actif"
+
+#: models/user.py:35
+msgid "date joined"
+msgstr "date d'adhésion"
+
+#: models/user.py:44
+msgid "user"
+msgstr "utilisateur"
+
+#: models/user.py:45
+msgid "users"
+msgstr "utilisateurs"
 
 #: templates/apropos.html:13
 msgid "Close"

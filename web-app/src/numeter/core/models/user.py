@@ -53,6 +53,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_update_password_url(self):
         return reverse('update password', args=[str(self.id)])
 
+    def get_delete_url(self):
+        return reverse('delete profile', args=[str(self.id)])
+
     def get_full_name(self):
         return self.username
 

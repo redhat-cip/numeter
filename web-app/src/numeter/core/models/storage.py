@@ -9,15 +9,18 @@ from json import load as jload
 
 
 class Storage(models.Model):
-    name = models.CharField(max_length=100, blank=True, null=True)
-    address = models.CharField(max_length=200)
-    port = models.IntegerField(blank=True,null=True,default=80)
-    url_prefix = models.CharField(max_length=100, blank=True, null=True)
-    login = models.CharField(max_length=100, blank=True, null=True)
-    password = models.CharField(max_length=100, blank=True, null=True)
+    name = models.CharField(_('name'), max_length=100, blank=True, null=True)
+    address = models.CharField(_('address'), max_length=200)
+    port = models.IntegerField(_('port'), blank=True,null=True,default=80)
+    url_prefix = models.CharField(_('URL prefix'), max_length=100, blank=True, null=True)
+    login = models.CharField(_('login'), max_length=100, blank=True, null=True)
+    password = models.CharField(_('password'), max_length=100, blank=True, null=True)
 
     class Meta:
         app_label = 'core'
+        ordering = ('name',)
+        verbose_name = _('storage')
+        verbose_name_plural = _('storages')
 
     def __unicode__(self):
         if self.name:
@@ -63,8 +66,9 @@ class Storage(models.Model):
         """Basic method for use proxy to storage."""
         if url not in self.urls:
             raise ValueError("URL key does not exists.")
-        r = self.proxy.open(urls[url].format(**data))
-        return jload(f)
+        _url = urls[url].format(**data)
+        r = self.proxy.open(_url, timeout=3)
+        return jload(r)
 
     def get_hosts(self):
         """Return a dictionnary representing storage's hosts."""
