@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-29 01:18+0200\n"
+"POT-Creation-Date: 2013-06-30 02:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: MONTHE Anthony anthony.monthe@enovance.com\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: forms.py:10 templates/login.html:34
+#: templates/configuration/users/user.html:7
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: forms.py:11
+msgid "Email"
+msgstr "Email"
+
+#: forms.py:26
+msgid "Old password"
+msgstr "Ancien mot de passe"
+
+#: forms.py:27
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: forms.py:28
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: forms.py:36
+msgid "Bad old password"
+msgstr "Mauvais ancien mot de passe"
+
+#: forms.py:38
+msgid "Password and confirmation are not same"
+msgstr "Le mot de passe et la confirmation ne sont pas identiques"
 
 #: templates/apropos.html:13
 msgid "Close"
@@ -30,11 +59,7 @@ msgstr "Numeter - Authentification"
 msgid "Please Log In"
 msgstr "Veuillez vous connecter"
 
-#: templates/login.html:34 templates/configuration/users/user.html:7
-msgid "Username"
-msgstr "Utilisateurs"
-
-#: templates/login.html:35
+#: templates/login.html:35 templates/configuration/profile.html:34
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -46,43 +71,51 @@ msgstr "Se connecter"
 msgid "Home"
 msgstr "Accueil"
 
-#: templates/base/nav-bar.html:25
+#: templates/base/nav-bar.html:24
 msgid "Configuration"
 msgstr "Configuration"
 
-#: templates/base/nav-bar.html:27
+#: templates/base/nav-bar.html:26
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/configuration/index.html:10
+#: templates/configuration/index.html:11
 msgid "Profile"
 msgstr "Profil"
 
-#: templates/configuration/index.html:11
+#: templates/configuration/index.html:12
 msgid "Skin"
 msgstr "Apparence"
 
-#: templates/configuration/index.html:13
+#: templates/configuration/index.html:14
 msgid "Users"
 msgstr "Utilisateurs"
 
-#: templates/configuration/index.html:14
+#: templates/configuration/index.html:15
 msgid "Groups"
 msgstr "Groupes"
 
-#: templates/configuration/index.html:15
+#: templates/configuration/index.html:16
 msgid "Storage"
 msgstr "Storage"
 
-#: templates/configuration/users/manage.html:4
+#: templates/configuration/profile.html:4
+msgid "General"
+msgstr "General"
+
+#: templates/configuration/users/manage.html:5
 msgid "Name or email"
 msgstr "Nom ou email"
 
-#: templates/configuration/users/ul.html:3
+#: templates/configuration/users/tabs.html:3
+msgid "Add"
+msgstr "Ajouter"
+
+#: templates/configuration/users/ul.html:4
 msgid "Previous"
 msgstr "Précédent"
 
-#: templates/configuration/users/ul.html:11
+#: templates/configuration/users/ul.html:12
 msgid "Next"
 msgstr "Suivant"
 
@@ -101,3 +134,11 @@ msgstr "Annuler"
 #: views/auth.py:16 views/auth.py:18
 msgid "Incorrect login name or password !"
 msgstr "Identifiant ou mot de passe incorrect !"
+
+#: views/configuration.py:37
+msgid "Profile updated with success."
+msgstr "Profil mis à jour avec succès."
+
+#: views/configuration.py:53
+msgid "Password updated with success."
+msgstr "Mot de passe mis à jour avec succès."

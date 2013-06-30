@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
+from django.core.urlresolvers import reverse
 
 
 class UserManager(UserManager):
@@ -45,6 +46,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __unicode__(self):
         return self.username
+
+    def get_update_url(self):
+        return reverse('update profile', args=[str(self.id)])
+
+    def get_update_password_url(self):
+        return reverse('update password', args=[str(self.id)])
 
     def get_full_name(self):
         return self.username

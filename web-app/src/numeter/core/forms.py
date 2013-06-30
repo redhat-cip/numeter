@@ -7,7 +7,7 @@ class User_Form(forms.ModelForm):
     class Meta:
         model = User
         widgets = {
-            'username': forms.TextInput({'placeholder':_('Username'-}),
+            'username': forms.TextInput({'placeholder':_('Username')}),
             'email': forms.TextInput({'placeholder':_('Email')}),
         }
 
