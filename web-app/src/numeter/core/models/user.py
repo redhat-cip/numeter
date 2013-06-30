@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.timezone import now
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 
 class UserManager(UserManager):
@@ -27,12 +28,11 @@ class UserManager(UserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField('username', max_length=30, unique=True)
-    email = models.EmailField('email address', blank=True)
-    date_joined = models.DateTimeField(default=now)
-    is_staff = models.BooleanField('staff status', default=False)
-    is_active = models.BooleanField('active', default=True)
-    date_joined = models.DateTimeField('date joined', default=now)
+    username = models.CharField(_('username'), max_length=30, unique=True)
+    email = models.EmailField(_('email address'), blank=True)
+    is_staff = models.BooleanField(_('staff status'), default=False)
+    is_active = models.BooleanField(_('active'), default=True)
+    date_joined = models.DateTimeField(_('date joined'), default=now)
 
     objects = UserManager()
     USERNAME_FIELD = 'username'
@@ -41,8 +41,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         app_label = 'core'
         ordering = ('username',)
-        verbose_name = 'user'
-        verbose_name_plural = 'users'
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
     def __unicode__(self):
         return self.username
