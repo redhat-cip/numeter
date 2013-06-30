@@ -18,7 +18,7 @@
   
     <div class="control-group">
      <div class="controls">
-      <input type="submit" class="btn btn-primary" value="Update">
+     <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
      </div>
     </div>
   
@@ -34,7 +34,7 @@
   <h4 class="center">{% trans "Password" %}</h4>
  </div>
  <div class="span3">
-  <form id="profile-update-password-form" method="POST" action="{% url 'update profile' EditForm.instance.id %}">
+  <form id="profile-update-password-form" method="POST" action="{% url 'update password' EditForm.instance.id %}">
    {% csrf_token %}
    <fieldset>
   
@@ -52,13 +52,11 @@
   
     <div class="control-group">
      <div class="controls">
-      <input type="submit" class="btn btn-primary" value="Update">
+      <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
      </div>
     </div>
   
    </fieldset>
   </form>
  </div>
-</div>
-</div>
 </div>

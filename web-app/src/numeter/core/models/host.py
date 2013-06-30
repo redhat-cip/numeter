@@ -30,8 +30,8 @@ class Host_Manager(models.Manager):
 
 
 class Host(models.Model):
-    name = models.CharField(max_length=200)
-    storage_id = models.CharField(max_length=300, db_column='storage_host_id')
+    name = models.CharField(_('name'), max_length=200)
+    storage_id = models.CharField(_('ID on storage'), max_length=300, db_column='storage_host_id')
     storage = models.ForeignKey('Storage')
     group = models.ForeignKey(Group, null=True, blank=True)
 
@@ -39,12 +39,23 @@ class Host(models.Model):
     class Meta:
         app_label = 'core'
         ordering = ('group','name','storage_id')
+        verbose_name = _('host')
+        verbose_name_plural = _('hosts')
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('host', args=[str(self.id)])
+
+    def get_update_url(self):
+        return reverse('update host', args=[str(self.id)])
+
+    def get_delete_url(self):
+        return reverse('delete host', args=[str(self.id)])
 
     def get_info(self):
         return self.storage.get_info(self.storage_id)
 
     def get_plugins(self):
-        return self.storage.get_plugins(self.storage_id)
+		return self.storage.get_plugins(self.storage_id)

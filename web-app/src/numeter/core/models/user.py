@@ -47,6 +47,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __unicode__(self):
         return self.username
 
+    def get_absolute_url(self):
+        return reverse('user', args=[str(self.id)])
+
     def get_update_url(self):
         return reverse('update profile', args=[str(self.id)])
 

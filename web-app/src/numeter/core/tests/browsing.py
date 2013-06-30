@@ -59,6 +59,8 @@ class Configuration_TestCase(TestCase):
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
+        self.u = User.objects.get(pk=1)
+        self.assertTrue(self.u.check_password('root'), "New password checking failed.")
         self.c.logout()
         is_logged = self.c.login(username='root', password='toto')
         self.assertFalse(is_logged, 'User can log with old credentials.')

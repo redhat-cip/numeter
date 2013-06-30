@@ -30,13 +30,17 @@ class User_PasswordForm(User_Form):
     class Meta(User_Form.Meta):
         model = User
         fields = ()
-	
-	def is_valid(self):
-		if not self.instance.user.check_password(self.data['old']):
-			self.errors['old'] = _('Bad old password')
-		if self.data['new_1'] != self.data['new_3']:
-			self.errors['new'] = _('Password and confirmation are not same')
+    
+    def is_valid(self):
+        if not self.instance.check_password(self.data['old']):
+            self.errors['old'] = _('Bad old password')
+        if self.data['new_1'] != self.data['new_2']:
+            self.errors['new'] = _('Password and confirmation are not same')
+        if self.errors:
+            return False
+        return True
 
-	def save(self, *args, **kwargs):
-		self.instance.set_password(self.data['new_1'])
-		return super(User_PasswordForm, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.instance.set_password(self.data['new_1'])
+        self.instance.save()
+        return self.instance
