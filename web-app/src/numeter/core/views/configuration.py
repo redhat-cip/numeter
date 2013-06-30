@@ -1,8 +1,11 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import Group
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 from core.models import User, Storage
-from core.forms import User_EditForm, User_Admin_EditForm
+from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm
 from core.utils.decorators import login_required
 
 
@@ -11,6 +14,7 @@ def configuration_index(request):
     return render(request, 'configuration/index.html', {
         'title': 'Numeter - Configuration',
         'EditForm': User_EditForm(instance=request.user),
+        'PasswordForm': User_PasswordForm(instance=request.user),
         'Users': User.objects.all(),
         'Groups': Group.objects.all(),
         'Storages': Storage.objects.all(),
@@ -26,10 +30,29 @@ def configuration_profile(request):
 
 @login_required()
 def update_profile(request, user_id):
-    U = get_object_or_404(User.objects.get(pk=user_is))
+    U = get_object_or_404(User.objects.filter(pk=user_id))
     F = User_EditForm(data=request.POST, instance=U)
-    if F.is_valid:
+    if F.is_valid():
         F.save()
-        message.warning(_("Profile updated with success."))
-        return render(request, 'base/messages.html', {})
+        messages.success(request, _("Profile updated with success."))
+    else:
+        for field,error in F.errors.items():
+            messages.error(request, '<b>%s</b>: %s' % (field,error))
 
+    return render(request, 'base/messages.html', {})
+
+@login_required()
+def update_password(request, user_id):
+    U = get_object_or_404(User.objects.filter(pk=user_id))
+    if request.user != U or not U.is_superuser:
+        raise Http404
+
+    F = User_PasswordForm(data=request.POST, instance=U)
+    if F.is_valid():
+        F.save()
+        messages.success(request, _("Password updated with success."))
+    else:
+        for field,error in F.errors.items():
+            messages.error(request, '<b>%s</b>: %s' % (field,error))
+
+    return render(request, 'base/messages.html', {})

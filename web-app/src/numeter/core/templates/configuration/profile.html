@@ -30,24 +30,24 @@
 <hr>
 
 <div class="row-fluid">
- <div class="span3">
+ <div id="profile-update-password-info" class="span3">
   <h4 class="center">{% trans "Password" %}</h4>
  </div>
  <div class="span3">
-  <form method="POST" action="{% url 'update profile' EditForm.instance.id %}">
+  <form id="profile-update-password-form" method="POST" action="{% url 'update profile' EditForm.instance.id %}">
    {% csrf_token %}
    <fieldset>
   
     <div class="control-group">
-     <div class="controls">{{ EditPasswordForm.old }}</div>
+     <div class="controls">{{ PasswordForm.old }}</div>
     </div>
    
     <div class="control-group">
-     <div class="controls">{{ EditPasswordForm.new_1 }}</div>
+     <div class="controls">{{ PasswordForm.new_1 }}</div>
     </div>
    
     <div class="control-group">
-     <div class="controls">{{ EditPasswordForm.new_2 }}</div>
+     <div class="controls">{{ PasswordForm.new_2 }}</div>
     </div>
   
     <div class="control-group">

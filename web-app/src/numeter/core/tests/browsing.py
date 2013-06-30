@@ -39,8 +39,12 @@ class Configuration_TestCase(TestCase):
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
+		self.u = User.objects.get(pk=1)
 
     def test_index(self):
         url = '/configuration'
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_change_username(self):
+        url = '/configuration'

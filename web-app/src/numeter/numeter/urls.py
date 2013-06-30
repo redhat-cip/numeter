@@ -14,7 +14,8 @@ urlpatterns = patterns('',
     url(r'^multiviews$', 'core.views.multiviews_index', name='multiviews'),
 
     url(r'^configuration$', 'core.views.configuration_index', name='configuration'),
-    url(r'^configuration/user/(?P<user_id>\d+)/update$', 'core.views.configuration_profile', name='update profile'),
+    url(r'^configuration/user/(?P<user_id>\d+)/update$', 'core.views.update_profile', name='update profile'),
+    url(r'^configuration/user/(?P<user_id>\d+)/update_password$', 'core.views.update_password', name='update password'),
 
     url(r'^get/hosts/(?P<id>\w+)?$', 'core.views.get_hosts_by_group'),
     url(r'^get/plugins/(?P<id>\w+)?$', 'core.views.get_plugins_by_host'),
