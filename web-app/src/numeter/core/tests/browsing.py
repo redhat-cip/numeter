@@ -40,7 +40,8 @@ class Configuration_TestCase(TestCase):
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
-        self.u = User.objects.get(pk=1)
+        self.admin = User.objects.get(pk=1)
+        self.user = User.objects.get(pk=2)
 
     def test_index(self):
         url = '/configuration'
@@ -48,22 +49,36 @@ class Configuration_TestCase(TestCase):
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
     def test_change_username(self):
-        url = self.u.get_update_url()
+        url = self.admin.get_update_url()
         r = self.c.post(url, {'username':'toto'})
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         self.assertTrue(User.objects.filter(username='toto').exists(), "New username not foundable.")
 
-    def test_change_password(self):
-        url = self.u.get_update_password_url()
+    def test_change_own_password(self):
+        self.c.logout()
+        self.c.login(username='test', password='toto')
+
+        url = self.user.get_update_password_url()
         POST = {'old':'toto','new_1':'root','new_2':'root'}
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+        self.user = User.objects.get(pk=2)
+        self.assertTrue(self.user.check_password('root'), "Password doesn't change.")
 
-        self.u = User.objects.get(pk=1)
-        self.assertTrue(self.u.check_password('root'), "New password checking failed.")
+    def test_admin_change_password(self):
+        url = self.user.get_update_password_url()
+        POST = {'old':'toto','new_1':'root','new_2':'root'}
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+        self.user = User.objects.get(pk=2)
+        self.assertTrue(self.user.check_password('root'), "New password checking failed.")
+
+    def test_forbidden_change_password(self):
         self.c.logout()
-        is_logged = self.c.login(username='root', password='toto')
-        self.assertFalse(is_logged, 'User can log with old credentials.')
+        self.c.login(username='test', password='toto')
 
-        is_logged = self.c.login(username='root', password='root')
-        self.assertTrue(is_logged, "User can't log with new credentials.")
+        url = self.admin.get_update_password_url()
+        POST = {'old':'toto','new_1':'root','new_2':'root'}
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
+        self.assertFalse(self.user.check_password('root'), "Third user can change password.")

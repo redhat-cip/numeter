@@ -43,10 +43,11 @@ def update_profile(request, user_id):
 
 @login_required()
 def update_password(request, user_id):
-    U = get_object_or_404(User.objects.filter(pk=user_id))
-    if request.user != U or not U.is_superuser:
-        raise Http404
+    if request.user.id != int(user_id):
+        if not request.user.is_superuser:
+            raise Http404
 
+    U = get_object_or_404(User.objects.filter(pk=user_id))
     F = User_PasswordForm(data=request.POST, instance=U)
     if F.is_valid():
         F.save()
