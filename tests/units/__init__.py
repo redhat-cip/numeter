@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+import unittest2 as unittest
 #from redis_Unittest import RedisTestCase
 from poller_Unittest import PollerTestCase
 #from poller_MuninModuleUnittest import PollerMuninModuleTestCase
