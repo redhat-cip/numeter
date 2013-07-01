@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import unittest
 import os
 import sys
 import time
 import socket
-import mock
-import myRedisConnect
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'))
+
+import myRedisConnect
 from numeter_poller import *
+
+import base as test_base
 
 
 class MockmyRedisConnect(object):
@@ -23,7 +24,7 @@ class MockmyRedisConnect(object):
     def redis_connect(self):
         pass
 
-class PollerTestCase(unittest.TestCase):
+class PollerTestCase(test_base.TestCase):
 
 #    def get_init_munin(self):
 #        # Start munin
@@ -32,6 +33,7 @@ class PollerTestCase(unittest.TestCase):
 
 
     def setUp(self):
+        super(PollerTestCase, self).setUp()
 #        os.system("rm -f /tmp/poller_last.unittest")
 #        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid 2>/dev/null) 2>/dev/null")
 #        os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
@@ -43,7 +45,8 @@ class PollerTestCase(unittest.TestCase):
 #        self.get_init_munin()
 #
 #
-#    def tearDown(self):
+    def tearDown(self):
+        super(PollerTestCase, self).tearDown()
 #        os.system("kill -9 $(cat /var/run/redis/redis-unittest.pid)")
 #        os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
 #        os.system("rm -f /tmp/poller_last.unittest")
@@ -189,65 +192,57 @@ class PollerTestCase(unittest.TestCase):
 #        self.poller.cleanInfo(["foo","gnu"])
 #        result = pollerRedis.redis_hkeys("INFOS")
 #        self.assertEquals(result, ['foo'])
-#
-#    def test_poller_writeData(self):
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        self.poller._redis_connexion = self.poller.redisStartConnexion()
-#        # set Empty value
-#        self.poller.writeData([])
-#        result = self.poller._redis_connexion.redis_zrangebyscore("DATAS", '-inf','+inf')
-#        self.assertEquals(result, [])
-#        result = self.poller._redis_connexion.redis_zrangebyscore("TimeStamp", '-inf','+inf')
-#        self.assertEquals(result, [])
-#        # set good value
-#        self.poller.writeData([{"TimeStamp": "1328624580", "Values": {"entropy": "146"}, "Plugin": "entropy"},
-#                                {"TimeStamp": "1328624760", "Values": {"load": "0.00"}, "Plugin": "load"}])
-#        result = self.poller._redis_connexion.redis_zrangebyscore("DATAS", '-inf','+inf')
-#        self.assertEquals(result, ['{"TimeStamp": "1328624580", "Values": {"entropy": "146"}, "Plugin": "entropy"}',
-#                                   '{"TimeStamp": "1328624760", "Values": {"load": "0.00"}, "Plugin": "load"}'])
-#        result = self.poller._redis_connexion.redis_zrangebyscore("TimeStamp", '-inf','+inf')
-#        self.assertEquals(result, ['1328624580', '1328624760'])
-#        # send value without Plugin name
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        self.poller.writeData([{"TimeStamp": "1328624580", "Values": {"entropy": "146"}}])
-#        result = self.poller._redis_connexion.redis_zrangebyscore("DATAS", '-inf','+inf')
-#        self.assertEquals(result, [])
-#        result = self.poller._redis_connexion.redis_zrangebyscore("TimeStamp", '-inf','+inf')
-#        self.assertEquals(result, [])
-#        # set good value but non integer timestamp
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        self.poller.writeData([{"TimeStamp": "error", "Plugin": "entropy"}])
-#        result = self.poller._redis_connexion.redis_zrangebyscore("DATAS", '-inf','+inf')
-#        self.assertEquals(result, [])
-#        result = self.poller._redis_connexion.redis_zrangebyscore("TimeStamp", '-inf','+inf')
-#        self.assertEquals(result, [])
 
-    #@mock.patch('myRedisConnect.myRedisConnect', MockmyRedisConnect)
+
+    def test_poller_writeData(self):
+        class FakeRedis(myRedisConnect):
+            def __init__(self):
+                self._error=False
+                self.zadd_data={}
+            def redis_zadd(self, *args, **kwargs):
+                key = args[0]
+                value = args[1]
+                score = args[2]
+                if not key in self.zadd_data:
+                    self.zadd_data[key] = {}
+                if not score in self.zadd_data[key]:
+                    self.zadd_data[key][score] = []
+                self.zadd_data[key][score].append(value)
+            def get_and_flush_zadd(self):
+                data = self.zadd_data
+                self.zadd_data = {}
+                return data
+                
+        self.poller._redis_connexion = FakeRedis()
+
+        # send good value
+        self.poller.writeData([{"TimeStamp": "1328624580", "Values": {"entropy": "146"}, "Plugin": "entropy"},
+                                {"TimeStamp": "1328624760", "Values": {"load": "0.00"}, "Plugin": "load"}])
+        expected_result = {
+            'TimeStamp': { 1328624760: ['1328624760'], 1328624580: ['1328624580']}, 
+            'DATAS': {
+                 1328624760: ['{"TimeStamp": "1328624760", "Values": {"load": "0.00"}, "Plugin": "load"}'], 
+                 1328624580: ['{"TimeStamp": "1328624580", "Values": {"entropy": "146"}, "Plugin": "entropy"}']
+            }
+        } 
+        self.assertEquals(expected_result,
+                          self.poller._redis_connexion.get_and_flush_zadd())
+        # set Empty value
+        self.poller.writeData([])
+        expected_result = {} 
+        self.assertEquals(expected_result,
+                          self.poller._redis_connexion.get_and_flush_zadd())
+        # send value without Plugin name
+        self.poller.writeData([{"TimeStamp": "1328624580", "Values": {"entropy": "146"}}])
+        expected_result = {} 
+        self.assertEquals(expected_result,
+                          self.poller._redis_connexion.get_and_flush_zadd())
+
     def test_poller_redisStartConnexion(self):
-        #self._q._connect = mock.MagicMock()
-        #self.assertEqual(self._q._close.call_count,1)
-        # Connect with 0
-        class MockmyRedisConn(myRedisConnect):
-            def __init__(self, *args, **kwargs):
-                self._error     = False
-                print 'DEBUG ###################### %s' % str(self._error)
-        #def __init__(self, *args, **kwargs):
-        #    print 'DEBUG ###################### %s' % str(self._error)
-        #    pass
-        #self.stubs.Set(myRedisConnect, '__init__', __init__)
-        #myRedisConnect.__init__ = __init__
-        myRedisConnect.myRedisConnect = MockmyRedisConn
-        #myRedisConnect.__init__ = __init__
-        #mock.patch('__main__.myRedisConnect', MockmyRedisConn)
-        self.poller._redis_db = 0
-        zeroConnect = self.poller.redisStartConnexion()
-        #zeroConnect.redis_hset("DB","foo","bar0")
-        # Connect with 1
-        #self.poller._redis_db = 1
-        #oneConnect = self.poller.redisStartConnexion()
-        #oneConnect.redis_hset("DB","foo","bar1")
-        # Check
-        #result = zeroConnect.redis_hget("DB","foo")
-        #self.assertEquals(result, "bar0")
-        #result = oneConnect.redis_hget("DB","foo")
-        #self.assertEquals(result, "bar1")
+        called = []
+        def myRedisConnect__init__(self, *args, **kwargs):
+            called.append("TESTED")
+            self._error=False
+        self.stubs.Set(myRedisConnect, '__init__', myRedisConnect__init__)
+        self.poller.redisStartConnexion()
+        self.assertEqual(len(called), 1)

@@ -16,7 +16,6 @@
 #}
 
 
-import unittest
 import os
 import sys
 import re
@@ -28,7 +27,10 @@ myPath = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller'))
+
 from myMuninModule import *
+
+import base as test_base
 
 class fakereadline():
     def __init__(self):
@@ -70,10 +72,10 @@ class myFakeSocket():
 
         
 
-class PollerMuninModuleTestCase(unittest.TestCase):
-
+class PollerMuninModuleTestCase(test_base.TestCase):
 
     def setUp(self):
+        super(PollerMuninModuleTestCase, self).setUp()
         # Set logger None
         self._logger = logging.getLogger('numeter')
         fh = logging.FileHandler("/dev/null")
@@ -94,6 +96,7 @@ class PollerMuninModuleTestCase(unittest.TestCase):
         self._pollerMuninModule.munin_connect = fakemunin_connect
 
     def tearDown(self):
+        super(PollerMuninModuleTestCase, self).setDown()
         return
 
 

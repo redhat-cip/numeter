@@ -33,7 +33,7 @@ done
 
 NOSETESTS="nosetests $noseargs"
 FUNCTIONAL=tests/functional
-UNIT=tests/unit
+UNIT=tests/units
 
 function run_unit_tests {
   ${wrapper} $NOSETESTS $UNIT
