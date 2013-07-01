@@ -13,16 +13,10 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'
 
 import myRedisConnect
 from numeter_poller import *
+from test_utils import FakeRedis
 
 import base as test_base
 
-
-class MockmyRedisConnect(object):
-    def __init__(self, *args, **kwargs):
-        self._error=False
-        pass
-    def redis_connect(self):
-        pass
 
 class PollerTestCase(test_base.TestCase):
 
@@ -195,23 +189,6 @@ class PollerTestCase(test_base.TestCase):
 
 
     def test_poller_writeData(self):
-        class FakeRedis(myRedisConnect):
-            def __init__(self):
-                self._error=False
-                self.zadd_data={}
-            def redis_zadd(self, *args, **kwargs):
-                key = args[0]
-                value = args[1]
-                score = args[2]
-                if not key in self.zadd_data:
-                    self.zadd_data[key] = {}
-                if not score in self.zadd_data[key]:
-                    self.zadd_data[key][score] = []
-                self.zadd_data[key][score].append(value)
-            def get_and_flush_zadd(self):
-                data = self.zadd_data
-                self.zadd_data = {}
-                return data
                 
         self.poller._redis_connexion = FakeRedis()
 
