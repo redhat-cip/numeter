@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="row-fluid"> <!-- storage form --!>
- <form action="{{ Storage_Form.instance.get_update_url }}" method="POST">
+ <form id="storage-form" class="ajax-form" action="{{ Storage_Form.instance.get_update_url }}" method="POST">
   {% csrf_token %}
   <h4 align="center">{{ storage }}</h4>
 
@@ -13,11 +13,19 @@
    </dl>
   </div>
 
-   <p>
-    <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Update" %}">
-    <input type="submit" name="delete" class="btn btn-danger" value="{% trans "Delete" %}">
-    <input type="submit" name="get" class="btn" style="display:none;" value="{% trans "Cancel" %}">
-   </p>
+  <div class="span4">
+   <div class="row-fluid">
+    <p>
+     <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Update" %}">
+     <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}">
+     <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
+    </p>
+   </div>
+   <div class="row-fluid">
+    <div class="message-container"> </div>
+   </div>
+  </div>
+
 
  </form>
 </div>

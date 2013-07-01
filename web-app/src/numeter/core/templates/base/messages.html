@@ -1,7 +1,7 @@
 {% if messages %}
  {% for message in messages %}
   <div id="msg-{{ message.tags }}" class="alert alert-{{ message.tags }}" style="display: block;">
-   <p class="pull-right"><button class="close" onclick="$(this).parent().parent().hide(250)">×</button></p>
+   <p class="pull-right"><button class="close" onclick="$(this).parent().parent().hide(250); return false">×</button></p>
    <div>{{ message|safe }}</div>
   </div>
  {% endfor %}

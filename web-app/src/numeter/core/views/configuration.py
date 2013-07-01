@@ -70,6 +70,7 @@ def storage_index(request):
         'storages_page': storages.page(1)
     })
 
+
 @login_required()
 def storage_get(request, storage_id):
     S = get_object_or_404(Storage.objects.filter(pk=storage_id))
@@ -77,3 +78,33 @@ def storage_get(request, storage_id):
     return render(request, 'configuration/storages/storage.html', {
         'Storage_Form': F,
     })
+
+
+@login_required()
+def storage_add(request):
+    if request.method == 'POST':
+        F = Storage_Form(request.POST)
+        if F.is_valid():
+            F.save()
+            messages.success(request, _("Storage added with success."))
+        else:
+            for field,error in F.errors.items():
+                messages.error(request, '<b>%s</b>: %s' % (field,error))
+    else:
+        return render(request, 'configuration/storages/storage.html', {
+            'Storage_Form': Storage_Form(),
+        })
+
+
+@login_required()
+def update_storage(request, storage_id):
+    S = get_object_or_404(Storage.objects.filter(pk=storage_id))
+    F = Storage_Form(data=request.POST, instance=S)
+    if F.is_valid():
+        F.save()
+        messages.success(request, _("Storage updated with success."))
+    else:
+        for field,error in F.errors.items():
+            messages.error(request, '<b>%s</b>: %s' % (field,error))
+
+    return render(request, 'base/messages.html', {})

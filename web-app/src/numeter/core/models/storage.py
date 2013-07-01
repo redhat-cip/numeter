@@ -54,13 +54,13 @@ class Storage(models.Model):
         install_opener(self.proxy)
 
     def get_absolute_url(self):
-        return reverse('core.views.user', args=[str(self.id)])
+        return reverse('storage index', args=[str(self.id)])
 
     def get_update_url(self):
-        return reverse('core.views.user_update', args=[str(self.id)])
+        return reverse('update storage', args=[str(self.id)])
 
     def get_delete_url(self):
-        return reverse('core.views.user_delete', args=[str(self.id)])
+        return reverse('delete storage', args=[str(self.id)])
 
     def _connect(self, url, data={}):
         """Basic method for use proxy to storage."""
