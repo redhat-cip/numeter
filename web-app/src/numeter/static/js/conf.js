@@ -35,6 +35,22 @@ $(document).on('click', '.ajax-tabs li a', function() {
   });
 });
 
-// STORAGE
-$(document).on('click', '.ajax-tabs li a', function() {
+// GET MODEL INSTANCE
+$(document).on('click', '.ajax-tabs-list li a', function() {
+  model = $(this).parent().parent().parent().attr('model');
+  id = $(this).attr('model-id');
+  $.ajax({type:'GET', url:'/configuration/'+model+'/'+id, async:true,
+    success: function(data, status, xhr) {
+      $('#'+menu+'-content').html(data);
+    },
+  });
+});
+
+// GET EMPTY FORM
+
+
+// ENABLE UPDATE BUTTON
+$(document).on('keypress', 'form div dd input', function() {
+  var form = $(this).parentsUntil('form').parent();
+  form.children('p').children('input[name="update"]').removeAttr('disabled');
 });

@@ -1,14 +1,14 @@
 {% load i18n %}
 <ul id="storage-list" class="nav nav-tabs nav-stacked">
- {% if StoragesPage.has_previous %}
+ {% if storages_page.has_previous %}
  <li><a>&uarr; {% trans "Previous" %}</a></li>
  {% endif %}
 
- {% for Storage in StoragePage %}
-  <li><a storage-id="{{ Storage.id }}" href="#" data-toggle="tab">{{ Storage }}</a></li>
+ {% for storage in storages_page %}
+  <li><a model-id="{{ storage.id }}" href="#" data-toggle="tab">{{ storage }}</a></li>
  {% endfor %}
 
- {% if StoragePage.has_next %}
+ {% if storage_page.has_next %}
  <li><a>&darr; {% trans "Next" %}</a></li>
  {% endif %}
 </ul>

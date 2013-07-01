@@ -1,6 +1,7 @@
-from django.contrib.auth.models import User
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
+from core.models import User, Storage
 
 
 class User_Form(forms.ModelForm):
@@ -44,3 +45,17 @@ class User_PasswordForm(User_Form):
         self.instance.set_password(self.data['new_1'])
         self.instance.save()
         return self.instance
+
+
+class Storage_Form(forms.ModelForm):
+    class Meta:
+        model = Storage
+        widgets = {
+            'name': forms.TextInput({'placeholder':_('Name')}),
+            'address': forms.TextInput({'placeholder':_('Address')}),
+            'port': forms.TextInput({'placeholder':_('Port')}),
+            'port': forms.TextInput({'placeholder':_('Port')}),
+            'url_prefix': forms.TextInput({'placeholder':_('URL prefix')}),
+            'login': forms.TextInput({'placeholder':_('Login')}),
+            'password': forms.TextInput({'placeholder':_('Password')}),
+        }

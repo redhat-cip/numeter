@@ -3,9 +3,10 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from core.models import User, Storage
-from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm
+from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm, Storage_Form
 from core.utils.decorators import login_required
 
 
@@ -63,5 +64,16 @@ def update_password(request, user_id):
 
 @login_required()
 def storage_index(request):
+    storages = Storage.objects.all()
+    storages = Paginator(storages, 20)
     return render(request, 'configuration/storages/index.html', {
+        'storages_page': storages.page(1)
+    })
+
+@login_required()
+def storage_get(request, storage_id):
+    S = get_object_or_404(Storage.objects.filter(pk=storage_id))
+    F = Storage_Form(instance=S)
+    return render(request, 'configuration/storages/storage.html', {
+        'Storage_Form': F,
     })

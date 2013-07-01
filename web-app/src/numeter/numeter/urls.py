@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^configuration/profile/(?P<user_id>\d+)/update_password$', 'core.views.update_password', name='update password'),
 
     url(r'^configuration/storage$', 'core.views.storage_index', name='storage index'),
+    url(r'^configuration/storage/(?P<storage_id>\d+)$', 'core.views.storage_get', name='storage'),
     #url(r'^configuration/storage/(?P<storage_id>\d+)/update$', 'core.views.update_storage', name='update storage'),
 
     url(r'^get/hosts/(?P<id>\w+)?$', 'core.views.get_hosts_by_group'),

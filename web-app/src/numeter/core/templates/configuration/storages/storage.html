@@ -1,0 +1,23 @@
+{% load i18n %}
+<div class="row-fluid"> <!-- storage form --!>
+ <form action="{{ Storage_Form.instance.get_update_url }}" method="POST">
+  {% csrf_token %}
+  <h4 align="center">{{ storage }}</h4>
+
+  <div class="span5" style="margin-left: 50px;">
+   <dl>
+    {% for field in Storage_Form %}
+    <dt>{{ field.label }}:</dt>
+    <dd>{{ field }}</dd>
+    {% endfor %}
+   </dl>
+  </div>
+
+   <p>
+    <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Update" %}">
+    <input type="submit" name="delete" class="btn btn-danger" value="{% trans "Delete" %}">
+    <input type="submit" name="get" class="btn" style="display:none;" value="{% trans "Cancel" %}">
+   </p>
+
+ </form>
+</div>
