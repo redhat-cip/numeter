@@ -13,17 +13,30 @@ class Storage_TestCase(TestCase):
             self.storage = Storage.objects.create(**settings.TEST_STORAGE)
 
     def test_proxy(self):
-        url = 'http://%s:%s/' % (self.storage.address, self.storage.port)
-        response = self.storage.proxy.open(url)
-        self.assertEqual(reponse, 200, "Bad response code (%i)." % response.code)
+        url = 'http://%s:%s/numeter-storage/list' % (self.storage.address, self.storage.port)
+        r = self.storage.proxy.open(url)
+        self.assertEqual(r.code, 200, "Bad response code (%i)." % r.code)
 
     def test_get_hosts(self):
         hosts_dict = self.storage.get_hosts()
-        self.assertIsInstance(hosts_dict, list, "Invalide response type, should be list.")
+        self.assertIsInstance(hosts_dict, dict, "Invalide response type, should be dict.")
 
-#    def test_create_host_from_storage(self):
-#        a = None
-#
-#    def test_get_info(self):
-#        hosts_dict = self.storage.get_info()
-#        self.assertIsInstance(hosts_dict, list, "Invalide response type, should be list.")
+    def test_create_host_from_storage(self):
+        self.storage._update_hosts()
+        hosts = Host.objects.all()
+        if hosts.count():
+            self.assertTrue(hosts.exists())
+
+    def test_get_info(self):
+        self.storage._update_hosts()
+        hosts = Host.objects.all()
+        if hosts.count():
+            host = hosts[0]
+            info = host.get_info()
+
+    def test_get_info(self):
+        self.storage._update_hosts()
+        hosts = Host.objects.all()
+        if hosts.count():
+            host = hosts[0]
+            info = host.get_plugins()

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from core.models import Host
 
 from urllib2 import urlopen
-from json import load as jload
+from json import load as jload, loads as jloads
 
 
 class Storage(models.Model):
@@ -33,9 +33,9 @@ class Storage(models.Model):
         self._set_proxy()
         self.urls = {
             'hosts': '/numeter-storage/hosts',
-            'host': '/hinfo?host={storage_id}',
-            'plugins': '/numeter-storage/list?host={storage_id}',
-            'data': '/numeter-storage/data?host={storage_id}&plugin={plugin}&ds={ds}&res={res}',
+            'host': '/numeter-storage//hinfo?host={hostid}',
+            'plugins': '/numeter-storage/list?host={hostid}',
+            'data': '/numeter-storage/data?host={hostid}&plugin={plugin}&ds={ds}&res={res}',
         }
 
     def _set_proxy(self):
@@ -66,23 +66,23 @@ class Storage(models.Model):
         """Basic method for use proxy to storage."""
         if url not in self.urls:
             raise ValueError("URL key does not exists.")
-        _url = urls[url].format(**data)
-        r = self.proxy.open(_url, timeout=3)
+        _url = self.urls[url].format(**data)
+        r = self.proxy.open("http://%s:%i%s" % (self.address, self.port, _url), timeout=3)
         return jload(r)
 
     def get_hosts(self):
         """Return a dictionnary representing storage's hosts."""
         return self._connect('hosts')
 
-    def get_info(self, storage_id):
+    def get_info(self, hostid):
         """Return a dictionnary representing an host on storage."""
-        if isinstance(storage_id, Host): storage_id = storage_id.storage_id
-        return self._connect('host', {'host_id': storage_id})
+        if isinstance(hostid, Host): hostid = hostid.hostid
+        return self._connect('host', {'hostid': hostid})
 
-    def get_plugins(self):
+    def get_plugins(self, hostid):
         """Return a dictionnary representing an host's plugins."""
         # TODO : WTF on JSON
-        r = self._connect('plugins', {'host_id': storage_id})
+        r = self._connect('plugins', {'hostid': hostid})
         for p in r['list'].values():
             yield jloads(p)
 
@@ -100,6 +100,6 @@ class Storage(models.Model):
         for h in hosts:
             Host.objects.create(
                 name=h['Name'],
-                host_id=h['ID'],
+                hostid=h['ID'],
                 storage=self,
             )
