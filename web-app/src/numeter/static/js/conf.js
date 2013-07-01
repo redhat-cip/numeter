@@ -25,12 +25,16 @@ $(document).on('submit', '#profile-update-password-form', function() {
   return false;
 });
 
-// USER AND GROUPS
+// GET MENU INDEX
 $(document).on('click', '.ajax-tabs li a', function() {
-  model = $(this).attr('model');
-  $.ajax({type:'GET', url:'/'+model, async:true,
+  menu = $(this).attr('menu');
+  $.ajax({type:'GET', url:'/configuration/'+menu, async:true,
     success: function(data, status, xhr) {
-      $('#'+model+'-index').append(data);
+      $('#'+menu+'-index').html(data);
     },
   });
+});
+
+// STORAGE
+$(document).on('click', '.ajax-tabs li a', function() {
 });

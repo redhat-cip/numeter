@@ -1,0 +1,14 @@
+{% load i18n %}
+<ul id="storage-list" class="nav nav-tabs nav-stacked">
+ {% if StoragesPage.has_previous %}
+ <li><a>&uarr; {% trans "Previous" %}</a></li>
+ {% endif %}
+
+ {% for Storage in StoragePage %}
+  <li><a storage-id="{{ Storage.id }}" href="#" data-toggle="tab">{{ Storage }}</a></li>
+ {% endfor %}
+
+ {% if StoragePage.has_next %}
+ <li><a>&darr; {% trans "Next" %}</a></li>
+ {% endif %}
+</ul>

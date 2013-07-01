@@ -22,9 +22,10 @@ def configuration_index(request):
 
 
 @login_required()
-def configuration_profile(request):
-    return render(request, 'configuration/index.html', {
-        'EditForm': User_EditForm(instance=request.user)
+def profile_index(request):
+    return render(request, 'configuration/profile.html', {
+        'EditForm': User_EditForm(instance=request.user),
+        'PasswordForm': User_PasswordForm(instance=request.user),
     })
 
 
@@ -40,6 +41,7 @@ def update_profile(request, user_id):
             messages.error(request, '<b>%s</b>: %s' % (field,error))
 
     return render(request, 'base/messages.html', {})
+
 
 @login_required()
 def update_password(request, user_id):
@@ -57,3 +59,9 @@ def update_password(request, user_id):
             messages.error(request, '<b>%s</b>: %s' % (field,error))
 
     return render(request, 'base/messages.html', {})
+
+
+@login_required()
+def storage_index(request):
+    return render(request, 'configuration/storages/index.html', {
+    })
