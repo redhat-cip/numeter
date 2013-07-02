@@ -33,7 +33,7 @@ class Storage(models.Model):
         self._set_proxy()
         self.urls = {
             'hosts': '/numeter-storage/hosts',
-            'host': '/numeter-storage//hinfo?host={hostid}',
+            'host': '/numeter-storage/hinfo?host={hostid}',
             'plugins': '/numeter-storage/list?host={hostid}',
             'data': '/numeter-storage/data?host={hostid}&plugin={plugin}&ds={ds}&res={res}',
         }
