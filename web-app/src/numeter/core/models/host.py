@@ -57,5 +57,12 @@ class Host(models.Model):
     def get_info(self):
         return self.storage.get_info(self.hostid)
 
+    def get_categories(self):
+        return self.storage.get_categories(self.hostid)
+
     def get_plugins(self):
         return self.storage.get_plugins(self.hostid)
+
+    def get_plugins_by_category(self, category):
+        return self.storage.get_plugins_by_category(self.hostid, category)
+

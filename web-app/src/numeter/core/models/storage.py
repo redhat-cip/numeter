@@ -84,12 +84,21 @@ class Storage(models.Model):
         if isinstance(hostid, Host): hostid = hostid.hostid
         return self._connect('host', {'hostid': hostid})
 
+    def get_categories(self, hostid):
+        """Return a list representing an host plugins' category."""
+        r = self._connect('plugins', {'hostid': hostid})
+        categories = set([ jloads(p)['Category']  for p in r['list'].values() ])
+        return list(categories)
+
     def get_plugins(self, hostid):
         """Return a dictionnary representing an host's plugins."""
         # TODO : WTF on JSON
         r = self._connect('plugins', {'hostid': hostid})
         for p in r['list'].values():
             yield jloads(p)
+
+    def get_plugins_by_category(self, hostid, category):
+        return [ p for p in self.get_plugins(host_id) if p['Category'] == category ] 
 
     def get_data(self, **data):
         return self._connect('data', **data)
