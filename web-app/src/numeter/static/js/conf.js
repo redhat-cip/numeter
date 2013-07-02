@@ -78,3 +78,17 @@ $(document).on('submit', '.ajax-form', function() {
   });
   return false;
 });
+
+// DELETE BUTTON
+$(document).on('click', 'input[name="delete"]', function() {
+  var url = $(this).attr('url');
+  if ( $(this).attr('disabled') == '' ) { return false ; }
+  $.ajax({
+    type: 'POST', url: url, async: true,
+    data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
+    success: function(data, status, xhr) {
+      $('#'+menu+'-form .fields').html(data);
+	  $('#'+menu+'-form div div p input').attr('disabled','');
+    },
+  });
+});

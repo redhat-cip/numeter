@@ -90,6 +90,7 @@ def storage_add(request):
         else:
             for field,error in F.errors.items():
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
+        return render(request, 'base/messages.html', {})
     else:
         return render(request, 'configuration/storages/storage.html', {
             'Storage_Form': Storage_Form(),
@@ -97,7 +98,7 @@ def storage_add(request):
 
 
 @login_required()
-def update_storage(request, storage_id):
+def storage_update(request, storage_id):
     S = get_object_or_404(Storage.objects.filter(pk=storage_id))
     F = Storage_Form(data=request.POST, instance=S)
     if F.is_valid():
@@ -107,4 +108,11 @@ def update_storage(request, storage_id):
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))
 
+    return render(request, 'base/messages.html', {})
+
+@login_required()
+def storage_delete(request, storage_id):
+    S = get_object_or_404(Storage.objects.filter(pk=storage_id))
+    S.delete()
+    messages.success(request, _("Storage deleted with success."))
     return render(request, 'base/messages.html', {})
