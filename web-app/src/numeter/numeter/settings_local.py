@@ -36,10 +36,19 @@ TIME_ZONE = 'America/Chicago'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = '/var/www/media/'
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = '/media/'
+
 # Debug Tool Bar
 #INSTALLED_APPS = INSTALLED_APPS+('debug_toolbar',)
 #if 'debug_toolbar' in INSTALLED_APPS :
-#    INTERNAL_IPS = ('127.0.0.1',)
+#    INTERNAL_IPS = ('127.0.0.1','192.168.100.1')
 #    MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES+('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 # Django Extensions
