@@ -2,40 +2,16 @@ from django.db import models
 from django.contrib.auth.models import Group, Permission
 from django.utils.translation import ugettext_lazy as _
 
-from urllib2 import urlopen
-from json import load as jload, loads as jloads, dumps as jdumps
-
-
-class Host_QuerySet(models.query.QuerySet):
-    def get_hosts_by_group(self):
-        groups = list(set([ Group.objects.get(pk=g[0]) for g in self.values_list('group') ]))
-        for group in groups:
-            yield self.filter(id=group.id)
-
-    # USELESS
-    def get_list_tree(self):
-        data = []
-        groups = list(set([ Group.objects.get(pk=g[0]) for g in self.values_list('group') ]))
-        for group in groups:
-            branch = {'key':group.name}
-            hosts = self.filter(id=group.id)
-            branch['values'] = [ {'key':host.name} for host in hosts ]
-            data.append(branch)
-        return jdumps(data)
-
-
-class Host_Manager(models.Manager):
-    def get_query_set(self):
-        return Host_QuerySet(self.model)
-
 
 class Host(models.Model):
+    """
+    Corresponding to an hos on storage.
+    """
     name = models.CharField(_('name'), max_length=200)
     hostid = models.CharField(_('ID on storage'), max_length=300)
     storage = models.ForeignKey('Storage')
     group = models.ForeignKey(Group, null=True, blank=True)
 
-    objects = Host_Manager()
     class Meta:
         app_label = 'core'
         ordering = ('group','name','hostid')
@@ -55,18 +31,23 @@ class Host(models.Model):
         return reverse('delete host', args=[str(self.id)])
 
     def get_info(self):
+        """Get host's info from storage."""
         return self.storage.get_info(self.hostid)
 
     def get_categories(self):
+        """Get host's categories from storage."""
         return self.storage.get_categories(self.hostid)
 
     def get_plugins(self):
+        """Get all host plugin's from storage."""
         return self.storage.get_plugins(self.hostid)
 
     def get_plugins_by_category(self, category):
+        """Get host's plugins by category from storage."""
         return self.storage.get_plugins_by_category(self.hostid, category)
 
     def get_data(self, **data):
+        """Get plugin's data from storage."""
         data['hostid'] = self.hostid
         return self.storage.get_data(**data)
         return self.storage.get_plugins_by_category(self.hostid, category)

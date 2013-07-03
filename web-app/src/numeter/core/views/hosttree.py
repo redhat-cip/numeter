@@ -5,7 +5,6 @@ from core.utils.decorators import login_required
 
 @login_required()
 def group(request, group_id=None):
-    print group_id
     return render(request, 'hosttree/group.html', {
         'group': Host.objects.filter(group__id=group_id)
     }) 
