@@ -20,7 +20,7 @@ class User_Admin_EditForm(User_Form):
 
 class User_EditForm(User_Admin_EditForm):
     class Meta(User_Form.Meta):
-        fields = ('username','email')
+        fields = ('username','email','graph_lib')
 
 
 class User_PasswordForm(User_Form):

@@ -66,3 +66,7 @@ class Host(models.Model):
     def get_plugins_by_category(self, category):
         return self.storage.get_plugins_by_category(self.hostid, category)
 
+    def get_data(self, **data):
+        data['hostid'] = self.hostid
+        return self.storage.get_data(**data)
+        return self.storage.get_plugins_by_category(self.hostid, category)

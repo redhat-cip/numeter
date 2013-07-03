@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from mock_storage.models import Host
 
 
 def hosts(request.GET):

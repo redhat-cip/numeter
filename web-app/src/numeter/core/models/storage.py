@@ -6,13 +6,21 @@ from core.models import Host
 
 from urllib2 import urlopen
 from json import load as jload, loads as jloads
+from logging import getLogger
+logger = getLogger(__name__)
 
 
 class Storage(models.Model):
+    HTTP_PROTOCOLS = (
+      ('http','HTTP'),
+      ('https','HTTPS'),
+    )
+
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
     address = models.CharField(_('address'), max_length=200)
     port = models.IntegerField(_('port'), blank=True,null=True,default=80)
     url_prefix = models.CharField(_('URL prefix'), max_length=100, blank=True, null=True)
+    protocol = models.CharField(_('protocol'), max_length=5, default='http', choices=HTTP_PROTOCOLS)
     login = models.CharField(_('login'), max_length=100, blank=True, null=True)
     password = models.CharField(_('password'), max_length=100, blank=True, null=True)
 
@@ -72,7 +80,9 @@ class Storage(models.Model):
         if url not in self.urls:
             raise ValueError("URL key does not exists.")
         _url = self.urls[url].format(**data)
-        r = self.proxy.open("http://%s:%i%s" % (self.address, self.port, _url), timeout=3)
+        uri = "http://%s:%i%s" % (self.address, self.port, _url)
+        logger.info('STORAGE-GET %s' % uri)
+        r = self.proxy.open(uri, timeout=3)
         return jload(r)
 
     def get_hosts(self):

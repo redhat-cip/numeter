@@ -1,0 +1,10 @@
+[
+{"pk":1,
+  "model":"core.graphlib",
+  "fields":{
+    "name": "Highcharts",
+    "script_file": "graphlib/1/highcharts.js",
+    "comment": "Highcharts is a charting library written in pure HTML5/JavaScript, offering intuitive, interactive charts to your web site or web application. Highcharts currently supports line, spline, area, areaspline, column, bar, pie, scatter, angular gauges, arearange, areasplinerange, columnrange, bubble, box plot, error bars, funnel, waterfall and polar chart types"
+  }
+}
+]

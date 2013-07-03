@@ -8,7 +8,6 @@
 <div class="tabbable tabs-left">
  <ul class="nav nav-tabs ajax-tabs">
   <li class="active"><a href="#profile-index" menu="profile" data-toggle="tab">{% trans "Profile" %}</a></li>
-  <li><a href="#skin-index" data-toggle="tab">{% trans "Skin" %}</a></li>
   {% if request.user.is_superuser %}
    <li><a href="#users-index" data-toggle="tab">{% trans "Users" %}</a></li>
    <li><a href="#groups-index" data-toggle="tab">{% trans "Groups" %}</a></li>
