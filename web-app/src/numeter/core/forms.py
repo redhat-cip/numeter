@@ -1,10 +1,13 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from core.models import User, Storage
+from core.models import User, Host, Storage, GraphLib
 
 
 class User_Form(forms.ModelForm):
+    """
+    Base User Form. Subclassed for make custom User Form.
+    """
     class Meta:
         model = User
         widgets = {
@@ -14,16 +17,25 @@ class User_Form(forms.ModelForm):
 
 
 class User_Admin_EditForm(User_Form):
+    """
+    Form with sensitive fields.
+    """
     class Meta(User_Form.Meta):
         exclude = ('password','last_login','is_staff','date_joined')
 
 
 class User_EditForm(User_Admin_EditForm):
+    """
+    Form with fewer fields.
+    """
     class Meta(User_Form.Meta):
         fields = ('username','email','graph_lib')
 
 
 class User_PasswordForm(User_Form):
+    """
+    Form for change password.
+    """
     old = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('Old password')}))
     new_1 = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('New password')}))
     new_2 = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('Confirmation')}))
@@ -48,6 +60,9 @@ class User_PasswordForm(User_Form):
 
 
 class Storage_Form(forms.ModelForm):
+    """
+    Basic Storage ModelForm.
+    """
     class Meta:
         model = Storage
         widgets = {
@@ -58,4 +73,27 @@ class Storage_Form(forms.ModelForm):
             'url_prefix': forms.TextInput({'placeholder':_('URL prefix')}),
             'login': forms.TextInput({'placeholder':_('Login')}),
             'password': forms.TextInput({'placeholder':_('Password')}),
+        }
+
+
+class GraphLib_Form(forms.ModelForm):
+    """
+    Basic GraphLib ModelForm.
+    """
+    class Meta:
+        model = GraphLib
+        widgets = {
+            'name': forms.TextInput({'placeholder':_("Library's name")}),
+        }
+
+
+class Host_Form(forms.ModelForm):
+    """
+    Basic Host ModelForm.
+    """
+    class Meta:
+        model = Host
+        widgets = {
+            'name': forms.TextInput({'placeholder':_("Host's name")}),
+            'hostID': forms.TextInput({'placeholder':'ID'}),
         }

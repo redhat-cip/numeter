@@ -68,6 +68,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class GraphLib(models.Model):
+    """
+    Javascript graphic library.
+    """
     def _upload_path(self, filename):
         return 'graphlib/%s/%s' % (str(self.pk), filename)
 
