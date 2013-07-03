@@ -11,6 +11,9 @@ logger = getLogger(__name__)
 
 
 class Storage(models.Model):
+    """
+    Corresponding to a storage.
+    """
     HTTP_PROTOCOLS = (
       ('http','HTTP'),
       ('https','HTTPS'),

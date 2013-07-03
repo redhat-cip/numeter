@@ -39,5 +39,9 @@
 <script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
 
 <script src="{{ STATIC_URL }}js/conf.js"></script>
+
+<!-- Your graph lib --!>
+<script src="{{ MEDIA_URL }}{{ request.user.graphlib.script_file }}"></script>
+
 {% block header %}
 {% endblock %}

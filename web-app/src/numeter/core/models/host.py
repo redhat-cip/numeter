@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class Host(models.Model):
     """
-    Corresponding to an hos on storage.
+    Corresponding to an host on storage.
     """
     name = models.CharField(_('name'), max_length=200)
     hostid = models.CharField(_('ID on storage'), max_length=300)
