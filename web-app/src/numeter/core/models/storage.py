@@ -98,7 +98,7 @@ class Storage(models.Model):
             yield jloads(p)
 
     def get_plugins_by_category(self, hostid, category):
-        return [ p for p in self.get_plugins(host_id) if p['Category'] == category ] 
+        return [ p for p in self.get_plugins(hostid) if p['Category'] == category ] 
 
     def get_data(self, **data):
         return self._connect('data', **data)

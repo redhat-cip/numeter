@@ -5,8 +5,9 @@ from core.utils.decorators import login_required
 
 @login_required()
 def group(request, group_id=None):
+    print group_id
     return render(request, 'hosttree/group.html', {
-        'hosts': Host.objects.filter(group=group_id),
+        'group': Host.objects.filter(group__id=group_id)
     }) 
 
 
@@ -14,15 +15,15 @@ def group(request, group_id=None):
 def host(request, host_id=None):
     H = get_object_or_404(Host.objects.filter(id=host_id))
     return render(request, 'hosttree/host.html', {
-        'category': H.get_categories(),
+        'host': H.get_categories(),
     }) 
 
 
 @login_required()
-def category(request, host_id, category):
+def category(request, host_id):
     H = get_object_or_404(Host.objects.filter(id=host_id))
     return render(request, 'hosttree/category.html', {
-        'category': H.get_plugins_by_category(),
+        'category': H.get_plugins_by_category(request.GET['category']),
     }) 
 
 # NOW USELESS

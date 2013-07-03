@@ -16,29 +16,54 @@ var remove_loading_gif = function(from) {
 }
 
 // HOST TREE
-// GET HOSTS FOR LIST TREE
+// GET HOSTS FROM GROUP
 $('.accordion-body').on('shown', function() {
   var id = $(this).attr('group-id');
-  $.ajax({type:'GET', url:'/get/hosts/'+id, async:true,
+  $.ajax({type:'GET', url:'/hosttree/group/'+id, async:true,
     success: function(data, status, xhr) {
        $('#group-'+id).html(data);
     }
   });
 });
 
-// GET PLUGINS FOR LIST TREE
+// GET CATEGORIES FROM HOST
 $(document).on('click', '.accordion-host', function() {
   var id = $(this).attr('host-id');
+
   if ( $('#host-'+id+'-content').html() == "" ) {
-    $.ajax({type:'GET', url:'/get/plugins/'+id, async:true,
+    $.ajax({type:'GET', url:'/hosttree/host/'+id, async:true,
       success: function(data, status, xhr) {
         $('#host-'+id+'-content').html(data);
         $('#host-'+id+'-content').show(250);
+        $('#host-'+id+'-content').parent().children('i').attr('class', 'icon-minus');
       }
     });
   } else {
     $('#host-'+id+'-content').html('')
     $('#host-'+id+'-content').hide(250);
+    $('#host-'+id+'-content').parent().children('i').attr('class', 'icon-plus');
+  }
+});
+
+// GET PLUGIN LIST FROM CATEGORY
+$(document).on('click', '.accordion-category', function() {
+  var category = $(this).parent().attr('category-name');
+  var id = $(this).parentsUntil('.hosttree-host-li').parent().children('[host-id]').attr('host-id')
+  var content = $(this).parent().children('div.category-content');
+
+  if ( $(content).html() == "" ) {
+    $.ajax({type:'GET', url:'/hosttree/category/'+id, async:true,
+      data: {category: category },
+      success: function(data, status, xhr) {
+        $(content).html(data);
+        $(content).show(250);
+        $(content).parent().children('i').attr('class', 'icon-minus');
+      }
+    });
+  } else {
+    $(content).html('')
+    $(content).hide(250);
+	$(content).parent().children('i').attr('class', 'icon-plus');
   }
 });
 

@@ -11,3 +11,7 @@ body {
 .editor {
   font-family:Menlo,Monaco,Consolas,"Courier New",monospace
 }
+
+.hosttree-host-li, .hosttree-category-li, hosttree-plugin-li {
+  margin-left: 10px;
+}

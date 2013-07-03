@@ -24,9 +24,9 @@ urlpatterns = patterns('',
     url(r'^configuration/storage/(?P<storage_id>\d+)/update$', 'core.views.storage_update', name='storage update'),
     url(r'^configuration/storage/(?P<storage_id>\d+)/delete$', 'core.views.storage_delete', name='storage delete'),
 
-    url(r'^hosttree/group/(?P<group_id>\d+)?$', 'core.views.hosttree.group', 'hosttree group'),
-    url(r'^hosttree/hosts/(?P<host_id>\d+)/$', 'core.views.hosttree.host', 'hosttree host'),
-    url(r'^hosttree/hosts/(?P<host_id>\d+)/(?P<category>\w+)$', 'core.views.hosttree.category', 'hosttree category'),
+    url(r'^hosttree/group/(?P<group_id>\d+)?$', 'core.views.hosttree.group', name= 'hosttree group'),
+    url(r'^hosttree/host/(?P<host_id>\d+)$', 'core.views.hosttree.host', name='hosttree host'),
+    url(r'^hosttree/category/(?P<host_id>\d+)$', 'core.views.hosttree.category', name='hosttree category'),
 
     # url(r'^numeter/', include('numeter.foo.urls')),
 
