@@ -293,7 +293,7 @@ class myPoller:
 
     def pollerTimeToGo(self):
         "LAST + poller_time <= NOW calcule aussi le refresh time"
-        nowTimestamp     = "%.0f" % time.time()
+        nowTimestamp = "%.0f" % time.time()
         # Si c'est le 1er lancement
         if not os.path.isfile(self._poller_time_file):
             self._logger.info("Poller pollerTimeToGo ok now")
@@ -303,7 +303,7 @@ class myPoller:
             return True
         else:
             with open(self._poller_time_file, 'rb') as lastTimeFile:
-                lastTime     = lastTimeFile.read()
+                lastTime = lastTimeFile.read()
             # If file is corrupt, reset
             if not re.match("^[0-9]{10} [0-9]{10}$", lastTime):
                 lastTime = "0000000000 0000000000"
