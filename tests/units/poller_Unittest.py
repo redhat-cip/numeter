@@ -48,57 +48,47 @@ class PollerTestCase(test_base.TestCase):
         self.assertEquals(len(result['DATAS']),1)
         self.assertEquals(len(result['TimeStamp']),1)
 
-
     def test_poller_pollerTimeToGo(self):
-        nowTimestamp = "%.0f" % time.time()
-        # Init
         self.poller._poller_time            = 60
         self.poller._plugins_refresh_time   = 300
-        file_mock = mock.mock_open()
-        isfile_mock = mock.MagicMock()
-        time_mock = mock.MagicMock()
-        time_mock.return_value = 1000000000
-        with mock.patch('time.time', time_mock):
-            with mock.patch('os.path.isfile', isfile_mock):
-                with mock.patch('__builtin__.open', file_mock, create=True):
-                    # First start no file (need refresh and true)
-                    isfile_mock.return_value = False
-                    result = self.poller.pollerTimeToGo()
-                    file_mock.assert_called_with(self.poller._poller_time_file, 'w')
-                    handle = file_mock()
-                    handle.write.assert_called_once_with('%s %s'
-                            % (time_mock.return_value, time_mock.return_value))
+
+        with mock.patch('time.time', mock.MagicMock()) as time_mock, \
+             mock.patch('os.path.isfile', mock.MagicMock()) as isfile_mock, \
+             mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
+                handle = file_mock()
+                # First start no file (need refresh and true)
+                isfile_mock.return_value = False
+                time_mock.return_value = 1000000000
+                result = self.poller.pollerTimeToGo()
+                file_mock.assert_called_with(self.poller._poller_time_file, 'w')
+                handle.write.assert_called_once_with('%s %s'
+                        % (time_mock.return_value, time_mock.return_value))
+                self.assertTrue(result)
+                self.assertTrue(self.poller._need_refresh)
+
+        with mock.patch('time.time', mock.MagicMock()) as time_mock, \
+             mock.patch('os.path.isfile', mock.MagicMock()) as isfile_mock, \
+             mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
+                handle = file_mock()
+                time_mock.return_value = 1000000001
+                isfile_mock.return_value = True
+                result = self.poller.pollerTimeToGo()
+
+                handle.write.assert_called_once_with('%s %s'
+                        % (time_mock.return_value, time_mock.return_value))
 
 
-
-                    #isfile_mock.return_value = True
-                    #file_mock.return_value.read.return_value = 'some data'
+                #isfile_mock.return_value = True
+                #file_mock.return_value.read.return_value = 'some data'
         print result
         print "mock calls : %s" % file_mock.mock_calls
 
         
 
         self.assertTrue(False)
-        # http://www.voidspace.org.uk/python/mock/getting-started.html read call with
 
         #assert handle == sentinel.file_handle, "incorrect file handle returned"
-        #with self.mock.patch('__builtin__.open', open_mock):
-        #self.mox.ReplayAll()
-#        # call the code you want to test that calls `open`
-#        self.mox.VerifyAll()
-#        self.mox.UnsetStubs()
 
-#        called_open = []
-#        def myRedisConnect__init__(self, *args, **kwargs):
-#            called.append("TESTED")
-#            self._error=False
-#        self.stubs.Set(myRedisConnect, '__init__', myRedisConnect__init__)
-#        self.assertEqual(len(called), 1)
-#
-#        os.system("rm -f /tmp/poller_last.unittest")
-#        result = self.poller.pollerTimeToGo()
-#        self.assertTrue(result)
-#        self.assertTrue(self.poller._need_refresh)
 
 
         ## Make corrupt /tmp/poller_last.unittest
