@@ -293,21 +293,17 @@ class myPoller:
 
     def pollerTimeToGo(self):
         "LAST + poller_time <= NOW calcule aussi le refresh time"
-#        now              = time.strftime("%Y %m %d %H:%M:%S", time.localtime())
-#        nowTimestamp     = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M:%S')) # "%.0f" % supprime le .0 aprés le timestamp
         nowTimestamp     = "%.0f" % time.time()
         # Si c'est le 1er lancement
         if not os.path.isfile(self._poller_time_file):
             self._logger.info("Poller pollerTimeToGo ok now")
-            lastTimeFile = open(self._poller_time_file, 'w')
-            lastTimeFile.write(nowTimestamp + " " + nowTimestamp)
-            lastTimeFile.close()
+            with open(self._poller_time_file, 'w') as lastTimeFile:
+                lastTimeFile.write("%s %s" % (nowTimestamp, nowTimestamp))
             self._need_refresh = True
             return True
         else:
-            lastTimeFile = open(self._poller_time_file, 'rb')
-            lastTime     = lastTimeFile.read()
-            lastTimeFile.close()
+            with open(self._poller_time_file, 'rb') as lastTimeFile:
+                lastTime     = lastTimeFile.read()
             # If file is corrupt, reset
             if not re.match("^[0-9]{10} [0-9]{10}$", lastTime):
                 lastTime = "0000000000 0000000000"
@@ -325,9 +321,8 @@ class myPoller:
                     lastRefresh = nowTimestamp
                     self._need_refresh = True
 
-                lastTimeFile = open(self._poller_time_file, 'w')
-                lastTimeFile.write(nowTimestamp + " " + lastRefresh)
-                lastTimeFile.close()
+                with open(self._poller_time_file, 'w') as lastTimeFile:
+                    lastTimeFile.write("%s %s" % (nowTimestamp, lastRefresh))
                 self._logger.info("Poller pollerTimeToGo ok now")
                 return True
             # Si c'est pas bon
@@ -457,7 +452,7 @@ class myPoller:
         dateMax          = str(int(nowTimestamp) - expireInSeconde)
 
         deleted = str(self._redis_connexion.redis_zremrangebyscore('DATAS', '-inf', dateMax))
-        self._logger.info("Clear des data <= à " + dateMax
+        self._logger.info("Clear des data <= " + dateMax
                           + " Data deleted : " + deleted)
         
         deleted = str(self._redis_connexion.redis_zremrangebyscore('TimeStamp', '-inf', dateMax))
