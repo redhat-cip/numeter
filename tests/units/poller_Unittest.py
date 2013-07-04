@@ -5,6 +5,7 @@ import os
 import sys
 import time
 import socket
+import mock
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
@@ -48,17 +49,41 @@ class PollerTestCase(test_base.TestCase):
         self.assertEquals(len(result['TimeStamp']),1)
 
 
-#    def test_poller_pollerTimeToGo(self):
-#        now              = time.strftime("%Y %m %d %H:%M", time.localtime())
-#        nowTimestamp     = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M')) # "%.0f" % supprime le .0 aprés le
-#        # Init
-#        self.poller._poller_time            = 60
-#        self.poller._plugins_refresh_time   = 300
-#        # First start no file (need refresh and true)
-#        import __builtin__ 
-#        open_mock = self.mock.MagicMock()
-#        with self.mock.patch('__builtin__.open', open_mock):
-#        self.mox.ReplayAll()
+    def test_poller_pollerTimeToGo(self):
+        nowTimestamp = "%.0f" % time.time()
+        # Init
+        self.poller._poller_time            = 60
+        self.poller._plugins_refresh_time   = 300
+        file_mock = mock.mock_open()
+        isfile_mock = mock.MagicMock()
+        time_mock = mock.MagicMock()
+        time_mock.return_value = 1000000000
+        with mock.patch('time.time', time_mock):
+            with mock.patch('os.path.isfile', isfile_mock):
+                with mock.patch('__builtin__.open', file_mock, create=True):
+                    # First start no file (need refresh and true)
+                    isfile_mock.return_value = False
+                    result = self.poller.pollerTimeToGo()
+                    file_mock.assert_called_with(self.poller._poller_time_file, 'w')
+                    handle = file_mock()
+                    handle.write.assert_called_once_with('%s %s'
+                            % (time_mock.return_value, time_mock.return_value))
+
+
+
+                    #isfile_mock.return_value = True
+                    #file_mock.return_value.read.return_value = 'some data'
+        print result
+        print "mock calls : %s" % file_mock.mock_calls
+
+        
+
+        self.assertTrue(False)
+        # http://www.voidspace.org.uk/python/mock/getting-started.html read call with
+
+        #assert handle == sentinel.file_handle, "incorrect file handle returned"
+        #with self.mock.patch('__builtin__.open', open_mock):
+        #self.mox.ReplayAll()
 #        # call the code you want to test that calls `open`
 #        self.mox.VerifyAll()
 #        self.mox.UnsetStubs()
