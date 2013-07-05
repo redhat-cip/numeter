@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^hosttree/host/(?P<host_id>\d+)$', 'core.views.hosttree.host', name='hosttree host'),
     url(r'^hosttree/category/(?P<host_id>\d+)$', 'core.views.hosttree.category', name='hosttree category'),
 
-    # url(r'^numeter/', include('numeter.foo.urls')),
+    url(r'^numeter-storage/', include('mock_storage.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

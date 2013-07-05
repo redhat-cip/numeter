@@ -45,6 +45,9 @@ MEDIA_ROOT = '/var/www/media/'
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
 
+# MOCH_STORAGE
+INSTALLED_APPS = INSTALLED_APPS+('mock_storage',)
+
 # Debug Tool Bar
 INSTALLED_APPS = INSTALLED_APPS+('debug_toolbar',)
 if 'debug_toolbar' in INSTALLED_APPS :
