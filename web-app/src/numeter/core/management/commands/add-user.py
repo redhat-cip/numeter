@@ -11,7 +11,7 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-u', '--username', action='store', default=False, help="Set username"),
         make_option('-e', '--email', action='store', default=False, help="Set email"),
-        make_option('-S', '--superuser', action='store', default=False, help="Set as superuser"),
+        make_option('-S', '--superuser', action='store_true', default=False, help="Set as superuser"),
         make_option('-g', '--graphlib', action='store', default=False, help="Set graph library"),
         make_option('-p', '--password', action='store', default=False, help="Set password"),
     )
@@ -36,7 +36,6 @@ class Command(BaseCommand):
                 options['graphlib'] = graphlib_list[num]
             else:
                 options['graphlib'] = graphlib_list[0]
-                print 'Graph library: %s' % options['graphlib']
 
         # Set password
         if not options['password']:
