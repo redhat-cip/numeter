@@ -1,27 +1,22 @@
 from django.http import HttpResponse
 from django.conf import settings
 BASEDIR = settings.BASEDIR
-#from mock_storage.models import Host
+
+from mock_storage.models import Host
+from mock_storage.utils import get_hosts_json, get_host_json, get_list_json
 
 
 def hosts(request):
-    with open(BASEDIR+'/../mock_storage/fixtures/hosts.json') as f:
-        response = f.read()
-    return HttpResponse(response)
+    return HttpResponse(get_hosts_json())
 
 
 def hinfo(request):
-    #request.GET['host']
-    with open(BASEDIR+'/../mock_storage/fixtures/hinfo.json') as f:
-        response = f.read()
-    return response
+    host_json = get_host_json(reques.GET['host'])
+    return HttpResponse(host_json)
 
 
 def list(request):
-    #request.GET['host']
-    with open(BASEDIR+'/../mock_storage/fixtures/host.json') as f:
-        response = f.read()
-    return response
+    return HttpResponse(get_list_json())
 
 
 def data(request):

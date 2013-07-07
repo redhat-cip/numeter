@@ -11,7 +11,7 @@ class Manage_User_TestCase(TestCase):
 
     def test_delete_user(self):
         management.call_command('add-user', username='test', email='email', password='test', superuser=True, database='default', verbosity=0)
-        management.call_command('del-user', username='test', database='default', verbosity=0)
+        management.call_command('del-user', username='test', force=True, database='default', verbosity=0)
         self.assertFalse(User.objects.all().exists(), 'User exists ever.')
 
 

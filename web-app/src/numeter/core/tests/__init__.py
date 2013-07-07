@@ -7,7 +7,7 @@ def suite():
     import unittest
     TEST_CASES = (
         'core.tests.login',
-        # 'core.tests.storage',
+        'core.tests.storage',
         'core.tests.browsing',
         'core.tests.management',
     )

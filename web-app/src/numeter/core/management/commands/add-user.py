@@ -4,7 +4,8 @@ from core.models import User, GraphLib
 
 from optparse import make_option
 from getpass import getpass
-import logging
+from logging import getLogger
+logger = getLogger('main')
 
 
 class Command(BaseCommand):
@@ -58,4 +59,4 @@ class Command(BaseCommand):
         )
         U.set_password(options['password'])
         U.save()
-        logging.info(u"Create user '%s' in Db" % U.username)
+        logger.debug(u"Create user '%s' in Db" % U.username)

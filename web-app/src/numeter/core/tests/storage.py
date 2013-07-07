@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core import management
 from django.conf import settings
 from core.models import Storage, Host
 
@@ -8,9 +9,12 @@ class Storage_TestCase(TestCase):
 
     def setUp(self):
         if settings.TEST_STORAGE['address']:
+            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
+        elif 'mock_storage' in settings.INSTALLED_APPS:
+            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
             self.storage = Storage.objects.get(pk=1)
         else:
-            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
+            self.skip()
 
     def test_proxy(self):
         url = 'http://%s:%s/numeter-storage/list' % (self.storage.address, self.storage.port)

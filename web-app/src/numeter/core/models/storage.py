@@ -88,6 +88,15 @@ class Storage(models.Model):
         r = self.proxy.open(uri, timeout=3)
         return jload(r)
 
+    def create_host(self, hostid):
+        hosts = self.get_hosts()
+        h = hosts[hostid]
+        Host.objects.create(
+            name=h['Name'],
+            hostid=h['ID'],
+            storage=self,
+        )
+
     def get_hosts(self):
         """Return a dictionnary representing storage's hosts."""
         return self._connect('hosts')
@@ -123,6 +132,10 @@ class Storage(models.Model):
         Be careful it won't remember groups.
         """
         Host.objects.filter(storage=self).delete()
+        # TODO : test this part
+        # hostids = self.get_hosts().keys()
+        # for hostid in hostids:
+        #     self.create_host(hostid)
         hosts = self.get_hosts().values()
         for h in hosts:
             Host.objects.create(
