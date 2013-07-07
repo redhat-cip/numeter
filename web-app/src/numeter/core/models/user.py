@@ -26,6 +26,12 @@ class UserManager(UserManager):
     def create_superuser(self, username, password, **extra_fields):
         return self._create_user(username, '', password, True, True, **extra_fields)
 
+    def all_superuser(self):
+        return self.filter(is_superuser=True)
+
+    def all_simpleuser(self):
+        return self.filter(is_superuser=False)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(_('username'), max_length=30, unique=True)
@@ -51,14 +57,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return reverse('user', args=[str(self.id)])
 
+    def get_add_url(self):
+        return reverse('user add')
+
     def get_update_url(self):
-        return reverse('update profile', args=[str(self.id)])
+        if not self.id:
+            return self.get_add_url()
+        return reverse('user update', args=[str(self.id)])
 
     def get_update_password_url(self):
         return reverse('update password', args=[str(self.id)])
 
     def get_delete_url(self):
-        return reverse('delete profile', args=[str(self.id)])
+        return reverse('delete user', args=[str(self.id)])
 
     def get_full_name(self):
         return self.username

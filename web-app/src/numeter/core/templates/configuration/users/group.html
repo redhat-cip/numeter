@@ -1,12 +1,12 @@
 {% load i18n %}
-<div class="row-fluid"> <!-- user form --!>
- <form id="user-form" class="ajax-form" action="{{ User_Form.instance.get_update_url }}" method="POST">
+<div class="row-fluid"> <!-- group form --!>
+ <form id="group-form" class="ajax-form" action="{{ Group_Form.get_update_url }}" method="POST">
   {% csrf_token %}
-  <h4 align="center">{{ User_Form.instance }}</h4>
+  <h4 align="center">{{ Group_Form.instance }}</h4>
 
   <div class="span5 fields" style="margin-left: 50px;">
    <dl>
-    {% for field in User_Form %}
+    {% for field in Group_Form %}
     <dt>{{ field.label }}:</dt>
     <dd>{{ field }}</dd>
     {% endfor %}
@@ -16,9 +16,9 @@
   <div class="span4">
    <div class="row-fluid">
     <p>
- 	 {% if User_Form.instance.id %}
+ 	 {% if Group_Form.instance.id %}
      <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Update" %}">
-	 <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" url="{{ User_Form.instance.get_delete_url }}">
+	 <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" url="{{ Group_Form.instance.get_delete_url }}">
      <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
 	 {% else %}
      <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Add" %}">

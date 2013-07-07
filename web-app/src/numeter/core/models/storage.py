@@ -68,11 +68,11 @@ class Storage(models.Model):
         return reverse('storage index', args=[str(self.id)])
 
     def get_add_url(self):
-        return reverse('add storage', args=[str(self.id)])
+        return reverse('add storage')
 
     def get_update_url(self):
         if not self.id:
-            return reverse('storage add')
+            return self.get_add_url()
         return reverse('storage update', args=[str(self.id)])
 
     def get_delete_url(self):

@@ -1,15 +1,18 @@
 <div class="tabbable tabs-left">
- <ul id="userTab" class="nav nav-tabs nav-stacked">
+ <ul id="user-tab" class="nav nav-tabs nav-stacked">
   {% include "configuration/users/tabs.html" %}
  </ul>
 
- <div id="userTabContent" class="tab-content">
+ <div id="user-tab-content" class="tab-content">
 
-  <div class="tab-pane fade in active" id="userList">
-   {% include "configuration/users/manage.html" %}
+  <div class="tab-pane fade in active" id="user-list">
+   {% include "configuration/users/user-list.html" %}
   </div>
 
-  <div class="tab-pane fade" id="add-userContent"></div>
+  <div class="tab-pane fade" id="superuser-list"></div>
+  <div class="tab-pane fade" id="group-list"></div>
+  <div class="tab-pane fade" id="add-user"></div>
+  <div class="tab-pane fade" id="add-group"></div>
 
  </div>
 </div> 

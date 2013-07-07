@@ -9,8 +9,7 @@
  <ul class="nav nav-tabs ajax-tabs">
   <li class="active"><a href="#profile-index" menu="profile" data-toggle="tab">{% trans "Profile" %}</a></li>
   {% if request.user.is_superuser %}
-   <li><a href="#users-index" data-toggle="tab">{% trans "Users" %}</a></li>
-   <li><a href="#groups-index" data-toggle="tab">{% trans "Groups" %}</a></li>
+   <li><a href="#user-index" menu="user" data-toggle="tab">{% trans "Users" %}</a></li>
    <li><a href="#storage-index" data-toggle="tab" menu="storage">{% trans "Storage" %}</a></li>
   {% endif %}
  </ul>
@@ -21,19 +20,10 @@
    {% include "configuration/profile.html" %}
   </div>
 
-  <div class="tab-pane fade" id="skin-index">
-  </div>
-
   {% if request.user.is_superuser %}
-   <div class="tab-pane fade" id="users-index">
-    {% include "configuration/users/index.html" %}
-   </div>
-
-   <div class="tab-pane fade" id="groups-index">
-   </div>
-
-   <div class="tab-pane fade" id="storage-index">
-   </div>
+   <div class="tab-pane fade" id="user-index"></div>
+   <div class="tab-pane fade" id="groups-index"></div>
+   <div class="tab-pane fade" id="storage-index"></div>
   {% endif %}
  </div>
 {% endblock %}

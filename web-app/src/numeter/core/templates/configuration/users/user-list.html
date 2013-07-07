@@ -1,0 +1,21 @@
+{% load i18n %}
+<table class="table table-condensed tabled-striped">
+ <thead>
+  <tr>
+   <th>{% trans "Username" %}</th>
+   <th>{% trans "Email" %}</th>
+   <th>{% trans "Graph library" %}</th>
+   <th>{% trans "Groups" %}</th>
+  </tr>
+ </thead>
+ <tbody>
+  {% for user in Users %}
+  <tr>
+   <td>{{ user.username }}</td>
+   <td>{{ user.email }}</td>
+   <td><a href="{{ user.graph_lib.path }}">{{ user.graph_lib }}</a></td>
+   <td>{{ user.groups.all }}</td>
+  </tr>
+  {% endfor %}
+ </tbody>
+</table>

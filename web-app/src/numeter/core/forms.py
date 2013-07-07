@@ -1,7 +1,33 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import Group
+from django.core.urlresolvers import reverse
 
 from core.models import User, Host, Storage, GraphLib
+
+
+class Group_Form(forms.ModelForm):
+    """
+    """
+    class Meta:
+        model = Group
+        widgets = {
+            'name': forms.TextInput({'placeholder':_('Name')}),
+        }
+
+    def get_absolute_url(self):
+        return reverse('group', args=[str(self.instance.id)])
+
+    def get_add_url(self):
+        return reverse('group add')
+
+    def get_update_url(self):
+        if not self.instance.id:
+            return self.get_add_url()
+        return reverse('group update', args=[str(self.instance.id)])
+
+    def get_delete_url(self):
+        return reverse('group delete', args=[str(self.id)])
 
 
 class User_Form(forms.ModelForm):
@@ -13,6 +39,7 @@ class User_Form(forms.ModelForm):
         widgets = {
             'username': forms.TextInput({'placeholder':_('Username')}),
             'email': forms.TextInput({'placeholder':_('Email')}),
+            'password': forms.PasswordInput({'placeholder':_('Password')}),
         }
 
 
@@ -22,6 +49,14 @@ class User_Admin_EditForm(User_Form):
     """
     class Meta(User_Form.Meta):
         exclude = ('password','last_login','is_staff','date_joined')
+
+
+class User_CreationForm(User_Form):
+    """
+    Form with sensitive fields.
+    """
+    class Meta(User_Form.Meta):
+        exclude = ('last_login','is_staff','date_joined','is_active')
 
 
 class User_EditForm(User_Admin_EditForm):

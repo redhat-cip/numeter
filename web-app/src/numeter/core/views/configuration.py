@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from core.models import User, Storage
-from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm, Storage_Form
+from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm, Storage_Form, User_CreationForm, Group_Form
 from core.utils.decorators import login_required
 
 
@@ -63,11 +63,84 @@ def update_password(request, user_id):
 
 
 @login_required()
+def user_index(request):
+    return render(request, 'configuration/users/index.html', {
+        'Users': User.objects.all_simpleuser(),
+        'Superusers': User.objects.all_superuser(),
+        'Groups': Group.objects.all(),
+    })
+
+
+@login_required()
+def user_list(request):
+    return render(request, 'configuration/users/user-list.html', {
+        'Users': User.objects.all_simpleuser(),
+    })
+
+
+@login_required()
+def superuser_list(request):
+    return render(request, 'configuration/users/user-list.html', {
+        'Users': User.objects.all_superuser(),
+    })
+
+
+@login_required()
+def user_add(request):
+    if request.method == 'POST':
+        F = User_CreationForm(request.POST)
+        if F.is_valid():
+            F.save()
+            messages.success(request, _("User added with success."))
+        else:
+            for field,error in F.errors.items():
+                messages.error(request, '<b>%s</b>: %s' % (field,error))
+        return render(request, 'base/messages.html', {})
+    else:
+        return render(request, 'configuration/users/user.html', {
+            'User_Form': User_CreationForm(),
+        })
+
+
+@login_required()
+def group_list(request):
+    return render(request, 'configuration/users/group-list.html', {
+        'Groups': Group.objects.all(),
+    })
+
+
+@login_required()
+def group_add(request):
+    if request.method == 'POST':
+        F = Group_Form(request.POST)
+        if F.is_valid():
+            F.save()
+            messages.success(request, _("Group added with success."))
+        else:
+            for field,error in F.errors.items():
+                messages.error(request, '<b>%s</b>: %s' % (field,error))
+        return render(request, 'base/messages.html', {})
+    else:
+        return render(request, 'configuration/users/group.html', {
+            'Group_Form': Group_Form(),
+        })
+
+
+@login_required()
 def storage_index(request):
     storages = Storage.objects.all()
     storages = Paginator(storages, 20)
     return render(request, 'configuration/storages/index.html', {
         'storages_page': storages.page(1)
+    })
+
+
+@login_required()
+def group_get(request, group_id):
+    G = get_object_or_404(Group.objects.filter(pk=group_id))
+    F = Group_Form(instance=G)
+    return render(request, 'configuration/users/group.html', {
+        'Group_Form': F,
     })
 
 
@@ -109,6 +182,7 @@ def storage_update(request, storage_id):
             messages.error(request, '<b>%s</b>: %s' % (field,error))
 
     return render(request, 'base/messages.html', {})
+
 
 @login_required()
 def storage_delete(request, storage_id):

@@ -17,7 +17,7 @@ $(document).on('submit', '#profile-update-password-form', function() {
   var url = $(this).attr('action');
   $.ajax({
     type: 'POST', url: url, async: true,
-	data: $('#profile-update-password-form').serialize(),
+    data: $('#profile-update-password-form').serialize(),
     success: function(data, status, xhr) {
       $('#profile-update-password-info').append(data);
     },
@@ -35,6 +35,18 @@ $(document).on('click', '.ajax-tabs li a', function() {
   });
 });
 
+
+$(document).on('click', '#user-tab li a', function() {
+  var url = $(this).attr('data-url');
+  var into = $(this).attr('href');
+  $.ajax({type:'GET', url:url, async:true,
+    success: function(data, status, xhr) {
+      $(into).html(data);
+    },
+  });
+});
+
+// FOR STORAGE
 // GET MODEL INSTANCE
 $(document).on('click', '.ajax-tabs-list li a', function() {
   model = $(this).parent().parent().parent().attr('model');

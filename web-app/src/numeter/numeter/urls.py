@@ -5,7 +5,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
     url(r'^$', 'core.views.index', name='index'),
     url(r'^apropos$', 'core.views.apropos', name='apropos'),
     url(r'^login$', 'core.views.auth.login', name='login'),
@@ -17,6 +16,14 @@ urlpatterns = patterns('',
     url(r'^configuration/profile$', 'core.views.profile_index', name='profile index'),
     url(r'^configuration/profile/(?P<user_id>\d+)/update$', 'core.views.update_profile', name='update profile'),
     url(r'^configuration/profile/(?P<user_id>\d+)/update_password$', 'core.views.update_password', name='update password'),
+
+    url(r'^configuration/user$', 'core.views.configuration.user_index', name='user index'),
+    url(r'^configuration/user/list$', 'core.views.configuration.user_list', name='user list'),
+    url(r'^configuration/user/add$', 'core.views.configuration.user_add', name='user add'),
+    url(r'^configuration/superuser/list$', 'core.views.configuration.superuser_list', name='superuser list'),
+    url(r'^configuration/group/list$', 'core.views.configuration.group_list', name='group list'),
+    url(r'^configuration/group/add$', 'core.views.configuration.group_add', name='group add'),
+    url(r'^configuration/group/(?P<group_id>\d+)$', 'core.views.configuration.group_get', name='group'),
 
     url(r'^configuration/storage$', 'core.views.storage_index', name='storage index'),
     url(r'^configuration/storage/add$', 'core.views.storage_add', name='storage add'),

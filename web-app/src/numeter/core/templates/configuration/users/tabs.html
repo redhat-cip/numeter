@@ -1,3 +1,6 @@
 {% load i18n %}
-<li class="active"><a id="userCount" href="#userList" data-toggle="tab">{{ Us|length }} user(s)</a></li>
-<li><a href="#add-userContent">{% trans "Add" %}</a></li>
+<li class="active"><a href="#user-list" data-url="{% url "user list" %}" data-toggle="tab">{{ Users|length }} user(s)</a></li>
+<li><a href="#superuser-list" data-url="{% url "superuser list" %}" data-toggle="tab">{{ Superusers|length }} superuser(s)</a></li>
+<li><a href="#group-list" data-url="{% url "group list" %}" data-toggle="tab">{{ Groups|length }} group(s)</a></li>
+<li><a href="#add-user" data-url="{% url "user add" %}" data-toggle="tab">{% trans "Add user" %}</a></li>
+<li><a href="#add-group" data-url="{% url "group add" %}" data-toggle="tab">{% trans "Add group" %}</a></li>
