@@ -15,12 +15,6 @@ from numeter_poller import *
 
 class PollerTestCase(unittest.TestCase):
 
-#    def get_init_munin(self):
-#        # Start munin
-#        os.system("/etc/init.d/munin-node start >/dev/null")
-#        os.system("echo -e 'fetch df\nquit' | nc 127.0.0.1 4949 >/dev/null && true")
-
-
     def setUp(self):
         os.system("rm -f /tmp/poller_last.unittest")
         os.system("kill -9 $(cat /tmp/redis-unittest.pid 2>/dev/null) 2>/dev/null")
@@ -30,14 +24,11 @@ class PollerTestCase(unittest.TestCase):
         os.system("redis-cli -a password -p 8888 ping >/dev/null")
         os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
         self.poller = myPoller(myPath+"/poller_unittest.cfg")
-#        self.get_init_munin()
-
 
     def tearDown(self):
         os.system("kill -9 $(cat /tmp/redis-unittest.pid)")
         os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
         os.system("rm -f /tmp/poller_last.unittest")
-
 
     def test_poller_rediscleanDataExpired(self):
         # Get now TS
@@ -65,7 +56,6 @@ class PollerTestCase(unittest.TestCase):
         result = self.poller._redis_connexion.redis_zrangebyscore("DATAS",'-inf','+inf')
         self.assertEqual(result, ['newData'])
 
-
     def test_poller_pollerTimeToGo(self):
         now              = time.strftime("%Y %m %d %H:%M", time.localtime())
         nowTimestamp     = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M')) # "%.0f" % supprime le .0 aprés le
@@ -83,7 +73,6 @@ class PollerTestCase(unittest.TestCase):
         os.system(":>/tmp/poller_last.unittest")
         result = self.poller.pollerTimeToGo()
         self.assertTrue(result)
-        # Refresh needed
         self.assertTrue(self.poller._need_refresh)
         # Try to run quick poll (too soon)
         result = self.poller.pollerTimeToGo()
@@ -99,21 +88,6 @@ class PollerTestCase(unittest.TestCase):
         result = self.poller.pollerTimeToGo()
         self.assertTrue(result)
         self.assertTrue(self.poller._need_refresh)
-
-    def test_poller_getMyInfo(self):
-        # Test defaults values
-        result = self.poller.getMyInfo()
-#        self.assertEquals(result[0]['Step'], "60")
-        self.assertEquals(result[0]['Plugin'], "MyInfo")
-        self.assertEquals(result[0]['Name'], socket.gethostname())
-        # Test set some values
-        self.poller._myInfo_name        = "foo"
-        self.poller._myInfo_hostID      = "123456"
-        self.poller._myInfo_description = "foobar"
-        result = self.poller.getMyInfo()
-        self.assertEquals(result[0]['ID'], "123456")
-        self.assertEquals(result[0]['Description'], "foobar")
-        self.assertEquals(result[0]['Name'], 'foo')
 
     def test_poller_writeInfo(self):
         os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
@@ -158,21 +132,7 @@ class PollerTestCase(unittest.TestCase):
         self.poller.cleanInfo(["foo"])
         result = pollerRedis.redis_hkeys("INFOS")
         self.assertEquals(result, ['foo'])
-        # 2 data before and 2 new
-        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-        pollerRedis.redis_hset("INFOS",'foo','foo')
-        pollerRedis.redis_hset("INFOS",'bar','bar')
-        self.poller.cleanInfo(["gnu","bli"])
-        result = pollerRedis.redis_hkeys("INFOS")
-        self.assertEquals(result, [])
-        # 2 data before and old + 2 new now
-        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-        pollerRedis.redis_hset("INFOS",'foo','foo')
-        pollerRedis.redis_hset("INFOS",'bar','bar')
-        self.poller.cleanInfo(["foo","bar","gnu","bli"])
-        result = pollerRedis.redis_hkeys("INFOS")
-        self.assertEquals(result, ['foo', 'bar'])
-        # 2 data before and 1 old delete and one new now
+        # 2 data before, delete one and add a new
         os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
         pollerRedis.redis_hset("INFOS",'foo','foo')
         pollerRedis.redis_hset("INFOS",'bar','bar')
@@ -227,7 +187,4 @@ class PollerTestCase(unittest.TestCase):
         self.assertEquals(result, "bar0")
         result = oneConnect.redis_hget("DB","foo")
         self.assertEquals(result, "bar1")
-
-
-
 

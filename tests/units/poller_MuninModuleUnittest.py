@@ -1,21 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-#{
-#'graph_category': 'disk'
-#'_run': {'warning': '92', 'critical': '98', 'label': '/run'}
-#'graph_vlabel': '%'
-#'graph_title': 'Disk usage in percent'
-#'_tmp': {'warning': '92', 'critical': '98', 'label': '/tmp'}
-#'_run_shm': {'warning': '92', 'critical': '98', 'label': '/run/shm'}
-#'_run_lock': {'warning': '92', 'critical': '98', 'label': '/run/lock'}
-#'graph_args': '--upper-limit 100 -l 0'
-#'_dev_simfs': {'warning': '92', 'critical': '98', 'label': '/'}
-#'graph_scale': 'no'
-#}
-
-
 import os
 import sys
 import re

@@ -24,8 +24,7 @@ def all_tests():
     # Redis
     suite.addTest(unittest.makeSuite(RedisTestCase))
     # Poller
-    #suite.addTest(unittest.makeSuite(PollerMuninModuleTestCase))
-    #suite.addTest(unittest.makeSuite(PollerTestCase))
+    suite.addTest(unittest.makeSuite(PollerTestCase))
     # Collector
     suite.addTest(unittest.makeSuite(CollectorTestCase))
     # Storage
