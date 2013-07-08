@@ -51,12 +51,11 @@ class PollerTestCase(test_base.TestCase):
     def test_poller_pollerTimeToGo(self):
         self.poller._poller_time            = 60
         self.poller._plugins_refresh_time   = 300
-
+        # First start no file (need refresh and start)
         with mock.patch('time.time', mock.MagicMock()) as time_mock, \
              mock.patch('os.path.isfile', mock.MagicMock()) as isfile_mock, \
              mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
                 handle = file_mock()
-                # First start no file (need refresh and true)
                 isfile_mock.return_value = False
                 time_mock.return_value = 1000000000
                 result = self.poller.pollerTimeToGo()
@@ -65,52 +64,55 @@ class PollerTestCase(test_base.TestCase):
                         % (time_mock.return_value, time_mock.return_value))
                 self.assertTrue(result)
                 self.assertTrue(self.poller._need_refresh)
-
+        # Try to run quick poll (too soon)
+        with mock.patch('time.time', mock.MagicMock()) as time_mock, \
+             mock.patch('os.path.isfile', mock.MagicMock()) as isfile_mock, \
+             mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
+                time_mock.return_value = 1000000002
+                file_mock.return_value.read.return_value = '1000000001 1000000001'
+                isfile_mock.return_value = True
+                result = self.poller.pollerTimeToGo()
+                self.assertFalse(result)
+                self.assertFalse(self.poller._need_refresh)
+        # one poller_time after, update only datas
         with mock.patch('time.time', mock.MagicMock()) as time_mock, \
              mock.patch('os.path.isfile', mock.MagicMock()) as isfile_mock, \
              mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
                 handle = file_mock()
-                time_mock.return_value = 1000000001
+                time_mock.return_value = 1000000001 + self.poller._poller_time
+                file_mock.return_value.read.return_value = '1000000001 1000000001'
                 isfile_mock.return_value = True
                 result = self.poller.pollerTimeToGo()
-
+                self.assertTrue(result)
+                self.assertFalse(self.poller._need_refresh)
                 handle.write.assert_called_once_with('%s %s'
-                        % (time_mock.return_value, time_mock.return_value))
-
-
-                #isfile_mock.return_value = True
-                #file_mock.return_value.read.return_value = 'some data'
-        print result
-        print "mock calls : %s" % file_mock.mock_calls
-
-        
-
-        self.assertTrue(False)
-
-        #assert handle == sentinel.file_handle, "incorrect file handle returned"
-
-
-
-        ## Make corrupt /tmp/poller_last.unittest
-        #os.system(":>/tmp/poller_last.unittest")
-        #result = self.poller.pollerTimeToGo()
-        #self.assertTrue(result)
-        ## Refresh needed
-        #self.assertTrue(self.poller._need_refresh)
-        ## Try to run quick poll (too soon)
-        #result = self.poller.pollerTimeToGo()
-        #self.assertFalse(result)
-        #self.assertFalse(self.poller._need_refresh)
-        ## change time in file for poller only, no refresh
-        #os.system("echo '"+str(int(nowTimestamp)-60)+" "+nowTimestamp+"' >/tmp/poller_last.unittest")
-        #result = self.poller.pollerTimeToGo()
-        #self.assertTrue(result)
-        #self.assertFalse(self.poller._need_refresh)
-        ## change time in file for poller and refresh
-        #os.system("echo '"+str(int(nowTimestamp)-60)+" "+str(int(nowTimestamp)-300)+"' >/tmp/poller_last.unittest")
-        #result = self.poller.pollerTimeToGo()
-        #self.assertTrue(result)
-        #self.assertTrue(self.poller._need_refresh)
+                        % ( time_mock.return_value, '1000000001'))
+        # one refresh time after update infos
+        with mock.patch('time.time', mock.MagicMock()) as time_mock, \
+             mock.patch('os.path.isfile', mock.MagicMock()) as isfile_mock, \
+             mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
+                handle = file_mock()
+                time_mock.return_value = 1000000001 + self.poller._plugins_refresh_time
+                file_mock.return_value.read.return_value = '1000000001 1000000001'
+                isfile_mock.return_value = True
+                result = self.poller.pollerTimeToGo()
+                self.assertTrue(result)
+                self.assertTrue(self.poller._need_refresh)
+                handle.write.assert_called_once_with('%s %s'
+                        % ( time_mock.return_value, time_mock.return_value))
+        # Make corrupted time file
+        with mock.patch('time.time', mock.MagicMock()) as time_mock, \
+             mock.patch('os.path.isfile', mock.MagicMock()) as isfile_mock, \
+             mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
+                handle = file_mock()
+                time_mock.return_value = 1000000001 + self.poller._plugins_refresh_time
+                file_mock.return_value.read.return_value = ''
+                isfile_mock.return_value = True
+                result = self.poller.pollerTimeToGo()
+                self.assertTrue(result)
+                self.assertTrue(self.poller._need_refresh)
+                handle.write.assert_called_once_with('%s %s'
+                        % ( time_mock.return_value, time_mock.return_value))
 
     def test_poller_getMyInfo(self):
         # Test defaults values
