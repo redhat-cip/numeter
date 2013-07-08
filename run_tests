@@ -8,24 +8,33 @@ function usage {
   echo ""
   echo "  -p, --pep8               Just run pep8"
   echo "  -h, --help               Print this usage message"
+  echo "  -f, --functional         Functional tests only"
+  echo "  -u, --unit               Unit tests only"
   echo "  -- [NOSEOPTIONS]         After the first '--' you can pass arbitrary arguments to nosetests "
 }
 
-
+noseargs=""
+wrapper=""
 do_pep8=0
+do_unit=0
+do_functional=0
 
-if ! options=$(getopt -o VNnfuswcphdSC:lL: -l virtual-env,no-virtual-env,no-site-packages,force,update,smoke,whitebox,nova-coverage,pep8,help,debug,stdout,config:,logging,logging-config: -- "$@")
+if ! options=$(getopt -o fuph -l functional,unit,pep8,help -- "$@")
 then
     # parse error
     usage
     exit 1
 fi
 
-eval set $options
+eval set -- $options
+first_uu=yes
 while [ $# -gt 0 ]; do
   case "$1" in
     -h|--help) usage; exit;;
     -p|--pep8) let do_pep8=1;;
+    -u|--unit) let do_unit=1;;
+    -f|--functional) let do_functional=1;;
+    --) [ "yes" == "$first_uu" ] || noseargs="$noseargs $1"; first_uu=no  ;;
     *) noseargs="$noseargs $1"
   esac
   shift
@@ -53,8 +62,18 @@ if [ $do_pep8 -eq 1 ]; then
     exit
 fi
 
-run_unit_tests
-#run_functional_tests
-retval=$?
+if [ $do_unit -eq 1 ]; then
+    run_unit_tests
+    exit
+fi
 
+if [ $do_functional -eq 1 ]; then
+    run_functional_tests
+    exit
+fi
+
+run_unit_tests
+run_functional_tests
+
+retval=$?
 exit $retval
