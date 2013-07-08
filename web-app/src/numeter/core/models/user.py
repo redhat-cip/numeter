@@ -71,6 +71,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_delete_url(self):
         return reverse('delete user', args=[str(self.id)])
 
+    def get_list_url(self):
+        if self.is_superuser:
+            return reverse('superuser list')
+        return reverse('user list')
+
     def get_full_name(self):
         return self.username
 

@@ -103,6 +103,15 @@ def user_add(request):
 
 
 @login_required()
+def user_get(request, user_id):
+    U = get_object_or_404(User.objects.filter(pk=user_id))
+    F = User_Admin_EditForm(instance=U)
+    return render(request, 'configuration/users/user.html', {
+        'User_Form': F,
+    })
+
+
+@login_required()
 def group_list(request):
     return render(request, 'configuration/users/group-list.html', {
         'Groups': Group.objects.all(),
@@ -127,20 +136,20 @@ def group_add(request):
 
 
 @login_required()
-def storage_index(request):
-    storages = Storage.objects.all()
-    storages = Paginator(storages, 20)
-    return render(request, 'configuration/storages/index.html', {
-        'storages_page': storages.page(1)
-    })
-
-
-@login_required()
 def group_get(request, group_id):
     G = get_object_or_404(Group.objects.filter(pk=group_id))
     F = Group_Form(instance=G)
     return render(request, 'configuration/users/group.html', {
         'Group_Form': F,
+    })
+
+
+@login_required()
+def storage_index(request):
+    storages = Storage.objects.all()
+    storages = Paginator(storages, 20)
+    return render(request, 'configuration/storages/index.html', {
+        'storages_page': storages.page(1)
     })
 
 

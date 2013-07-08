@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-30 16:57+0200\n"
+"POT-Creation-Date: 2013-07-07 22:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: MONTHE Anthony anthony.monthe@enovance.com\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,94 +18,155 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: forms.py:10 templates/login.html:34
-#: templates/configuration/users/user.html:7
+#: forms.py:15 forms.py:104 templates/configuration/users/group-list.html:5
+msgid "Name"
+msgstr "Nom"
+
+#: forms.py:40 templates/login.html:34
+#: templates/configuration/users/user-list.html:5
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
-#: forms.py:11
+#: forms.py:41 templates/configuration/users/user-list.html:6
 msgid "Email"
 msgstr "Email"
 
-#: forms.py:26
+#: forms.py:42 forms.py:110 templates/login.html:35
+#: templates/configuration/profile.html:38
+msgid "Password"
+msgstr "Mot de passe"
+
+#: forms.py:74
 msgid "Old password"
 msgstr "Ancien mot de passe"
 
-#: forms.py:27
+#: forms.py:75
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: forms.py:28
+#: forms.py:76
 msgid "Confirmation"
 msgstr "Confirmation"
 
-#: forms.py:36
+#: forms.py:84
 msgid "Bad old password"
 msgstr "Mauvais ancien mot de passe"
 
-#: forms.py:38
+#: forms.py:86
 msgid "Password and confirmation are not same"
 msgstr "Le mot de passe et la confirmation ne sont pas identiques"
 
-#: models/storage.py:12
-msgid "name"
-msgstr "nom"
+#: forms.py:105
+msgid "Address"
+msgstr "Adresse"
 
-#: models/storage.py:13
-msgid "address"
-msgstr "adresse"
+#: forms.py:106 forms.py:107
+msgid "Port"
+msgstr "Port"
 
-#: models/storage.py:14
-msgid "port"
-msgstr ""
-
-#: models/storage.py:15
+#: forms.py:108 models/storage.py:25
 msgid "URL prefix"
 msgstr "Préfixe d'URL"
 
-#: models/storage.py:16
+#: forms.py:109
+msgid "Login"
+msgstr "Identifiant"
+
+#: forms.py:121
+msgid "Library's name"
+msgstr "Nom de bibliothèque"
+
+#: forms.py:132
+msgid "Host's name"
+msgstr "Nom d'hote"
+
+#: models/host.py:10 models/storage.py:22 models/user.py:88
+msgid "name"
+msgstr "nom"
+
+#: models/host.py:11
+msgid "ID on storage"
+msgstr "ID sur le storage"
+
+#: models/host.py:18
+msgid "host"
+msgstr "hote"
+
+#: models/host.py:19
+msgid "hosts"
+msgstr "hotes"
+
+#: models/storage.py:23
+msgid "address"
+msgstr "adresse"
+
+#: models/storage.py:24
+msgid "port"
+msgstr "port"
+
+#: models/storage.py:26
+msgid "protocol"
+msgstr "protocole"
+
+#: models/storage.py:27
 msgid "login"
 msgstr "identifiant"
 
-#: models/storage.py:17
+#: models/storage.py:28
 msgid "password"
 msgstr "mot de passe"
 
-#: models/storage.py:22
+#: models/storage.py:33
 msgid "storage"
 msgstr "storage"
 
-#: models/storage.py:23
+#: models/storage.py:34
 msgid "storages"
 msgstr "storages"
 
-#: models/user.py:31
+#: models/user.py:37
 msgid "username"
 msgstr "Nom d'utilisateur"
 
-#: models/user.py:32
+#: models/user.py:38
 msgid "email address"
 msgstr "Adresse email"
 
-#: models/user.py:33
+#: models/user.py:39
 msgid "staff status"
 msgstr "membre du staff"
 
-#: models/user.py:34
+#: models/user.py:40
 msgid "active"
 msgstr "actif"
 
-#: models/user.py:35
+#: models/user.py:41
 msgid "date joined"
 msgstr "date d'adhésion"
 
-#: models/user.py:44
+#: models/user.py:51
 msgid "user"
 msgstr "utilisateur"
 
-#: models/user.py:45
+#: models/user.py:52
 msgid "users"
 msgstr "utilisateurs"
+
+#: models/user.py:89
+msgid "file"
+msgstr "fichier"
+
+#: models/user.py:90
+msgid "comment"
+msgstr "Commentaire"
+
+#: models/user.py:96
+msgid "graph library"
+msgstr "Bibliothèque de graphique"
+
+#: models/user.py:97
+msgid "graph librairies"
+msgstr "bibliotheques de graphique"
 
 #: templates/apropos.html:13
 msgid "Close"
@@ -118,10 +179,6 @@ msgstr "Numeter - Authentification"
 #: templates/login.html:29
 msgid "Please Log In"
 msgstr "Veuillez vous connecter"
-
-#: templates/login.html:35 templates/configuration/profile.html:34
-msgid "Password"
-msgstr "Mot de passe"
 
 #: templates/login.html:37
 msgid "Log in"
@@ -139,66 +196,128 @@ msgstr "Configuration"
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/configuration/index.html:11
+#: templates/configuration/index.html:10
 msgid "Profile"
 msgstr "Profil"
 
 #: templates/configuration/index.html:12
-msgid "Skin"
-msgstr "Apparence"
-
-#: templates/configuration/index.html:14
 msgid "Users"
 msgstr "Utilisateurs"
 
-#: templates/configuration/index.html:15
-msgid "Groups"
-msgstr "Groupes"
-
-#: templates/configuration/index.html:16
+#: templates/configuration/index.html:13
 msgid "Storage"
 msgstr "Storage"
 
 #: templates/configuration/profile.html:4
 msgid "General"
-msgstr "General"
+msgstr "Générale"
+
+#: templates/configuration/profile.html:25
+#: templates/configuration/profile.html:59
+#: templates/configuration/storages/storage.html:20
+#: templates/configuration/users/group.html:20
+#: templates/configuration/users/user.html:20
+msgid "Update"
+msgstr "Mise àjour"
+
+#: templates/configuration/storages/manage.html:5
+msgid "Name or address"
+msgstr "Nom ou adresse"
+
+#: templates/configuration/storages/storage.html:21
+#: templates/configuration/users/group.html:21
+#: templates/configuration/users/user.html:21
+msgid "Delete"
+msgstr "Supprimer"
+
+#: templates/configuration/storages/storage.html:22
+#: templates/configuration/users/group.html:22
+#: templates/configuration/users/user.html:22
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/configuration/storages/storage.html:24
+#: templates/configuration/storages/tabs.html:9
+#: templates/configuration/users/group.html:24
+#: templates/configuration/users/user.html:24
+msgid "Add"
+msgstr "Ajouter"
+
+#: templates/configuration/storages/ul.html:4
+#: templates/configuration/users/ul.html:4
+msgid "Previous"
+msgstr "Précédent"
+
+#: templates/configuration/storages/ul.html:12
+#: templates/configuration/users/ul.html:12
+msgid "Next"
+msgstr "Suivant"
+
+#: templates/configuration/users/group-list.html:6
+msgid "Permissions"
+msgstr "Permissions"
 
 #: templates/configuration/users/manage.html:5
 msgid "Name or email"
 msgstr "Nom ou email"
 
+#: templates/configuration/users/tabs.html:2
+msgid "user(s)"
+msgstr "utilisateur(s)"
+
 #: templates/configuration/users/tabs.html:3
-msgid "Add"
-msgstr "Ajouter"
+msgid "superuser(s)"
+msgstr "super-utilisateur(s)"
 
-#: templates/configuration/users/ul.html:4
-msgid "Previous"
-msgstr "Précédent"
+#: templates/configuration/users/tabs.html:4
+msgid "group(s)"
+msgstr "groupe(s)"
 
-#: templates/configuration/users/ul.html:12
-msgid "Next"
-msgstr "Suivant"
+#: templates/configuration/users/tabs.html:5
+msgid "Add user"
+msgstr "Ajouter un utilisateur"
 
-#: templates/configuration/users/user.html:16
-msgid "Delete"
-msgstr "Supprimer"
+#: templates/configuration/users/tabs.html:6
+msgid "Add group"
+msgstr "Ajouter un groupe"
 
-#: templates/configuration/users/user.html:17
-msgid "Update"
-msgstr "Mise à jour"
+#: templates/configuration/users/user-list.html:7
+msgid "Graph library"
+msgstr "Biliothèque graphique"
 
-#: templates/configuration/users/user.html:18
-msgid "Cancel"
-msgstr "Annuler"
+#: templates/configuration/users/user-list.html:8
+msgid "Groups"
+msgstr "Groupes"
 
 #: views/auth.py:16 views/auth.py:18
 msgid "Incorrect login name or password !"
 msgstr "Identifiant ou mot de passe incorrect !"
 
-#: views/configuration.py:37
+#: views/configuration.py:39
 msgid "Profile updated with success."
 msgstr "Profil mis à jour avec succès."
 
-#: views/configuration.py:53
+#: views/configuration.py:57
 msgid "Password updated with success."
 msgstr "Mot de passe mis à jour avec succès."
+
+#: views/configuration.py:94
+msgid "User added with success."
+msgstr "Utilisateur ajouté avec succès."
+
+#: views/configuration.py:118
+msgid "Group added with success."
+msgstr "Groupe ajouté avec succès."
+
+#: views/configuration.py:162
+msgid "Storage added with success."
+msgstr "Storage ajoute avec succès."
+
+#: views/configuration.py:179
+msgid "Storage updated with success."
+msgstr "Storage mis à jour avec succès."
+
+#: views/configuration.py:191
+msgid "Storage deleted with success."
+msgstr "Storage supprimé jour avec succès."
+

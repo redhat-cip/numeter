@@ -11,9 +11,9 @@
  <tbody>
   {% for user in Users %}
   <tr>
-   <td>{{ user.username }}</td>
+   <td><a class="get-user" href="{{ user.get_absolute_url }}">{{ user.username }}</a></td>
    <td>{{ user.email }}</td>
-   <td><a href="{{ user.graph_lib.path }}">{{ user.graph_lib }}</a></td>
+   <td><a href="{{ MEDIA_URL }}{{ user.graph_lib.script_file }}">{{ user.graph_lib }}</a></td>
    <td>{{ user.groups.all }}</td>
   </tr>
   {% endfor %}

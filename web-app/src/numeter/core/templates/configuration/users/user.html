@@ -2,9 +2,9 @@
 <div class="row-fluid"> <!-- user form --!>
  <form id="user-form" class="ajax-form" action="{{ User_Form.instance.get_update_url }}" method="POST">
   {% csrf_token %}
-  <h4 align="center">{{ User_Form.instance }}</h4>
 
   <div class="span5 fields" style="margin-left: 50px;">
+   <h4 align="center">{{ User_Form.instance }}</h4>
    <dl>
     {% for field in User_Form %}
     <dt>{{ field.label }}:</dt>
@@ -16,13 +16,14 @@
   <div class="span4">
    <div class="row-fluid">
     <p>
- 	 {% if User_Form.instance.id %}
+     {% if User_Form.instance.id %}
      <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Update" %}">
-	 <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" url="{{ User_Form.instance.get_delete_url }}">
-     <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
-	 {% else %}
-     <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Add" %}">
-	 {% endif %}
+      <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ User_Form.instance.get_delete_url }}">
+      <input type="button" name="cancel" class="btn" data-url="{{ User_Form.instance.get_absolute_url }}" style="display:none;" value="{% trans "Cancel" %}">
+      <input type="button" name="back" class="btn" data-to="#user-list" data-url="{{ User_Form.instance.get_list_url }}" value="{% trans "Back" %}">
+     {% else %}
+      <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Add" %}">
+     {% endif %}
     </p>
    </div>
    <div class="row-fluid">
