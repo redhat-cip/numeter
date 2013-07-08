@@ -112,6 +112,19 @@ def user_get(request, user_id):
 
 
 @login_required()
+def user_update(request, user_id):
+    U = get_object_or_404(User.objects.filter(pk=user_id))
+    F = User_Admin_EditForm(data=request.POST, instance=U)
+    if F.is_valid():
+        F.save()
+        messages.success(request, _("User updated with success."))
+    else:
+        for field,error in F.errors.items():
+            messages.error(request, '<b>%s</b>: %s' % (field,error))
+    return render(request, 'base/messages.html', {})
+
+
+@login_required()
 def group_list(request):
     return render(request, 'configuration/users/group-list.html', {
         'Groups': Group.objects.all(),
@@ -142,6 +155,19 @@ def group_get(request, group_id):
     return render(request, 'configuration/users/group.html', {
         'Group_Form': F,
     })
+
+
+@login_required()
+def group_update(request, group_id):
+    U = get_object_or_404(Group.objects.filter(pk=group_id))
+    F = Group_Form(data=request.POST, instance=U)
+    if F.is_valid():
+        F.save()
+        messages.success(request, _("Group updated with success."))
+    else:
+        for field,error in F.errors.items():
+            messages.error(request, '<b>%s</b>: %s' % (field,error))
+    return render(request, 'base/messages.html', {})
 
 
 @login_required()

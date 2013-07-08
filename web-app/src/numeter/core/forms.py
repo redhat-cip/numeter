@@ -39,6 +39,7 @@ class User_Form(forms.ModelForm):
     """
     class Meta:
         model = User
+        fields = ('username','email','graph_lib','is_superuser','groups')
         widgets = {
             'username': forms.TextInput({'placeholder':_('Username')}),
             'email': forms.TextInput({'placeholder':_('Email')}),
