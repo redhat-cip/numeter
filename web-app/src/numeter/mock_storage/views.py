@@ -5,6 +5,8 @@ BASEDIR = settings.BASEDIR
 from mock_storage.models import Host
 from mock_storage.utils import get_hosts_json, get_host_json, get_list_json
 
+from json import load as jload, loads as jloads
+
 
 def hosts(request):
     return HttpResponse(get_hosts_json())
@@ -25,5 +27,5 @@ def data(request):
     #request.GET['ds']
     #request.GET['res']
     with open(BASEDIR+'/../mock_storage/fixtures/data.json') as f:
-        response = f.read()
-    return response
+        r = f.read()
+    return HttpResponse(r)

@@ -63,7 +63,7 @@ $(document).on('click', '.accordion-category', function() {
   } else {
     $(content).html('')
     $(content).hide(250);
-	$(content).parent().children('i').attr('class', 'icon-plus');
+    $(content).parent().children('i').attr('class', 'icon-plus');
   }
 });
 
@@ -71,11 +71,13 @@ $(document).on('click', '.accordion-category', function() {
 $(document).on('click', '.get-plugin', function() {
   var plugin = $(this).html();
   var host = $('.accordion-body a').attr('host-id');
-  $.ajax({type:'GET', url:'/get/graph/'+host+'/'+plugin, async:true,
-    success: function(data, status, xhr) {
-       $('#graphs').html(data);
-    }
-  });
+  $.getJSON('/get/graph/'+host+'/'+plugin, function(data) {
+        alert(data);
+g = new Dygraph(document.getElementById("demodiv"), data, {
+  title: plugin,
+  labels: ['Date',plugin],
+});
+   });
 });
 
 // MISC

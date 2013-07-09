@@ -123,7 +123,7 @@ class Storage(models.Model):
         return [ p for p in self.get_plugins(hostid) if p['Category'] == category ] 
 
     def get_data(self, **data):
-        return self._connect('data', **data)
+        return self._connect('data', data)
         # TODO Add docs
 
     def _update_hosts(self):

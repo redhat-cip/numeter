@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import Group, Permission
 from django.utils.translation import ugettext_lazy as _
 
+from datetime import datetime, timedelta
+from time import mktime
 
 class Host(models.Model):
     """
@@ -50,4 +52,14 @@ class Host(models.Model):
         """Get plugin's data from storage."""
         data['hostid'] = self.hostid
         return self.storage.get_data(**data)
-        return self.storage.get_plugins_by_category(self.hostid, category)
+
+    def get_data_dygraph(self, **data):
+        data['hostid'] = self.hostid
+        r = self.storage.get_data(**data)
+        data = dict()
+        start_date = datetime.fromtimestamp(r['TS_start'])
+        step = timedelta(seconds=r['TS_step'])
+        cur_date = start_date
+        for v in r['DATAS']['nice']:
+            yield mktime(cur_date.timetuple()), v
+            cur_date += step

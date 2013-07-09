@@ -1,10 +1,11 @@
 {% extends "base/base.html" %}
 
-{% block body %}
-<script>
-var csrf = "{{ csrf_token }}";
-</script>
+{% block header %}
+<script>var csrf = "{{ csrf_token }}";</script>
+<script src="{{ STATIC_URL }}/js/graph.js"></script>
+{% endblock %}
 
+{% block body %}
  <div class="span2">
   <div class="accordion" id="host-accordion">
    {% for host in hosts %}
@@ -26,6 +27,8 @@ var csrf = "{{ csrf_token }}";
 
  <div class="span9">
   <h3 class="text-center">Welcome to Numeter Dasboard {{ user }}</h3>
-  <div id="graphs"></div>
+  <div id="graphs">
+   <div id="demodiv"></div>
+  </div>
  </div>
 {% endblock %}
