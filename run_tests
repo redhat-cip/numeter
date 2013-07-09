@@ -6,20 +6,32 @@ function usage {
   echo "Usage: $0 [OPTION]..."
   echo "Run Tempest test suite"
   echo ""
+  echo "  -V, --virtual-env        Always use virtualenv.  Install automatically if not present"
+  echo "  -N, --no-virtual-env     Don't use virtualenv.  Run tests in local environment"
+  echo "  -n, --no-site-packages   Isolate the virtualenv from the global Python environment"
+  echo "  -f, --force              Force a clean re-build of the virtual environment. Useful when dependencies have been added."
+  echo "  -u, --update             Update the virtual environment with any newer package versions"
   echo "  -p, --pep8               Just run pep8"
   echo "  -h, --help               Print this usage message"
-  echo "  -f, --functional         Functional tests only"
-  echo "  -u, --unit               Unit tests only"
+  echo "  -F, --functional         Functional tests only"
+  echo "  -U, --unit               Unit tests only"
   echo "  -- [NOSEOPTIONS]         After the first '--' you can pass arbitrary arguments to nosetests "
 }
 
+venv=.venv
+with_venv=tools/with_venv.sh
+always_venv=0
+never_venv=0
+no_site_packages=0
+force=0
+update=0
 noseargs=""
 wrapper=""
 do_pep8=0
 do_unit=0
 do_functional=0
 
-if ! options=$(getopt -o fuph -l functional,unit,pep8,help -- "$@")
+if ! options=$(getopt -o VNnFUfuph -l force,update,virtual-env,no-virtual-env,no-site-packages,functional,unit,pep8,help -- "$@")
 then
     # parse error
     usage
@@ -30,15 +42,26 @@ eval set -- $options
 first_uu=yes
 while [ $# -gt 0 ]; do
   case "$1" in
+    -V|--virtual-env) always_venv=1; never_venv=0;;
+    -N|--no-virtual-env) always_venv=0; never_venv=1;;
+    -n|--no-site-packages) no_site_packages=1;;
     -h|--help) usage; exit;;
     -p|--pep8) let do_pep8=1;;
-    -u|--unit) let do_unit=1;;
-    -f|--functional) let do_functional=1;;
+    -U|--unit) let do_unit=1;;
+    -F|--functional) let do_functional=1;;
+    -f|--force) force=1;;
+    -u|--update) update=1;;
     --) [ "yes" == "$first_uu" ] || noseargs="$noseargs $1"; first_uu=no  ;;
     *) noseargs="$noseargs $1"
   esac
   shift
 done
+
+cd `dirname "$0"`
+
+if [ $no_site_packages -eq 1 ]; then
+  installvenvopts="--no-site-packages"
+fi
 
 NOSETESTS="nosetests $noseargs"
 FUNCTIONAL=tests/functional
@@ -56,6 +79,35 @@ function run_pep8 {
   echo "Running pep8 ..."
   ${wrapper} flake8
 }
+
+if [ $never_venv -eq 0 ]; then
+  # Remove the virtual environment if --force used
+  if [ $force -eq 1 ]; then
+    echo "Cleaning virtualenv..."
+    rm -rf ${venv}
+  fi
+  #if [ $update -eq 1 ]; then
+  #    echo "Updating virtualenv..."
+  #    python tools/install_venv.py $installvenvopts
+  #fi
+  if [ -e ${venv} ]; then
+    wrapper="${with_venv}"
+  else
+    if [ $always_venv -eq 1 ]; then
+      # Automatically install the virtualenv
+      python tools/install_venv.py $installvenvopts
+      wrapper="${with_venv}"
+    else
+      echo -e "No virtual environment found...create one? (Y/n) \c"
+      read use_ve
+      if [ "x$use_ve" = "xY" -o "x$use_ve" = "x" -o "x$use_ve" = "xy" ]; then
+        # Install the virtualenv and run the test suite in it
+        python tools/install_venv.py $installvenvopts
+        wrapper=${with_venv}
+      fi
+    fi
+  fi
+fi
 
 if [ $do_pep8 -eq 1 ]; then
     run_pep8
