@@ -125,6 +125,14 @@ def user_update(request, user_id):
 
 
 @login_required()
+def user_delete(request, user_id):
+    U = get_object_or_404(User.objects.filter(pk=user_id))
+    U.delete()
+    messages.success(request, _("User deleted with success."))
+    return render(request, 'base/messages.html', {})
+
+
+@login_required()
 def group_list(request):
     return render(request, 'configuration/users/group-list.html', {
         'Groups': Group.objects.all(),
@@ -167,6 +175,14 @@ def group_update(request, group_id):
     else:
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))
+    return render(request, 'base/messages.html', {})
+
+
+@login_required()
+def group_delete(request, group_id):
+    G = get_object_or_404(Group.objects.filter(pk=group_id))
+    G.delete()
+    messages.success(request, _("Group deleted with success."))
     return render(request, 'base/messages.html', {})
 
 

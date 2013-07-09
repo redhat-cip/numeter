@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -19,14 +21,16 @@ urlpatterns = patterns('',
 
     url(r'^configuration/user$', 'core.views.configuration.user_index', name='user index'),
     url(r'^configuration/user/list$', 'core.views.configuration.user_list', name='user list'),
+    url(r'^configuration/superuser/list$', 'core.views.configuration.superuser_list', name='superuser list'),
     url(r'^configuration/user/add$', 'core.views.configuration.user_add', name='user add'),
     url(r'^configuration/user/(?P<user_id>\d+)$', 'core.views.configuration.user_get', name='user'),
     url(r'^configuration/user/(?P<user_id>\d+)/update$', 'core.views.configuration.user_update', name='user update'),
-    url(r'^configuration/superuser/list$', 'core.views.configuration.superuser_list', name='superuser list'),
+    url(r'^configuration/user/(?P<user_id>\d+)/delete$', 'core.views.configuration.user_delete', name='user delete'),
     url(r'^configuration/group/list$', 'core.views.configuration.group_list', name='group list'),
     url(r'^configuration/group/add$', 'core.views.configuration.group_add', name='group add'),
     url(r'^configuration/group/(?P<group_id>\d+)$', 'core.views.configuration.group_get', name='group'),
     url(r'^configuration/group/(?P<group_id>\d+)/update$', 'core.views.configuration.group_update', name='group update'),
+    url(r'^configuration/group/(?P<group_id>\d+)/delete$', 'core.views.configuration.group_delete', name='group delete'),
 
     url(r'^configuration/storage$', 'core.views.storage_index', name='storage index'),
     url(r'^configuration/storage/add$', 'core.views.storage_add', name='storage add'),
@@ -45,4 +49,4 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -12,7 +12,8 @@ class Group_Form(forms.ModelForm):
     class Meta:
         model = Group
         widgets = {
-            'name': forms.TextInput({'placeholder':_('Name')}),
+            'name': forms.TextInput({'placeholder':_('Name'),'class':'span6'}),
+            'permissions': forms.SelectMultiple({'class':'span6'}),
         }
 
     def get_absolute_url(self):
@@ -41,9 +42,11 @@ class User_Form(forms.ModelForm):
         model = User
         fields = ('username','email','graph_lib','is_superuser','groups')
         widgets = {
-            'username': forms.TextInput({'placeholder':_('Username')}),
-            'email': forms.TextInput({'placeholder':_('Email')}),
-            'password': forms.PasswordInput({'placeholder':_('Password')}),
+            'username': forms.TextInput({'placeholder':_('Username'),'class':'span6'}),
+            'email': forms.TextInput({'placeholder':_('Email'),'class':'span6'}),
+            'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span6'}),
+            'graph_lib': forms.Select({'class':'span6'}),
+            'groups': forms.SelectMultiple({'class':'span6'}),
         }
 
 
