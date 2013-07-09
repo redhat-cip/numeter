@@ -115,9 +115,12 @@ def list():
         and request.args["host"] != "":
             host = request.args["host"]
             myConnect = redisStartConnexion()
-            response = myConnect.redis_hgetall("INFOS@"+host)
+            plugins = myConnect.redis_hgetall("INFOS@"+host)
             #response = myConnect.redis_hkeys("INFOS@"+host)
-            return  '{ "list":'+pythonToJson(response)+'}'
+            # Make JSON
+            for plugin, info in plugins.iteritems():
+                response += '"%s": %s,' % (plugin, info)
+            response = '%s}' % response[:-1]
         else:
             response="Args error"
             return  response

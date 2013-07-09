@@ -78,8 +78,7 @@ class HostsController extends AppController {
         $results = json_decode($storageAPI->get(array('list',$storageID,$hostID)),true);
         // Sort plugins by category
         $plugins = array();
-        foreach ($results["list"] as $plugin){
-            $plugin = json_decode($plugin,true);
+        foreach ($results as $plugin){
             if ($plugin['Category'] != '')
                 $category=$plugin['Category'];
             else
