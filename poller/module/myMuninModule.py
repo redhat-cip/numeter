@@ -9,7 +9,6 @@ import time
 
 import connect
 
-munin_connection = connect.MuninConnection()
 
 #print c.munin_nodes()
 #print c.munin_list()
@@ -36,6 +35,7 @@ class myMuninModule(ModulesGeneric):
                         + self._munin_host)
         self._logger.info("section myMuninModule : munin_port = " 
                         + str(self._munin_port))
+        munin_connection = connect.MuninConnection(host='127.0.0.1', port='4949')
 
 
     def getData(self):
