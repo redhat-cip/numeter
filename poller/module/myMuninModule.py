@@ -6,6 +6,13 @@ from modulesGeneric import *
 import re
 #import pprint  # Debug
 
+import connect
+
+munin_connection = connect.MuninConnection()
+
+#print c.munin_nodes()
+#print c.munin_list()
+
 #
 # Munin module
 #
@@ -15,11 +22,11 @@ class myMuninModule(modulesGeneric):
         self._logger = logger
         self._logger.info("Plugin Munin start")
         self._configParser = configParser
-        self._munin_host = "127.0.0.1"
-        self._munin_port = 4949
+        #self._munin_host = "127.0.0.1"
+        #self._munin_port = 4949
         self._plugins_enable = ".*"
-        self.munin_connection = None
-        self.watchdog = 1000 # watchdog for munin socket error
+        #self.munin_connection = None
+        #self.watchdog = 1000 # watchdog for munin socket error
 
         if configParser: self.getParserConfig()
         self._logger.info("section myMuninModule : plugins_enable = " 
@@ -40,7 +47,7 @@ class myMuninModule(modulesGeneric):
         #    self.munin_connect()
 
         # Get list of all plugins 
-        pluginList = self.munin_list()
+        pluginList = munin_connection.munin_list()
 
         datas = []
         for plugin in pluginList:
@@ -60,7 +67,7 @@ class myMuninModule(modulesGeneric):
         #    # Start munin connexion
         #    self.munin_connect()
 
-        pluginList = self.munin_list()
+        pluginList = munin_connection.munin_list()
 
         infos = []
         for plugin in pluginList:
@@ -79,7 +86,7 @@ class myMuninModule(modulesGeneric):
         "Execute fetch() and format data"
         # Fetch munin
 
-        pluginData = self.munin_fetch(plugin)
+        pluginData = munin_connection.munin_fetch(plugin)
 
         # If empty
         if pluginData == {}:
@@ -95,7 +102,6 @@ class myMuninModule(modulesGeneric):
                    'Plugin': plugin, 
                    'Values': pluginData
         }
-
         return data
 
 
@@ -103,7 +109,7 @@ class myMuninModule(modulesGeneric):
 
         "Execute config() and format infos"
         # Config munin
-        pluginInfo = self.munin_config(plugin)
+        pluginInfo = munin_connection.munin_config(plugin)
 
         # If empty
         if pluginInfo == []:
@@ -167,103 +173,6 @@ class myMuninModule(modulesGeneric):
             return None
         else:
             return infos
-
-
-    def munin_connect(self):
-        self.munin_connection = socket.create_connection((self._munin_host
-                                            , self._munin_port))
-        self._s = self.munin_connection.makefile()
-        self.hello_string = self._readline()
-
-    def munin_close(self):
-        self.munin_connection.close()
-
-
-    def _readline(self):
-        return self._s.readline().strip()
-
-
-    def _iterline(self):
-        watchdog = self.watchdog
-        while watchdog > 0:
-            watchdog = watchdog - 1
-            line = self._readline()
-            if not line:
-                break
-            elif line.startswith('#'):
-                continue
-            elif line == '.':
-                break
-            yield line
-
-
-    def munin_fetch(self, key):
-        # Start munin connexion
-        self.munin_connect()
-        self.munin_connection.sendall("fetch %s\n" % key)
-        ret = {}
-        for line in self._iterline():
-            match = re.match("^([^\.]+)\.value", line)
-            if match is None: continue
-            key = match.group(1)
-            match = re.match("^[^ ]+\s+([0-9\.U-]+)$", line)
-            if match is not None: value = match.group(1)
-            else: value = 'U'
-            ret[key] = value
-        # Close munin connexion to avoid fucked plugin
-        self.munin_close()
-        return ret
-
-
-    def munin_list(self):
-        # Get node name
-        node = self.munin_nodes()
-        # Start munin connexion
-        self.munin_connect()
-        self.munin_connection.sendall("list %s\n" % node)
-        return_list = self._readline().split(' ')
-        # Close munin connexion to avoid fucked plugin
-        self.munin_close()
-        return return_list if return_list != [''] else []
-
-
-    def munin_nodes(self):
-        # Start munin connexion
-        self.munin_connect()
-        self.munin_connection.sendall("nodes\n")
-        return_node = [ line for line in self._iterline() ]
-        # Close munin connexion to avoid fucked plugin
-        self.munin_close()
-        return return_node[0] if return_node else None
-
-
-    def munin_config(self, key):
-        # Start munin connexion
-        self.munin_connect()
-        self.munin_connection.sendall("config %s\n" % key)
-        ret = {}
-        for line in self._iterline():
-            if line.startswith('graph_'):
-                try:
-                    key, value = line.split(' ', 1)
-                    ret[key] = value
-                except ValueError:
-                    self._logger.info("myMuninModule : skipped key " + key) 
-            else:
-                # less sure but faster
-                #key, rest = line.split('.', 1)
-                #prop, value = rest.split(' ', 1)
-                match = re.match("^([^\.]+)\.([^\ ]+)\s+(.+)", line)
-                if match is None: continue
-                key   = match.group(1)
-                prop  = match.group(2)
-                value = match.group(3)
-                if not ret.get(key):
-                    ret[key] = {}
-                ret[key][prop] = value
-        # Close munin connexion to avoid fucked plugin
-        self.munin_close()
-        return ret
 
 
     def getParserConfig(self):
