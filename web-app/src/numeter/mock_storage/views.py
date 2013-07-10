@@ -5,7 +5,8 @@ BASEDIR = settings.BASEDIR
 from mock_storage.models import Host
 from mock_storage.utils import get_hosts_json, get_host_json, get_list_json
 
-from json import load as jload, loads as jloads
+from json import load as jload, loads as jloads, dumps as jdumps
+from random import random, randrange
 
 
 def hosts(request):
@@ -22,10 +23,15 @@ def list(request):
 
 
 def data(request):
-    #request.GET['host']
-    #request.GET['plugin']
-    #request.GET['ds']
-    #request.GET['res']
-    with open(BASEDIR+'/../mock_storage/fixtures/data.json') as f:
-        r = f.read()
+    r = {
+        "TS_start": 1372951380,
+        "TS_step": 60,
+        "DATAS": {"nice": [] }
+    }
+    val = random() * 100
+    for i in range(100):
+        r['DATAS']['nice'].append( val )
+        val += randrange(-5,5,0.1,float)
+    r = jdumps(r)
+        
     return HttpResponse(r)
