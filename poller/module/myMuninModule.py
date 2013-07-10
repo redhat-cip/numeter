@@ -35,8 +35,7 @@ class myMuninModule(ModulesGeneric):
                         + self._munin_host)
         self._logger.info("section myMuninModule : munin_port = " 
                         + str(self._munin_port))
-        munin_connection = connect.MuninConnection(host='127.0.0.1', port='4949')
-
+	self.munin_connection = connect.MuninConnection()
 
     def getData(self):
         "get and return all data collected"
@@ -48,7 +47,7 @@ class myMuninModule(ModulesGeneric):
         #    self.munin_connect()
 
         # Get list of all plugins 
-        pluginList = munin_connection.munin_list()
+        pluginList = self.munin_connection.munin_list()
 
         datas = []
         for plugin in pluginList:
@@ -68,7 +67,7 @@ class myMuninModule(ModulesGeneric):
         #    # Start munin connexion
         #    self.munin_connect()
 
-        pluginList = munin_connection.munin_list()
+        pluginList = self.munin_connection.munin_list()
 
         infos = []
         for plugin in pluginList:
@@ -87,7 +86,7 @@ class myMuninModule(ModulesGeneric):
         "Execute fetch() and format data"
         # Fetch munin
 
-        pluginData = munin_connection.munin_fetch(plugin)
+        pluginData = self.munin_connection.munin_fetch(plugin)
 
         # If empty
         if pluginData == {}:
@@ -107,7 +106,7 @@ class myMuninModule(ModulesGeneric):
 
         "Execute config() and format infos"
         # Config munin
-        pluginInfo = munin_connection.munin_config(plugin)
+        pluginInfo = self.munin_connection.munin_config(plugin)
 
         # If empty
         if pluginInfo == []:
