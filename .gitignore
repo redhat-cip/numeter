@@ -4,4 +4,5 @@
 *.swp
 *,cover
 .coverage
+.venv/
 docs/_build
