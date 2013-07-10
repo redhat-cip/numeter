@@ -86,10 +86,10 @@ if [ $never_venv -eq 0 ]; then
     echo "Cleaning virtualenv..."
     rm -rf ${venv}
   fi
-  #if [ $update -eq 1 ]; then
-  #    echo "Updating virtualenv..."
-  #    python tools/install_venv.py $installvenvopts
-  #fi
+  if [ $update -eq 1 ]; then
+      echo "Updating virtualenv..."
+      python tools/install_venv.py $installvenvopts
+  fi
   if [ -e ${venv} ]; then
     wrapper="${with_venv}"
   else

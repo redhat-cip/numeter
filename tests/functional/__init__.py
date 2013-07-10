@@ -3,7 +3,6 @@
 import unittest2 as unittest
 from redis_Unittest import RedisTestCase
 from poller_Unittest import PollerTestCase
-from poller_MuninModuleUnittest import PollerMuninModuleTestCase
 from collector_Unittest import CollectorTestCase
 from mastertest_Unittest import MasterTestCase
 from storage_Unittest import StorageTestCase
