@@ -5,9 +5,9 @@ import re
 
 class MuninSock:
 
-    def __init__(self):
-        self._munin_host = "127.0.0.1"
-        self._munin_port = 4949
+    def __init__(self, host="127.0.0.1", port=4949):
+        self._munin_host = host
+        self._munin_port = port
 
     def __enter__(self):
         self.munin_sock = socket.create_connection((self._munin_host
