@@ -6,7 +6,7 @@ from poller_Unittest import PollerTestCase
 #from poller_MuninModuleUnittest import PollerMuninModuleTestCase
 #from collector_Unittest import CollectorTestCase
 #from mastertest_Unittest import MasterTestCase
-#from storage_Unittest import StorageTestCase
+from storage_Unittest import StorageTestCase
 
 #from connection_pool import ConnectionPoolTestCase
 #from pipeline import PipelineTestCase
@@ -29,8 +29,8 @@ def all_tests():
     suite.addTest(unittest.makeSuite(PollerTestCase))
     ## Collector
     #suite.addTest(unittest.makeSuite(CollectorTestCase))
-    ## Storage
-    #suite.addTest(unittest.makeSuite(StorageTestCase))
+    # Storage
+    suite.addTest(unittest.makeSuite(StorageTestCase))
     ## Master test with all /!\ Need munin-node and redis
     #suite.addTest(unittest.makeSuite(MasterTestCase))
     return suite

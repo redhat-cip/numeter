@@ -10,7 +10,8 @@ import rrdtool
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage'))
+#sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module'))
 from numeter_storage import *
 
 class StorageTestCase(unittest.TestCase):
