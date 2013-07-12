@@ -129,7 +129,7 @@ $(document).on('submit', '.ajax-form', function() {
 
 // DELETE BUTTON
 $(document).on('click', 'input[name="delete"]', function() {
-  var url = $(this).attr('url');
+  var url = $(this).attr('data-url');
   if ( $(this).attr('disabled') == '' ) { return false ; }
   $.ajax({
     type: 'POST', url: url, async: true,

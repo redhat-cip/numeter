@@ -45,14 +45,17 @@ MEDIA_ROOT = '/var/www/media/'
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
 
-# MOCH_STORAGE
-INSTALLED_APPS = INSTALLED_APPS+('mock_storage',)
+# Set timeout for connection to storages
+STORAGE_TIMEOUT = 10
 
-# Debug Tool Bar
-INSTALLED_APPS = INSTALLED_APPS+('debug_toolbar',)
-if 'debug_toolbar' in INSTALLED_APPS :
-    INTERNAL_IPS = ('127.0.0.1','192.168.100.1')
-    MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES+('debug_toolbar.middleware.DebugToolbarMiddleware',)
+# MOCH_STORAGE
+# INSTALLED_APPS = INSTALLED_APPS+('mock_storage',)
+# 
+# # Debug Tool Bar
+# INSTALLED_APPS = INSTALLED_APPS+('debug_toolbar',)
+# if 'debug_toolbar' in INSTALLED_APPS :
+#     INTERNAL_IPS = ('127.0.0.1','192.168.100.1')
+#     MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES+('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 # Django Extensions
 #INSTALLED_APPS = INSTALLED_APPS+('django_extensions',)

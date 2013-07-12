@@ -31,7 +31,7 @@ def data(request):
     val = random() * 100
     for i in range(100):
         r['DATAS']['nice'].append( val )
-        val += randrange(-5,5,0.1,float)
+        val += randrange(-5,6,0.1,float)
     r = jdumps(r)
         
     return HttpResponse(r)

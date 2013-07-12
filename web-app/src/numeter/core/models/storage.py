@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 from core.models import Host
 
@@ -85,7 +86,7 @@ class Storage(models.Model):
         _url = self.urls[url].format(**data)
         uri = "http://%s:%i%s" % (self.address, self.port, _url)
         logger.info('STORAGE-GET %s' % uri)
-        r = self.proxy.open(uri, timeout=3)
+        r = self.proxy.open(uri, timeout=settings.STORAGE_TIMEOUT)
         return jload(r)
 
     def create_host(self, hostid):
