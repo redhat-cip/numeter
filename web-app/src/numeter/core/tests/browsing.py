@@ -19,13 +19,13 @@ class Index_TestCase(TestCase):
 
     def test_index(self):
         """Simple get."""
-        url = '/'
+        url = reverse('index')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
     def test_apropos(self):
         """Simple get."""
-        url = '/apropos'
+        url = apropos('apropos')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
@@ -39,7 +39,7 @@ class Multiviews_TestCase(TestCase):
 
     def test_index(self):
         """Simple get."""
-        url = '/multiviews'
+        url = reverse('multiviews')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
@@ -55,7 +55,7 @@ class Configuration_Profile_TestCase(TestCase):
 
     def test_index(self):
         """Simple get."""
-        url = '/configuration'
+        url = reverse('configuration')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
