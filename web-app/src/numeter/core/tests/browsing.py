@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
-from core.models import User
+from django.contrib.auth.models import Group
+
+from core.models import User, Storage
 
 
 class Index_TestCase(TestCase):
@@ -91,8 +93,9 @@ class Configuration_User_TestCase(TestCase):
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
-        self.admin = User.objects.get(pk=1)
-        self.user = User.objects.get(pk=2)
+
+    def tearDown(self):
+        User.objects.all().delete()
 
     def test_index(self):
         url = reverse('user index')
@@ -119,11 +122,11 @@ class Configuration_User_TestCase(TestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
-        POST = { 'username': 'test' }
+        POST = { 'username': 'new test', 'graph_lib': 1 }
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
-        url = reverse('user', args=[1])
+        url = reverse('user', args=[3])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
@@ -132,8 +135,7 @@ class Configuration_User_TestCase(TestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
-        POST = { 'username': 'test', 'graph_lib': 1 }
-        POST['username'] = 'new test'
+        POST = { 'username': 'new test', 'graph_lib': 1 }
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
@@ -146,5 +148,121 @@ class Configuration_User_TestCase(TestCase):
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
         url = reverse('user', args=[2])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
+
+
+class Configuration_Group_TestCase(TestCase):
+    fixtures = ['test_users.json', 'test_groups.json']
+
+    def setUp(self):
+        self.c = Client()
+        self.c.login(username='root', password='toto')
+
+    def tearDown(self):
+        Group.objects.all().delete()
+
+    def test_list(self):
+        url = reverse('group list')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_get(self):
+        url = reverse('group', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_add(self):
+        url = reverse('group add')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        POST = { 'name': 'new test' }
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        url = reverse('group', args=[3])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_update(self):
+        url = reverse('group update', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        POST = { 'name': 'new test' }
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        group = Group.objects.get(pk=1)
+        self.assertEqual(group.name, 'new test', 'Username is not changed (%s).' % group.name)
+
+    def test_delete(self):
+        url = reverse('group delete', args=[1])
+        r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        url = reverse('group', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
+
+
+class Configuration_Storage_TestCase(TestCase):
+    fixtures = ['test_users.json','test_storage.json']
+
+    def setUp(self):
+        self.c = Client()
+        self.c.login(username='root', password='toto')
+
+    def tearDown(self):
+        Storage.objects.all().delete()
+
+    def test_index(self):
+        url = reverse('storage index')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    ## TODO : enable when done
+    # def test_list(self):
+    #     url = reverse('storage list')
+    #     r = self.c.get(url)
+    #     self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_get(self):
+        url = reverse('storage', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_add(self):
+        url = reverse('storage add')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        POST = { 'name': 'new test', 'protocol': 'http', 'address': 'localhot' }
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        url = reverse('storage', args=[2])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_update(self):
+        url = reverse('storage update', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        POST = { 'name': 'new test', 'protocol': 'http', 'address': 'localhot' }
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        storage = Storage.objects.get(pk=1)
+        self.assertEqual(storage.name, 'new test', 'Username is not changed (%s).' % storage.name)
+
+    def test_delete(self):
+        url = reverse('storage delete', args=[1])
+        r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        url = reverse('storage', args=[1])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
