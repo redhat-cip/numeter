@@ -1,11 +1,10 @@
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from core.models import User, Storage
+from core.models import User, Storage, Group
 from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm, Storage_Form, User_CreationForm, Group_Form
 from core.utils.decorators import login_required
 

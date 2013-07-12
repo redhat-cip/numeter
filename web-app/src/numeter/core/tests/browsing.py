@@ -5,9 +5,8 @@ Tests which browsing into website with GET and POST methods.
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import Group
 
-from core.models import User, Storage
+from core.models import User, Storage, Group
 
 
 class Index_TestCase(TestCase):

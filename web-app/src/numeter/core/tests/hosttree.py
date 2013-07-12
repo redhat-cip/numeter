@@ -15,6 +15,8 @@ class Hosttree_TestCase(TestCase):
         self.c.login(username='root', password='toto')
         if settings.TEST_STORAGE['address']:
             self.storage = Storage.objects.create(**settings.TEST_STORAGE)
+            if not self.storage.is_on():
+                self.skipTest("Configured storage unreachable.")
             self.storage._update_hosts()
         else:
             self.skipTest("No test storage has been configurated.")

@@ -1,9 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 
-from core.models import User, Host, Storage, GraphLib
+from core.models import User, Host, Storage, GraphLib, Group
 
 
 class Group_Form(forms.ModelForm):
@@ -13,7 +12,6 @@ class Group_Form(forms.ModelForm):
         model = Group
         widgets = {
             'name': forms.TextInput({'placeholder':_('Name'),'class':'span6'}),
-            'permissions': forms.SelectMultiple({'class':'span6'}),
         }
 
     def get_absolute_url(self):

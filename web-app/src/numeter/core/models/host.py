@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import Group, Permission
 from django.utils.translation import ugettext_lazy as _
 
 from datetime import datetime, timedelta
@@ -12,7 +11,7 @@ class Host(models.Model):
     name = models.CharField(_('name'), max_length=200)
     hostid = models.CharField(_('ID on storage'), max_length=300)
     storage = models.ForeignKey('Storage')
-    group = models.ForeignKey(Group, null=True, blank=True)
+    group = models.ForeignKey('core.Group', null=True, blank=True)
 
     class Meta:
         app_label = 'core'
