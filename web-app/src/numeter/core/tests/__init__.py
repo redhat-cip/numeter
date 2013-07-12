@@ -1,6 +1,6 @@
 from login import Login_TestCase
 from storage import Storage_TestCase
-from browsing import Index_TestCase, Multiviews_TestCase, Configuration_TestCase
+from browsing import Index_TestCase, Multiviews_TestCase, Configuration_Profile_TestCase, Configuration_User_TestCase
 from management import Manage_User_TestCase, Manage_Storage_TestCase
 
 def suite():

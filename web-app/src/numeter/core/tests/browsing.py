@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
+from django.core.urlresolvers import reverse
 from core.models import User
 
 
@@ -34,7 +35,7 @@ class Multiviews_TestCase(TestCase):
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
 
-class Configuration_TestCase(TestCase):
+class Configuration_Profile_TestCase(TestCase):
     fixtures = ['test_users.json']
 
     def setUp(self):
@@ -82,3 +83,41 @@ class Configuration_TestCase(TestCase):
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
         self.assertFalse(self.user.check_password('root'), "Third user can change password.")
+
+
+class Configuration_User_TestCase(TestCase):
+    fixtures = ['test_users.json']
+
+    def setUp(self):
+        self.c = Client()
+        self.c.login(username='root', password='toto')
+        self.admin = User.objects.get(pk=1)
+        self.user = User.objects.get(pk=2)
+
+    def test_index(self):
+        url = reverse('user index')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_list(self):
+        url = reverse('user list')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+    def test_superuser_list(self):
+        url = reverse('superuser list')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_get(self):
+        url = reverse('user', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_add(self):
+        url = reverse('user add')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        POST = { 'username': 'test' }
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
