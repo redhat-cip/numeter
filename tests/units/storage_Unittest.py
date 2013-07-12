@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import unittest2 as unittest
+#import unittest2 as unittest
 import os
 import sys
 import time
@@ -14,9 +14,8 @@ myPath = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module'))
 
-from numeter_storage import *
 import myRedisConnect
-
+from numeter_storage import *
 from test_utils import FakeRedis
 
 import base as test_base
@@ -24,10 +23,11 @@ import base as test_base
 class StorageTestCase(test_base.TestCase):
 
     def setUp(self):
-        super(PollerTestCase, self).setUp()
+        super(StorageTestCase, self).setUp()
+        self.storage = myStorage(myPath+"/storage_unittest.cfg")
 
     def tearDown(self):
-        super(PollerTestCase, self).tearDown()
+        super(StorageTestCase, self).tearDown()
 
 #    def setUp(self):
 #        os.system("kill $(cat /tmp/redis-unittest.pid 2>/dev/null) 2>/dev/null")
@@ -44,21 +44,17 @@ class StorageTestCase(test_base.TestCase):
 #        os.system("kill $(cat /tmp/redis-unittest.pid)")
 #        os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
 #
-#    def test_storage_redisStartConnexion(self):
-#        # Connect with 0
-#        self.storage._redis_storage_db = 0
-#        zeroConnect = self.storage.redisStartConnexion()
-#        zeroConnect.redis_hset("DB","foo","bar0")
-#        # Connect with 1
-#        self.storage._redis_storage_db = 1
-#        oneConnect = self.storage.redisStartConnexion()
-#        oneConnect.redis_hset("DB","foo","bar1")
-#        # Check
-#        result = zeroConnect.redis_hget("DB","foo")
-#        self.assertEquals(result, "bar0")
-#        result = oneConnect.redis_hget("DB","foo")
-#        self.assertEquals(result, "bar1")
-#
+    def test_storage_redisStartConnexion(self):
+        called = []
+        def myRedisConnect__init__(self, *args, **kwargs):
+            called.append("TESTED")
+            self._error = False
+            print 'haaaaaaaaaaaaaa test'
+        self.stubs.Set(myRedisConnect, '__init__', myRedisConnect__init__)
+        #self.stubs.Set(myRedisConnect.myRedisConnect, '__init__', myRedisConnect__init__)
+        self.storage.redisStartConnexion()
+        self.assertEqual(len(called), 1)
+
 #    def test_storage_getcollectorList_file(self):
 #        self.storage._collector_list_type = "file" 
 #        self.storage._collector_list_file = "/tmp/collectorList.unittest"
