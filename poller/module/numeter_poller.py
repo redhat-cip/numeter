@@ -84,7 +84,7 @@ class myPoller:
 
 
     def redisStartConnexion(self):
-        "start redis connexion"
+        "start redis connection"
         redis_connexion = myRedisConnect(host=self._redis_host,
                                          port=self._redis_port,
                                          password=self._redis_password,

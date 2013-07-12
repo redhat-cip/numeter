@@ -24,12 +24,6 @@ import rrdtool
 
 import pprint # Debug (dumper)
 
-
-#
-# NEED apt-get install python-mysqldb python-rrdtool
-#
-
-
 #
 # myStorage
 #
@@ -127,16 +121,16 @@ class myStorage:
 
     def redisStartConnexion(self):
         # Open redis connexion
-        redis_connexion = myRedisConnect(host=self._redis_storage_host,
+        redis_connection = myRedisConnect(host=self._redis_storage_host,
                                   port=self._redis_storage_port,
                                   socket_timeout=self._redis_storage_timeout,
                                   db=self._redis_storage_db,
                                   password=self._redis_storage_password)
-        if redis_connexion._error:
+        if redis_connection._error:
             self._logger.critical("Redis server connexion ERROR - "
                 + "Check server access or the password")
             exit(1)
-        return redis_connexion
+        return redis_connection
 
 
     def getgloballog(self):
