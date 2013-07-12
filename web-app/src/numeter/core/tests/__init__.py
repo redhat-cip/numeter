@@ -11,7 +11,7 @@ def suite():
         'core.tests.storage',
         'core.tests.browsing',
         'core.tests.management',
-    #     'core.tests.hosttree',
+        'core.tests.hosttree',
     )
     suite = unittest.TestSuite()
     for t in TEST_CASES :

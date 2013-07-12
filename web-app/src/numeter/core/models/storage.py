@@ -7,6 +7,7 @@ from core.models import Host
 
 from urllib2 import urlopen
 from json import load as jload, loads as jloads
+import socket
 from logging import getLogger
 logger = getLogger(__name__)
 
@@ -64,6 +65,15 @@ class Storage(models.Model):
         else:
             self.proxy = build_opener()
         install_opener(self.proxy)
+
+    def is_on(self):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((self.address, self.port))
+            s.close()
+            return True
+        except socket.error as msg:
+            return False
 
     def get_absolute_url(self):
         return reverse('storage index', args=[str(self.id)])

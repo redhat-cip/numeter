@@ -25,7 +25,7 @@ class Index_TestCase(TestCase):
 
     def test_apropos(self):
         """Simple get."""
-        url = apropos('apropos')
+        url = reverse('apropos')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
