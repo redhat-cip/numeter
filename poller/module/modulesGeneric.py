@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time
-
-class modulesGeneric: 
+class ModulesGeneric: 
     "Module generic"
 
     def  __init__(self, logger, configParser=None):
@@ -39,17 +37,5 @@ class modulesGeneric:
 #                }]
 #        now              = time.strftime("%Y %m %d %H:%M", time.localtime())
 #        nowTimestamp     = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M')) # "%.0f" % supprime le .0 aprés le
-
-
-
-
-
-
-
-
-
-
-
-
 
 
