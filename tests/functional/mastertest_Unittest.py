@@ -20,9 +20,9 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../collector/module'))
 
-from numeter_poller import *
-from numeter_collector import *
-from numeter_storage import *
+from numeter_poller import myPoller
+from numeter_collector import myCollector
+from numeter_storage import myStorage
 
 #foo_unittest|bar_unittest
 class MasterTestCase(unittest.TestCase):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from myRedisConnect import *
+from myRedisConnect import myRedisConnect
 import ConfigParser
 from flask import Flask, request
 import json

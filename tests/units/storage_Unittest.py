@@ -14,8 +14,8 @@ myPath = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module'))
 
-import myRedisConnect
-from numeter_storage import *
+from numeter_storage import myStorage
+from myRedisConnect import myRedisConnect
 from test_utils import FakeRedis
 
 import base as test_base
@@ -49,9 +49,7 @@ class StorageTestCase(test_base.TestCase):
         def myRedisConnect__init__(self, *args, **kwargs):
             called.append("TESTED")
             self._error = False
-            print 'haaaaaaaaaaaaaa test'
         self.stubs.Set(myRedisConnect, '__init__', myRedisConnect__init__)
-        #self.stubs.Set(myRedisConnect.myRedisConnect, '__init__', myRedisConnect__init__)
         self.storage.redisStartConnexion()
         self.assertEqual(len(called), 1)
 

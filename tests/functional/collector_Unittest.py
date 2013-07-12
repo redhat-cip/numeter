@@ -10,7 +10,7 @@ import socket
 myPath = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../collector/module'))
-from numeter_collector import *
+from numeter_collector import myCollector
 
 class CollectorTestCase(unittest.TestCase):
 

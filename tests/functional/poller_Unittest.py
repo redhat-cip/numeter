@@ -11,7 +11,7 @@ myPath = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'))
-from numeter_poller import *
+from numeter_poller import myPoller
 
 class PollerTestCase(unittest.TestCase):
 

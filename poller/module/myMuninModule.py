@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import socket
-from modulesGeneric import *
+from modulesGeneric import ModulesGeneric
 import re
+import time
 #import pprint  # Debug
 
 #
 # Munin module
 #
-class myMuninModule(modulesGeneric): 
+class myMuninModule(ModulesGeneric):
 
     def __init__(self, logger, configParser=None):
         self._logger = logger

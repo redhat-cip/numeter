@@ -7,7 +7,7 @@ import sys
 import argparse
 
 try:
-    from myRedisConnect import *
+    from myRedisConnect import myRedisConnect
 except ImportError:
     print "STATE UNKNOWN: unable to load redis module"
     sys.exit(3)

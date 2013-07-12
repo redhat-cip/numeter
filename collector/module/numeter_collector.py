@@ -4,7 +4,7 @@ import ConfigParser
 import time
 import os
 import json
-from myRedisConnect import *
+from myRedisConnect import myRedisConnect
 #import socket
 import re
 import logging
