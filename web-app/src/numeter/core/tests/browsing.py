@@ -103,6 +103,7 @@ class Configuration_User_TestCase(TestCase):
         url = reverse('user list')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
     def test_superuser_list(self):
         url = reverse('superuser list')
         r = self.c.get(url)
@@ -121,3 +122,29 @@ class Configuration_User_TestCase(TestCase):
         POST = { 'username': 'test' }
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        url = reverse('user', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_update(self):
+        url = reverse('user update', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        POST = { 'username': 'test', 'graph_lib': 1 }
+        POST['username'] = 'new test'
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        user = User.objects.get(pk=1)
+        self.assertEqual(user.username, 'new test', 'Username is not changed (%s).' % user.username)
+
+    def test_delete(self):
+        url = reverse('user delete', args=[2])
+        r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        url = reverse('user', args=[2])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
