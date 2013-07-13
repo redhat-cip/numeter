@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from core.models import Host, Group
 
 
 class UserManager(UserManager):
@@ -33,13 +34,15 @@ class UserManager(UserManager):
         return self.filter(is_superuser=False)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser):
     username = models.CharField(_('username'), max_length=30, unique=True)
     email = models.EmailField(_('email address'), blank=True)
+    is_superuser = models.BooleanField(_('superuser status'), default=False)
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
     date_joined = models.DateTimeField(_('date joined'), default=now)
     graph_lib = models.ForeignKey('GraphLib', default=1)
+    groups = models.ManyToManyField('core.Group', blank=True)
 
     objects = UserManager()
     USERNAME_FIELD = 'username'
@@ -81,6 +84,18 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.username
+
+    def has_access(self, obj):
+        if self.is_superuser and self.is_active:
+            return True
+        else:
+            if isinstance(obj, Group):
+                return self.groups.filter(pk=obj.pk).exists()
+            elif isinstance(obj, Host):
+                return self.groups.filter(pk=obj.group.pk).exists()
+            elif isinstance(obj, User):
+                return (self.pk == obj.pk) or self.is_superuser
+        return False
 
 
 class GraphLib(models.Model):

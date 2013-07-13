@@ -9,7 +9,9 @@ from functools import wraps
 logger = logging.getLogger('django.request')
 
 def is_ajax():
-    """ 
+    """
+    Restrict views to AJAX requests.
+    Raise 404 if isn't.
     """
     def decorator(func):
         @wraps(func, assigned=available_attrs(func))
@@ -29,6 +31,7 @@ def is_ajax():
 
 def login_required():
     """ 
+    Custom login_required decorator.
     """
     def decorator(func):
         @wraps(func, assigned=available_attrs(func))

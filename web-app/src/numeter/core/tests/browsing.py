@@ -69,7 +69,7 @@ class Configuration_Profile_TestCase(TestCase):
         """Test if a user try to change his password."""
         # Disconnect to login as simple user
         self.c.logout()
-        self.c.login(username='test', password='toto')
+        self.c.login(username='user #1', password='toto')
         # Sent POST
         url = self.user.get_update_password_url()
         POST = {'old':'toto','new_1':'root','new_2':'root'}
@@ -91,7 +91,7 @@ class Configuration_Profile_TestCase(TestCase):
         """Test if user can change other user's password."""
         # Disconnect to login as simple user
         self.c.logout()
-        self.c.login(username='test', password='toto')
+        self.c.login(username='user #1', password='toto')
         # Sent POST
         url = self.admin.get_update_password_url()
         POST = {'old':'toto','new_1':'root','new_2':'root'}

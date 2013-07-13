@@ -10,3 +10,6 @@ class Group(models.Model):
         ordering = ('name',)
         verbose_name = _('group')
         verbose_name_plural = _('groups')
+
+    def __unicode__(self):
+        return self.name
