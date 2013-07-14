@@ -43,7 +43,7 @@ class User_Form(forms.ModelForm):
             'username': forms.TextInput({'placeholder':_('Username'),'class':'span6'}),
             'email': forms.TextInput({'placeholder':_('Email'),'class':'span6'}),
             'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span6'}),
-            'graph_lib': forms.Select({'class':'span6'}),
+            'graph_lib': forms.SelectMultiple({'class':'span6'}),
             'groups': forms.SelectMultiple({'class':'span6'}),
         }
 

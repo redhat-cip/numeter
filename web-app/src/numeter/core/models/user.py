@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserM
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from core.models import Host, Group
+from core.models.fields import MediaField
 
 
 class UserManager(UserManager):
@@ -41,7 +42,7 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
     date_joined = models.DateTimeField(_('date joined'), default=now)
-    graph_lib = models.ForeignKey('GraphLib', default=1)
+    graph_lib = MediaField()
     groups = models.ManyToManyField('core.Group', blank=True)
 
     objects = UserManager()
@@ -84,6 +85,12 @@ class User(AbstractBaseUser):
 
     def get_short_name(self):
         return self.username
+
+    def has_perm(*args):
+        return True
+
+    def has_module_perms(*args):
+        return True
 
     def has_access(self, obj):
         if self.is_superuser and self.is_active:
