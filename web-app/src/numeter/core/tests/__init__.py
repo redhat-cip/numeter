@@ -4,6 +4,7 @@ from browsing import Index_TestCase, Multiviews_TestCase, Configuration_Profile_
 from management import Manage_User_TestCase, Manage_Storage_TestCase
 from hosttree import Hosttree_TestCase
 from group_restriction import Access_TestCase
+from mediafield import MediaField_TestCase
 
 def suite():
     import unittest

@@ -5,3 +5,4 @@
 *,cover
 .coverage
 docs/_build
+web-app/src/numeter/media/graphlib/*
