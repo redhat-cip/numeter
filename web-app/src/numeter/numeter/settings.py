@@ -132,5 +132,5 @@ STATICFILES_DIRS = (
 )
 
 from sys import argv
-if 'test' in argv :
+if argv[1] == 'test' :
     from settings_test import *

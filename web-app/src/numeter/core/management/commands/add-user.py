@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from core.models import User, GraphLib
+from core.models import User
+from core.models.fields import MediaList
 
 from optparse import make_option
 from getpass import getpass
@@ -13,7 +14,7 @@ class Command(BaseCommand):
         make_option('-u', '--username', action='store', default=False, help="Set username"),
         make_option('-e', '--email', action='store', default=False, help="Set email"),
         make_option('-S', '--superuser', action='store_true', default=False, help="Set as superuser"),
-        make_option('-g', '--graphlib', action='store', default=False, help="Set graph library"),
+        make_option('-g', '--graphlib', action='store', default=False, help="Set graph library as filename separated by ','"),
         make_option('-p', '--password', action='store', default=False, help="Set password"),
     )
 
@@ -21,22 +22,19 @@ class Command(BaseCommand):
         # Set username
         if not options['username']:
             options['username'] = raw_input('Username > ')
-        # Set email
-        if not options['email']:
-            options['email'] = raw_input('Email (optionnal) > ')
-        # Set if is superuser
-        if not options['superuser']:
-            options['superuser'] = raw_input('Is superuser [Y/n] > ') or 'y'
         # Set graph lib
         if not options['graphlib']:
-            Gs = GraphLib.objects.all()
-            graphlib_list = [ G.name for G in Gs ]
-            if Gs.count() > 1 :
+            graphlib_list = MediaList()._list_available()
+            if len(graphlib_list) > 1 :
                 print '\n'.join([ ('%s: %s' % (i, n)) for i, n in enumerate(graphlib_list) ])
-                num = int(raw_input('Which library do you choose ? : '))
-                options['graphlib'] = graphlib_list[num]
+                nums = raw_input("Which file do you choose ? (separated by ',') : ")
+                options['graphlib'] = [ graphlib_list[int(i)] for i in nums.split(',') ]
+                print options['graphlib']
             else:
                 options['graphlib'] = graphlib_list[0]
+        else:
+            # Convert string with ',' to list
+            options['graphlib'] = [ s for s in options['graphlib'].split(',') ]
 
         # Set password
         if not options['password']:
@@ -55,8 +53,10 @@ class Command(BaseCommand):
             email=options['email'],
             is_staff=options['superuser'],
             is_superuser=options['superuser'],
-            is_active=True
+            is_active=True,
+            graph_lib=options['graphlib']
         )
         U.set_password(options['password'])
         U.save()
+        
         logger.debug(u"Create user '%s' in Db" % U.username)

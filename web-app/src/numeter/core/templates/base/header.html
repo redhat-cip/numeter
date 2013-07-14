@@ -41,5 +41,4 @@
 <script src="{{ STATIC_URL }}js/conf.js"></script>
 
 <!-- Your graph lib --!>
-<script src="{{ MEDIA_URL }}{{ request.user.graph_lib.script_file }}"></script>
-
+{% for import in request.user.graph_lib.sources %}<script src="{{ import }}"></script>{% endfor %}

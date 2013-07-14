@@ -9,12 +9,13 @@ from mediafield import MediaField_TestCase
 def suite():
     import unittest
     TEST_CASES = (
-        'core.tests.login',
-        'core.tests.storage',
-        'core.tests.browsing',
         'core.tests.management',
-        'core.tests.hosttree',
+        'core.tests.mediafield',
+        'core.tests.login',
         'core.tests.group_restriction',
+        'core.tests.browsing',
+        'core.tests.hosttree',
+        'core.tests.storage',
     )
     suite = unittest.TestSuite()
     for t in TEST_CASES :

@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
-from core.models import User, Host, Storage, GraphLib, Group
+from core.models import User, Host, Storage, Group
 
 
 class Group_Form(forms.ModelForm):
@@ -113,17 +113,6 @@ class Storage_Form(forms.ModelForm):
             'url_prefix': forms.TextInput({'placeholder':_('URL prefix')}),
             'login': forms.TextInput({'placeholder':_('Login')}),
             'password': forms.TextInput({'placeholder':_('Password')}),
-        }
-
-
-class GraphLib_Form(forms.ModelForm):
-    """
-    Basic GraphLib ModelForm.
-    """
-    class Meta:
-        model = GraphLib
-        widgets = {
-            'name': forms.TextInput({'placeholder':_("Library's name")}),
         }
 
 

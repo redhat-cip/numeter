@@ -6,13 +6,17 @@ from os import listdir, path
 
 class MediaList(list):
 
+    def __init__(self, list=[], dir=settings.MEDIA_ROOT+'/graphlib'):
+        super(MediaList, self).__init__(list)
+        self.dir = dir
+
     def _make_html_import(self, full_src):
         """Create HTML <script> tag."""
         IMPORT_TEMP = '<script src="%s"></script>'
         return IMPORT_TEMP % full_src
 
     def _list_available(self):
-        return listdir(settings.MEDIA_ROOT+'/graphlib')        
+        return listdir(settings.MEDIA_ROOT+'graphlib')        
 
     def _get_full_url(self, src):
         return settings.MEDIA_ROOT+'graphlib/' + src
@@ -21,19 +25,30 @@ class MediaList(list):
         return settings.MEDIA_URL+'graphlib/' + src
 
     def _walk(self):
+        """
+        Walk on chosen files and return a generator of chosen files.
+        """
         for f in self:
             full_src = settings.MEDIA_ROOT+'graphlib/'+f
             media_src = settings.MEDIA_URL+'graphlib/'+f
+            # Don't treat non-existing
             if not path.exists(full_src):
-                print full_src, '---'
                 continue
+            # Yield files
             elif not path.isdir(full_src):
                 yield media_src
             # Search in directory
             else:
-                for sf in listdir(full_src):
-                    if path.exists(full_src+'/'+sf):
-                        yield media_src+'/'+sf
+                for subfile_name in listdir(full_src):
+                    sf = full_src + '/' + subfile_name
+                    if not path.isfile(sf):
+                        continue
+                    elif path.exists(sf):
+                        yield media_src + '/' + subfile_name
+
+    def sources(self):
+        """Return list of files' URL."""
+        return [ s for s in self._walk() ] 
 
     def htmlize(self):
         """
@@ -57,10 +72,12 @@ class MediaField(CharField):
         kwargs['max_length'] = 2000 # Why not ?
         super(MediaField, self).__init__(*args, **kwargs)
         # choices are MEDIA_ROOT
-        self._choices = [ (x,x) for x in listdir(settings.MEDIA_ROOT+'/graphlib') ]
+        self._choices = [ (x,x) for x in listdir(settings.MEDIA_ROOT+'graphlib') ]
 
     def to_python(self, value):
-        """From VARCHAR to list()."""
+        """From VARCHAR to MediaList()."""
+        if not value:
+            return MediaList()
         if isinstance(value, basestring):
             return MediaList(value.split())
         elif isinstance(value, (list,tuple)):

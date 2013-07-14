@@ -6,7 +6,7 @@ from django.conf import settings
 from core.models import User
 from core.models.fields import MediaList
 
-from os import path, mkdir, listdir
+from os import path, mkdir
 from shutil import rmtree
 
 
@@ -14,7 +14,7 @@ class MediaField_TestCase(TestCase):
 
     def __init__(self, *args, **kwargs):
         super(MediaField_TestCase, self).__init__(*args, **kwargs)
-        self.TEST_DIR = settings.MEDIA_ROOT + '/graphlib/'
+        self.TEST_DIR = settings.MEDIA_ROOT + 'graphlib/'
         self.FILE1 = self.TEST_DIR + '/file1.js'
         self.TEST_SUBDIR = self.TEST_DIR + '/subdir'
         self.SUBFILE1 = self.TEST_SUBDIR + '/subfile1.js'
@@ -32,14 +32,15 @@ class MediaField_TestCase(TestCase):
     def tearDown(self):
         rmtree(settings.MEDIA_ROOT)
 
-    def test_update(self):
-        pass
+    # def test_update(self):
+    #     pass
 
     def test_None(self):
-        pass
+        m = MediaList()
+        self.assertEqual(0, len(m), 'Count %i files instead of 0.' % len(m))
 
-    def test_missing_file(self):
-        pass
+    # def test_missing_file(self):
+    #     pass
 
     def test_directory(self):
         m = MediaList(['file1.js', 'subdir'])
@@ -47,7 +48,10 @@ class MediaField_TestCase(TestCase):
         self.assertEqual(3, len(files), 'Count %i files instead of 3.' % len(files))
 
     def test_htmlize(self):
-        pass
+        m = MediaList(['file1.js'])
+        HTML = '<script src="/media/graphlib/file1.js"></script>'
+        html = [ i for i in m.htmlize() ][0]
+        self.assertEqual(html, HTML, 'Not valid response "%s" should be "%s"' % (html, HTML))
 
-    def test_deleted_files(self):
-        pass
+    # def test_deleted_files(self):
+    #     pass

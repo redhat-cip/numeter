@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+
 from core.models import Host, Group
 from core.models.fields import MediaField
 
@@ -103,35 +104,3 @@ class User(AbstractBaseUser):
             elif isinstance(obj, User):
                 return (self.pk == obj.pk) or self.is_superuser
         return False
-
-
-class GraphLib(models.Model):
-    """
-    Javascript graphic library.
-    """
-    def _upload_path(self, filename):
-        return 'graphlib/%s/%s' % (str(self.pk), filename)
-
-    name = models.CharField(verbose_name=_('name'), max_length=30, unique=True)
-    script_file = models.FileField(upload_to=_upload_path,verbose_name=_('file'))
-    comment = models.TextField(_('comment'), max_length=1000)
-    # TODO : extensions = MultipleFileField
-
-    class Meta:
-        app_label = 'core'
-        ordering = ('name',)
-        verbose_name = _('graph library')
-        verbose_name_plural = _('graph librairies')
-
-    def __unicode__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('graphlib', args=[str(self.id)])
-
-    def get_update_url(self):
-        return reverse('update graphlib', args=[str(self.id)])
-
-    def get_delete_url(self):
-        return reverse('delete graphlib', args=[str(self.id)])
-

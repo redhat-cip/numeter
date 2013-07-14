@@ -3,7 +3,7 @@
  <div id="profile-update-info" class="span3">
   <h4 class="center">{% trans "General" %}</h4>
  </div>
- <div class="span3">
+ <div class="span6">
   <form id="profile-update-form" method="POST" action="{% url 'update profile' EditForm.instance.id %}">
    {% csrf_token %}
    <fieldset>
@@ -37,7 +37,7 @@
  <div id="profile-update-password-info" class="span3">
   <h4 class="center">{% trans "Password" %}</h4>
  </div>
- <div class="span3">
+ <div class="span6">
   <form id="profile-update-password-form" method="POST" action="{% url 'update password' EditForm.instance.id %}">
    {% csrf_token %}
    <fieldset>

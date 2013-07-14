@@ -6,11 +6,11 @@ from core.models import User, Storage
 class Manage_User_TestCase(TestCase):
 
     def test_add_user(self):
-        management.call_command('add-user', username='test', email='email', password='test', superuser=True, database='default', verbosity=0)
+        management.call_command('add-user', username='test', email='email', password='test', superuser=True, graphlib='dygraph-combined.js', database='default', verbosity=0)
         self.assertTrue(User.objects.all().exists(), 'No user created.')
 
     def test_delete_user(self):
-        management.call_command('add-user', username='test', email='email', password='test', superuser=True, database='default', verbosity=0)
+        management.call_command('add-user', username='test', email='email', password='test', superuser=True, graphlib='dygraph-combined.js', database='default', verbosity=0)
         management.call_command('del-user', username='test', force=True, database='default', verbosity=0)
         self.assertFalse(User.objects.all().exists(), 'User exists ever.')
 
