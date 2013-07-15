@@ -14,23 +14,6 @@ class Group_Form(forms.ModelForm):
             'name': forms.TextInput({'placeholder':_('Name'),'class':'span6'}),
         }
 
-    def get_absolute_url(self):
-        return reverse('group', args=[str(self.instance.id)])
-
-    def get_add_url(self):
-        return reverse('group add')
-
-    def get_list_url(self):
-        return reverse('group list')
-
-    def get_update_url(self):
-        if not self.instance.id:
-            return self.get_add_url()
-        return reverse('group update', args=[str(self.instance.id)])
-
-    def get_delete_url(self):
-        return reverse('group delete', args=[str(self.instance.id)])
-
 
 class User_Form(forms.ModelForm):
     """
