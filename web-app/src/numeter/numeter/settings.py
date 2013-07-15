@@ -132,5 +132,6 @@ STATICFILES_DIRS = (
 )
 
 from sys import argv
-if argv[1] == 'test' :
-    from settings_test import *
+if len(argv) > 1:
+    if argv[1] == 'test' :
+        from settings_test import *

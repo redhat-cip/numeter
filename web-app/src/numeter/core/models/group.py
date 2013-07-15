@@ -18,6 +18,9 @@ class Group(models.Model):
     def get_absolute_url(self):
         return reverse('group', args=[self.id])
 
+    def get_add_url(self):
+        return reverse('group add')
+
     def get_update_url(self):
         if not self.id:
             return self.get_add_url()
