@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -13,3 +14,17 @@ class Group(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('group', args=[self.id])
+
+    def get_update_url(self):
+        if not self.id:
+            return self.get_add_url()
+        return reverse('group update', args=[str(self.id)])
+
+    def get_delete_url(self):
+        return reverse('group delete', args=[str(self.id)])
+
+    def get_list_url(self):
+        return reverse('group list')

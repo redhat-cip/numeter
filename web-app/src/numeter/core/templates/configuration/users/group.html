@@ -17,7 +17,7 @@
    <div class="row-fluid">
     <p>
      {% if Group_Form.instance.id %}
-      <input type="submit" name="update" class="btn btn-primary" disabled value="{% trans "Update" %}">
+      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
       <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Group_Form.get_delete_url }}">
       <input type="button" name="cancel" class="btn" data-to="#user-list" data-url="{{ Group_Form.get_list_url }}"style="display:none;" value="{% trans "Cancel" %}">
       <input type="button" name="back" class="btn" data-to="#group-list" data-url="{{ Group_Form.get_list_url }}" value="{% trans "Back" %}">

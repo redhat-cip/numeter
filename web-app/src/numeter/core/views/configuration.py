@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from core.models import User, Storage, Group
 from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm, Storage_Form, User_CreationForm, Group_Form
 from core.utils.decorators import login_required
+from core.utils import make_page
 
 
 @login_required()
@@ -72,15 +73,27 @@ def user_index(request):
 
 @login_required()
 def user_list(request):
+    Users = User.objects.all_simpleuser()
+    q = request.GET.get('q','')
+    if q:
+        Users = Users.filter(username__icontains=request.GET.get('q',''))
+    Users = make_page(Users, int(request.GET.get('page',1)), 20)
     return render(request, 'configuration/users/user-list.html', {
-        'Users': User.objects.all_simpleuser(),
+        'Users': Users,
+        'q':q,
     })
 
 
 @login_required()
 def superuser_list(request):
+    Users = User.objects.all_superuser()
+    q = request.GET.get('q','')
+    if q:
+        Users = Users.filter(username__icontains=request.GET.get('q',''))
+    Users = make_page(Users, int(request.GET.get('page',1)), 20)
     return render(request, 'configuration/users/user-list.html', {
-        'Users': User.objects.all_superuser(),
+        'Users': Users,
+        'q':q,
     })
 
 
@@ -133,8 +146,14 @@ def user_delete(request, user_id):
 
 @login_required()
 def group_list(request):
+    Groups = Group.objects.all()
+    q = request.GET.get('q','')
+    if q:
+        Groups = Groups.filter(name__icontains=request.GET.get('q',''))
+    Groups = make_page(Groups, int(request.GET.get('page',1)), 20)
     return render(request, 'configuration/users/group-list.html', {
-        'Groups': Group.objects.all(),
+        'Groups': Groups,
+        'q':q,
     })
 
 

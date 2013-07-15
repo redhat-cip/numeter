@@ -1,4 +1,5 @@
 {% load i18n %}
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by username" %}" href="#{% if Users.0.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page=1&q={{ q }}">
 <table class="table table-condensed tabled-striped">
  <thead>
   <tr>
@@ -13,9 +14,28 @@
   <tr>
    <td><a class="get-user" href="{{ user.get_absolute_url }}">{{ user.username }}</a></td>
    <td>{{ user.email }}</td>
-   <td><a href="{{ MEDIA_URL }}{{ user.graph_lib.script_file }}">{{ user.graph_lib }}</a></td>
-   <td>{{ user.groups.all }}</td>
+   <td>
+    {% for src,name in user.graph_lib.get_source_and_name %}
+     <a href="{{ src }}">{{ name }}</a>
+    {% endfor %}
+   </td>
+   <td>
+    {% for group in user.groups.all %}
+     <a class="get-group" href="{{ group.get_absolute_url }}">{{ group }}</a>
+    {% endfor %}
+   </td>
   </tr>
   {% endfor %}
  </tbody>
 </table>
+
+<div>
+ <ul class="pager">
+  {% if Users.has_previous %}
+  <li class="previous"><a class="get-page" href="#{% if user.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page={{ Users.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+  {% endif %}
+  {% if Users.has_next %}
+  <li class="next"><a class="get-page" href="#{% if user.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page={{ Users.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+  {% endif %}
+ </ul>
+</div>

@@ -50,6 +50,12 @@ class MediaList(list):
         """Return list of files' URL."""
         return [ s for s in self._walk() ] 
 
+    def file_names(self):
+        return [ path.basename(s) for s in self._walk() ] 
+
+    def get_source_and_name(self):
+        return [ (s,path.basename(s)) for s in self._walk() ] 
+
     def htmlize(self):
         """
         Return an generator of HTML <script> tag of all of

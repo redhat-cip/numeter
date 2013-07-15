@@ -36,6 +36,33 @@ $(document).on('click', '.ajax-tabs li a', function() {
 });
 
 
+// SEARCH IN LIST BY PRESS ENTER
+$(document).on('keypress', '.q', function(e) {
+  if (e.which == 13 && $(this).val().length ) {
+    var url = $(this).attr('data-url');
+    var into = $(this).attr('href');
+    var data = { q: $(this).val() };
+    $.ajax({url:url, async:true, data:data,
+      success: function(data, status, xhr) {
+        $(into).html(data);
+      },
+    });
+  }
+});
+
+// USER-LIST GET PAGE
+$(document).on('click', '.get-page', function() {
+  var url = $(this).attr('data-url');
+  var into = $(this).attr('href');
+  $.ajax({type:'GET', url:url, async:true,
+    success: function(data, status, xhr) {
+      $(into).html(data);
+    },
+  });
+  return false;
+});
+
+// USER MENU
 $(document).on('click', '#user-tab li a', function() {
   var url = $(this).attr('data-url');
   var into = $(this).attr('href');

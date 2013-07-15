@@ -1,16 +1,15 @@
 {% load i18n %}
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by group name" %}" href="#group-list" data-url="{{ Groups.0.get_list_url }}?page=1&q={{ q }}">
 <table class="table table-condensed tabled-striped">
  <thead>
   <tr>
    <th>{% trans "Name" %}</th>
-   <th>{% trans "Permissions" %}</th>
   </tr>
  </thead>
  <tbody>
   {% for group in Groups %}
   <tr>
    <td><a class="get-group" href="{% url "group" group.id %}">{{ group.name }}</a></td>
-   <td>{{ group.permissions.all }}</td>
   </tr>
   {% endfor %}
  </tbody>
