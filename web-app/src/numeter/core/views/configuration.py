@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from core.models import User, Host, Storage, Group
-from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm, Storage_Form, User_CreationForm, Group_Form
+from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm, Storage_Form, User_CreationForm, Group_Form, Host_Form
 from core.utils.decorators import login_required
 from core.utils import make_page
 
@@ -288,3 +288,34 @@ def host_list(request):
         'Hosts': Hosts,
         'q':q,
     })
+
+
+@login_required()
+def host_get(request, host_id):
+    H = get_object_or_404(Host.objects.filter(pk=host_id))
+    F = Host_Form(instance=H)
+    return render(request, 'configuration/storages/host.html', {
+        'Host_Form': F,
+    })
+
+
+@login_required()
+def host_update(request, host_id):
+    S = get_object_or_404(Host.objects.filter(pk=host_id))
+    F = Host_Form(data=request.POST, instance=S)
+    if F.is_valid():
+        F.save()
+        messages.success(request, _("Host updated with success."))
+    else:
+        for field,error in F.errors.items():
+            messages.error(request, '<b>%s</b>: %s' % (field,error))
+
+    return render(request, 'base/messages.html', {})
+
+
+@login_required()
+def host_delete(request, host_id):
+    S = get_object_or_404(Host.objects.filter(pk=host_id))
+    S.delete()
+    messages.success(request, _("Host deleted with success."))
+    return render(request, 'base/messages.html', {})
