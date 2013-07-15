@@ -1,10 +1,4 @@
 {% load i18n %}
-<li class="active">
- <a id="storage-count" href="#storage-list" data-toggle="tab">
-  Storage
- </a>
- </li>
-
- <li>
-  <a url="{% url "storage add" %}" class="ajax-tab-add" model="storage" href="#">{% trans "Add" %}</a>
- </li>
+<li class="active"><a href="#storage-list" data-url="{% url "storage list" %}" data-toggle="tab">{{ Storages_count }} storage(s)</a></li>
+<li><a href="#host-list" data-url="{% url "host list" %}" data-toggle="tab">{{ Hosts_count }} {% trans "host(s)" %}</a></li>
+<li><a href="#add-storage" data-url="{% url "storage add" %}" data-toggle="tab">{% trans "Add storage" %}</a></li>

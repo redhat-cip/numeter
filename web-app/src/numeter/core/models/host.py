@@ -26,10 +26,13 @@ class Host(models.Model):
         return reverse('host', args=[str(self.id)])
 
     def get_update_url(self):
-        return reverse('update host', args=[str(self.id)])
+        return reverse('host update', args=[str(self.id)])
 
     def get_delete_url(self):
-        return reverse('delete host', args=[str(self.id)])
+        return reverse('host delete', args=[str(self.id)])
+
+    def get_list_url(self):
+        return reverse('host list')
 
     def get_info(self):
         """Get host's info from storage."""

@@ -1,0 +1,20 @@
+{% load i18n %}
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by host name" %}" href="#host-list" data-url="{{ Hosts.0.get_list_url }}?page=1&q={{ q }}">
+<table class="table table-condensed tabled-striped">
+ <thead>
+  <tr>
+   <th>{% trans "Name" %}</th>
+   <th>Storage</th>
+   <th>{% trans "Group" %}</th>
+  </tr>
+ </thead>
+ <tbody>
+  {% for host in Hosts %}
+  <tr>
+   <td><a class="get-host" href="{{ host.get_absolute_url }}">{{ host }}</a></td>
+   <td><a class="get-storage" href="{{ host.storage.get_absolute_url }}">{{ host.storage }}</a></td>
+   <td><a class="get-group" href="{{ host.group.get_absolute_url }}">{{ host.group }}</a></td>
+  </tr>
+  {% endfor %}
+ </tbody>
+</table>

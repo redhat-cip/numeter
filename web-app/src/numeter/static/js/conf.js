@@ -63,7 +63,7 @@ $(document).on('click', '.get-page', function() {
 });
 
 // USER MENU
-$(document).on('click', '#user-tab li a', function() {
+$(document).on('click', '.sub-menu-tabs li a', function() {
   var url = $(this).attr('data-url');
   var into = $(this).attr('href');
   $.ajax({type:'GET', url:url, async:true,
@@ -74,7 +74,7 @@ $(document).on('click', '#user-tab li a', function() {
 });
 
 // GET USER
-$(document).on('click', '.get-user', function() {
+$(document).on('click', '[class*="get-"]', function() {
   var url = $(this).attr('href');
   var into = $(this).parentsUntil('div').parent();
   $.ajax({type:'GET', url:url, async:true,
@@ -85,17 +85,29 @@ $(document).on('click', '.get-user', function() {
   return false;
 });
 
-// GET GROUP
-$(document).on('click', '.get-group', function() {
-  var url = $(this).attr('href');
-  var into = $(this).parentsUntil('div').parent();
-  $.ajax({type:'GET', url:url, async:true,
-    success: function(data, status, xhr) {
-      $(into).html(data);
-    },
-  });
-  return false;
-});
+//// GET USER
+//$(document).on('click', '.get-user', function() {
+//  var url = $(this).attr('href');
+//  var into = $(this).parentsUntil('div').parent();
+//  $.ajax({type:'GET', url:url, async:true,
+//    success: function(data, status, xhr) {
+//      $(into).html(data);
+//    },
+//  });
+//  return false;
+//});
+//
+//// GET GROUP
+//$(document).on('click', '.get-group', function() {
+//  var url = $(this).attr('href');
+//  var into = $(this).parentsUntil('div').parent();
+//  $.ajax({type:'GET', url:url, async:true,
+//    success: function(data, status, xhr) {
+//      $(into).html(data);
+//    },
+//  });
+//  return false;
+//});
 
 // BACK TO LIST
 $(document).on('click', 'input[type="button"][name="back"]', function() {

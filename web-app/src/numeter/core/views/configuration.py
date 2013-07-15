@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from core.models import User, Storage, Group
+from core.models import User, Host, Storage, Group
 from core.forms import User_EditForm, User_Admin_EditForm, User_PasswordForm, Storage_Form, User_CreationForm, Group_Form
 from core.utils.decorators import login_required
 from core.utils import make_page
@@ -206,10 +206,26 @@ def group_delete(request, group_id):
 
 @login_required()
 def storage_index(request):
-    storages = Storage.objects.all()
-    storages = Paginator(storages, 20)
+    Storages = Storage.objects.all()
+    Storages_count = Storages.count()
+    Storages = make_page(Storages, 1, 20)
     return render(request, 'configuration/storages/index.html', {
-        'storages_page': storages.page(1)
+        'Storages': Storages,
+        'Storages_count': Storages_count,
+        'Hosts_count': Host.objects.count()
+    })
+
+
+@login_required()
+def storage_list(request):
+    Storages = Storage.objects.all()
+    q = request.GET.get('q','')
+    if q:
+        Storages = Storages.filter(name__icontains=request.GET.get('q',''))
+    Storages = make_page(Storages, int(request.GET.get('page',1)), 20)
+    return render(request, 'configuration/storages/storage-list.html', {
+        'Storages': Storages,
+        'q':q,
     })
 
 
@@ -259,3 +275,16 @@ def storage_delete(request, storage_id):
     S.delete()
     messages.success(request, _("Storage deleted with success."))
     return render(request, 'base/messages.html', {})
+
+
+@login_required()
+def host_list(request):
+    Hosts = Host.objects.all()
+    q = request.GET.get('q','')
+    if q:
+        Hosts = Hosts.filter(name__icontains=request.GET.get('q',''))
+    Hosts = make_page(Hosts, int(request.GET.get('page',1)), 20)
+    return render(request, 'configuration/storages/host-list.html', {
+        'Hosts': Hosts,
+        'q':q,
+    })

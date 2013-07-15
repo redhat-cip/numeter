@@ -9,7 +9,7 @@
  <tbody>
   {% for group in Groups %}
   <tr>
-   <td><a class="get-group" href="{% url "group" group.id %}">{{ group.name }}</a></td>
+   <td><a class="get-group" href="{{ group.get_absolute_url }}">{{ group }}</a></td>
   </tr>
   {% endfor %}
  </tbody>

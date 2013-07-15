@@ -1,15 +1,16 @@
 <div class="tabbable tabs-left">
- <ul id="storage-tabs" class="nav nav-tabs nav-stacked">
+ <ul id="storage-tabs" class="nav nav-tabs nav-stacked sub-menu-tabs">
   {% include "configuration/storages/tabs.html" %}
  </ul>
 
- <div id="userTabContent" class="tab-content">
+ <div id="storage-tab-content" class="tab-content">
 
-  <div class="tab-pane fade in active" id="storage-menu">
-   {% include "configuration/storages/manage.html" %}
+  <div class="tab-pane fade in active" id="storage-list">
+   {% include "configuration/storages/storage-list.html" %}
   </div>
 
-  <div class="tab-pane fade" id="add-storage-content"></div>
+  <div class="tab-pane fade" id="host-list"></div>
+  <div class="tab-pane fade" id="add-storage"></div>
 
  </div>
 </div> 

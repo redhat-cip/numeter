@@ -34,10 +34,12 @@ urlpatterns = patterns('',
     url(r'^configuration/group/(?P<group_id>\d+)/delete$', 'core.views.configuration.group_delete', name='group delete'),
 
     url(r'^configuration/storage$', 'core.views.storage_index', name='storage index'),
+    url(r'^configuration/storage/list$', 'core.views.configuration.storage_list', name='storage list'),
     url(r'^configuration/storage/add$', 'core.views.storage_add', name='storage add'),
     url(r'^configuration/storage/(?P<storage_id>\d+)$', 'core.views.storage_get', name='storage'),
     url(r'^configuration/storage/(?P<storage_id>\d+)/update$', 'core.views.storage_update', name='storage update'),
     url(r'^configuration/storage/(?P<storage_id>\d+)/delete$', 'core.views.storage_delete', name='storage delete'),
+    url(r'^configuration/host/list$', 'core.views.configuration.host_list', name='host list'),
 
     url(r'^hosttree/group/(?P<group_id>\d+)?$', 'core.views.hosttree.group', name= 'hosttree group'),
     url(r'^hosttree/host/(?P<host_id>\d+)$', 'core.views.hosttree.host', name='hosttree host'),

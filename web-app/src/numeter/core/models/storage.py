@@ -76,10 +76,13 @@ class Storage(models.Model):
             return False
 
     def get_absolute_url(self):
-        return reverse('storage index', args=[str(self.id)])
+        return reverse('storage', args=[str(self.id)])
 
     def get_add_url(self):
         return reverse('storage add')
+
+    def get_list_url(self):
+        return reverse('storage list')
 
     def get_update_url(self):
         if not self.id:
@@ -88,6 +91,9 @@ class Storage(models.Model):
 
     def get_delete_url(self):
         return reverse('storage delete', args=[str(self.id)])
+
+    def get_external_url(self):
+        return "%s://%s:%i" % (self.protocol, self.address, self.port)
 
     def _connect(self, url, data={}):
         """Basic method for use proxy to storage."""
