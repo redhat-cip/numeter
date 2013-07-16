@@ -14,8 +14,8 @@ def hosts(request):
 
 
 def hinfo(request):
-    host_json = get_host_json(reques.GET['host'])
-    return HttpResponse(host_json)
+    host_json = get_host_json(request.GET['host'])
+    return HttpResponse(jdumps(host_json))
 
 
 def list(request):

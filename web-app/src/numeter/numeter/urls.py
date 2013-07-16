@@ -48,11 +48,12 @@ urlpatterns = patterns('',
     url(r'^hosttree/host/(?P<host_id>\d+)$', 'core.views.hosttree.host', name='hosttree host'),
     url(r'^hosttree/category/(?P<host_id>\d+)$', 'core.views.hosttree.category', name='hosttree category'),
 
-    url(r'^numeter-storage/', include('mock_storage.urls')),
-
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if 'mock_storage' in settings.INSTALLED_APPS:
+    urlpatterns = patterns('', url(r'^numeter-storage/', include('mock_storage.urls')), *list(urlpatterns))

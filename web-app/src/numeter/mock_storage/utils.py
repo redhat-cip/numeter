@@ -10,7 +10,7 @@ def get_hosts_json():
 
 def get_host_json(hostid):
     hosts_json = get_hosts_json()
-    hosts = jload(hosts_json)
+    hosts = jloads(hosts_json)
     return hosts[hostid]
 
 

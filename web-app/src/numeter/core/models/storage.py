@@ -160,3 +160,21 @@ class Storage(models.Model):
                 hostid=h['ID'],
                 storage=self,
             )
+
+    def _get_hosts(self):
+        hosts = self.get_hosts().values()
+        return [ h['ID'] for h in hosts ]
+
+    def _get_unsaved_hosts(self):
+        saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
+        remote_hosts = self._get_hosts()
+        diff = set(saved_hosts) ^ set(remote_hosts)
+        unsaved = list( set(remote_hosts) & diff )
+        return unsaved
+
+    def _get_unfoundable_hosts(self):
+        saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
+        remote_hosts = self._get_hosts()
+        diff = set(saved_hosts) ^ set(remote_hosts)
+        unfoundable = list( set(saved_hosts) & diff )
+        return unfoundable
