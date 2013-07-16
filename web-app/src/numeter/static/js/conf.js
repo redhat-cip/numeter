@@ -4,7 +4,8 @@ $(document).on('submit', '#profile-update-form', function() {
   var url = $(this).attr('action');
   $.ajax({
     type: 'POST', url: url, async: true,
-	data: $('#profile-update-form').serialize(),
+    data: $('#profile-update-form').serialize(),
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#profile-update-info').append(data);
     },
@@ -18,6 +19,7 @@ $(document).on('submit', '#profile-update-password-form', function() {
   $.ajax({
     type: 'POST', url: url, async: true,
     data: $('#profile-update-password-form').serialize(),
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#profile-update-password-info').append(data);
     },
@@ -29,6 +31,7 @@ $(document).on('submit', '#profile-update-password-form', function() {
 $(document).on('click', '.ajax-tabs li a', function() {
   menu = $(this).attr('menu');
   $.ajax({type:'GET', url:'/configuration/'+menu, async:true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#'+menu+'-index').html(data);
     },
@@ -43,6 +46,7 @@ $(document).on('keypress', '.q', function(e) {
     var into = $(this).attr('href');
     var data = { q: $(this).val() };
     $.ajax({url:url, async:true, data:data,
+      error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) {
         $(into).html(data);
       },
@@ -55,6 +59,7 @@ $(document).on('click', '.get-page', function() {
   var url = $(this).attr('data-url');
   var into = $(this).attr('href');
   $.ajax({type:'GET', url:url, async:true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $(into).html(data);
     },
@@ -67,6 +72,7 @@ $(document).on('click', '.sub-menu-tabs li a', function() {
   var url = $(this).attr('data-url');
   var into = $(this).attr('href');
   $.ajax({type:'GET', url:url, async:true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $(into).html(data);
     },
@@ -78,6 +84,7 @@ $(document).on('click', '[class*="get-"]', function() {
   var url = $(this).attr('href');
   var into = $(this).parentsUntil('div').parent();
   $.ajax({type:'GET', url:url, async:true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $(into).html(data);
     },
@@ -85,35 +92,13 @@ $(document).on('click', '[class*="get-"]', function() {
   return false;
 });
 
-//// GET USER
-//$(document).on('click', '.get-user', function() {
-//  var url = $(this).attr('href');
-//  var into = $(this).parentsUntil('div').parent();
-//  $.ajax({type:'GET', url:url, async:true,
-//    success: function(data, status, xhr) {
-//      $(into).html(data);
-//    },
-//  });
-//  return false;
-//});
-//
-//// GET GROUP
-//$(document).on('click', '.get-group', function() {
-//  var url = $(this).attr('href');
-//  var into = $(this).parentsUntil('div').parent();
-//  $.ajax({type:'GET', url:url, async:true,
-//    success: function(data, status, xhr) {
-//      $(into).html(data);
-//    },
-//  });
-//  return false;
-//});
 
 // BACK TO LIST
 $(document).on('click', 'input[type="button"][name="back"]', function() {
   var url = $(this).attr('data-url');
   var into = $(this).parentsUntil('.tab-pane').parent();
   $.ajax({type:'GET', url:url, async:true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $(into).html(data);
     },
@@ -127,6 +112,7 @@ $(document).on('click', '.ajax-tabs-list li a', function() {
   model = $(this).parent().parent().parent().attr('model');
   id = $(this).attr('model-id');
   $.ajax({type:'GET', url:'/configuration/'+model+'/'+id, async:true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#'+menu+'-content').html(data);
     },
@@ -137,6 +123,7 @@ $(document).on('click', '.ajax-tabs-list li a', function() {
 $(document).on('click', '.ajax-tab-add', function (e) {
   var url = $(this).attr('url');
   $.ajax({type: 'GET', url: url, async: true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#'+menu+'-content').html(data);
     },
@@ -158,7 +145,8 @@ $(document).on('submit', '.ajax-form', function() {
   var url = $(this).attr('action');
   $.ajax({
     type: 'POST', url: url, async: true,
-	data: $(form).serialize(),
+    data: $(form).serialize(),
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       form.children('div').children('div').children('.message-container').append(data);
     },
@@ -173,6 +161,7 @@ $(document).on('click', 'input[name="delete"]', function() {
   $.ajax({
     type: 'POST', url: url, async: true,
     data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#'+menu+'-form .fields').html(data);
 	  $('#'+menu+'-form div div p input').attr('disabled','');

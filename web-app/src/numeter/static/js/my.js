@@ -5,6 +5,11 @@ var print_message = function(msg,tag,into) {
   $(into).append(html);
 }
 
+var error_modal = function() {
+  $('#myModal').modal('show');
+  $('#myModal').html('<center><h4>Connection error !</h4></center>');
+}
+
 // ADD LOADING GIF
 var print_loading_gif = function(into, heigth, width) {
   if(typeof(heigth)==='undefined') heigth = 100;
@@ -20,6 +25,7 @@ var remove_loading_gif = function(from) {
 $('.accordion-body').on('shown', function() {
   var id = $(this).attr('group-id');
   $.ajax({type:'GET', url:'/hosttree/group/'+id, async:true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
        $('#group-'+id).html(data);
     }
@@ -32,6 +38,7 @@ $(document).on('click', '.accordion-host', function() {
 
   if ( $('#host-'+id+'-content').html() == "" ) {
     $.ajax({type:'GET', url:'/hosttree/host/'+id, async:true,
+      error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) {
         $('#host-'+id+'-content').html(data);
         $('#host-'+id+'-content').show(250);
@@ -69,6 +76,7 @@ $(document).on('click', '.accordion-category', function() {
   if ( $(content).html() == "" ) {
     $.ajax({type:'GET', url:'/hosttree/category/'+id, async:true,
       data: {category: category },
+      error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) {
         $(content).html(data);
         $(content).show(250);
@@ -101,11 +109,10 @@ $(document).on('click', '.get-plugin', function() {
 // GET APROPOS
 $(document).on('click', '[href="/apropos"]', function() {
   $.ajax({type:'GET', url:'/apropos', async:true,
+    error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#myModal').html(data);
-    },
-    complete: function() {
-      $('#myModal').modal('toggle');
+      $('#myModal').modal('show');
     },
   });
   return false;
