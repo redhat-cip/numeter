@@ -9,12 +9,23 @@ from json import load as jload, loads as jloads, dumps as jdumps
 from random import random, randrange
 
 
-def hosts(request):
-    return HttpResponse(get_hosts_json())
+def index(request, id):
+    text = """<h3>Available functions:</h3>
+    <ul>
+     <li>[12]/numeter-storage/hosts</li>
+     <li>[12]/numeter-storage/hinfo</li>
+     <li>[12]/numeter-storage/list</li>
+     <li>[12]/numeter-storage/data</li>
+    </ul>
+    """
+    return HttpResponse(text)
+
+def hosts(request, id):
+    return HttpResponse(get_hosts_json(id))
 
 
-def hinfo(request):
-    host_json = get_host_json(request.GET['host'])
+def hinfo(request, id):
+    host_json = get_host_json(request.GET['host'], id)
     return HttpResponse(jdumps(host_json))
 
 

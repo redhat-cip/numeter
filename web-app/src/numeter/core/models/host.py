@@ -16,7 +16,7 @@ class Host(models.Model):
 
     class Meta:
         app_label = 'core'
-        ordering = ('group','name','hostid')
+        ordering = ('group', 'storage', 'name','hostid')
         verbose_name = _('host')
         verbose_name_plural = _('hosts')
 

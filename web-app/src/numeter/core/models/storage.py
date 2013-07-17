@@ -12,6 +12,81 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
+class Storage_Manager(models.Manager):
+
+    def get_all_host_info(self):
+        """Return a list of all hosts' datas."""
+        host_list = []
+        for S in Storage.objects.all():
+            host_list.extend(S.get_hosts())
+        return host_list
+
+    def get_all_hostids(self):
+        """Return a list of ids of all hosts from storage."""
+        return [ h['ID'] for h in self.get_all_host_info() ]
+
+    def get_unfoundable_hostids(self):
+        """
+        Return a list of ids of all unfoundable hosts.
+        Those hosts can be in wrong storage.
+        """
+        host_list = []
+        for S in self.get_query_set():
+            host_list.extend(S._get_unfoundable_hostids())
+        return host_list
+
+    def get_bad_referenced_hostids(self):
+        """Return a list of ids of hosts which are saved in wrong storage."""
+        host_list = []
+        # Get all unfoundable
+        for h in self.get_unfoundable_hostids():
+            # Retain only which are saved in a storage
+            if Host.objects.filter(hostid=h).exists():
+                host_list.append(h)
+        return host_list
+
+    def get_unsaved_hostids(self):
+        """Return a list of hosts which aren't saved."""
+        host_list = []
+        for S in self.get_query_set():
+            host_list.extend(S._get_unsaved_hosts())
+        return host_list
+
+    def get_host(self, hostid):
+        """Search an hostid on all storage."""
+        host_list = self.get_all_hostids()
+        try:
+            hostid = [ h for h in host_list if h == hostid ][0]
+        except IndexError:
+            raise ValueError("Bad host ID.")
+        return Host.objects.get(hostid=hostid)
+
+    def get_hosts(self, hostids):
+        """Search a list of hostid on all storage."""
+        host_list = self.get_all_hostids()
+        return Host.objects.filter(hostid__in=hostids)
+
+    def which_storage(self, hostid):
+        for s in self.get_query_set():
+            hosts = s._get_hostids()
+            for h in hosts:
+                if h == hostid:
+                    return s
+        return
+
+    def repair_hosts(self):
+        for h in self.get_bad_referenced_hostids():
+            whereishost = self.which_storage(h)
+            if whereishost is not None:
+                Host.objects.filter(hostid=h).update(storage=whereishost)
+
+    def repair_host_link(self):
+        bad_host_list = self.get_bad_referenced_hostids()
+        all_hosts = self.get_all_hosts()
+
+
+
+
 class Storage(models.Model):
     """
     Corresponding to a storage.
@@ -29,6 +104,7 @@ class Storage(models.Model):
     login = models.CharField(_('login'), max_length=100, blank=True, null=True)
     password = models.CharField(_('password'), max_length=100, blank=True, null=True)
 
+    objects = Storage_Manager()
     class Meta:
         app_label = 'core'
         ordering = ('name',)
@@ -93,14 +169,14 @@ class Storage(models.Model):
         return reverse('storage delete', args=[str(self.id)])
 
     def get_external_url(self):
-        return "%s://%s:%i" % (self.protocol, self.address, self.port)
+        return "%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__
 
     def _connect(self, url, data={}):
         """Basic method for use proxy to storage."""
         if url not in self.urls:
             raise ValueError("URL key does not exists.")
         _url = self.urls[url].format(**data)
-        uri = "http://%s:%i%s" % (self.address, self.port, _url)
+        uri = ("%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__) + _url
         logger.info('STORAGE-GET %s' % uri)
         r = self.proxy.open(uri, timeout=settings.STORAGE_TIMEOUT)
         return jload(r)
@@ -161,20 +237,20 @@ class Storage(models.Model):
                 storage=self,
             )
 
-    def _get_hosts(self):
+    def _get_hostids(self):
         hosts = self.get_hosts().values()
         return [ h['ID'] for h in hosts ]
 
     def _get_unsaved_hosts(self):
         saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
-        remote_hosts = self._get_hosts()
+        remote_hosts = self._get_hostids()
         diff = set(saved_hosts) ^ set(remote_hosts)
         unsaved = list( set(remote_hosts) & diff )
         return unsaved
 
-    def _get_unfoundable_hosts(self):
+    def _get_unfoundable_hostids(self):
         saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
-        remote_hosts = self._get_hosts()
+        remote_hosts = self._get_hostids()
         diff = set(saved_hosts) ^ set(remote_hosts)
         unfoundable = list( set(saved_hosts) & diff )
         return unfoundable

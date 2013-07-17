@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core import management
 
 from core.models import User, Storage, Host
 from core.tests.utils import storage_enabled
@@ -13,13 +14,19 @@ class Hosttree_TestCase(TestCase):
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
-        if settings.TEST_STORAGE['address']:
+        if 'mock_storage' in settings.INSTALLED_APPS:
+            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
+            self.storage = Storage.objects.get(pk=1)
+        elif settings.TEST_STORAGE['address']:
             self.storage = Storage.objects.create(**settings.TEST_STORAGE)
             if not self.storage.is_on():
                 self.skipTest("Configured storage unreachable.")
-            self.storage._update_hosts()
         else:
             self.skipTest("No test storage has been configurated.")
+
+        self.storage._update_hosts()
+        if not Host.objects.exists():
+            self.skipTest("There's no host in storage.")
 
     @storage_enabled()
     def test_group(self):

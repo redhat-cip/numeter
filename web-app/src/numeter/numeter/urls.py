@@ -56,4 +56,4 @@ urlpatterns = patterns('',
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if 'mock_storage' in settings.INSTALLED_APPS:
-    urlpatterns = patterns('', url(r'^numeter-storage/', include('mock_storage.urls')), *list(urlpatterns))
+    urlpatterns = patterns('', url(r'^mock/', include('mock_storage.urls')), *list(urlpatterns))

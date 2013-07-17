@@ -59,9 +59,9 @@ class User_PasswordForm(User_Form):
     """
     Form for change password.
     """
-    old = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('Old password')}))
-    new_1 = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('New password')}))
-    new_2 = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('Confirmation')}))
+    old = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('Old password'), 'class':'span6'}))
+    new_1 = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('New password'), 'class':'span6'}))
+    new_2 = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'placeholder':_('Confirmation'), 'class':'span6'}))
 
     class Meta(User_Form.Meta):
         model = User
@@ -89,13 +89,13 @@ class Storage_Form(forms.ModelForm):
     class Meta:
         model = Storage
         widgets = {
-            'name': forms.TextInput({'placeholder':_('Name')}),
-            'address': forms.TextInput({'placeholder':_('Address')}),
-            'port': forms.TextInput({'placeholder':_('Port')}),
-            'port': forms.TextInput({'placeholder':_('Port')}),
-            'url_prefix': forms.TextInput({'placeholder':_('URL prefix')}),
-            'login': forms.TextInput({'placeholder':_('Login')}),
-            'password': forms.TextInput({'placeholder':_('Password')}),
+            'name': forms.TextInput({'placeholder':_('Name'), 'class':'span6'}),
+            'address': forms.TextInput({'placeholder':_('Address'), 'class':'span6'}),
+            'port': forms.TextInput({'placeholder':_('Port'), 'class':'span6'}),
+            'protocol': forms.Select({'class':'span6'}),
+            'url_prefix': forms.TextInput({'placeholder':_('URL prefix'), 'class':'span6'}),
+            'login': forms.TextInput({'placeholder':_('Login'), 'class':'span6'}),
+            'password': forms.TextInput({'placeholder':_('Password'), 'class':'span6'}),
         }
 
 
@@ -106,6 +106,8 @@ class Host_Form(forms.ModelForm):
     class Meta:
         model = Host
         widgets = {
-            'name': forms.TextInput({'placeholder':_("Host's name")}),
-            'hostID': forms.TextInput({'placeholder':'ID'}),
+            'name': forms.TextInput({'placeholder':_("Host's name"), 'class':'span6'}),
+            'hostid': forms.TextInput({'placeholder':'ID', 'class':'span6'}),
+            'storage': forms.Select({'class':'span6'}),
+            'group': forms.Select({'class':'span6'}),
         }
