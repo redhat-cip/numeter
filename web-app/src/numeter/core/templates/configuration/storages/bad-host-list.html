@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="span6">
+ <table class="table table-condensed tabled-striped">
+  <thead>
+   <tr>
+    <th>{% trans "Name" %}</th>
+    <th>{% trans "Actual storage" %}</th>
+   </tr>
+  </thead>
+  <tbody>
+   {% for host in Hosts %}
+   <tr>
+    <td><a class="get-host" href="{{ host.get_absolute_url }}">{{ host }}</a></td>
+    <td><a class="get-storage" href="{{ host.storage.get_absolute_url }}">{{ host.storage }}</a></td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+</div>
+
+<div class="span6">
+ <p>
+ <input type="button" id="repair-hosts" class="btn btn-primary" value="{% trans "Repair" %}" data-url="{% url "storage bad host" %}"{% if not Hosts %} disabled{% endif %}>
+ </p>
+</div>

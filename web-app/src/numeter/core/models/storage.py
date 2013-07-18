@@ -67,6 +67,7 @@ class Storage_Manager(models.Manager):
         return Host.objects.filter(hostid__in=hostids)
 
     def which_storage(self, hostid):
+        """Return the storage of owner of an hostid."""
         for s in self.get_query_set():
             hosts = s._get_hostids()
             for h in hosts:
@@ -79,12 +80,6 @@ class Storage_Manager(models.Manager):
             whereishost = self.which_storage(h)
             if whereishost is not None:
                 Host.objects.filter(hostid=h).update(storage=whereishost)
-
-    def repair_host_link(self):
-        bad_host_list = self.get_bad_referenced_hostids()
-        all_hosts = self.get_all_hosts()
-
-
 
 
 class Storage(models.Model):
@@ -238,10 +233,12 @@ class Storage(models.Model):
             )
 
     def _get_hostids(self):
+        """Return a list of host's from storage."""
         hosts = self.get_hosts().values()
         return [ h['ID'] for h in hosts ]
 
     def _get_unsaved_hosts(self):
+        """Lookup up for hosts foundable on this storage but not in db."""
         saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
         remote_hosts = self._get_hostids()
         diff = set(saved_hosts) ^ set(remote_hosts)
@@ -249,8 +246,34 @@ class Storage(models.Model):
         return unsaved
 
     def _get_unfoundable_hostids(self):
+        """Lookup up for hosts saved in db but unfoundable on this storage."""
         saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
         remote_hosts = self._get_hostids()
         diff = set(saved_hosts) ^ set(remote_hosts)
         unfoundable = list( set(saved_hosts) & diff )
         return unfoundable
+
+    def _simple_create_hosts(self):
+        """Create hosts in db if it doesn't already exist."""
+        hosts = self.get_hosts().values()
+        for h in hosts:
+            if not Host.object.filter(hostid=h['ID']).exists():
+                Host.objects.create(
+                    name=h['Name'],
+                    hostid=h['ID'],
+                    storage=self,
+                )
+
+    def create_hosts(self):
+        """Create hosts and update aleardy existing."""
+        hosts = self.get_hosts().values()
+        for h in hosts:
+            if not Host.object.filter(hostid=h['ID']).exists():
+                Host.objects.create(
+                    name=h['Name'],
+                    hostid=h['ID'],
+                    storage=self,
+                )
+            else:
+                Host.object.filter(hostid=h['ID']).update(storage=self)
+

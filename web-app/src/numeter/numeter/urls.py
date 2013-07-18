@@ -39,6 +39,8 @@ urlpatterns = patterns('',
     url(r'^configuration/storage/(?P<storage_id>\d+)$', 'core.views.configuration.storage_get', name='storage'),
     url(r'^configuration/storage/(?P<storage_id>\d+)/update$', 'core.views.configuration.storage_update', name='storage update'),
     url(r'^configuration/storage/(?P<storage_id>\d+)/delete$', 'core.views.configuration.storage_delete', name='storage delete'),
+    url(r'^configuration/storage/bad_hosts$', 'core.views.configuration.storage_bad_hosts', name='storage bad host'),
+
     url(r'^configuration/host/list$', 'core.views.configuration.host_list', name='host list'),
     url(r'^configuration/host/(?P<host_id>\d+)$', 'core.views.configuration.host_get', name='host'),
     url(r'^configuration/host/(?P<host_id>\d+)/update$', 'core.views.configuration.host_update', name='host update'),

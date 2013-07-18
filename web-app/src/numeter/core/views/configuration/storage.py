@@ -16,7 +16,8 @@ def storage_index(request):
     return render(request, 'configuration/storages/index.html', {
         'Storages': Storages,
         'Storages_count': Storages_count,
-        'Hosts_count': Host.objects.count()
+        'Hosts_count': Host.objects.count(),
+        'Bad_hosts_count': len(Storage.objects.get_bad_referenced_hostids())
     })
 
 
@@ -79,6 +80,19 @@ def storage_delete(request, storage_id):
     S.delete()
     messages.success(request, _("Storage deleted with success."))
     return render(request, 'base/messages.html', {})
+
+
+@login_required()
+def storage_bad_hosts(request):
+    if request.method == 'GET':
+        hosts = Storage.objects.get_bad_referenced_hostids()
+        return render(request, 'configuration/storages/bad-host-list.html', {
+            'Hosts': Host.objects.filter(hostid__in=hosts),
+        })
+    else:
+        Storage.objects.repair_hosts()
+        messages.success(request, _("Hosts fixing finished."))
+        return render(request, 'base/messages.html', {})
 
 
 @login_required()

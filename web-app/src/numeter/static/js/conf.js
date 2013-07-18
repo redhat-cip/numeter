@@ -164,7 +164,20 @@ $(document).on('click', 'input[name="delete"]', function() {
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#'+menu+'-form .fields').html(data);
-	  $('#'+menu+'-form div div p input').attr('disabled','');
+      $('#'+menu+'-form div div p input').attr('disabled','');
+    },
+  });
+});
+
+$(document).on('click', '#repair-hosts', function() {
+  var url = $(this).attr('data-url');
+  var into = $(this).parent();
+  $.ajax({
+    type: 'POST', url: url, async: true,
+    data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $(into).append(data);
     },
   });
 });

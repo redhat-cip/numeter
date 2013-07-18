@@ -1,1 +1,1 @@
-[{"pk": 1, "model": "core.storage", "fields": {"url_prefix": "", "protocol": "HTTP", "name": "Mock", "address": "localhost", "login": "", "password": "", "port": 8080}}]
+[ {"pk": 1,  "model": "core.storage",  "fields": {   "url_prefix": "/mock/1",   "protocol": "HTTP",   "name": "Mock",   "address": "localhost",   "login": "",   "password": "",   "port": 8080  } }]
