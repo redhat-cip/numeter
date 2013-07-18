@@ -324,9 +324,7 @@ class Configuration_Storage_TestCase(TestCase):
         self.assertEqual(storage.name, 'new test', 'Username is not changed (%s).' % storage.name)
 
     def test_delete(self):
-        """
-        Test to delete user and if can't get it.
-        """
+        """Test to delete user and if can't get it. """
         # Test to delete
         url = reverse('storage delete', args=[1])
         r = self.c.post(url)
@@ -336,3 +334,13 @@ class Configuration_Storage_TestCase(TestCase):
         url = reverse('storage', args=[1])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
+
+    def test_repair_hosts(self):
+        # Get
+        url = reverse('storage bad hosts')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Post
+        r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)

@@ -6,6 +6,14 @@ function get_data(url, { hostid: hostid, plugin: plugin, ds: ds, res: res }, int
 
 g = new Dygraph(document.getElementById("demodiv"), get_data, {
   title: 'Stacked chart w/ Total',
+  legend: 'always',
+  labelsDiv: 'graphleg',
+  labelsSeparateLines: true,
+  fillGraph: true,
+  labelsDivWidth: 100,
+  pixelsPerLabel: 60,
+  gridLineWidth: 0.1,
+  labelsKMG2: true,
   stackedGraph: true,
   axes: {
     x: {
