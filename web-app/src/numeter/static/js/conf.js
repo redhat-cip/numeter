@@ -167,8 +167,25 @@ $(document).on('click', 'input[name="delete"]', function() {
       $('#'+menu+'-form div div p input').attr('disabled','');
     },
   });
+  return false;
 });
 
+// BTN CREATE HOST
+$(document).on('click', 'input[name="create-hosts"]', function() {
+  var url = $(this).attr('data-url');
+  alert(url)
+  $.ajax({
+    type: 'POST', url: url, async: true,
+    data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('#'+menu+'-form .fields').html(data);
+    },
+  });
+  return false;
+});
+
+// BUTTON REPAIR HOSTS
 $(document).on('click', '#repair-hosts', function() {
   var url = $(this).attr('data-url');
   var into = $(this).parent();

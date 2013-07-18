@@ -344,3 +344,9 @@ class Configuration_Storage_TestCase(TestCase):
         # Post
         r = self.c.post(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_create_hosts(self):
+        """Create hosts from web interface."""
+        url = reverse('storage create hosts', args=[1])
+        r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)

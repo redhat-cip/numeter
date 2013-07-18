@@ -163,6 +163,9 @@ class Storage(models.Model):
     def get_delete_url(self):
         return reverse('storage delete', args=[str(self.id)])
 
+    def get_create_hosts_url(self):
+        return reverse('storage create hosts', args=[str(self.id)])
+
     def get_external_url(self):
         return "%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__
 
@@ -268,12 +271,12 @@ class Storage(models.Model):
         """Create hosts and update aleardy existing."""
         hosts = self.get_hosts().values()
         for h in hosts:
-            if not Host.object.filter(hostid=h['ID']).exists():
+            if not Host.objects.filter(hostid=h['ID']).exists():
                 Host.objects.create(
                     name=h['Name'],
                     hostid=h['ID'],
                     storage=self,
                 )
             else:
-                Host.object.filter(hostid=h['ID']).update(storage=self)
+                Host.objects.filter(hostid=h['ID']).update(storage=self)
 

@@ -40,7 +40,7 @@ class Storage_TestCase(TestCase):
 
     @storage_enabled()
     def test_create_host_from_storage(self):
-        self.storage._update_hosts()
+        self.storage.create_hosts()
         hosts = Host.objects.all()
         if hosts.count():
             self.assertTrue(hosts.exists())
