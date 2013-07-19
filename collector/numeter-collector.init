@@ -16,6 +16,13 @@
 # Description:    Runs up numeter-collector daemon process
 ### END INIT INFO
 
+NAME=numeter-collector
+ENABLED=1
+
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+[ "$ENABLED" = "1" ] || exit 0
+
 . /lib/lsb/init-functions
 
 case "$1" in
