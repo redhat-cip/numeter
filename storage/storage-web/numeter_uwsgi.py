@@ -118,12 +118,13 @@ def list():
             plugins = myConnect.redis_hgetall("INFOS@"+host)
             #response = myConnect.redis_hkeys("INFOS@"+host)
             # Make JSON
+            response = '{'
             for plugin, info in plugins.iteritems():
                 response += '"%s": %s,' % (plugin, info)
             response = '%s}' % response[:-1]
         else:
             response="Args error"
-            return  response
+        return  response
     else:
         return "Error"
 
