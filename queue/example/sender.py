@@ -3,7 +3,7 @@ import random
 import logging
 import sys
 
-from mykombu import NumeterQueueP
+from numeterQueue import NumeterQueueP
 
 # Init logging level
 logging.getLogger('numeterQueue').setLevel(logging.CRITICAL)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import logging
 
-from mykombu import NumeterQueueC
+from numeterQueue import NumeterQueueC
 
 def mycallback(body, message):
     print "mycallback %s" % body
