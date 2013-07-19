@@ -20,7 +20,7 @@ After that you need to configure **nginx** : ::
 
     cp /usr/share/doc/numeter-storage/numeter-storage-web.nginx.example /etc/nginx/sites-available/numeter-storage-web
     ln -s /etc/nginx/sites-available/numeter-storage-web /etc/nginx/sites-enabled/
-    /etc/init.d/nginx reload
+    /etc/init.d/nginx restart
 
 Same thing for **uwsgi** : ::
 
