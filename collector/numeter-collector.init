@@ -11,10 +11,17 @@
 # Required-Stop: $remote_fs $syslog
 # Should-Stop:
 # Default-Start: 2 3 4 5
-# Default-Stop:
+# Default-Stop: 0 1 6
 # Short-Description: numeter-collector daemon process
 # Description:    Runs up numeter-collector daemon process
 ### END INIT INFO
+
+NAME=numeter-collector
+ENABLED=1
+
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+[ "$ENABLED" = "1" ] || exit 0
 
 . /lib/lsb/init-functions
 

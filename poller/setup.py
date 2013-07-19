@@ -31,6 +31,8 @@ class my_install(install_data):
             # Rename name.init in name
             if script.endswith(".init"):
                 shutil.move(script, script[:-5])
+            if script.endswith(".default"):
+                shutil.move(script, script[:-8])
 
 if __name__ == '__main__':
 
@@ -56,6 +58,7 @@ if __name__ == '__main__':
           data_files = [('/etc/numeter', ['poller/numeter_poller.cfg', 'poller/redis-poller.conf']), 
                         ('/var/log/numeter', ''),
                         ('/etc/init.d', ['poller/numeter-poller.init']),
+                        ('/etc/default', ['poller/numeter-poller.default']),
                         ('/etc/init.d', ['poller/numeter-redis-poller.init']),
                         #('/etc/cron.d', ['poller/numeter-poller-cron'])
                         ],
