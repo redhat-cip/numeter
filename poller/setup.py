@@ -56,6 +56,7 @@ if __name__ == '__main__':
           data_files = [('/etc/numeter', ['poller/numeter_poller.cfg', 'poller/redis-poller.conf']), 
                         ('/var/log/numeter', ''),
                         ('/etc/init.d', ['poller/numeter-poller.init']),
+                        ('/etc/default', ['poller/numeter-poller.default']),
                         ('/etc/init.d', ['poller/numeter-redis-poller.init']),
                         #('/etc/cron.d', ['poller/numeter-poller-cron'])
                         ],
