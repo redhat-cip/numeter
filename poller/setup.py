@@ -31,6 +31,8 @@ class my_install(install_data):
             # Rename name.init in name
             if script.endswith(".init"):
                 shutil.move(script, script[:-5])
+            if script.endswith(".default"):
+                shutil.move(script, script[:-8])
 
 if __name__ == '__main__':
 
