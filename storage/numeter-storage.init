@@ -11,7 +11,7 @@
 # Required-Stop: $remote_fs $syslog
 # Should-Stop:
 # Default-Start: 2 3 4 5
-# Default-Stop:
+# Default-Stop: 0 1 6
 # Short-Description: numeter-storage daemon process
 # Description:    Runs up numeter-storage daemon process
 ### END INIT INFO
