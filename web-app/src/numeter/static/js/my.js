@@ -52,58 +52,6 @@ $(document).on('click', '.accordion-host', function() {
   }
 });
 
-// AJAX AND MAKE GRAPH
-var get_graph = function(host, plugin, into) {
-  $(into).append('<div id="graph-'+plugin+'" class="" style="text-align: left; width: 800px; height: 320px; position: relative;"></div>');
-  $.getJSON('/get/graph/'+host+'/'+plugin, function(data) {
-    g = new Dygraph(document.getElementById('graph-'+plugin), data, {
-      title: plugin,
-      labels: ['Date',plugin],
-      axes: {
-        y: {
-          axisLabelWidth: 30000,
-        }
-      },
-    });
-  });
-}
-// GET PLUGIN LIST FROM CATEGORY
-$(document).on('click', '.accordion-category', function() {
-  var category = $(this).parent().attr('category-name');
-  var id = $(this).parentsUntil('.hosttree-host-li').parent().children('[host-id]').attr('host-id')
-  var content = $(this).parent().children('div.category-content');
-
-  if ( $(content).html() == "" ) {
-    $.ajax({type:'GET', url:'/hosttree/category/'+id, async:true,
-      data: {category: category },
-      error: function(data, status, xhr) { error_modal() },
-      success: function(data, status, xhr) {
-        $(content).html(data);
-        $(content).show(250);
-        $(content).parent().children('i').attr('class', 'icon-minus');
-
-        $('#graphs').html('');
-        $('.get-plugin').each( function(index,value) {
-          var plugin = $(this).attr('plugin-name');
-          var host = $(this).parentsUntil('.hosttree-host-li').parent().children('a').attr('host-id');
-          get_graph(host, plugin, '#graphs');
-        })
-      }
-    });
-  } else {
-    $(content).html('')
-    $(content).hide(250);
-    $(content).parent().children('i').attr('class', 'icon-plus');
-  }
-});
-
-// GET PLUGIN
-$(document).on('click', '.get-plugin', function() {
-  var plugin = $(this).html();
-  var host = $('.accordion-body a').attr('host-id');
-  $('#graphs').html('');
-  get_graph(host, plugin, '#graphs');
-});
 
 // MISC
 // GET APROPOS

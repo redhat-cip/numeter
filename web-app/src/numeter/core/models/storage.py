@@ -6,6 +6,7 @@ from django.conf import settings
 from core.models import Host
 
 from urllib2 import urlopen
+from urllib import quote
 from json import load as jload, loads as jloads
 import socket
 from logging import getLogger
@@ -173,6 +174,8 @@ class Storage(models.Model):
         """Basic method for use proxy to storage."""
         if url not in self.urls:
             raise ValueError("URL key does not exists.")
+        if 'plugin' in data:
+            data['plugin'] = quote(data['plugin'])
         _url = self.urls[url].format(**data)
         uri = ("%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__) + _url
         logger.info('STORAGE-GET %s' % uri)

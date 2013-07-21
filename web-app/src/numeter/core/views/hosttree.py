@@ -31,14 +31,6 @@ def category(request, host_id):
 @login_required()
 def get_data(request, host_id, plugin):
     H = get_object_or_404(Host.objects.filter(id=host_id))
-    data = {'plugin':'Processes%20priority', 'ds':'nice', 'res':'Daily'}
+    data = {'plugin':plugin, 'ds':'nice', 'res':request.GET.get('res','Daily')}
     r = [ g for g in H.get_data_dygraph(**data) ]
     return HttpResponse(jdumps(r), content_type="application/json")
-
-# NOW USELESS
-@login_required()
-def get_plugins_by_host(request, host_id=None):
-    H = get_object_or_404(Host.objects.filter(id=host_id))
-    return render(request, 'hosttree/plugins.html', {
-        'plugins': H.get_plugins(),
-    }) 

@@ -1,32 +1,71 @@
-function get_data(url, { hostid: hostid, plugin: plugin, ds: ds, res: res }, into) {
-  $.getJSON(url, function(data) {
-    return data;
+// AJAX AND MAKE GRAPH
+var get_graph = function(host, plugin, into) {
+  var success = false;
+  var graph_div = '<div id="graph-'+plugin+'-container" class="well"><div id="graph-'+plugin+'" class="" style="text-align: left; width: 100%; height: 320px; position: relative;"></div><div id="graphleg-'+plugin+'"></div></div>';
+  var res = $('#resolution-pills li.active').attr('data-value');
+
+  $(into).append(graph_div);
+  $.getJSON('/get/graph/'+host+'/'+plugin+'?res='+res, function(data) {
+    g = new Dygraph(document.getElementById('graph-'+plugin), data, {
+      title: plugin,
+      labels: ['Date',plugin],
+      legend: 'always',
+      labelsSeparateLines: true,
+      labelsDiv: 'graphleg-'+plugin,
+      fillGraph: true,
+      labelsDivWidth: 100,
+      pixelsPerLabel: 60,
+      gridLineWidth: 0.1,
+      labelsKMG2: true,
+      stackedGraph: true,
+      axes: {
+        y: {
+          axisLabelWidth: 30000,
+        }
+      },
+    });
   });
 }
+// GET PLUGIN LIST FROM CATEGORY
+$(document).on('click', '.accordion-category', function() {
+  var category = $(this).parent().attr('category-name');
+  var id = $(this).parentsUntil('.hosttree-host-li').parent().children('[host-id]').attr('host-id')
+  var content = $(this).parent().children('div.category-content');
 
-g = new Dygraph(document.getElementById("demodiv"), get_data, {
-  title: 'Stacked chart w/ Total',
-  legend: 'always',
-  labelsDiv: 'graphleg',
-  labelsSeparateLines: true,
-  fillGraph: true,
-  labelsDivWidth: 100,
-  pixelsPerLabel: 60,
-  gridLineWidth: 0.1,
-  labelsKMG2: true,
-  stackedGraph: true,
-  axes: {
-    x: {
-      valueFormatter: function(val, opts, series_name, dygraph) {
-        for (var i = 0; i < dygraph.numRows(); i++) {
-          if (dygraph.getValue(i, 0) != val) continue;
-          var total = 0;
-          for (var j = 1; j < dygraph.numColumns(); j++) {
-            total += dygraph.getValue(i, j);
-          }
-          return Dygraph.dateString_(val) + ' (total: ' + total.toFixed(2) + ')';
-        }
+  if ( $(content).html() == "" ) {
+    $.ajax({type:'GET', url:'/hosttree/category/'+id, async:true,
+      data: {category: category },
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $(content).html(data);
+        $(content).show(250);
+        $(content).parent().children('i').attr('class', 'icon-minus');
+
+        $('#graphs').html('');
+        $('.get-plugin').each( function(index,value) {
+          var plugin = $(this).attr('plugin-name');
+          var host = $(this).parentsUntil('.hosttree-host-li').parent().children('a').attr('host-id');
+          get_graph(host, plugin, '#graphs');
+        })
       }
-    }
+    });
+  } else {
+    $(content).html('')
+    $(content).hide(250);
+    $(content).parent().children('i').attr('class', 'icon-plus');
   }
+});
+
+// GET PLUGIN
+$(document).on('click', '.get-plugin', function() {
+  var plugin = $(this).html();
+  var host = $('.accordion-body a').attr('host-id');
+  $('#graphs').html('');
+  get_graph(host, plugin, '#graphs');
+});
+
+// SET RESOLUTION
+$(document).on('click', '#resolution-pills li a', function() {
+  $('#resolution-pills li').removeClass('active');
+  $(this).parent().addClass('active');
 });

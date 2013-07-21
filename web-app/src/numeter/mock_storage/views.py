@@ -9,6 +9,14 @@ from json import load as jload, loads as jloads, dumps as jdumps
 from random import random, randrange
 
 
+res = {
+  'Daily': 60, # Hour
+  'Weekly': 720, # Half-day
+  'Monthly': 1140, # Day
+  'Yearly': 17100 # Half-month
+}
+
+
 def index(request, id):
     text = """<h3>Available functions:</h3>
     <ul>
@@ -36,7 +44,7 @@ def list(request):
 def data(request):
     r = {
         "TS_start": 1372951380,
-        "TS_step": 60,
+        "TS_step": res[request.GET['res']],
         "DATAS": {"nice": [] }
     }
     val = random() * 100
