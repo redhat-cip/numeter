@@ -35,6 +35,9 @@ class Host(models.Model):
     def get_list_url(self):
         return reverse('host list')
 
+    def get_plugins_url(self):
+        return reverse('host plugins', args=[str(self.id)])
+
     def get_info(self):
         """Get host's info from storage."""
         return self.storage.get_info(self.hostid)

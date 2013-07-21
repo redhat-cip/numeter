@@ -32,8 +32,8 @@ def host_get(request, host_id):
 
 @login_required()
 def host_update(request, host_id):
-    S = get_object_or_404(Host.objects.filter(pk=host_id))
-    F = Host_Form(data=request.POST, instance=S)
+    H = get_object_or_404(Host.objects.filter(pk=host_id))
+    F = Host_Form(data=request.POST, instance=H)
     if F.is_valid():
         F.save()
         messages.success(request, _("Host updated with success."))
@@ -46,7 +46,16 @@ def host_update(request, host_id):
 
 @login_required()
 def host_delete(request, host_id):
-    S = get_object_or_404(Host.objects.filter(pk=host_id))
-    S.delete()
+    H = get_object_or_404(Host.objects.filter(pk=host_id))
+    H.delete()
     messages.success(request, _("Host deleted with success."))
     return render(request, 'base/messages.html', {})
+
+
+@login_required()
+def host_plugins(request, host_id):
+    H = get_object_or_404(Host.objects.filter(pk=host_id))
+    plugins = H.get_plugins()
+    return render(request, 'configuration/storages/plugin-list.html', {
+      'plugins': plugins
+    })

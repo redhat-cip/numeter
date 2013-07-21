@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     url(r'^configuration/host/(?P<host_id>\d+)$', 'core.views.configuration.host_get', name='host'),
     url(r'^configuration/host/(?P<host_id>\d+)/update$', 'core.views.configuration.host_update', name='host update'),
     url(r'^configuration/host/(?P<host_id>\d+)/delete$', 'core.views.configuration.host_delete', name='host delete'),
+    url(r'^configuration/host/(?P<host_id>\d+)/plugins$', 'core.views.configuration.host_plugins', name='host plugins'),
 
     url(r'^hosttree/group/(?P<group_id>\d+)?$', 'core.views.hosttree.group', name= 'hosttree group'),
     url(r'^hosttree/host/(?P<host_id>\d+)$', 'core.views.hosttree.host', name='hosttree host'),

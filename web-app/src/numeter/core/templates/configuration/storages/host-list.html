@@ -13,7 +13,11 @@
   <tr>
    <td><a class="get-host" href="{{ host.get_absolute_url }}">{{ host }}</a></td>
    <td><a class="get-storage" href="{{ host.storage.get_absolute_url }}">{{ host.storage }}</a></td>
-   <td><a class="get-group" href="{{ host.group.get_absolute_url }}">{{ host.group }}</a></td>
+   <td>
+    {% if host.group %}
+     <a class="get-group" href="{{ host.group.get_absolute_url }}">{{ host.group }}</a>
+    {% endif %}
+   </td>
   </tr>
   {% endfor %}
  </tbody>

@@ -173,7 +173,6 @@ $(document).on('click', 'input[name="delete"]', function() {
 // BTN CREATE HOST
 $(document).on('click', 'input[name="create-hosts"]', function() {
   var url = $(this).attr('data-url');
-  alert(url)
   $.ajax({
     type: 'POST', url: url, async: true,
     data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
@@ -197,4 +196,21 @@ $(document).on('click', '#repair-hosts', function() {
       $(into).append(data);
     },
   });
+});
+
+// BTN GET PLUGINS
+$(document).on('click', 'input[name="plugins"]', function() {
+  if ( ! $('#host-data-container').html() ) {
+    var url = $(this).attr('data-url');
+    var into = $('#host-data-container');
+    $.ajax({
+      type: 'GET', url: url, async: true,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $(into).html(data);
+      },
+    });
+  } else {
+    $('#host-data-container').toggle(250)
+  }
 });
