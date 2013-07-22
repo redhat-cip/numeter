@@ -111,25 +111,25 @@ class Configuration_User_TestCase(TestCase):
         User.objects.all().delete()
 
     def test_index(self):
-        """Simple get."""
+        """Get users index."""
         url = reverse('user index')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
-    def test_list(self):
-        """Simple get."""
+    def test_user_list(self):
+        """Get users list."""
         url = reverse('user list')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
     def test_superuser_list(self):
-        """Simple get."""
+        """Get superuser list."""
         url = reverse('superuser list')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
     def test_get(self):
-        """Simple get."""
+        """Get a user."""
         url = reverse('user', args=[1])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
@@ -148,17 +148,17 @@ class Configuration_User_TestCase(TestCase):
         # Test to add
         POST = { 'username': 'new test', 'password': 'toto', 'graph_lib': 'dygraph-combined.js' }
         r = self.c.post(url, POST)
-        print r.content
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
         # Test to get
-        url = reverse('user', args=[3])
+        u = User.objects.get(username='new test')
+        url = reverse('user', args=[u.id])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
         # Test to login
         self.c.logout()
-        r = self.c.login(username='new user', password='toto')
+        r = self.c.login(username='new test', password='toto')
         self.assertTrue(r, "New user can't login.")
 
     def test_update(self):
@@ -202,13 +202,13 @@ class Configuration_Group_TestCase(TestCase):
         Group.objects.all().delete()
 
     def test_list(self):
-        """Simple get."""
+        """Get grup list."""
         url = reverse('group list')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
     def test_get(self):
-        """Simple get."""
+        """Get a group."""
         url = reverse('group', args=[1])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
@@ -234,7 +234,6 @@ class Configuration_Group_TestCase(TestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
-        # Test to log
     def test_update(self):
         """
         Simulate a POST which change a group.
@@ -343,6 +342,7 @@ class Configuration_Storage_TestCase(TestCase):
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
 
     def test_repair_hosts(self):
+        """Repair hosts which have broken links to storages."""
         # Get
         url = reverse('storage bad hosts')
         r = self.c.get(url)

@@ -7,11 +7,13 @@ class Login_TestCase(TestCase):
     fixtures = ['test_users.json']
 
     def test_forbidden_access(self):
+        """Go to site withoug logged in."""
         self.client = Client()
         response = self.client.get('/')
         self.assertRedirects(response, '/login?next=/') 
 
     def test_login(self):
+        """Log in."""
         self.client = Client()
         response = self.client.post('/login', {'username':'root','password':'toto'})
         self.assertRedirects(response, '/') 
@@ -21,6 +23,7 @@ class Login_TestCase(TestCase):
         self.assertEqual(response.status_code, 200, "Logged in user can't access to website.")
 
     def test_logout(self):
+        """Log out."""
         self.client = Client()
         response = self.client.post('/login', {'username':'root','password':'toto'})
 

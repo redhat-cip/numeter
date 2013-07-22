@@ -7,9 +7,12 @@ from core.utils.decorators import login_required
 
 @login_required()
 def index(request):
+    hosts = Host.objects.all()
+    if not request.user.is_superuser:
+        hosts = hosts.filter(group__in=request.user.groups.all())
     return render(request, 'index.html', {
         'title': 'Numeter',
-        'hosts': Host.objects.all(),
+        'hosts': hosts,
     })
 
 
