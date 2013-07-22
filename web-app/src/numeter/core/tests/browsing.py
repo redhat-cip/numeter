@@ -146,14 +146,20 @@ class Configuration_User_TestCase(TestCase):
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
         # Test to add
-        POST = { 'username': 'new test', 'graph_lib': 1 }
+        POST = { 'username': 'new test', 'password': 'toto', 'graph_lib': 'dygraph-combined.js' }
         r = self.c.post(url, POST)
+        print r.content
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
         # Test to get
         url = reverse('user', args=[3])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test to login
+        self.c.logout()
+        r = self.c.login(username='new user', password='toto')
+        self.assertTrue(r, "New user can't login.")
 
     def test_update(self):
         """
@@ -228,6 +234,7 @@ class Configuration_Group_TestCase(TestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
+        # Test to log
     def test_update(self):
         """
         Simulate a POST which change a group.
@@ -241,7 +248,7 @@ class Configuration_Group_TestCase(TestCase):
 
         # Test if updated
         group = Group.objects.get(pk=1)
-        self.assertEqual(group.name, 'new test', 'Username is not changed (%s).' % group.name)
+        self.assertEqual(group.name, 'new test', 'Group name is not changed (%s).' % group.name)
 
     def test_delete(self):
         """

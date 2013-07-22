@@ -58,6 +58,7 @@ var get_graph = function(host, plugin, into) {
     });
   });
 }
+
 // GET PLUGIN LIST FROM CATEGORY
 $(document).on('click', '.accordion-category', function() {
   var a = $(this)

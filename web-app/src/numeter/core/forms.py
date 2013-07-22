@@ -21,7 +21,7 @@ class User_Form(forms.ModelForm):
     """
     class Meta:
         model = User
-        fields = ('username','email','graph_lib','is_superuser','groups')
+        fields = ('username','email','password','graph_lib','is_superuser','groups')
         widgets = {
             'username': forms.TextInput({'placeholder':_('Username'),'class':'span'}),
             'email': forms.TextInput({'placeholder':_('Email'),'class':'span'}),
@@ -45,6 +45,13 @@ class User_CreationForm(User_Form):
     """
     class Meta(User_Form.Meta):
         exclude = ('last_login','is_staff','date_joined','is_active')
+
+    def save(self, commit=True):
+        user = super(User_CreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
 
 
 class User_EditForm(User_Admin_EditForm):
