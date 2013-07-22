@@ -7,7 +7,7 @@ $(document).on('submit', '#profile-update-form', function() {
     data: $('#profile-update-form').serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('#profile-update-info').append(data);
+      $('.messages').append(data);
     },
   });
   return false;
@@ -21,7 +21,7 @@ $(document).on('submit', '#profile-update-password-form', function() {
     data: $('#profile-update-password-form').serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('#profile-update-password-info').append(data);
+      $('.messages').append(data);
     },
   });
   return false;
@@ -148,7 +148,7 @@ $(document).on('submit', '.ajax-form', function() {
     data: $(form).serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      form.children('div').children('div').children('.message-container').append(data);
+      $('.messages').append(data);
     },
   });
   return false;
@@ -163,8 +163,7 @@ $(document).on('click', 'input[name="delete"]', function() {
     data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('#'+menu+'-form .fields').html(data);
-      $('#'+menu+'-form div div p input').attr('disabled','');
+      $('.messages').append(data);
     },
   });
   return false;
@@ -178,7 +177,7 @@ $(document).on('click', 'input[name="create-hosts"]', function() {
     data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('#'+menu+'-form .fields').html(data);
+      $('.messages').append(data);
     },
   });
   return false;
@@ -193,7 +192,7 @@ $(document).on('click', '#repair-hosts', function() {
     data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $(into).append(data);
+      $('.messages').append(data);
     },
   });
 });

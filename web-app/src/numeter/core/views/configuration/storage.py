@@ -98,5 +98,5 @@ def storage_bad_hosts(request):
 @login_required()
 def storage_create_hosts(request, storage_id):
     Storage.objects.get(id=storage_id).create_hosts()
-    messages.success(request, _("Hosts fixing finished."))
+    messages.success(request, _("Hosts creation finished."))
     return render(request, 'base/messages.html', {})

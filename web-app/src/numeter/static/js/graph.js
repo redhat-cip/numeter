@@ -1,3 +1,35 @@
+// HOST TREE
+// GET HOSTS FROM GROUP
+$('.accordion-body').on('shown', function() {
+  var id = $(this).attr('group-id');
+  $.ajax({type:'GET', url:'/hosttree/group/'+id, async:true,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+       $('#group-'+id).html(data);
+    }
+  });
+});
+
+// GET CATEGORIES FROM HOST
+$(document).on('click', '.accordion-host', function() {
+  var id = $(this).attr('host-id');
+
+  if ( $('#host-'+id+'-content').html() == "" ) {
+    $.ajax({type:'GET', url:'/hosttree/host/'+id, async:true,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $('#host-'+id+'-content').html(data);
+        $('#host-'+id+'-content').show(250);
+        $('#host-'+id+'-content').parent().children('i').attr('class', 'icon-minus');
+      }
+    });
+  } else {
+    $('#host-'+id+'-content').html('')
+    $('#host-'+id+'-content').hide(250);
+    $('#host-'+id+'-content').parent().children('i').attr('class', 'icon-plus');
+  }
+});
+
 // AJAX AND MAKE GRAPH
 var get_graph = function(host, plugin, into) {
   var success = false;
@@ -28,11 +60,12 @@ var get_graph = function(host, plugin, into) {
 }
 // GET PLUGIN LIST FROM CATEGORY
 $(document).on('click', '.accordion-category', function() {
+  var a = $(this)
   var category = $(this).parent().attr('category-name');
   var id = $(this).parentsUntil('.hosttree-host-li').parent().children('[host-id]').attr('host-id')
   var content = $(this).parent().children('div.category-content');
 
-  if ( $(content).html() == "" ) {
+  if (! $(this).hasClass('active') ) {
     $.ajax({type:'GET', url:'/hosttree/category/'+id, async:true,
       data: {category: category },
       error: function(data, status, xhr) { error_modal() },
@@ -46,6 +79,7 @@ $(document).on('click', '.accordion-category', function() {
           var plugin = $(this).attr('plugin-name');
           var host = $(this).parentsUntil('.hosttree-host-li').parent().children('a').attr('host-id');
           get_graph(host, plugin, '#graphs');
+          a.toggleClass('active');
         })
       }
     });
@@ -53,6 +87,7 @@ $(document).on('click', '.accordion-category', function() {
     $(content).html('')
     $(content).hide(250);
     $(content).parent().children('i').attr('class', 'icon-plus');
+    a.toggleClass('active');
   }
 });
 

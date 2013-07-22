@@ -15,3 +15,23 @@ body {
 .hosttree-host-li, .hosttree-category-li, hosttree-plugin-li {
   margin-left: 10px;
 }
+
+.messages {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  width: 300px;
+  z-index: 9999;
+}
+
+.messages .alert-block {
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+.messages .alert-block.alert-error {
+  border: 1px solid #9D261D;
+}
+
+.messages .alert-block.alert-success {
+  border: 1px solid #46A546;
+}
