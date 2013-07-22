@@ -4,11 +4,12 @@ from django.contrib import messages
 
 from core.models import Storage, Host
 from core.forms import Storage_Form
-from core.utils.decorators import login_required
+from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 
 
 @login_required()
+@superuser_only()
 def storage_index(request):
     Storages = Storage.objects.all()
     Storages_count = Storages.count()
@@ -22,6 +23,7 @@ def storage_index(request):
 
 
 @login_required()
+@superuser_only()
 def storage_list(request):
     Storages = Storage.objects.all()
     q = request.GET.get('q','')
@@ -35,6 +37,7 @@ def storage_list(request):
 
 
 @login_required()
+@superuser_only()
 def storage_get(request, storage_id):
     S = get_object_or_404(Storage.objects.filter(pk=storage_id))
     F = Storage_Form(instance=S)
@@ -44,6 +47,7 @@ def storage_get(request, storage_id):
 
 
 @login_required()
+@superuser_only()
 def storage_add(request):
     if request.method == 'POST':
         F = Storage_Form(request.POST)
@@ -61,6 +65,7 @@ def storage_add(request):
 
 
 @login_required()
+@superuser_only()
 def storage_update(request, storage_id):
     S = get_object_or_404(Storage.objects.filter(pk=storage_id))
     F = Storage_Form(data=request.POST, instance=S)
@@ -75,6 +80,7 @@ def storage_update(request, storage_id):
 
 
 @login_required()
+@superuser_only()
 def storage_delete(request, storage_id):
     S = get_object_or_404(Storage.objects.filter(pk=storage_id))
     S.delete()
@@ -83,6 +89,7 @@ def storage_delete(request, storage_id):
 
 
 @login_required()
+@superuser_only()
 def storage_bad_hosts(request):
     if request.method == 'GET':
         hosts = Storage.objects.get_bad_referenced_hostids()
@@ -96,6 +103,7 @@ def storage_bad_hosts(request):
 
 
 @login_required()
+@superuser_only()
 def storage_create_hosts(request, storage_id):
     Storage.objects.get(id=storage_id).create_hosts()
     messages.success(request, _("Hosts creation finished."))

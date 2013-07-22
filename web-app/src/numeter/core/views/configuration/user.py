@@ -2,13 +2,14 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
-from core.utils.decorators import login_required
+from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 from core.models import User, Group
 from core.forms import User_CreationForm, User_Admin_EditForm
 
 
 @login_required()
+@superuser_only()
 def user_index(request):
     return render(request, 'configuration/users/index.html', {
         'Users': User.objects.all_simpleuser(),
@@ -18,6 +19,7 @@ def user_index(request):
 
 
 @login_required()
+@superuser_only()
 def user_list(request):
     Users = User.objects.all_simpleuser()
     q = request.GET.get('q','')
@@ -31,6 +33,7 @@ def user_list(request):
 
 
 @login_required()
+@superuser_only()
 def superuser_list(request):
     Users = User.objects.all_superuser()
     q = request.GET.get('q','')
@@ -44,6 +47,7 @@ def superuser_list(request):
 
 
 @login_required()
+@superuser_only()
 def user_add(request):
     if request.method == 'POST':
         F = User_CreationForm(request.POST)
@@ -61,6 +65,7 @@ def user_add(request):
 
 
 @login_required()
+@superuser_only()
 def user_get(request, user_id):
     U = get_object_or_404(User.objects.filter(pk=user_id))
     F = User_Admin_EditForm(instance=U)
@@ -70,6 +75,7 @@ def user_get(request, user_id):
 
 
 @login_required()
+@superuser_only()
 def user_update(request, user_id):
     U = get_object_or_404(User.objects.filter(pk=user_id))
     F = User_Admin_EditForm(data=request.POST, instance=U)
@@ -83,9 +89,9 @@ def user_update(request, user_id):
 
 
 @login_required()
+@superuser_only()
 def user_delete(request, user_id):
     U = get_object_or_404(User.objects.filter(pk=user_id))
     U.delete()
     messages.success(request, _("User deleted with success."))
     return render(request, 'base/messages.html', {})
-

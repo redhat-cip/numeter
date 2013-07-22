@@ -4,11 +4,12 @@ from django.contrib import messages
 
 from core.models import Host
 from core.forms import Host_Form
-from core.utils.decorators import login_required
+from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 
 
 @login_required()
+@superuser_only()
 def host_list(request):
     Hosts = Host.objects.all()
     q = request.GET.get('q','')
@@ -22,6 +23,7 @@ def host_list(request):
 
 
 @login_required()
+@superuser_only()
 def host_get(request, host_id):
     H = get_object_or_404(Host.objects.filter(pk=host_id))
     F = Host_Form(instance=H)
@@ -31,6 +33,7 @@ def host_get(request, host_id):
 
 
 @login_required()
+@superuser_only()
 def host_update(request, host_id):
     H = get_object_or_404(Host.objects.filter(pk=host_id))
     F = Host_Form(data=request.POST, instance=H)
@@ -45,6 +48,7 @@ def host_update(request, host_id):
 
 
 @login_required()
+@superuser_only()
 def host_delete(request, host_id):
     H = get_object_or_404(Host.objects.filter(pk=host_id))
     H.delete()
@@ -53,6 +57,7 @@ def host_delete(request, host_id):
 
 
 @login_required()
+@superuser_only()
 def host_plugins(request, host_id):
     H = get_object_or_404(Host.objects.filter(pk=host_id))
     plugins = H.get_plugins()

@@ -30,14 +30,24 @@ def is_ajax():
 
 
 def login_required():
-    """ 
-    Custom login_required decorator.
-    """
+    """Custom login_required decorator."""
     def decorator(func):
         @wraps(func, assigned=available_attrs(func))
         def inner(request, *args, **kwargs):
             if not request.user.is_authenticated():
                 return redirect_to_login(request.get_full_path())
+            return func(request, *args, **kwargs)
+        return inner
+    return decorator
+
+
+def superuser_only():
+    """Raise 404 if user isn't superuser."""
+    def decorator(func):
+        @wraps(func, assigned=available_attrs(func))
+        def inner(request, *args, **kwargs):
+            if not request.user.is_superuser:
+                raise Http404
             return func(request, *args, **kwargs)
         return inner
     return decorator
