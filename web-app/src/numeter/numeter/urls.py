@@ -13,7 +13,6 @@ urlpatterns = patterns('',
     url(r'^logout$', 'core.views.auth.logout', name='logout'),
 
     url(r'^get/graph/(?P<host_id>\d+)/(?P<plugin>.+)$', 'core.views.hosttree.get_data', name='plugin'),
-    url(r'^multiviews$', 'core.views.multiviews_index', name='multiviews'),
 
     url(r'^configuration$', 'core.views.configuration_index', name='configuration'),
     url(r'^configuration/profile$', 'core.views.profile_index', name='profile index'),
@@ -52,6 +51,7 @@ urlpatterns = patterns('',
     url(r'^hosttree/host/(?P<host_id>\d+)$', 'core.views.hosttree.host', name='hosttree host'),
     url(r'^hosttree/category/(?P<host_id>\d+)$', 'core.views.hosttree.category', name='hosttree category'),
 
+    url(r'^multiviews/', include('multiviews.urls')),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

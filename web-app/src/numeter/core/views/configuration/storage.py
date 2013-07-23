@@ -11,6 +11,7 @@ from core.utils import make_page
 @login_required()
 @superuser_only()
 def storage_index(request):
+    """Get storages and hosts list."""
     Storages = Storage.objects.all()
     Storages_count = Storages.count()
     Storages = make_page(Storages, 1, 20)

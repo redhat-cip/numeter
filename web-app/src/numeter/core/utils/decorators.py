@@ -47,7 +47,7 @@ def superuser_only():
         @wraps(func, assigned=available_attrs(func))
         def inner(request, *args, **kwargs):
             if not request.user.is_superuser:
-                raise Http404
+                raise Http404("User isn't superuser.")
             return func(request, *args, **kwargs)
         return inner
     return decorator

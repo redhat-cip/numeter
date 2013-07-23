@@ -38,6 +38,9 @@ var get_graph = function(host, plugin, into) {
 
   $(into).append(graph_div);
   $.getJSON('/get/graph/'+host+'/'+plugin+'?res='+res, function(data) {
+    for (i in data){
+      data[i][0] = new Date(data[i][0]);
+    }
     g = new Dygraph(document.getElementById('graph-'+plugin), data, {
       title: plugin,
       labels: ['Date',plugin],

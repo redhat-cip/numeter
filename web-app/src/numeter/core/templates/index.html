@@ -8,7 +8,7 @@
 
 {% block body %}
  <div class="span3">
-  <div class="accordion" id="host-accordion">
+  <div class="accordion" id="host-accordion" style="position: fixed;">
    {% for host in hosts %}
     {% ifchanged host.group %}
      <div class="accordion-group">

@@ -11,6 +11,7 @@ from core.forms import User_CreationForm, User_Admin_EditForm
 @login_required()
 @superuser_only()
 def user_index(request):
+    """Users and groups index."""
     return render(request, 'configuration/users/index.html', {
         'Users': User.objects.all_simpleuser(),
         'Superusers': User.objects.all_superuser(),
