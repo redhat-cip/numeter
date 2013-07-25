@@ -23,14 +23,14 @@ class App():
         # Read poller conf time
         self.poller_configFile = "/etc/numeter/numeter_poller.cfg"
         myConf=self._readConf()
-		# Am I enabled in conf
-		if myConf.has_option('global', 'enable'):
-			if myConf.getint('global', 'enable') is False:
-				print("Poller disabled in config file. Not starting...")
-				exit(100)
+        # Am I enabled in conf
+        if myConf.has_option('global', 'enable'):
+            if not myConf.getboolean('global', 'enable'):
+                print("Poller disabled in config file. Not starting...")
+                exit(100)
         # Get poller time
         if myConf.has_option('global', 'poller_time') \
-			and myConf.getint('global', 'poller_time'):
+            and myConf.getint('global', 'poller_time'):
             self._poller_time = myConf.getint('global', 'poller_time')
 
     def _readConf(self):
