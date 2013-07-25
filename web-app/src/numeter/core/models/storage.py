@@ -211,11 +211,9 @@ class Storage(models.Model):
         return list(categories)
 
     def get_plugins(self, hostid):
-        """Return a dictionnary representing an host's plugins."""
-        # TODO : WTF on JSON
+        """Return a list representing an host's plugins."""
         r = self._connect('plugins', {'hostid': hostid})
-        for p in r.values():
-            yield p
+        return [ p for p in r.values() ]
 
     def get_plugins_by_category(self, hostid, category):
         return [ p for p in self.get_plugins(hostid) if p['Category'] == category ] 
