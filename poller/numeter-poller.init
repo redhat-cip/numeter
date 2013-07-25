@@ -30,7 +30,7 @@ case "$1" in
     echo "Starting server"
     numeter-pollerd start
 	if [ $? -eq 100 ]; then
-		echo "numeter-pollerd disabled in conf file. Not starting..."
+		# Numeter-pollerd disabled in conf file. Not starting but clean exit
 		exit 0
 	else
 		sleep 0.2
