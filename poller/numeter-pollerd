@@ -42,7 +42,7 @@ class App():
                    + self.poller_configFile
                    + " - ERROR (empty or doesn't exist)")
             exit(1)
-		return configParse
+        return configParse
 
     def run(self):
         poller = myPoller(self.poller_configFile)
