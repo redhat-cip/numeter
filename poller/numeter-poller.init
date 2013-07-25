@@ -29,9 +29,14 @@ case "$1" in
   start)
     echo "Starting server"
     numeter-pollerd start
-    sleep 0.2
-    status_of_proc -p /var/run/numeter_poller.pid /usr/bin/numeter-pollerd numeter-pollerd && exit 0 || exit $?
-    ;;
+	if [ $? -eq 100 ]; then
+		echo "numeter-pollerd disabled in conf file. Not starting..."
+		exit 0
+	else
+		sleep 0.2
+		status_of_proc -p /var/run/numeter_poller.pid /usr/bin/numeter-pollerd numeter-pollerd && exit 0 || exit $?
+	fi
+	;;
   stop)
     echo "Stopping server"
     numeter-pollerd stop
