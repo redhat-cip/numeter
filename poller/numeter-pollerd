@@ -24,7 +24,7 @@ class App():
         self.poller_configFile = "/etc/numeter/numeter_poller.cfg"
         myConf=self._readConf()
 		# Am I enabled in conf
-		if myConf.has_option('global', 'enable')
+		if myConf.has_option('global', 'enable'):
 			if myConf.getint('global', 'enable') is False:
 				print("Poller disabled in config file. Not starting...")
 				exit(100)
