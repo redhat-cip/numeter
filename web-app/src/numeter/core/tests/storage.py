@@ -89,6 +89,17 @@ class Storage_TestCase(TestCase):
         self.assertIsInstance(r, list, "Invalide response type, should be list.")
 
     @storage_enabled()
+    def test_get_data(self):
+        """Retrieve data sources a plugin."""
+        self.storage._update_hosts()
+        host = Host.objects.all()[0]
+        plugin = self.storage.get_plugins(host.hostid)[0]['Plugin']
+        source = self.storage.get_plugin_data_sources(host.hostid, plugin)[0]
+        data = {'hostid':host.hostid, 'plugin':plugin, 'ds':source, 'res':'Daily'}
+        r = self.storage.get_data(**data)
+        self.assertIsInstance(r, dict, "Invalide response type, should be dict.")
+
+    @storage_enabled()
     def test_get_unsaved_hosts(self):
         """Find not referenced hosts."""
         self.storage._update_hosts()

@@ -46,12 +46,15 @@ class Plugin(models.Model):
         return reverse('plugin list')
 
     def create_data_sources(self):
-        r = self.host.get_plugin_data_sources(self.name)
+        r = self.get_data_sources()
         new_ds = []
         for ds in r:
             new_d = Data_Source.objects.create(name=ds, plugin=self)
             new_ds.append(new_d)
         return new_ds
+
+    def get_data_sources(self):
+        return self.host.get_plugin_data_sources(self.name)
 
     def get_data(self, **data):
         data['plugin'] = self.name

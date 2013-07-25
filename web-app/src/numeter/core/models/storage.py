@@ -116,7 +116,7 @@ class Storage(models.Model):
     def __init__(self, *args, **kwargs):
         super(Storage, self).__init__(*args, **kwargs)
         self._set_proxy()
-        self.urls = {
+        self.URLS = {
             'hosts': '/numeter-storage/hosts',
             'host': '/numeter-storage/hinfo?host={hostid}',
             'plugins': '/numeter-storage/list?host={hostid}',
@@ -172,14 +172,14 @@ class Storage(models.Model):
 
     def _connect(self, url, data={}):
         """Basic method for use proxy to storage."""
-        if url not in self.urls:
+        if url not in self.URLS:
             raise ValueError("URL key does not exists.")
 
         data['res'] = data.get('res','Daily')
         if 'plugin' in data:
             data['plugin'] = quote(data['plugin'])
 
-        _url = self.urls[url].format(**data)
+        _url = self.URLS[url].format(**data)
         uri = ("%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__) + _url
         print uri
         logger.info('STORAGE-GET %s' % uri)
@@ -219,13 +219,13 @@ class Storage(models.Model):
         return [ p for p in self.get_plugins(hostid) if p['Category'] == category ] 
 
     def get_plugin_data_sources(self, hostid, plugin):
+        """Return a list of data sources of a plugin."""
         for p in self.get_plugins(hostid):
             if p['Plugin'].lower() == plugin.lower():
                 return p['Infos'].keys()
 
     def get_data(self, **data):
         return self._connect('data', data)
-        # TODO Add docs
 
     def _update_hosts(self):
         """
