@@ -38,12 +38,12 @@ var get_graph = function(host, plugin, into) {
 
   $(into).append(graph_div);
   $.getJSON('/get/graph/'+host+'/'+plugin+'?res='+res, function(data) {
-    for (i in data){
-      data[i][0] = new Date(data[i][0]);
+    for (i in data['datas']){
+      data['datas'][i][0] = new Date(data['datas'][i][0]);
     }
-    g = new Dygraph(document.getElementById('graph-'+plugin), data, {
-      title: plugin,
-      labels: ['Date',plugin],
+    g = new Dygraph(document.getElementById('graph-'+plugin), data['datas'], {
+      title: data['name'],
+      labels: data['labels'],
       legend: 'always',
       labelsSeparateLines: true,
       labelsDiv: 'graphleg-'+plugin,
@@ -79,11 +79,11 @@ $(document).on('click', '.accordion-category', function() {
         $(content).parent().children('i').attr('class', 'icon-minus');
 
         $('#graphs').html('');
+        a.toggleClass('active');
         $('.get-plugin').each( function(index,value) {
           var plugin = $(this).attr('plugin-name');
           var host = $(this).parentsUntil('.hosttree-host-li').parent().children('a').attr('host-id');
           get_graph(host, plugin, '#graphs');
-          a.toggleClass('active');
         })
       }
     });
@@ -97,7 +97,7 @@ $(document).on('click', '.accordion-category', function() {
 
 // GET PLUGIN
 $(document).on('click', '.get-plugin', function() {
-  var plugin = $(this).html();
+  var plugin = $(this).attr('plugin-name');
   var host = $('.accordion-body a').attr('host-id');
   $('#graphs').html('');
   get_graph(host, plugin, '#graphs');

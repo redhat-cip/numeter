@@ -174,13 +174,17 @@ class Storage(models.Model):
         """Basic method for use proxy to storage."""
         if url not in self.urls:
             raise ValueError("URL key does not exists.")
+
+        data['res'] = data.get('res','Daily')
         if 'plugin' in data:
             data['plugin'] = quote(data['plugin'])
+
         _url = self.urls[url].format(**data)
         uri = ("%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__) + _url
+        print uri
         logger.info('STORAGE-GET %s' % uri)
-        r = self.proxy.open(uri, timeout=settings.STORAGE_TIMEOUT)
-        return jload(r)
+        r = self.proxy.open(uri, timeout=settings.STORAGE_TIMEOUT).read()
+        return jloads(r)
 
     def create_host(self, hostid):
         hosts = self.get_hosts()
@@ -215,6 +219,11 @@ class Storage(models.Model):
 
     def get_plugins_by_category(self, hostid, category):
         return [ p for p in self.get_plugins(hostid) if p['Category'] == category ] 
+
+    def get_plugin_data_sources(self, hostid, plugin):
+        for p in self.get_plugins(hostid):
+            if p['Plugin'].lower() == plugin.lower():
+                return p['Infos'].keys()
 
     def get_data(self, **data):
         return self._connect('data', data)

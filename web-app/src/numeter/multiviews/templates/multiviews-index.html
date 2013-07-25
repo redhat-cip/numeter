@@ -9,11 +9,14 @@
 {% block body %}
  <div class="span3">
   <ul class="dropdown-menu span" style="display: block; position: static;">
-   {% for view in views %}
-   <li>
-   <a class="get-view" href="#" data-id="{{ view.id }}" data-url="{{ view.get_data_url }}">
-     {{ view }}
-    </a>
+   {% for multiview in multiviews %}
+   <li class="dropdown-submenu">
+    <a class="get-multiview" href="#" data-id="{{ multiview.id }}" data-url="{{ multiview.get_data_url }}">{{ multiview }}</a>
+    <ul class="dropdown-menu">
+     {% for view in multiview.views.all %}
+      <li><a class="get-view" href="#" tabindex="-1" data-id="{{ view.id }}" data-url="{{ view.get_data_url }}">{{ view }}</a></li>
+     {% endfor %}
+    </ul>
    </li>
    {% endfor %}
   </ul>

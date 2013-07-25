@@ -42,15 +42,17 @@ def list(request):
 
 
 def data(request):
+    sources = request.GET['ds'].split(',')
     r = {
         "TS_start": 1372951380,
         "TS_step": res[request.GET['res']],
-        "DATAS": {"nice": [] }
+        "DATAS": dict([ (k,[]) for k in sources ])
     }
     val = random() * 100
-    for i in range(100):
-        r['DATAS']['nice'].append( val )
-        val += randrange(-5,6,0.1,float)
+    for s in r["DATAS"]:
+        for i in range(100):
+            r['DATAS'][s].append( val )
+            val += randrange(-5,6,0.1,float)
     r = jdumps(r)
         
     return HttpResponse(r)

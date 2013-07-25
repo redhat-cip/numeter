@@ -1,7 +1,7 @@
 from login import Login_TestCase
 from perms import Perms_TestCase
 from storage import Storage_TestCase, Storage_Manager_TestCase
-from browsing import Index_TestCase, Multiviews_TestCase, Configuration_Profile_TestCase, Configuration_User_TestCase, Configuration_Group_TestCase, Configuration_Storage_TestCase
+from browsing import Index_TestCase, Configuration_Profile_TestCase, Configuration_User_TestCase, Configuration_Group_TestCase, Configuration_Storage_TestCase
 from management import Manage_User_TestCase, Manage_Storage_TestCase
 from hosttree import Hosttree_TestCase
 from group_restriction import Access_TestCase

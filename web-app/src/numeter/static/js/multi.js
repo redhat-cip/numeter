@@ -37,3 +37,13 @@ $(document).on('click', '.get-view', function() {
   $('#graphs').html('');
   get_graph(view_id, '#graphs');
 });
+
+// GET MULTIVIEW
+$(document).on('click', '.get-multiview', function() {
+  $('#graphs').html('');
+  $('ul').children('.get-view').each( function(index,value) {
+    alert(1);
+    var view_id = $(this).attr('data-id');
+    get_graph(view_id, '#graphs');
+  })
+});

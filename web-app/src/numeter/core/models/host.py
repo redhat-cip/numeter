@@ -54,6 +54,9 @@ class Host(models.Model):
         """Get host's plugins by category from storage."""
         return self.storage.get_plugins_by_category(self.hostid, category)
 
+    def get_plugin_data_sources(self, plugin):
+        return self.storage.get_plugin_data_sources(self.hostid, plugin)
+
     def get_data(self, **data):
         """Get plugin's data from storage."""
         data['hostid'] = self.hostid
@@ -61,11 +64,16 @@ class Host(models.Model):
 
     def get_data_dygraph(self, **data):
         data['hostid'] = self.hostid
+        # Get data sources name
+        data['ds'] = ','.join(self.get_plugin_data_sources(data['plugin']))
         r = self.storage.get_data(**data)
-        data = dict()
-        start_date = datetime.fromtimestamp(r['TS_start'])
+
+        r_data = {'labels':['Date'], 'name':data['plugin'].lower(), 'datas':[]}
+        r_data['labels'].extend(self.get_plugin_data_sources(data['plugin']))
+
         step = timedelta(seconds=r['TS_step'])
-        cur_date = start_date
-        for v in r['DATAS']['nice']:
-            yield mktime(cur_date.timetuple()), v
+        cur_date = datetime.fromtimestamp(r['TS_start'])
+        for v in zip(*r['DATAS'].values()):
+            r_data['datas'].append( (mktime(cur_date.timetuple()),) + v )
             cur_date += step
+        return r_data

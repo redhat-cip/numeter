@@ -29,20 +29,6 @@ class Index_TestCase(TestCase):
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
 
-class Multiviews_TestCase(TestCase):
-    fixtures = ['test_users.json']
-
-    def setUp(self):
-        self.c = Client()
-        self.c.login(username='root', password='toto')
-
-    def test_index(self):
-        """Simple get."""
-        url = reverse('multiviews')
-        r = self.c.get(url)
-        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
-
 class Configuration_Profile_TestCase(TestCase):
     fixtures = ['test_users.json']
 

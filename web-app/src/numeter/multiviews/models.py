@@ -6,18 +6,29 @@ from datetime import datetime, timedelta
 from time import mktime
 
 
+class Plugin_Manager(models.Manager):
+    def create_host_plugins(seld, host):
+        plugins = host.get_plugins()
+        new_ps = []
+        for p in plugins:
+            new_p = Plugin.objects.create(name=p['Plugin'], host=host)
+            new_ps.append(new_p)
+        return new_ps
+
+
 class Plugin(models.Model):
     name = models.CharField(_('name'), max_length=300)
     host = models.ForeignKey('core.Host')
 
+    objects = Plugin_Manager()
     class Meta:
         app_label = 'multiviews'
-        ordering = ('name',)
+        ordering = ('host','name')
         verbose_name = _('plugin')
         verbose_name_plural = _('plugins')
 
     def __unicode__(self):
-        return self.name
+        return self.host.name + ' - ' + self.name
 
     def get_absolute_url(self):
         return reverse('plugin', args=[self.id])
@@ -34,29 +45,48 @@ class Plugin(models.Model):
     def get_list_url(self):
         return reverse('plugin list')
 
+    def create_data_sources(self):
+        r = self.host.get_plugin_data_sources(self.name)
+        new_ds = []
+        for ds in r:
+            new_d = Data_Source.objects.create(name=ds, plugin=self)
+            new_ds.append(new_d)
+        return new_ds
+
     def get_data(self, **data):
         data['plugin'] = self.name
         return self.host.get_data(**data)
 
 
-class Multiviews_Manager(models.Manager):
-    def get_user_multiview(self, user):
-        if user.is_superuser:
-            return self.all()
-        else:
-            return self.filter(plugins__host__group__in=user.groups.all())
-
-class Multiview(models.Model):
+class Data_Source(models.Model):
     name = models.CharField(_('name'), max_length=300)
-    plugins = models.ManyToManyField(Plugin)
+    plugin = models.ForeignKey(Plugin)
+
+    class Meta:
+        app_label = 'multiviews'
+        ordering = ('plugin','name')
+        verbose_name = _('data source')
+        verbose_name_plural = _('data_sources')
+
+    def __unicode__(self):
+        return '%s - %s - %s' % (self.plugin.host.name, self.plugin.name, self.name)
+
+    def get_data(self, **data):
+        data['plugin'] = self.plugin.name
+        data['ds'] = self.name
+        return self.plugin.host.get_data(**data)
+
+
+class View(models.Model):
+    name = models.CharField(_('name'), max_length=300)
+    sources = models.ManyToManyField(Data_Source)
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
 
-    objects = Multiviews_Manager()
     class Meta:
         app_label = 'multiviews'
         ordering = ('name',)
-        verbose_name = 'Multiview'
-        verbose_name_plural = 'Multiviews'
+        verbose_name = 'view'
+        verbose_name_plural = 'views'
 
     def __unicode__(self):
         return self.name
@@ -80,31 +110,71 @@ class Multiview(models.Model):
         return reverse('view data', args=[self.id])
 
     def get_data(self, ds='nice', res='Daily'):
-        data = {'ds':ds,'res':res}
+        data = {'res':res}
         datas = []
-        for plugin in self.plugins.all():
-            data['plugin'] = plugin.name
-            datas.append(plugin.get_data(**data)['DATAS']['nice'])
+        for source in self.sources.all():
+            datas.append(source.get_data())
         return zip(*datas)
 
-    def get_data_dygraph(self, ds='nice', res='Daily'):
-        start_dates ={}
+    def get_data_dygraph(self, res='Daily'):
         datas = {}
-        data = {'ds':ds,'res':res}
+        data = {'res':res}
         r_data = {'labels':['Date'], 'name':self.name, 'datas':[]}
+        if not self.sources.exists():
+            return r_data
         # Get all data
-        for p in self.plugins.all():
-            r = p.get_data(**data)
-            r_data['labels'].append(p.name)
-            start_dates[p.name] = datetime.fromtimestamp(r['TS_start'])
-            datas[p.name] = r['DATAS']['nice']
+        for s in self.sources.all():
+            r = s.get_data(**data)
+            unique_name = '%s %s' % (s.plugin.host.name, s.name)
+            r_data['labels'].append(unique_name)
+            datas[unique_name] = r['DATAS'][s.name]
         # Walk on date for mix datas
-        start_date = cur_date = min(start_dates.values())
-        step = timedelta(seconds=r['TS_step'])
+        cur_date = r['TS_start']
+        step = r['TS_step']
+        print datas
         for v in zip(*datas.values()):
-            r_data['datas'].append((mktime(cur_date.timetuple()),) + v)
+            r_data['datas'].append((cur_date,) + v)
             cur_date += step
         return r_data
+
+
+class Multiview_Manager(models.Manager):
+    def get_user_multiview(self, user):
+        if user.is_superuser:
+            return self.all()
+        else:
+            return self.filter(views__plugins__host__group__in=user.groups.all())
+
+
+class Multiview(models.Model):
+    name = models.CharField(_('name'), max_length=300)
+    views = models.ManyToManyField(View)
+
+    objects = Multiview_Manager()
+    class Meta:
+        app_label = 'multiviews'
+        ordering = ('name',)
+        verbose_name = 'multiview'
+        verbose_name_plural = 'multiviews'
+
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('multiview', args=[self.id])
+
+    def get_add_url(self):
+        return reverse('multiview add')
+
+    def get_update_url(self):
+        return reverse('multiview update', args=[self.id])
+
+    def get_delete_url(self):
+        return reverse('multiview delete', args=[self.id])
+
+    def get_list_url(self):
+        return reverse('multiview list')
+
 
 class Event(models.Model):
     name = models.CharField(_('name'), max_length=300)

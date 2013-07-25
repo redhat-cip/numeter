@@ -48,6 +48,6 @@ def get_data(request, host_id, plugin):
     if not has_perm(request.user, Host, host_id):
         raise Http404
 
-    data = {'plugin':plugin, 'ds':'nice', 'res':request.GET.get('res','Daily')}
-    r = [ g for g in H.get_data_dygraph(**data) ]
+    data = {'plugin':plugin, 'res':request.GET.get('res','Daily')}
+    r = H.get_data_dygraph(**data)
     return HttpResponse(jdumps(r), content_type="application/json")

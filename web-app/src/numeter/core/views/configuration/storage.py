@@ -19,7 +19,7 @@ def storage_index(request):
         'Storages': Storages,
         'Storages_count': Storages_count,
         'Hosts_count': Host.objects.count(),
-        'Bad_hosts_count': len(Storage.objects.get_bad_referenced_hostids())
+        #'Bad_hosts_count': len(Storage.objects.get_bad_referenced_hostids())
     })
 
 
