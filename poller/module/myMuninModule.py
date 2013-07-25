@@ -87,10 +87,7 @@ class myMuninModule(ModulesGeneric):
             return None
 
         # Get now timestamp
-        now = time.strftime("%Y %m %d %H:%M", time.localtime())
-        # Break this to allow poller under one min ?
-        # "%.0f" % supprime le .0 aprés le timestamp
-        nowTimestamp = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M'))
+        nowTimestamp = "%.0f" % time.time()
         # Set plugin informations
         data = {  'TimeStamp': nowTimestamp, 
                    'Plugin': plugin, 
