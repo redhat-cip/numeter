@@ -1,0 +1,40 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin name" %}" data-into="#plugin-list" data-url="{% url 'plugin list' %}?page=1"/>
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th>{% trans "Name" %}</th>
+    <th>{% trans "Host" %}</th>
+   </tr>
+  </thead>
+  <tbody>
+   {% for plugin in Plugins %}
+   <tr>
+    <td><a class="get-plugin" data-url="{{ plugin.get_absolute_url }}" data-into="#plugin-list">{{ plugin.name }}</a></td>
+    <td><a class="get-host" data-url="{{ plugin.host.get_absolute_url }}" data-into="#host-list">{{ plugin.host }}</a></td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+
+ <div>
+  <ul class="pager">
+   {% if Plugins.has_previous %}
+   <li class="previous"><a class="get-page" data-into="#plugin-list" data-url="{{ Plugins.0.get_list_url }}?page={{ Plugins.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+   {% endif %}
+   {% if Plugins.has_next %}
+   <li class="next"><a class="get-page" data-into="#plugin-list" data-url="{{ Plugins.0.get_list_url }}?page={{ Plugins.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+   {% endif %}
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <button id="btn-create-plugins" class="btn btn-primary" data-url="{% url "plugin create" %}">{% trans "Create from hosts" %}</button>
+ <br><br>
+ <select class="span" name="host_ids" multiple size="{{ Hosts.count }}">
+  {% for h in Hosts %}<option value="{{ h.id }}" selected>{{ h }}</option>{% endfor %}
+ </select>
+</div>

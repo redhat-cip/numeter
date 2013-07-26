@@ -31,7 +31,7 @@ class Plugin_Manager_TestCase(TestCase):
 
     def test_create_host_plugins(self):
         host = Host.objects.all()[0]
-        Plugin.objects.create_host_plugins(host)
+        Plugin.objects.create_from_host(host)
         self.assertTrue(Plugin.objects.all().exists(), "No plugin was created.")
 
 
@@ -53,7 +53,7 @@ class Plugin_TestCase(TestCase):
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]
-        self.plugin = Plugin.objects.create_host_plugins(self.host)[0]
+        self.plugin = Plugin.objects.create_from_host(self.host)[0]
 
     def tearDown(self):
         Host.objects.all().delete()

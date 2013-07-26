@@ -30,7 +30,8 @@ $(document).on('submit', '#profile-update-password-form', function() {
 // GET MENU INDEX
 $(document).on('click', '.ajax-tabs li a', function() {
   menu = $(this).attr('menu');
-  $.ajax({type:'GET', url:'/configuration/'+menu, async:true,
+  var url = $(this).attr('data-url');
+  $.ajax({type:'GET', url: url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('#'+menu+'-index').html(data);
@@ -55,17 +56,17 @@ $(document).on('keypress', '.q', function(e) {
 });
 
 // USER-LIST GET PAGE
-$(document).on('click', '.get-page', function() {
-  var url = $(this).attr('data-url');
-  var into = $(this).attr('href');
-  $.ajax({type:'GET', url:url, async:true,
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $(into).html(data);
-    },
-  });
-  return false;
-});
+// $(document).on('click', '.get-page', function() {
+//   var url = $(this).attr('data-url');
+//   var into = $(this).attr('href');
+//   $.ajax({type:'GET', url:url, async:true,
+//     error: function(data, status, xhr) { error_modal() },
+//     success: function(data, status, xhr) {
+//       $(into).html(data);
+//     },
+//   });
+//   return false;
+// });
 
 // USER MENU
 $(document).on('click', '.sub-menu-tabs li a', function() {
@@ -81,8 +82,9 @@ $(document).on('click', '.sub-menu-tabs li a', function() {
 
 // GET USER
 $(document).on('click', '[class*="get-"]', function() {
-  var url = $(this).attr('href');
-  var into = $(this).parentsUntil('div').parent();
+  var url = $(this).attr('data-url');
+  var into = $(this).attr('data-into');
+  //var into = $(this).parentsUntil('div').parent();
   $.ajax({type:'GET', url:url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -212,4 +214,33 @@ $(document).on('click', 'input[name="plugins"]', function() {
   } else {
     $('#host-data-container').toggle(250)
   }
+});
+
+// BUTTON CREATE PLUGIN
+$(document).on('click', '#btn-create-plugins', function() {
+  var url = $(this).attr('data-url');
+  $.ajax({
+    type: 'POST', url: url, async: true,
+    data: {
+      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+      'host_ids': $('[name="host_ids"]').val(),
+    },
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('.messages').append(data);
+    },
+  });
+});
+
+// BUTTON CREATE SOURCE
+$(document).on('click', '#btn-create-sources', function() {
+  var url = $(this).attr('data-url');
+  $.ajax({
+    type: 'POST', url: url, async: true,
+    data: { 'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val() },
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('.messages').append(data);
+    },
+  });
 });

@@ -20,3 +20,4 @@ def get_data(request, view_id):
     M = get_object_or_404(View.objects.filter(id=view_id))
     r = M.get_data_dygraph()
     return HttpResponse(jdumps(r), content_type="application/json")
+

@@ -5,7 +5,7 @@ from multiviews.models import Data_Source
 
 
 class Plugin_Manager(models.Manager):
-    def create_host_plugins(seld, host):
+    def create_from_host(self, host):
         plugins = host.get_plugins()
         new_ps = []
         for p in plugins:
@@ -17,6 +17,7 @@ class Plugin_Manager(models.Manager):
 class Plugin(models.Model):
     name = models.CharField(_('name'), max_length=300)
     host = models.ForeignKey('core.Host')
+    comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)
 
     objects = Plugin_Manager()
     class Meta:
@@ -31,9 +32,6 @@ class Plugin(models.Model):
     def get_absolute_url(self):
         return reverse('plugin', args=[self.id])
 
-    def get_add_url(self):
-        return reverse('plugin add')
-
     def get_update_url(self):
         return reverse('plugin update', args=[self.id])
 
@@ -42,6 +40,9 @@ class Plugin(models.Model):
 
     def get_list_url(self):
         return reverse('plugin list')
+
+    def get_create_sources_url(self):
+        return reverse('plugin create sources', args=[self.id])
 
     def create_data_sources(self):
         r = self.get_data_sources()

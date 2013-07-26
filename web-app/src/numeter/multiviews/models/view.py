@@ -7,6 +7,9 @@ class View(models.Model):
     name = models.CharField(_('name'), max_length=300)
     sources = models.ManyToManyField('multiviews.Data_Source')
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
+    # warning = models.IntegerField(blank=True, null=True)
+    # critical = models.IntegerField(blank=True, null=True)
+
 
     class Meta:
         app_label = 'multiviews'

@@ -1,0 +1,21 @@
+{% load i18n %}
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or source's name" %}" href="#source-list" data-url="{% url 'source list' %}?page=1&q={{ q }}">
+<table class="table table-condensed table-striped">
+ <thead>
+  <tr>
+   <th>{% trans "Name" %}</th>
+   <th>{% trans "Plugin" %}</th>
+   <th>{% trans "Host" %}</th>
+  </tr>
+ </thead>
+ <tbody>
+  {% for source in Sources %}
+  <tr>
+   <td><a class="get-source" data-url="{{ source.get_absolute_url }}" data-into="#source-list">{{ source.name }}</a></td>
+   <td><a class="get-plugin" data-url="{{ source.plugin.get_absolute_url }}" data-into="#plugin-list">{{ source.plugin.name }}</a></td>
+   <td><a class="get-host" data-url="{{ source.plugin.host.get_absolute_url }}" data-into="#host-list">{{ source.plugin.host }}</a></td>
+  </tr>
+  {% endfor %}
+ </tbody>
+</table>
+

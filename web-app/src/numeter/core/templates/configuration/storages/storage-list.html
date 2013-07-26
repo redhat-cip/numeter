@@ -1,6 +1,6 @@
 {% load i18n %}
-<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by storage name" %}" href="#storage-list" data-url="{{ Storages.0.get_list_url }}?page=1&q={{ q }}">
-<table class="table table-condensed tabled-striped">
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by storage name" %}" data-into="#storage-list" data-url="{{ Storages.0.get_list_url }}?page=1&q={{ q }}">
+<table class="table table-condensed table-striped">
  <thead>
   <tr>
    <th>{% trans "Name" %}</th>
@@ -10,7 +10,7 @@
  <tbody>
   {% for storage in Storages %}
   <tr>
-   <td><a class="get-storage" href="{{ storage.get_absolute_url }}">{{ storage }}</a></td>
+   <td><a class="get-storage" data-url="{{ storage.get_absolute_url }}" data-into="#storage-list">{{ storage }}</a></td>
    <td><a href="{{ storage.get_external_url }}">{{ storage.get_external_url }}</a></td>
   </tr>
   {% endfor %}
