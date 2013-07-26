@@ -23,7 +23,15 @@ class App():
         self._storage_time = 60
         # Read storage conf time
         self.storage_configFile = "/etc/numeter/numeter_storage.cfg"
-        self._readConf()
+        myConf=self._readConf()
+        if myConf.has_option('global', 'enable'):
+            if not myConf.getboolean('global', 'enable'):
+                print("Poller disabled in config file. Not starting...")
+                exit(100)
+        # Get storage time
+        if myConf.has_option('global', 'storage_time') \
+        and myConf.getint('global', 'storage_time'):
+            self._storage_time = myConf.getint('global', 'storage_time')
 
     def _readConf(self):
         "Read configuration file"
@@ -34,10 +42,7 @@ class App():
                    + self.storage_configFile
                    + " - ERROR (empty or doesn't exist)")
             exit(1)
-        # Get storage time
-        if configParse.has_option('global', 'storage_time') \
-        and configParse.getint('global', 'storage_time'):
-            self._storage_time = configParse.getint('global', 'storage_time')
+        return configParse
 
     def run(self):
         storage = myStorage(self.storage_configFile)

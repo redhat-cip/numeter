@@ -30,7 +30,7 @@ class App():
                 exit(100)
         # Get poller time
         if myConf.has_option('global', 'poller_time') \
-            and myConf.getint('global', 'poller_time'):
+        and myConf.getint('global', 'poller_time'):
             self._poller_time = myConf.getint('global', 'poller_time')
 
     def _readConf(self):

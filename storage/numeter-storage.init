@@ -29,8 +29,13 @@ case "$1" in
   start)
     echo "Starting server"
     numeter-storaged start
-    sleep 0.2
-    status_of_proc -p /var/run/numeter_storage.pid /usr/bin/numeter-storaged numeter-storaged && exit 0 || exit $?
+	if [ $? -eq 100 ]; then
+		# Numeter-storaged disabled in conf file. Not starting but clean exit
+		exit 0
+	else
+		sleep 0.2
+		status_of_proc -p /var/run/numeter_storage.pid /usr/bin/numeter-storaged numeter-storaged && exit 0 || exit $?
+	fi
     ;;
   stop)
     echo "Stopping server"
