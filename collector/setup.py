@@ -31,8 +31,6 @@ class my_install(install_data):
             # Rename name.init in name
             if script.endswith(".init"):
                 shutil.move(script, script[:-5])
-            if script.endswith(".default"):
-                shutil.move(script, script[:-8])
 
 if __name__ == '__main__':
 
@@ -61,7 +59,6 @@ if __name__ == '__main__':
           data_files = [('/etc/numeter', ['collector/numeter_collector.cfg','collector/poller-list']),
                         ('/var/log/numeter', ''),
                         ('/etc/init.d', ['collector/numeter-collector.init']),
-                        ('/etc/default', ['collector/numeter-collector.default']),
                         #('/etc/cron.d', ['collector/numeter-collector-cron'])
                         ],
           classifiers=[
