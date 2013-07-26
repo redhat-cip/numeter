@@ -26,7 +26,7 @@ class App():
         myConf=self._readConf()
         if myConf.has_option('global', 'enable'):
             if not myConf.getboolean('global', 'enable'):
-                print("Poller disabled in config file. Not starting...")
+                print("Storage disabled in config file. Not starting...")
                 exit(100)
         # Get storage time
         if myConf.has_option('global', 'storage_time') \
