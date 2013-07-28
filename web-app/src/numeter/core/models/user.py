@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.timezone import now
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core.urlresolvers import reverse
@@ -9,6 +10,14 @@ from core.models.fields import MediaField
 
 
 class UserManager(UserManager):
+    def web_filter(self, q):
+        users = self.filter(
+            Q(username__icontains=q) |
+            Q(email__icontains=q) |
+            Q(groups__name__icontains=q)
+        )
+        return users
+
     def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):
         if not username:
             raise ValueError('The given username must be set')

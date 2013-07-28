@@ -2,15 +2,20 @@
 <div class="row-fluid"> <!-- plugin form --!>
  <form id="plugin-form" class="ajax-form" action="{{ Plugin_Form.instance.get_update_url }}" method="POST">
   {% csrf_token %}
-  <h4 align="center">{{ plugin }}</h4>
 
   <div class="span5 fields" style="margin-left: 50px;">
+   <h4 align="center">{{ Plugin_Form.instance }}</h4>
+   {% for field in Plugin_Form %}
+    <dt>{{ field.label }}:</dt>
+    <dd>{{ field }}</dd>
+   {% endfor %}
    <div id="graphs"></div>
   </div>
 
   <div class="span4">
    <div class="row-fluid">
     <p>
+     <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
      <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Plugin_Form.instance.get_delete_url }}">
      <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
      <input type="button" name="list-sources" class="btn" value="{% trans "List sources" %}" data-url="{{ Plugin_Form.instance.get_list_sources_url }}">

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from multiviews.models import Data_Source
@@ -12,6 +13,13 @@ class Plugin_Manager(models.Manager):
             new_p = Plugin.objects.create(name=p['Plugin'], host=host)
             new_ps.append(new_p)
         return new_ps
+
+    def web_filter(self, q):
+        plugins = self.filter(
+            Q(name__icontains=q) |
+            Q(host__name__icontains=q)
+        )
+        return plugins
 
 
 class Plugin(models.Model):

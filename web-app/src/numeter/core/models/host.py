@@ -1,9 +1,21 @@
 from django.db import models
+from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from datetime import datetime, timedelta
 from time import mktime
+
+
+class Host_Manager(models.Manager):
+    def web_filter(self, q):
+        hosts = self.filter(
+            Q(name__icontains=q) |
+            Q(storage__name__icontains=q) |
+            Q(group__name__icontains=q) |
+            Q(hostid__icontains=q)
+        )
+        return hosts
 
 class Host(models.Model):
     """
@@ -14,6 +26,7 @@ class Host(models.Model):
     storage = models.ForeignKey('Storage')
     group = models.ForeignKey('core.Group', null=True, blank=True)
 
+    objects = Host_Manager()
     class Meta:
         app_label = 'core'
         ordering = ('group', 'storage', 'name','hostid')

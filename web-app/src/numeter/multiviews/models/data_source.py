@@ -1,13 +1,24 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
+
+class Data_Source_Manager(models.Manager):
+    def web_filter(self, q):
+        sources = self.filter(
+            Q(name__icontains=q) |
+            Q(plugin__name__icontains=q) |
+            Q(plugin__host__name__icontains=q)
+        )
+        return sources
 
 class Data_Source(models.Model):
     name = models.CharField(_('name'), max_length=300)
     plugin = models.ForeignKey('multiviews.Plugin')
     comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)
 
+    objects = Data_Source_Manager()
     class Meta:
         app_label = 'multiviews'
         ordering = ('plugin','name')

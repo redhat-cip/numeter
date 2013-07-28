@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
@@ -14,6 +15,13 @@ logger = getLogger(__name__)
 
 
 class Storage_Manager(models.Manager):
+
+    def web_filter(self, q):
+        storages = self.filter(
+            Q(name__icontains=q) |
+            Q(address__icontains=q)
+        )
+        return storages
 
     def get_all_host_info(self):
         """Return a list of all hosts' datas."""

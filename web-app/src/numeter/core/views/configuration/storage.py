@@ -26,10 +26,8 @@ def storage_index(request):
 @login_required()
 @superuser_only()
 def storage_list(request):
-    Storages = Storage.objects.all()
     q = request.GET.get('q','')
-    if q:
-        Storages = Storages.filter(name__icontains=request.GET.get('q',''))
+    Storages = Storage.objects.web_filter(q)
     Storages = make_page(Storages, int(request.GET.get('page',1)), 20)
     return render(request, 'configuration/storages/storage-list.html', {
         'Storages': Storages,

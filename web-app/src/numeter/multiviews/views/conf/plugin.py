@@ -27,10 +27,8 @@ def index(request):
 @login_required()
 @superuser_only()
 def list(request):
-    Plugins = Plugin.objects.all()
     q = request.GET.get('q','')
-    if q:
-        Plugins = Plugins.filter(name__icontains=request.GET.get('q',''))
+    Plugins = Plugin.objects.web_filter(q)
     Plugins = make_page(Plugins, int(request.GET.get('page',1)), 20)
     return render(request, 'conf/plugins/plugin-list.html', {
         'Plugins': Plugins,

@@ -1,6 +1,16 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+
+
+class View_Manager(models.Manager):
+    def web_filter(self, q):
+        views = self.filter(
+            Q(name__icontains=q) |
+            Q(sources__name__icontains=q)
+        )
+        return views
 
 
 class View(models.Model):
@@ -11,6 +21,7 @@ class View(models.Model):
     # critical = models.IntegerField(blank=True, null=True)
 
 
+    objects = View_Manager()
     class Meta:
         app_label = 'multiviews'
         ordering = ('name',)
@@ -21,19 +32,21 @@ class View(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('multiview', args=[self.id])
+        return reverse('view', args=[self.id])
 
     def get_add_url(self):
-        return reverse('multiview add')
+        return reverse('view add')
 
     def get_update_url(self):
-        return reverse('multiview update', args=[self.id])
+        if not self.id:
+            return reverse('view add')
+        return reverse('view update', args=[self.id])
 
     def get_delete_url(self):
-        return reverse('multiview delete', args=[self.id])
+        return reverse('view delete', args=[self.id])
 
     def get_list_url(self):
-        return reverse('multiview list')
+        return reverse('view list')
 
     def get_data_url(self):
         return reverse('view data', args=[self.id])
@@ -67,6 +80,13 @@ class View(models.Model):
 
 
 class Multiview_Manager(models.Manager):
+    def web_filter(self, q):
+        multiviews = self.filter(
+            Q(name__icontains=q) |
+            Q(views__name__icontains=q)
+        )
+        return multiviews
+
     def get_user_multiview(self, user):
         if user.is_superuser:
             return self.all()
@@ -95,6 +115,8 @@ class Multiview(models.Model):
         return reverse('multiview add')
 
     def get_update_url(self):
+        if not self.id:
+            return reverse('multiview add')
         return reverse('multiview update', args=[self.id])
 
     def get_delete_url(self):
@@ -107,8 +129,9 @@ class Multiview(models.Model):
 class Event(models.Model):
     name = models.CharField(_('name'), max_length=300)
     source = models.ForeignKey('multiviews.Data_Source')
+    start_date = models.DateTimeField(_('start date'))
+    end_date = models.DateTimeField(_('end date'))
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
-    date = models.DateTimeField()
 
     class Meta:
         app_label = 'multiviews'

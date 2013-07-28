@@ -22,10 +22,8 @@ def user_index(request):
 @login_required()
 @superuser_only()
 def user_list(request):
-    Users = User.objects.all_simpleuser()
     q = request.GET.get('q','')
-    if q:
-        Users = Users.filter(username__icontains=request.GET.get('q',''))
+    Users = User.objects.web_filter(q).filter(is_superuser=False)
     Users = make_page(Users, int(request.GET.get('page',1)), 20)
     return render(request, 'configuration/users/user-list.html', {
         'Users': Users,
@@ -36,10 +34,8 @@ def user_list(request):
 @login_required()
 @superuser_only()
 def superuser_list(request):
-    Users = User.objects.all_superuser()
     q = request.GET.get('q','')
-    if q:
-        Users = Users.filter(username__icontains=request.GET.get('q',''))
+    Users = User.objects.web_filter(q).filter(is_superuser=True)
     Users = make_page(Users, int(request.GET.get('page',1)), 20)
     return render(request, 'configuration/users/user-list.html', {
         'Users': Users,

@@ -11,10 +11,8 @@ from core.utils import make_page
 @login_required()
 @superuser_only()
 def host_list(request):
-    Hosts = Host.objects.all()
     q = request.GET.get('q','')
-    if q:
-        Hosts = Hosts.filter(name__icontains=request.GET.get('q',''))
+    Hosts = Host.objects.web_filter(q)
     Hosts = make_page(Hosts, int(request.GET.get('page',1)), 20)
     return render(request, 'configuration/storages/host-list.html', {
         'Hosts': Hosts,

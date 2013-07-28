@@ -5,8 +5,10 @@ Tests which browsing into website with GET and POST methods.
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.core import management
 
-from core.models import User, Storage, Group
+from core.models import User, Storage, Group, Host
 
 
 class Index_TestCase(TestCase):
@@ -342,4 +344,67 @@ class Configuration_Storage_TestCase(TestCase):
         """Create hosts from web interface."""
         url = reverse('storage create hosts', args=[1])
         r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+
+class Configuration_Host_TestCase(TestCase):
+    fixtures = ['test_users.json','test_storage.json']
+
+    def setUp(self):
+        self.c = Client()
+        self.c.login(username='root', password='toto')
+        if 'mock_storage' in settings.INSTALLED_APPS:
+            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
+            self.storage = Storage.objects.get(pk=1)
+        elif settings.TEST_STORAGE['address']:
+            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
+            if not self.storage.is_on():
+                self.skipTest("Configured storage unreachable.")
+        else:
+            self.skipTest("No test storage has been configurated.")
+
+        self.storage._update_hosts()
+        if not Host.objects.exists():
+            self.skipTest("There's no host in storage.")
+
+    def tearDown(self):
+        Host.objects.all().delete()
+
+    def test_get(self):
+        """Get Host."""
+        url = reverse('host', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_update(self):
+        """
+        Simulate a POST which change a storage.
+        Test to see if host's name changed.
+        """
+        # Test to update
+        url = reverse('host update', args=[1])
+        POST = { 'name': 'test host', 'storage': 1, 'hostid': 'test id' }
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test if updated
+        host = Host.objects.get(pk=1)
+        self.assertEqual(host.name, 'test host', 'Username is not changed (%s).' % host.name)
+
+    def test_delete(self):
+        """Test to delete user and if can't get it. """
+        # Test to delete
+        url = reverse('host delete', args=[1])
+        r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test to get it
+        url = reverse('host', args=[1])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
+
+    def test_show_plugins(self):
+        """Show a table of plugins."""
+        url = reverse('host plugins', args=[1])
+        r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)

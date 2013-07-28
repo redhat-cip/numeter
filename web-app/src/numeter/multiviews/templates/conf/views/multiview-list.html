@@ -1,0 +1,19 @@
+{% load i18n %}
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or multiview's name" %}" href="#multiview-list" data-url="{% url 'multiview list' %}?page=1&q={{ q }}">
+<table class="table table-condensed table-striped">
+ <thead>
+  <tr>
+   <th>{% trans "Name" %}</th>
+   <th>{% trans "View" %}</th>
+  </tr>
+ </thead>
+ <tbody>
+  {% for multiview in Multiviews %}
+  <tr>
+   <td><a class="get-multiview" data-url="{{ multiview.get_absolute_url }}" data-into="#multiview-list">{{ multiview.name }}</a></td>
+   <td><a>{{ multiview.plugin.name }}</a></td>
+  </tr>
+  {% endfor %}
+ </tbody>
+</table>
+

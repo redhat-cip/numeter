@@ -44,7 +44,7 @@ $(document).on('click', '.ajax-tabs li a', function() {
 $(document).on('keypress', '.q', function(e) {
   if (e.which == 13 && $(this).val().length ) {
     var url = $(this).attr('data-url');
-    var into = $(this).attr('href');
+    var into = $(this).attr('data-into');
     var data = { q: $(this).val() };
     $.ajax({url:url, async:true, data:data,
       error: function(data, status, xhr) { error_modal() },

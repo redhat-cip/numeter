@@ -1,0 +1,35 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by view, host or source name" %}" data-into="#view-list" data-url="{% url 'view list' %}?page=1"/>
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th>{% trans "Name" %}</th>
+    <th>{% trans "Sources" %}</th>
+   </tr>
+  </thead>
+  <tbody>
+   {% for view in Views %}
+   <tr>
+    <td><a class="get-view" data-url="{{ view.get_absolute_url }}" data-into="#view-list">{{ view.name }}</a></td>
+    <td><a>{{ view.plugins }}</a></td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+
+ <div>
+  <ul class="pager">
+   {% if Views.has_previous %}
+   <li class="previous"><a class="get-page" data-into="#view-list" data-url="{{ Views.0.get_list_url }}?page={{ Views.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+   {% endif %}
+   {% if Views.has_next %}
+   <li class="next"><a class="get-page" data-into="#view-list" data-url="{{ Views.0.get_list_url }}?page={{ Views.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+   {% endif %}
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+</div>
