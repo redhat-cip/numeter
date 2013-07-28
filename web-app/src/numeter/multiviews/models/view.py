@@ -97,6 +97,7 @@ class Multiview_Manager(models.Manager):
 class Multiview(models.Model):
     name = models.CharField(_('name'), max_length=300)
     views = models.ManyToManyField(View)
+    comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
 
     objects = Multiview_Manager()
     class Meta:

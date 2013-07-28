@@ -5,7 +5,7 @@ from django.core import management
 from django.conf import settings
 
 from core.models import User, Storage, Host
-from multiviews.models import Plugin, Data_Source
+from multiviews.models import Plugin, Data_Source, View, Multiview
 
 
 class Configuration_Plugin_TestCase(TestCase):
@@ -106,6 +106,7 @@ class Configuration_Plugin_TestCase(TestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
 
+
 class Configuration_Source_TestCase(TestCase):
     fixtures = ['test_users.json','test_storage.json']
 
@@ -133,8 +134,9 @@ class Configuration_Source_TestCase(TestCase):
     def tearDown(self):
         Plugin.objects.all().delete()
         Data_Source.objects.all().delete()
+        View.objects.all().delete()
 
-    def test_source_list(self):
+    def test_list(self):
         """Get source list."""
         url = reverse('source list')
         r = self.c.get(url)
@@ -172,5 +174,196 @@ class Configuration_Source_TestCase(TestCase):
 
         # Test to get it
         url = reverse('source', args=[self.source.id])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
+
+
+class Configuration_View_TestCase(TestCase):
+    fixtures = ['test_users.json','test_storage.json']
+
+    def setUp(self):
+        self.c = Client()
+        self.c.login(username='root', password='toto')
+        if 'mock_storage' in settings.INSTALLED_APPS:
+            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
+            self.storage = Storage.objects.get(pk=1)
+        elif settings.TEST_STORAGE['address']:
+            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
+            if not self.storage.is_on():
+                self.skipTest("Configured storage unreachable.")
+        else:
+            self.skipTest("No test storage has been configurated.")
+
+        self.storage._update_hosts()
+        if not Host.objects.exists():
+            self.skipTest("There's no host in storage.")
+        self.host = Host.objects.all()[0]
+        plugin = Plugin.objects.create_from_host(self.host)[0]
+        plugin.create_data_sources()
+
+    def tearDown(self):
+        Plugin.objects.all().delete()
+        Data_Source.objects.all().delete()
+        View.objects.all().delete()
+
+    def test_source_list(self):
+        """Get view list."""
+        url = reverse('view list')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_add(self):
+        """
+        Test to get view form.
+        Simulate it in POST method.
+        Test to get new view.
+        """
+        # Test to get form
+        url = reverse('view add')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test to add
+        POST = { 'name': 'test view', 'sources': [1]}
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test to get
+        view = View.objects.get(name='test view')
+        url = reverse('view', args=[view.id])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_get(self):
+        """Get a view."""
+        view = View.objects.create(name='test view')
+        url = reverse('view', args=[view.id])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_update(self):
+        """
+        Simulate a POST which change a view.
+        Test to see if comment has changed.
+        """
+        view = View.objects.create(name='test view')
+        # Test to update
+        url = reverse('source update', args=[view.id])
+        POST = {'name':'test view'}
+        r = self.c.post(url, POST) 
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test if updated
+        view = View.objects.get(pk=view.pk)
+        self.assertEqual(view.name, 'test view', 'Comment is not changed (%s).' % view.name)
+
+    def test_delete(self):
+        """Test to delete view and if can't get it."""
+        view = View.objects.create(name='test view')
+        view_id = view.id
+        # Test to delete
+        url = reverse('view delete', args=[view_id])
+        r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test to get it
+        url = reverse('view', args=[view_id])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
+
+
+class Configuration_Multiview_TestCase(TestCase):
+    fixtures = ['test_users.json','test_storage.json']
+
+    def setUp(self):
+        self.c = Client()
+        self.c.login(username='root', password='toto')
+        if 'mock_storage' in settings.INSTALLED_APPS:
+            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
+            self.storage = Storage.objects.get(pk=1)
+        elif settings.TEST_STORAGE['address']:
+            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
+            if not self.storage.is_on():
+                self.skipTest("Configured storage unreachable.")
+        else:
+            self.skipTest("No test storage has been configurated.")
+
+        self.storage._update_hosts()
+        if not Host.objects.exists():
+            self.skipTest("There's no host in storage.")
+        self.host = Host.objects.all()[0]
+        plugin = Plugin.objects.create_from_host(self.host)[0]
+        plugin.create_data_sources()
+        self.view = View.objects.create(name='test view')
+
+    def tearDown(self):
+        Plugin.objects.all().delete()
+        Data_Source.objects.all().delete()
+        Multiview.objects.all().delete()
+        Multiview.objects.all().delete()
+
+    def test_list(self):
+        """Get multiview list."""
+        url = reverse('multiview list')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_add(self):
+        """
+        Test to get multiview form.
+        Simulate it in POST method.
+        Test to get new multiview.
+        """
+        # Test to get form
+        url = reverse('multiview add')
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test to add
+        POST = {'name': 'test multiview', 'views': [str(self.view.id)]}
+        r = self.c.post(url, POST)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+        multiview = Multiview.objects.get(name='test multiview')
+
+        # Test to get
+        multiview = Multiview.objects.get(pk=multiview.pk)
+        url = reverse('multiview', args=[multiview.id])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_get(self):
+        """Get a multiview."""
+        multiview = Multiview.objects.create(name='test multiview')
+        url = reverse('multiview', args=[multiview.id])
+        r = self.c.get(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+    def test_update(self):
+        """
+        Simulate a POST which change a multiview.
+        Test to see if comment has changed.
+        """
+        multiview = Multiview.objects.create(name='test multiview')
+        # Test to update
+        url = reverse('source update', args=[multiview.id])
+        POST = {'name':'test multiview'}
+        r = self.c.post(url, POST) 
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test if updated
+        multiview = Multiview.objects.get(pk=multiview.pk)
+        self.assertEqual(multiview.name, 'test multiview', 'Comment is not changed (%s).' % multiview.name)
+
+    def test_delete(self):
+        """Test to delete multiview and if can't get it."""
+        multiview = Multiview.objects.create(name='test multiview')
+        multiview_id = multiview.id
+        # Test to delete
+        url = reverse('multiview delete', args=[multiview_id])
+        r = self.c.post(url)
+        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        # Test to get it
+        url = reverse('multiview', args=[multiview_id])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)

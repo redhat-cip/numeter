@@ -11,7 +11,7 @@ class Data_Source_Form(forms.ModelForm):
         fields = ('comment',)
         widgets = {
             'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
-            'comment': forms.Textarea({'placeholder':_('Comment'),'class':'span','rows':'4'}),
+            'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'4'}),
         }
 
 
@@ -21,7 +21,7 @@ class Plugin_Form(forms.ModelForm):
         fields = ('comment',)
         widgets = {
             'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
-            'comment': forms.Textarea({'placeholder':_('Comment'),'class':'span','rows':'4'}),
+            'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'4'}),
         }
 
 
@@ -31,7 +31,7 @@ class View_Form(forms.ModelForm):
         widgets = {
             'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
             'sources': forms.SelectMultiple({'class':'span'}),
-            'comment': forms.Textarea({'placeholder':_('Comment'),'class':'span','rows':'4'}),
+            'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'4'}),
         }
 
 
@@ -41,6 +41,7 @@ class Multiview_Form(forms.ModelForm):
         widgets = {
             'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
             'views': forms.SelectMultiple({'class':'span'}),
+            'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'4'}),
         }
 
 
@@ -52,5 +53,5 @@ class Event_Form(forms.ModelForm):
             'source': forms.Select({'class':'span'}),
             'start_date': forms.TextInput({'placeholder':_('End date'),'class':'span'}),
             'end_date': forms.TextInput({'placeholder':_('Start date'),'class':'span'}),
-            'comment': forms.Textarea({'placeholder':_('Comment'),'class':'span','rows':'4'}),
+            'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'4'}),
         }
