@@ -31,8 +31,6 @@ class my_install(install_data):
             # Rename name.init in name
             if script.endswith(".init"):
                 shutil.move(script, script[:-5])
-            if script.endswith(".default"):
-                shutil.move(script, script[:-8])
 
 if __name__ == '__main__':
 
@@ -65,9 +63,7 @@ if __name__ == '__main__':
                         ('/usr/share/numeter/storage', ['storage/storage-web/numeter_uwsgi.py']) ,
                         ('/var/log/numeter', '') ,
                         ('/etc/init.d', ['storage/numeter-storage.init']),
-                        ('/etc/default', ['storage/numeter-storage.default']),
                         ('/var/lib/numeter/rrds', ''),
-                        #('/etc/cron.d', ['storage/numeter-storage-cron'])
                         ],
           classifiers=[
               'Development Status :: 4 - Beta',

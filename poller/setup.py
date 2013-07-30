@@ -57,7 +57,6 @@ if __name__ == '__main__':
                         ('/var/log/numeter', ''),
                         ('/etc/init.d', ['poller/numeter-poller.init']),
                         ('/etc/init.d', ['poller/numeter-redis-poller.init']),
-                        #('/etc/cron.d', ['poller/numeter-poller-cron'])
                         ],
           classifiers=[
               'Development Status :: 4 - Beta',
