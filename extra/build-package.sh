@@ -5,13 +5,13 @@ export ARCH=${2:-"amd64"}
 
 REPO="numeter"
 GIT_URL="https://github.com/enovance/$REPO"
-UPSTREAM_BRANCH="stable"
+UPSTREAM_BRANCH=${UPSTREAM_BRANCH:-"stable"}
 BUILD_DIR=$(mktemp -d)
 export GIT_PBUILDER_OUTPUT_DIR="$BUILD_DIR/build-result"
 
 mkdir -p $GIT_PBUILDER_OUTPUT_DIR
 
-echo Build package : $DIST - $ARCH
+echo Build package : $DIST - $ARCH from $UPSTREAM_BRANCH
 
 dpkg -l git-buildpackage > /dev/null 2>&1
 if [ $? -eq 1 ];then
