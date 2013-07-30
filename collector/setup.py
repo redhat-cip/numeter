@@ -59,7 +59,6 @@ if __name__ == '__main__':
           data_files = [('/etc/numeter', ['collector/numeter_collector.cfg','collector/poller-list']),
                         ('/var/log/numeter', ''),
                         ('/etc/init.d', ['collector/numeter-collector.init']),
-                        #('/etc/cron.d', ['collector/numeter-collector-cron'])
                         ],
           classifiers=[
               'Development Status :: 4 - Beta',

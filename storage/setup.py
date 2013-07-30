@@ -64,7 +64,6 @@ if __name__ == '__main__':
                         ('/var/log/numeter', '') ,
                         ('/etc/init.d', ['storage/numeter-storage.init']),
                         ('/var/lib/numeter/rrds', ''),
-                        #('/etc/cron.d', ['storage/numeter-storage-cron'])
                         ],
           classifiers=[
               'Development Status :: 4 - Beta',
