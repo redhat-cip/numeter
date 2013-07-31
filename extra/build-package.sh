@@ -7,7 +7,7 @@ REPO="numeter"
 GIT_URL="https://github.com/enovance/$REPO"
 UPSTREAM_BRANCH=${UPSTREAM_BRANCH:-"stable"}
 BUILD_DIR=$(mktemp -d)
-export GIT_PBUILDER_OUTPUT_DIR="$BUILD_DIR/build-result"
+export GIT_PBUILDER_OUTPUT_DIR=${GIT_PBUILDER_OUTPUT_DIR:-"$BUILD_DIR/build-result"}
 
 mkdir -p $GIT_PBUILDER_OUTPUT_DIR
 
