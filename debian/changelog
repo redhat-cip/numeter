@@ -1,4 +1,4 @@
-numeter (0.2.3.11) UNRELEASED; urgency=low
+numeter (0.2.3.11) numeter-squeeze; urgency=low
 
    * Use UPSTREAM_BRANCH env vars in extra/build-package.sh
    * Applying init script changes to validate if it's enabled in config and handle exit code properly for successfull installation
