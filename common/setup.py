@@ -25,7 +25,7 @@ from distutils.core import setup
 if __name__ == '__main__':
 
     setup(name='numeter-common',
-          version='0.2.3.10',
+          version='0.2.3.11',
           description='Numeter Common',
           long_description="""Numeter is a new graphing solution (like Cacti for \
           example) made by some guys working at eNovance. Poller and collector are \
