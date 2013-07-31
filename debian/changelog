@@ -1,3 +1,11 @@
+numeter (0.2.3.11) UNRELEASED; urgency=low
+
+   * Use UPSTREAM_BRANCH env vars in extra/build-package.sh
+   * Applying init script changes to validate if it's enabled in config and handle exit code properly for successfull installation
+   * break one min timestamp in myMunin
+
+ -- Gael Lambert <gael.lambert@enovance.com>  Wed, 31 Jul 2013 11:12:03 +0200
+
 numeter (0.2.3.10) numeter-wheezy; urgency=low
 
   * Fixe init scripts for daemon
