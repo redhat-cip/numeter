@@ -12,7 +12,7 @@ myPath = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'))
 
-from numeter_poller import myPoller
+import numeter_poller
 from test_utils import FakeRedis
 from myRedisConnect import myRedisConnect
 
@@ -23,10 +23,14 @@ class PollerTestCase(test_base.TestCase):
 
     def setUp(self):
         super(PollerTestCase, self).setUp()
-        self.poller = myPoller(myPath+"/poller_unittest.cfg")
+        self.getgloballog_orig = numeter_poller.myPoller.getgloballog
+        numeter_poller.myPoller.getgloballog = mock.MagicMock()
+        self.poller = numeter_poller.myPoller(myPath+"/poller_unittest.cfg")
+        self.poller._logger = myFakeLogger()
 
     def tearDown(self):
         super(PollerTestCase, self).tearDown()
+        numeter_poller.myPoller.getgloballog = numeter_poller.myPoller.getgloballog
 
     def test_poller_rediscleanDataExpired(self):
         now              = time.strftime("%Y %m %d %H:%M", time.localtime())
@@ -205,3 +209,18 @@ class PollerTestCase(test_base.TestCase):
         self.stubs.Set(myRedisConnect, '__init__', myRedisConnect__init__)
         self.poller.redisStartConnexion()
         self.assertEqual(len(called), 1)
+
+# Fake log
+class myFakeLogger():
+    def __init__(self):
+        return
+    def critical(self,string):
+        return
+    def error(self,string):
+        return
+    def warning(self,string):   
+        return
+    def info(self,string):
+        return
+    def debug(self,string):
+        return
