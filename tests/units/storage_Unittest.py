@@ -14,20 +14,26 @@ myPath = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module'))
 
-from numeter_storage import myStorage
-from myRedisConnect import myRedisConnect
-from test_utils import FakeRedis
+#from numeter_storage import myStorage
+import numeter_storage
+#from myRedisConnect import myRedisConnect
+#import myRedisConnect
 
 import base as test_base
+from test_utils import FakeRedis
 
 class StorageTestCase(test_base.TestCase):
 
     def setUp(self):
         super(StorageTestCase, self).setUp()
-        self.storage = myStorage(myPath+"/storage_unittest.cfg")
+        self.getgloballog_orig = numeter_storage.myStorage.getgloballog
+        numeter_storage.myStorage.getgloballog = mock.MagicMock()
+        self.storage = numeter_storage.myStorage(myPath+"/storage_unittest.cfg")
+        self.storage._logger = myFakeLogger()
 
     def tearDown(self):
         super(StorageTestCase, self).tearDown()
+        numeter_storage.myStorage.getgloballog = numeter_storage.myStorage.getgloballog
 
 #    def setUp(self):
 #        os.system("kill $(cat /tmp/redis-unittest.pid 2>/dev/null) 2>/dev/null")
@@ -44,14 +50,16 @@ class StorageTestCase(test_base.TestCase):
 #        os.system("kill $(cat /tmp/redis-unittest.pid)")
 #        os.system('kill -9 $(pgrep -f "redis-server '+myPath+'/redis_unittest.conf")')
 #
-    def test_storage_redisStartConnexion(self):
-        called = []
-        def myRedisConnect__init__(self, *args, **kwargs):
-            called.append("TESTED")
-            self._error = False
-        self.stubs.Set(myRedisConnect, '__init__', myRedisConnect__init__)
-        self.storage.redisStartConnexion()
-        self.assertEqual(len(called), 1)
+## Ok but disable ::::::::::::::::::::::::
+#    def test_storage_redisStartConnexion(self):
+#        called = []
+#        def myRedisConnect__init__(self, *args, **kwargs):
+#            called.append("TESTED")
+#            self._error = False
+#        self.stubs.Set(myRedisConnect, '__init__', myRedisConnect__init__)
+#        self.storage.redisStartConnexion()
+#        self.assertEqual(len(called), 1)
+#######################
 
 #    def test_storage_getcollectorList_file(self):
 #        self.storage._collector_list_type = "file" 
@@ -177,30 +185,21 @@ class StorageTestCase(test_base.TestCase):
 #                                  '{"Plugin":"foo","TimeStamp":"1000000002","Values":{"new": "0"}}'])
 #
 #
-#    def test_storage_getHostList(self):
-#        # Start connexion client (db1)
-#        self.storage._redis_storage_db = 1
-#        collectorRedis = self.storage.redisStartConnexion()
-##        # Set Collector list fail
-##        collectorLine = {'host': '127.0.0.1', 'password': 'foo', 'db': '1'}
-##        # Bad connexion
-##        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-##        hostList = self.storage.getHostList(collectorLine)
-##        self.assertEqual(hostList, [])
-#        # Set good Collector list
-#        collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
-#        # Empty HOSTS in redis
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        hostList = self.storage.getHostList(collectorLine)
-#        self.assertEqual(hostList, [])
-#        # Valid HOST liste
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        collectorRedis.redis_hset("HOSTS","kfoo","foo")
-#        collectorRedis.redis_hset("HOSTS","kbar","bar")
-#        hostList = self.storage.getHostList(collectorLine)
-#        self.assertEqual(hostList, ['foo', 'bar'])
-#
-#
+    def test_storage_getHostList(self):
+        # Empty HOSTS in redis
+        with mock.patch('numeter_storage.myRedisConnect', FakeRedis) as redis:
+            redis.hset_data = {}
+            collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
+            hostList = self.storage.getHostList(collectorLine)
+            self.assertEqual(hostList, [])
+        # 2 hosts
+        with mock.patch('numeter_storage.myRedisConnect', FakeRedis) as redis:
+            redis.hset_data = {'HOSTS': {'host1': 'bar', 'host2':'foo'}}
+            collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
+            hostList = self.storage.getHostList(collectorLine)
+            self.assertEqual(hostList, ['foo', 'bar'])
+
+
 #    def test_storage_getInfos(self):
 #        # Start connexion storage (db2)
 #        self.storage._redis_storage_db = 2
@@ -1022,20 +1021,20 @@ class StorageTestCase(test_base.TestCase):
 #        self.assertFalse(result)
 #
 #
-## Fake log
-#class myFakeLogger():
-#    def __init__(self):
-#        return
-#    def critical(self,string):
-#        return
-#    def error(self,string):
-#        return
-#    def warning(self,string):   
-#        return
-#    def info(self,string):
-#        return
-#    def debug(self,string):
-#        return
+# Fake log
+class myFakeLogger():
+    def __init__(self):
+        return
+    def critical(self,string):
+        return
+    def error(self,string):
+        return
+    def warning(self,string):   
+        return
+    def info(self,string):
+        return
+    def debug(self,string):
+        return
 ## Fake sema
 #class myFakeSema():
 #    def __init__(self):
