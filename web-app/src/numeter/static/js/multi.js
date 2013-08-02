@@ -6,6 +6,7 @@ var get_graph = function(view_id, into) {
   $(into).append(graph_div);
   $.getJSON('/multiviews/get-data/'+view_id+'?res='+res, function(data) {
 
+    // Make date
     for (i in data['datas']){
       data['datas'][i][0] = new Date(data['datas'][i][0]);
     }
@@ -21,12 +22,17 @@ var get_graph = function(view_id, into) {
       pixelsPerLabel: 60,
       gridLineWidth: 0.1,
       labelsKMG2: true,
-      stackedGraph: true,
+      colors: data['colors'],
+      showRangeSelector: true,
       axes: {
         y: {
           axisLabelWidth: 30000,
         }
       },
+      series: {
+        warning: { fillGraph: false },
+        critical: { fillGraph: false },
+      }
     });
   });
 }

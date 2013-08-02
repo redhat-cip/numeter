@@ -39,7 +39,7 @@ var get_graph = function(host, plugin, into) {
   $(into).append(graph_div);
   $.getJSON('/get/graph/'+host+'/'+plugin+'?res='+res, function(data) {
     for (i in data['datas']){
-      data['datas'][i][0] = new Date(data['datas'][i][0]);
+      data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
     }
     g = new Dygraph(document.getElementById('graph-'+plugin), data['datas'], {
       title: data['name'],
@@ -52,7 +52,7 @@ var get_graph = function(host, plugin, into) {
       pixelsPerLabel: 60,
       gridLineWidth: 0.1,
       labelsKMG2: true,
-      stackedGraph: true,
+      showRangeSelector: true,
       axes: {
         y: {
           axisLabelWidth: 30000,

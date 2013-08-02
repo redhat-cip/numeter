@@ -51,7 +51,6 @@ def get(request, multiview_id):
 @login_required()
 @superuser_only()
 def update(request, multiview_id):
-    print request.POST
     M = get_object_or_404(Multiview.objects.filter(pk=multiview_id))
     F = Multiview_Form(data=request.POST, instance=M)
     if F.is_valid():

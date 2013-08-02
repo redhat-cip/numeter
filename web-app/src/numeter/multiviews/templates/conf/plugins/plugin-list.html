@@ -32,9 +32,9 @@
 </div>
 
 <div class="span3">
- <button id="btn-create-plugins" class="btn btn-primary" data-url="{% url "plugin create" %}">{% trans "Create from hosts" %}</button>
+ <button id="btn-choose-host" class="btn btn-primary" data-url="{% url "plugin create" %}">{% trans "Create from hosts" %}</button>
  <br><br>
- <select class="span" name="host_ids" multiple size="{{ Hosts.count }}">
-  {% for h in Hosts %}<option value="{{ h.id }}" selected>{{ h }}</option>{% endfor %}
+ <select class="span" name="host_id">
+  {% for h in Hosts %}<option value="{{ h.id }}">{{ h }}</option>{% endfor %}
  </select>
 </div>

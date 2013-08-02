@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from hashlib import md5
 
 
 class View_Manager(models.Manager):
@@ -17,8 +18,8 @@ class View(models.Model):
     name = models.CharField(_('name'), max_length=300)
     sources = models.ManyToManyField('multiviews.Data_Source')
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
-    # warning = models.IntegerField(blank=True, null=True)
-    # critical = models.IntegerField(blank=True, null=True)
+    warning = models.IntegerField(blank=True, null=True)
+    critical = models.IntegerField(blank=True, null=True)
 
 
     objects = View_Manager()
@@ -59,21 +60,41 @@ class View(models.Model):
         return zip(*datas)
 
     def get_data_dygraph(self, res='Daily'):
-        datas = {}
+        datas = []
         data = {'res':res}
-        r_data = {'labels':['Date'], 'name':self.name, 'datas':[]}
+        r_data = {
+            'labels':['Date'],
+            'colors':[],
+            'name':self.name,
+            'datas':[]
+        }
         if not self.sources.exists():
             return r_data
+        # Set labels for warning lines
+        if self.warning is not None:
+            r_data['labels'].append('warning')
+            r_data['colors'].append("#febf01")
+        if self.critical is not None:
+            r_data['labels'].append('critical')
+            r_data['colors'].append("#FF3434")
         # Get all data
         for s in self.sources.all():
             r = s.get_data(**data)
             unique_name = '%s %s' % (s.plugin.host.name, s.name)
             r_data['labels'].append(unique_name)
-            datas[unique_name] = r['DATAS'][s.name]
+            datas.append(r['DATAS'][s.name])
+            r_data['colors'].append("#%s" % md5(unique_name).hexdigest()[:6])
+        # Add warning and critical line
+        if self.critical is not None:
+            critical_data = [self.critical] * len(datas[0])
+            datas.insert(0, critical_data)
+        if self.warning is not None:
+            warning_data = [self.warning] * len(datas[0])
+            datas.insert(0, warning_data)
         # Walk on date for mix datas
         cur_date = r['TS_start']
-        step = r['TS_step']
-        for v in zip(*datas.values()):
+        step = r['TS_step'] * 60
+        for v in zip(*datas):
             r_data['datas'].append((cur_date,) + v)
             cur_date += step
         return r_data
@@ -81,6 +102,8 @@ class View(models.Model):
 
 class Multiview_Manager(models.Manager):
     def web_filter(self, q):
+        if not q:
+            return self.all()
         multiviews = self.filter(
             Q(name__icontains=q) |
             Q(views__name__icontains=q)

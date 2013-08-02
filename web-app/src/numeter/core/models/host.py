@@ -63,11 +63,16 @@ class Host(models.Model):
         """Get all host plugin's from storage."""
         return self.storage.get_plugins(self.hostid)
 
+    def get_plugin_list(self):
+        """Return a list of plugin names."""
+        return [ p['Plugin'] for p in self.get_plugins() ]
+
     def get_plugins_by_category(self, category):
         """Get host's plugins by category from storage."""
         return self.storage.get_plugins_by_category(self.hostid, category)
 
     def get_plugin_data_sources(self, plugin):
+        """Return a list of data sources of a plugin."""
         return self.storage.get_plugin_data_sources(self.hostid, plugin)
 
     def get_data(self, **data):
@@ -80,11 +85,15 @@ class Host(models.Model):
         # Get data sources name
         data['ds'] = ','.join(self.get_plugin_data_sources(data['plugin']))
         r = self.storage.get_data(**data)
-
-        r_data = {'labels':['Date'], 'name':data['plugin'].lower(), 'datas':[]}
+        # Dict sent in AJAX
+        r_data = {
+            'labels':['Date'],
+            'name':data['plugin'].lower(),
+            'datas':[]
+        }
         r_data['labels'].extend(self.get_plugin_data_sources(data['plugin']))
 
-        step = timedelta(seconds=r['TS_step'])
+        step = timedelta(seconds=r['TS_step']*60)
         cur_date = datetime.fromtimestamp(r['TS_start'])
         for v in zip(*r['DATAS'].values()):
             r_data['datas'].append( (mktime(cur_date.timetuple()),) + v )

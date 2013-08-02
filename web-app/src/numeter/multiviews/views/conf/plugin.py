@@ -40,12 +40,19 @@ def list(request):
 @login_required()
 @superuser_only()
 def create_from_host(request):
-    hosts = Host.objects.filter(id__in=request.POST.getlist('host_ids[]'))
-    plugins = []
-    for h in hosts:
-        plugins.extend(Plugin.objects.create_from_host(h))
-    messages.success(request, _("Plugin(s) created with success."))
-    return render(request, 'base/messages.html', {})
+    if request.method == 'POST':
+        host = Host.objects.get(id=request.POST['host_id'])
+        plugins = Plugin.objects.create_from_host(host, request.POST.getlist('plugins[]'))
+        messages.success(request, _("Plugin(s) created with success."))
+        return render(request, 'base/messages.html', {})
+    else:
+        host = Host.objects.get(id=request.GET['host_id'])
+        plugins = Plugin.objects.get_unsaved_plugins(host)
+        return render(request, 'conf/plugins/create-plugins.html', {
+            'plugins':plugins,
+            'host':host,
+        })
+
 
 
 @login_required()
@@ -92,6 +99,13 @@ def delete(request, plugin_id):
 @login_required()
 @superuser_only()
 def create_sources(request, plugin_id):
-    Plugin.objects.get(id=plugin_id).create_data_sources()
-    messages.success(request, _("Sources creation finished."))
-    return render(request, 'base/messages.html', {})
+    P = get_object_or_404(Plugin.objects.filter(pk=plugin_id))
+    if request.method == 'POST':
+        P.create_data_sources(request.POST.getlist('sources[]'))
+        messages.success(request, _("Sources creation finished."))
+        return render(request, 'base/messages.html', {})
+    else:
+        return render(request, 'conf/plugins/create-sources.html', {
+            'plugin': P,
+            'sources': P.get_unsaved_sources()
+        })

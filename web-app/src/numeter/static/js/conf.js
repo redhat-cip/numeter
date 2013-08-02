@@ -216,6 +216,19 @@ $(document).on('click', 'input[name="plugins"]', function() {
   }
 });
 
+// BUTTON CHOOSE NOST FOR PLUGINS
+$(document).on('click', '#btn-choose-host', function() {
+  var url = $(this).attr('data-url');
+  $.ajax({
+    type: 'GET', url: url, async: true,
+    data: {'host_id': $('select[name="host_id"]').val()},
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('#myModal').html(data);
+      $('#myModal').modal('show');
+    },
+  });
+});
 // BUTTON CREATE PLUGIN
 $(document).on('click', '#btn-create-plugins', function() {
   var url = $(this).attr('data-url');
@@ -223,7 +236,8 @@ $(document).on('click', '#btn-create-plugins', function() {
     type: 'POST', url: url, async: true,
     data: {
       'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'host_ids': $('[name="host_ids"]').val(),
+      'plugins': $('#chosen-plugins').val(),
+      'host_id': $('select[name="host_id"]').val(),
     },
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -232,12 +246,27 @@ $(document).on('click', '#btn-create-plugins', function() {
   });
 });
 
+// BUTTON CHOOSE SOURCE
+$(document).on('click', '#btn-choose-sources', function() {
+  var url = $(this).attr('data-url');
+  $.ajax({
+    type: 'GET', url: url, async: true,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('#myModal').html(data);
+      $('#myModal').modal('show');
+    },
+  });
+});
 // BUTTON CREATE SOURCE
 $(document).on('click', '#btn-create-sources', function() {
   var url = $(this).attr('data-url');
   $.ajax({
     type: 'POST', url: url, async: true,
-    data: { 'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val() },
+    data: { 
+      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+      'sources': $('#chosen-sources').val()
+    },
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('.messages').append(data);

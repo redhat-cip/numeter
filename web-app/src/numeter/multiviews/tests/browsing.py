@@ -30,7 +30,9 @@ class Configuration_Plugin_TestCase(TestCase):
         self.host = Host.objects.all()[0]
 
     def tearDown(self):
+        Host.objects.all().delete()
         Plugin.objects.all().delete()
+        Data_Source.objects.all().delete()
 
     def test_index(self):
         """Get plugin index."""
@@ -46,15 +48,31 @@ class Configuration_Plugin_TestCase(TestCase):
 
     def test_create_plugin_from_host(self):
         """Create plugin from host ids."""
-        # Test url
+        # Test GET
         url = reverse('plugin create')
-        POST = {'host_ids':[self.host.id]}
-        r = self.c.post(url, POST)
+        GET = {'host_id':self.host.id}
+        r = self.c.get(url, GET)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
-        # Test if plugin have been created
-        plugins = Plugin.objects.all()
-        self.assertFalse(plugins.exists(), "No plugin have been created.")
+        plugins = [ p['Plugin'] for p in self.host.get_plugins() ]
+        chosen_plugins = plugins[:1]
+        POST = {'host_id':self.host.id, 'plugins[]':chosen_plugins}
+        r = self.c.post(url, POST)
+        # Test if plugins have been created
+        saved_plugins = Plugin.objects.all()
+        self.assertTrue(saved_plugins.exists(), "No plugin have been created.")
+
+        # Test to create false plugin
+        POST = {'host_id':self.host.id, 'plugins[]':['FALSE']}
+        r = self.c.post(url, POST)
+        saved_plugins = Plugin.objects.all()
+        self.assertEqual(saved_plugins.count(), 1, "False plugins can be created.")
+
+        # Test to recreate a plugin
+        POST = {'host_id':self.host.id, 'plugins[]':chosen_plugins}
+        r = self.c.post(url, POST)
+        saved_plugins = Plugin.objects.all()
+        self.assertEqual(saved_plugins.count(), 1, "Can create duplicate plugin.")
 
     def test_get(self):
         """Get a plugin."""
@@ -66,10 +84,16 @@ class Configuration_Plugin_TestCase(TestCase):
     def test_create_sources(self):
         """Create sources from a plugin."""
         plugin = Plugin.objects.create_from_host(self.host)[0]
-        # Test url
+        # Test GET
         url = reverse('plugin create sources', args=[plugin.id])
-        r = self.c.post(url)
+        GET = {'host_id':self.host.id}
+        r = self.c.get(url, GET)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
+
+        sources = plugin.get_data_sources()
+        chosen_sources = sources[:1]
+        POST = {'host_id':self.host.id, 'sources[]':chosen_sources}
+        r = self.c.post(url, POST)
         # Test if sources have been created
         sources = Data_Source.objects.all()
         self.assertTrue(sources.exists(), "No source have been created.")
@@ -95,14 +119,14 @@ class Configuration_Plugin_TestCase(TestCase):
         """
         Test to delete plugin and if can't get it.
         """
-        plugins = Plugin.objects.create_from_host(self.host)
+        plugin = Plugin.objects.create_from_host(self.host)[0]
         # Test to delete
-        url = reverse('plugin delete', args=[1])
+        url = reverse('plugin delete', args=[plugin.id])
         r = self.c.post(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
         # Test to get it
-        url = reverse('plugin', args=[1])
+        url = reverse('plugin', args=[plugin.id])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
 
