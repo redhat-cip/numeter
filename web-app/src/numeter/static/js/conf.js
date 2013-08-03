@@ -275,7 +275,7 @@ $(document).on('click', '#btn-create-sources', function() {
 });
 
 // SHOW DATASOURCE PREVIEW
-$(document).on('mouseover', '.get-source', function() {
+$(document).on('mouseover', "a:regex('class,get-(source|view)')", function() {
   var pop = $(this);
   var url = $(this).attr('data-data-url');
   $(pop).popover({
@@ -293,6 +293,7 @@ $(document).on('mouseover', '.get-source', function() {
     }
     g = new Dygraph(document.getElementById('preview-graph'), data['datas'], {
       labels: data['labels'],
+      colors: data['colors'],
       pixelsPerLabel: 60,
       gridLineWidth: 0.1,
       labelsKMG2: true,
@@ -301,7 +302,7 @@ $(document).on('mouseover', '.get-source', function() {
     });
   });
 });
-$(document).on('mouseout', '.get-source', function() {
+$(document).on('mouseout', "a:regex('class,get-(source|view)')", function() {
   $(this).popover('hide');
   $(this).popover('destroy');
 });

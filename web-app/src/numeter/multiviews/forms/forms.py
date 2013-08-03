@@ -32,6 +32,8 @@ class View_Form(forms.ModelForm):
             'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
             'sources': forms.SelectMultiple({'class':'span'}),
             'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'4'}),
+            'warning': forms.TextInput({'placeholder':_('Warning threshold (optional)'),'class':'span'}),
+            'critical': forms.TextInput({'placeholder':_('Critical threshold (optional)'),'class':'span'}),
         }
 
 

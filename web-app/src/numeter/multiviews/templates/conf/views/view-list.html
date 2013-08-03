@@ -12,8 +12,12 @@
   <tbody>
    {% for view in Views %}
    <tr>
-    <td><a class="get-view" data-url="{{ view.get_absolute_url }}" data-into="#view-list">{{ view.name }}</a></td>
-    <td><a>{{ view.plugins }}</a></td>
+    <td><a class="get-view" data-url="{{ view.get_absolute_url }}" data-into="#view-list" data-original-title="{% trans "Preview" %}" data-data-url="{% url "view data" view.id %}">{{ view.name }}</a></td>
+    <td>
+     {% for source in view.sources.all %}
+     <a class="get-source" data-url="{{ source.get_absolute_url }}" data-into="#source-list" data-original-title="{% trans "Preview" %}" data-data-url="{% url "source data" source.id %}">{{ source }}</a>,
+     {% endfor %}
+    </td>
    </tr>
    {% endfor %}
   </tbody>
