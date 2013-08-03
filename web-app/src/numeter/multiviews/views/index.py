@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 from core.utils.decorators import login_required
-from multiviews.models import Multiview, View
+from multiviews.models import Multiview, View, Data_Source
 from json import dumps as jdumps
 
 
@@ -21,3 +21,9 @@ def get_data(request, view_id):
     r = M.get_data_dygraph(res=request.GET.get('res','Daily'))
     return HttpResponse(jdumps(r), content_type="application/json")
 
+
+@login_required()
+def get_data_source_data(request, source_id):
+    S = get_object_or_404(Data_Source.objects.filter(id=source_id))
+    r = S.get_data_dygraph(res=request.GET.get('res','Daily'))
+    return HttpResponse(jdumps(r), content_type="application/json")

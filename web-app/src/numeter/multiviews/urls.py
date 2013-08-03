@@ -4,6 +4,7 @@ from django.conf.urls import patterns, url
 urlpatterns = patterns('',
     url(r'^$', 'multiviews.views.index.multiviews_index', name='multiviews index'),
     url(r'^get-data/(?P<view_id>\d+)$', 'multiviews.views.index.get_data', name='view data'),
+    url(r'^get-data/source/(?P<source_id>\d+)$', 'multiviews.views.index.get_data_source_data', name='source data'),
 
     url(r'^conf/plugin$', 'multiviews.views.conf.plugin.index', name='plugin index'),
     url(r'^conf/plugin/list$', 'multiviews.views.conf.plugin.list', name='plugin list'),

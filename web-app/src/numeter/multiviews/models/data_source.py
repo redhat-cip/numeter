@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from hashlib import md5
 
 
 class Data_Source_Manager(models.Manager):
@@ -44,3 +45,25 @@ class Data_Source(models.Model):
         data['plugin'] = self.plugin.name
         data['ds'] = self.name
         return self.plugin.host.get_data(**data)
+
+    def get_data_dygraph(self, res='Daily'):
+        datas = []
+        data = {'res':res}
+        r_data = {
+            'labels':['Date'],
+            'colors':[],
+            'name':self.name,
+            'datas':[]
+        }
+        # Get all data
+        r = self.get_data(**data)
+        r_data['labels'].append(self.name)
+        datas.append(r['DATAS'][self.name])
+        r_data['colors'].append("#%s" % md5(self.name).hexdigest()[:6])
+        # Walk on date for mix datas
+        cur_date = r['TS_start']
+        step = r['TS_step'] * 60
+        for v in zip(*datas):
+            r_data['datas'].append((cur_date,) + v)
+            cur_date += step
+        return r_data

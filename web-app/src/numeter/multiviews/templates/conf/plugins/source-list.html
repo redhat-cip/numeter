@@ -11,7 +11,7 @@
  <tbody>
   {% for source in Sources %}
   <tr>
-   <td><a class="get-source" data-url="{{ source.get_absolute_url }}" data-into="#source-list">{{ source.name }}</a></td>
+      <td><a class="get-source" data-url="{{ source.get_absolute_url }}" data-into="#source-list" data-original-title="{% trans "Preview" %}" data-data-url="{% url "source data" source.id %}">{{ source.name }}</a></td>
    <td><a class="get-plugin" data-url="{{ source.plugin.get_absolute_url }}" data-into="#plugin-list">{{ source.plugin.name }}</a></td>
    <td><a class="get-host" data-url="{{ source.plugin.host.get_absolute_url }}" data-into="#host-list">{{ source.plugin.host }}</a></td>
   </tr>

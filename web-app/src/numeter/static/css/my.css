@@ -20,6 +20,20 @@ div[id="body"] {
   margin-left: 10px;
 }
 
+.popover {
+  height: 200px;
+  width: 400px;
+  max-width: 1000px;
+}
+
+.multiview-toolbar {
+  position: fixed;
+  right: 20px;
+  top: 50px;
+  width: 300px;
+  z-index: 9999;
+}
+
 .messages {
   position: fixed;
   right: 20px;

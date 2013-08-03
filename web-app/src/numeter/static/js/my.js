@@ -14,7 +14,7 @@ var error_modal = function() {
 var print_loading_gif = function(into, heigth, width) {
   if(typeof(heigth)==='undefined') heigth = 100;
   if(typeof(width)==='undefined') width = 100;
-  $(into).append('<img class="loader" src="/static/img/ajax-loader.gif" height="'+heigth+'%" width="'+width+'%">' );
+  $(into).append('<img class="loader center" src="/static/img/ajax-loader.gif" height="'+heigth+'%" width="'+width+'%">' );
 }
 var remove_loading_gif = function(from) {
   $(from+ ' .loader').remove();

@@ -273,3 +273,35 @@ $(document).on('click', '#btn-create-sources', function() {
     },
   });
 });
+
+// SHOW DATASOURCE PREVIEW
+$(document).on('mouseover', '.get-source', function() {
+  var pop = $(this);
+  var url = $(this).attr('data-data-url');
+  $(pop).popover({
+    content: '<div id="preview-graph"></div>',
+    html: true,
+    trigger: 'manual',
+    delay: {'show':1000, 'hide':250},
+  })
+
+  $(pop).popover('show');
+  print_loading_gif('#preview-graph', 40, 40);
+  $.getJSON(url, function(data) {
+    for (i in data['datas']){
+      data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
+    }
+    g = new Dygraph(document.getElementById('preview-graph'), data['datas'], {
+      labels: data['labels'],
+      pixelsPerLabel: 60,
+      gridLineWidth: 0.1,
+      labelsKMG2: true,
+      height: 150,
+      width: 300,
+    });
+  });
+});
+$(document).on('mouseout', '.get-source', function() {
+  $(this).popover('hide');
+  $(this).popover('destroy');
+});
