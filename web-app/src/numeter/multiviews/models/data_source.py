@@ -6,6 +6,13 @@ from hashlib import md5
 
 
 class Data_Source_Manager(models.Manager):
+    def user_filter(self, user):
+        """Filter views authorized for a given user."""
+        if user.is_superuser:
+            return self.all()
+        else:
+            return self.filter(plugins__host__group__in=user.groups.all())
+
     def web_filter(self, q):
         sources = self.filter(
             Q(name__icontains=q) |

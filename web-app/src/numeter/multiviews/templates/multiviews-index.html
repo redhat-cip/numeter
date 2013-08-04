@@ -36,13 +36,14 @@
   </div>
  </div>
 
- <div class="multiview-toolbar" style="display: none;"> <!-- TODO --!>
+ <div id="multiview-toggle">
   <ul class="dropdown-menu span" style="display: block; position: static;">
    <li class="">
-    <a class="toggle-editor" href="#" data-url="{# url "multiview customize index #}">{% trans "Customize" %}</a>
+    <a id="toggle-editor" href="#" data-url="{% url "multiviews customize index" %}">{% trans "Customize" %}</a>
    </li>
   </ul>
  </div>
 
+ <div id="multiview-index" class="well" style="display: none;"></div>
  <div class="messages"></div>
 {% endblock %}

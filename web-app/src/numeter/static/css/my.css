@@ -26,10 +26,18 @@ div[id="body"] {
   max-width: 1000px;
 }
 
-.multiview-toolbar {
+#multiview-toggle {
   position: fixed;
   right: 20px;
   top: 50px;
+  width: 300px;
+  z-index: 9999;
+}
+
+#multiview-index {
+  position: fixed;
+  right: 20px;
+  top: 100px;
   width: 300px;
   z-index: 9999;
 }
@@ -40,6 +48,10 @@ div[id="body"] {
   top: 20px;
   width: 300px;
   z-index: 9999;
+}
+
+.to-add {
+  color: #4BBB39;
 }
 
 .messages .alert-block {

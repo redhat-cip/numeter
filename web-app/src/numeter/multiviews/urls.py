@@ -6,6 +6,9 @@ urlpatterns = patterns('',
     url(r'^get-data/(?P<view_id>\d+)$', 'multiviews.views.index.get_data', name='view data'),
     url(r'^get-data/source/(?P<source_id>\d+)$', 'multiviews.views.index.get_data_source_data', name='source data'),
 
+    url(r'^customize$', 'multiviews.views.customize.index', name='multiviews customize index'),
+    url(r'^customize/view/(?P<view_id>\d+)/add_source$', 'multiviews.views.customize.add_source_to_view', name='multiviews customize view add source'),
+
     url(r'^conf/plugin$', 'multiviews.views.conf.plugin.index', name='plugin index'),
     url(r'^conf/plugin/list$', 'multiviews.views.conf.plugin.list', name='plugin list'),
     url(r'^conf/plugin/create$', 'multiviews.views.conf.plugin.create_from_host', name='plugin create'),

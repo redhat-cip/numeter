@@ -274,7 +274,7 @@ $(document).on('click', '#btn-create-sources', function() {
   });
 });
 
-// SHOW DATASOURCE PREVIEW
+// SHOW PREVIEW ON TOOLTIP
 $(document).on('mouseover', "a:regex('class,get-(source|view)')", function() {
   var pop = $(this);
   var url = $(this).attr('data-data-url');

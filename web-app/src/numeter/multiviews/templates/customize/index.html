@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<div class="span">
+ {% csrf_token %}
+ <div class="row-fluid">
+  <ul class="nav nav-pills">
+      <li data-url="{# url "multiviews customize source index" #}" class="active"><a href="#">{% trans "Sources" %}</a></li>
+      <li data-url="{# url "multiviews customize event index" #}"><a href="#">{% trans "Events" %}</a></li>
+  </ul>
+ </div>
+
+ <div class="row-fluid">
+  <div id="source-list">{% include "customize/source-list.html" %}</div>
+ </div>
+
+</div>

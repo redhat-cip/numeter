@@ -6,6 +6,13 @@ from hashlib import md5
 
 
 class View_Manager(models.Manager):
+    def user_filter(self, user):
+        """Filter views authorized for a given user."""
+        if user.is_superuser:
+            return self.all()
+        else:
+            return self.filter(sources__plugins__host__group__in=user.groups.all())
+
     def web_filter(self, q):
         views = self.filter(
             Q(name__icontains=q) |
@@ -110,6 +117,7 @@ class Multiview_Manager(models.Manager):
         )
         return multiviews
 
+    # TODO : Rename filter_user_multiview
     def get_user_multiview(self, user):
         if user.is_superuser:
             return self.all()
