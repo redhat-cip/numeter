@@ -32,7 +32,6 @@ def source_list(request):
 
 @login_required()
 def add_source_to_view(request, view_id):
-    print request.POST
     sources_ids = request.POST.getlist('source_ids[]')
     V = get_object_or_404(View.objects.filter(pk=view_id))
     for s in sources_ids:
@@ -41,4 +40,13 @@ def add_source_to_view(request, view_id):
         except:
             pass
     messages.success(request, _("Source added with success."))
+    return render(request, 'base/messages.html', {})
+
+@login_required()
+def remove_source_from_view(request, view_id):
+    V = get_object_or_404(View.objects.filter(pk=view_id))
+    sources_nums = request.POST.getlist('source_nums[]')
+    sources = [ V.sources.all()[int(i)] for i in sources_nums ]
+    [ V.sources.remove(s) for s in sources ]
+    messages.success(request, _("Source removed with success."))
     return render(request, 'base/messages.html', {})

@@ -103,6 +103,7 @@ $(document).on('click', '#toggle-editor', function() {
       error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) {
         $('#multiview-index').html(data);
+	source_mode = 'normal';
       },
     });
     $(this).parent().addClass('active');
@@ -146,10 +147,31 @@ $(document).on('mouseout', ".addable-source", function() {
   $(this).popover('destroy');
 });
 
-// ADDING SOURCE MODE
-$(document).on('click', ".addable-source", function() {
-  $(this).toggleClass('to-add');
+// SET SOURCE MODE
+$(document).on('click', "#source-mode-pills li a", function() {
+  $("#source-mode-pills li").removeClass('active');
+  $('.to-add').removeClass('to-add');
+  $('.to-remove').removeClass('to-remove');
+  if ( source_mode == $(this).attr('data-source-mode') ) {
+    source_mode = 'normal';
+  } else {
+    $(this).tab('show');
+    source_mode = $(this).attr('data-source-mode');
+  }
 });
+
+// SELECT SOURCE
+$(document).on('click', ".addable-source", function() {
+  if ( source_mode == 'add' ) {
+    $(this).toggleClass('to-add');
+  }
+});
+$(document).on('click', ".removable-source", function() {
+  if ( source_mode == 'remove' ) {
+    $(this).toggleClass('to-remove');
+  }
+});
+
 $(document).on('click', "#graphs div", function() {
   if ( $('.to-add').size() && $(this).attr('data-view-id') ) {
     var view_id = $(this).attr('data-view-id');
@@ -175,5 +197,45 @@ $(document).on('click', "#graphs div", function() {
       },
     });
 
+  } else if ( source_mode == 'remove' && $(this).attr('data-view-id') ) {
+    var view_id = $(this).attr('data-view-id');
+    $('#chosen-view').html(graphs[view_id][0].user_attrs_.title);
+    $('#source-to-remove').empty();
+    $('#source-to-remove').attr('data-view-id', view_id);
+    var j = 0;
+    $.each(graphs[view_id][0].user_attrs_.labels, function(i,s) {
+      if ( s != 'Date' && s != 'warning' && s != 'critical' ) {
+        $('#source-to-remove').append(
+	  '<li><a class="removable-source" data-num="'+j+'">'+s+'</a></li>'
+	);
+	j += 1
+      }
+    });
   }
 });
+
+$(document).on('click', "#btn-remove-source", function() {
+  var source_nums = [];
+  var view_id = $('#source-to-remove').attr('data-view-id');
+  var url = '/multiviews/customize/view/'+view_id+'/remove_source';
+  $.each( $('.to-remove'), function() { source_nums.push($(this).attr('data-num')) } ); 
+  $.ajax({type:'POST', url:url, async:true,
+    data: {
+      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+      'source_nums': source_nums,
+    },
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('.messages').append(data);
+      var url = graphs[view_id][1]+res;
+      $.getJSON(url, function(data) {
+        graphs[view_id][0].updateOptions({
+          file: data['datas'],
+          labels: data['labels'],
+          colors: data['colors'],
+        });
+      });
+      $('.to-remove').hide(250);
+    }
+  });
+}) 

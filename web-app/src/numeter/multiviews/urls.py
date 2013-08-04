@@ -8,6 +8,7 @@ urlpatterns = patterns('',
 
     url(r'^customize$', 'multiviews.views.customize.index', name='multiviews customize index'),
     url(r'^customize/view/(?P<view_id>\d+)/add_source$', 'multiviews.views.customize.add_source_to_view', name='multiviews customize view add source'),
+    url(r'^customize/view/(?P<view_id>\d+)/remove_source$', 'multiviews.views.customize.remove_source_from_view', name='multiviews customize view remove source'),
 
     url(r'^conf/plugin$', 'multiviews.views.conf.plugin.index', name='plugin index'),
     url(r'^conf/plugin/list$', 'multiviews.views.conf.plugin.list', name='plugin list'),

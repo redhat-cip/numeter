@@ -54,6 +54,10 @@ div[id="body"] {
   color: #4BBB39;
 }
 
+.to-remove {
+  color: #BB4B39;
+}
+
 .messages .alert-block {
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 }
