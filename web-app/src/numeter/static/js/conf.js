@@ -80,7 +80,7 @@ $(document).on('click', '.sub-menu-tabs li a', function() {
   });
 });
 
-// GET USER
+// GET PAGE
 $(document).on('click', '[class*="get-"]', function() {
   var url = $(this).attr('data-url');
   var into = $(this).attr('data-into');

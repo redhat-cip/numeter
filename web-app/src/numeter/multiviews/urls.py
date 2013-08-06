@@ -7,8 +7,12 @@ urlpatterns = patterns('',
     url(r'^get-data/source/(?P<source_id>\d+)$', 'multiviews.views.index.get_data_source_data', name='source data'),
 
     url(r'^customize$', 'multiviews.views.customize.index', name='multiviews customize index'),
+    url(r'^customize/source$', 'multiviews.views.customize.source_index', name='multiviews customize source index'),
+    url(r'^customize/source/list$', 'multiviews.views.customize.source_list', name='multiviews customize source list'),
     url(r'^customize/view/(?P<view_id>\d+)/add_source$', 'multiviews.views.customize.add_source_to_view', name='multiviews customize view add source'),
     url(r'^customize/view/(?P<view_id>\d+)/remove_source$', 'multiviews.views.customize.remove_source_from_view', name='multiviews customize view remove source'),
+    url(r'^customize/view/add$', 'multiviews.views.customize.view_add', name='multiviews customize view add'),
+    url(r'^customize/multiview/add$', 'multiviews.views.customize.multiview_add', name='multiviews customize multiview add'),
 
     url(r'^conf/plugin$', 'multiviews.views.conf.plugin.index', name='plugin index'),
     url(r'^conf/plugin/list$', 'multiviews.views.conf.plugin.list', name='plugin list'),

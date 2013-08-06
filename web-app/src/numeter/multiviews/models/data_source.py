@@ -7,7 +7,7 @@ from hashlib import md5
 
 class Data_Source_Manager(models.Manager):
     def user_filter(self, user):
-        """Filter views authorized for a given user."""
+        """Filter source authorized for a given user."""
         if user.is_superuser:
             return self.all()
         else:
@@ -20,6 +20,15 @@ class Data_Source_Manager(models.Manager):
             Q(plugin__host__name__icontains=q)
         )
         return sources
+
+    def user_web_filter(self, q, user):
+        """Filter source authorized for a given user."""
+        sources = self.web_filter(q)
+        if user.is_superuser:
+            return sources
+        else:
+            return sources.filter(plugins__host__group__in=user.groups.all())
+
 
 class Data_Source(models.Model):
     name = models.CharField(_('name'), max_length=300)

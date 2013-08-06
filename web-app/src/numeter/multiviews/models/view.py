@@ -28,7 +28,6 @@ class View(models.Model):
     warning = models.IntegerField(blank=True, null=True)
     critical = models.IntegerField(blank=True, null=True)
 
-
     objects = View_Manager()
     class Meta:
         app_label = 'multiviews'
@@ -73,7 +72,10 @@ class View(models.Model):
             'labels':['Date'],
             'colors':[],
             'name':self.name,
-            'datas':[]
+            'datas':[],
+            'type':'view',
+            'id':self.id,
+            'source_ids':[],
         }
         if not self.sources.exists():
             return r_data
@@ -91,6 +93,7 @@ class View(models.Model):
             r_data['labels'].append(unique_name)
             datas.append(r['DATAS'][s.name])
             r_data['colors'].append("#%s" % md5(unique_name).hexdigest()[:6])
+            r_data['source_ids'].append(s.id)
         # Add warning and critical line
         if self.critical is not None:
             critical_data = [self.critical] * len(datas[0])

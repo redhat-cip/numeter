@@ -1,5 +1,6 @@
 // GLOBAL VARS
 graphs = {};
+res = 'Daily';
 
 // AJAX AND MAKE GRAPH
 var get_graph = function(view_id, into) {
@@ -91,6 +92,20 @@ $(document).on('click', '#resolution-pills li a', function() {
   });
 });
 
+// GET PAGE
+$(document).on('click', '.get-page', function() {
+  var url = $(this).attr('data-url');
+  var into = $(this).attr('data-into');
+  //var into = $(this).parentsUntil('div').parent();
+  $.ajax({type:'GET', url:url, async:true,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $(into).html(data);
+    },
+  });
+  return false;
+});
+
 //// CUSTOMIZE MENU
 // TOGGLE MENU
 $(document).on('click', '#toggle-editor', function() {
@@ -107,10 +122,14 @@ $(document).on('click', '#toggle-editor', function() {
       },
     });
     $(this).parent().addClass('active');
+    $(".btn-add-multiview").show(250);
+    $(".btn-add-view").show();
   } else {
     $('#multiview-index').hide(300);
     $(this).parent().removeClass('active');
     $('#multiview-index').empty();
+    $(".btn-add-multiview").hide(250);
+    $(".btn-add-view").hide();
   }
 });
 //
@@ -157,6 +176,20 @@ $(document).on('click', "#source-mode-pills li a", function() {
   } else {
     $(this).tab('show');
     source_mode = $(this).attr('data-source-mode');
+  }
+});
+// SEARCH IN LIST BY PRESS ENTER
+$(document).on('keypress', '.q', function(e) {
+  if (e.which == 13 && $(this).val().length ) {
+    var url = $(this).attr('data-url');
+    var into = $(this).attr('data-into');
+    var data = { q: $(this).val() };
+    $.ajax({url:url, async:true, data:data,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $(into).html(data);
+      },
+    });
   }
 });
 
@@ -213,7 +246,7 @@ $(document).on('click', "#graphs div", function() {
     });
   }
 });
-
+// REMOVE SOURCE
 $(document).on('click', "#btn-remove-source", function() {
   var source_nums = [];
   var view_id = $('#source-to-remove').attr('data-view-id');
@@ -228,14 +261,32 @@ $(document).on('click', "#btn-remove-source", function() {
     success: function(data, status, xhr) {
       $('.messages').append(data);
       var url = graphs[view_id][1]+res;
-      $.getJSON(url, function(data) {
-        graphs[view_id][0].updateOptions({
-          file: data['datas'],
-          labels: data['labels'],
-          colors: data['colors'],
-        });
-      });
-      $('.to-remove').hide(250);
     }
   });
-}) 
+});
+
+// ADD A VIEW
+$(document).on('click', "#btn-add-view", function() {
+  var name = $('#view-name').val();
+  var url = $(this).attr('data-url');
+  var multiview_id = $(this).parentsUntil(".dropdown-submenu").parent().children('a').attr('data-id')
+  var view_list = $(this).parentsUntil(".view-list").parent('ul');
+  var target = $(this).parent().parent().parent();
+  $.ajax({type:'POST', url:url, async:true,
+    data: {
+      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+      'view_name': name,
+      'multiview_id':multiview_id,
+      'res': res,
+    },
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      var data = xhr.responseJSON
+      var view_id = data['id'];
+      // Add line
+      var line = ' <li><a class="get-view" href="#" data-id="'+view_id+'" data-url="{{ view.get_data_url }}">'+name+'</a></li>';
+      $(target).before(line);
+      get_graph(view_id, '#graphs');
+    }
+  });
+});

@@ -53,9 +53,15 @@ div[id="body"] {
 .to-add {
   color: #4BBB39;
 }
+.to-add:hover {
+  color: #6BBB39;
+}
 
 .to-remove {
   color: #BB4B39;
+}
+.to-remove:hover {
+  color: #BB6B39;
 }
 
 .messages .alert-block {
@@ -68,4 +74,10 @@ div[id="body"] {
 
 .messages .alert-block.alert-success {
   border: 1px solid #46A546;
+}
+
+.input-li,
+.input-li * * {
+  vertical-align: middle;
+  margin-bottom: 0px
 }
