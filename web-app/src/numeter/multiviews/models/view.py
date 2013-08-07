@@ -14,11 +14,19 @@ class View_Manager(models.Manager):
             return self.filter(sources__plugins__host__group__in=user.groups.all())
 
     def web_filter(self, q):
+        """Extended search from a string."""
         views = self.filter(
             Q(name__icontains=q) |
             Q(sources__name__icontains=q)
         )
         return views
+
+    def user_web_filter(self, q, user):
+        """Extended search from a string only on authorized views."""
+        views = self.web_filter(q)
+        if user.is_superuser:
+            return views
+        return sources.filter(sources__plugins__host__group__in=user.groups.all())
 
 
 class View(models.Model):

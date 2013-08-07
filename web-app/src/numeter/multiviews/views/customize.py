@@ -6,25 +6,30 @@ from django.contrib import messages
 from core.utils.decorators import login_required
 from core.utils import make_page
 from multiviews.models import Multiview, View, Data_Source
+from multiviews.forms import Data_Source_Form, View_Form
 from json import dumps as jdumps
 
 
 @login_required()
 def index(request):
-    multiviews = Multiview.objects.get_user_multiview(request.user)
-    views = View.objects.user_filter(request.user)
     sources = Data_Source.objects.user_filter(request.user)
-    sources = make_page(sources, int(request.GET.get('page',1)), 10)
+    sources = make_page(sources, 1, 10)
+
+    views = View.objects.user_filter(request.user)
+    views = make_page(views, 1, 10)
+
+    multiviews = Multiview.objects.get_user_multiview(request.user)
 
     return render(request, 'customize/index.html', {
         'Sources': sources,
+        'Views': views,
     })
 
 
 @login_required()
 def source_index(request):
     q = request.GET.get('q','')
-    Sources = Data_Source.objects.user_web_filter(q, user)
+    Sources = Data_Source.objects.user_web_filter(q, request.user)
     Sources = make_page(Sources, int(request.GET.get('page',1)), 10)
     return render(request, 'customize/source/index.html', {
         'Sources': Sources,
@@ -40,6 +45,25 @@ def source_list(request):
     return render(request, 'customize/source/add.html', {
         'Sources': Sources,
         'q':q,
+    })
+
+
+@login_required()
+def source_edit(request, source_id):
+    S = get_object_or_404(Data_Source.objects.filter(pk=source_id))
+    if request.method == 'POST':
+        F = Data_Source_Form(instance=S, data=request.POST)
+        if F.is_valid():
+            F.save()
+            messages.success(request, _("Source updated with success."))
+        else:
+            for field,error in F.errors.items():
+                messages.error(request, '<b>%s</b>: %s' % (field,error))
+        return render(request, 'base/messages.html', {})
+
+    F = Data_Source_Form(instance=S)
+    return render(request, 'customize/source/edit.html', {
+        'Source_Form': F,
     })
 
 
@@ -80,3 +104,44 @@ def multiview_add(request):
     M = Multiview.objects.create(pk=request.POST['multiview_name'])
     r = ''
     return HttpResponse(jdumps(r), content_type="application/json")
+
+
+@login_required()
+def view_index(request):
+    q = request.GET.get('q','')
+    Views = Data_View.objects.user_web_filter(q, request.user)
+    Views = make_page(Views, int(request.GET.get('page',1)), 10)
+    return render(request, 'customize/view/index.html', {
+        'Views': Views,
+        'q':q,
+    })
+
+
+@login_required()
+def view_list(request):
+    q = request.GET.get('q','')
+    views = View.objects.user_web_filter(q, request.user)
+    views = make_page(views, int(request.GET.get('page',1)), 10)
+    return render(request, 'customize/view/list.html', {
+        'Views': views,
+        'q':q,
+    })
+
+
+@login_required()
+def view_edit(request, view_id):
+    V = get_object_or_404(View.objects.filter(pk=view_id))
+    if request.method == 'POST':
+        F = View_Form(instance=V, data=request.POST)
+        if F.is_valid():
+            F.save()
+            messages.success(request, _("View updated with success."))
+        else:
+            for field,error in F.errors.items():
+                messages.error(request, '<b>%s</b>: %s' % (field,error))
+        return render(request, 'base/messages.html', {})
+
+    F = View_Form(instance=V)
+    return render(request, 'customize/view/edit.html', {
+        'View_Form': F,
+    })

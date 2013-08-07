@@ -1,0 +1,21 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or view's name" %}" data-into="#view-menu" data-url="{% url 'multiviews customize view list' %}?page=1&q={{ q }}">
+
+ <ul class="unstyled">
+  {% for view in Views %}
+  <li>
+  <a class="edit-view" data-url="{% url "multiviews customize view edit" view.id %}" data-into="#edit-view-content" data-placement="left" data-original-title="{% trans "Preview" %}" data-data-url="{% url "view data" view.id %}" view-id="{{ view.id }}" data-name="{{ view.name }}">{{ view|truncatechars:"50" }}</a>
+  </li>
+  {% endfor %}
+ </ul>
+
+<div>
+ <ul class="pager">
+  {% if Views.has_previous %}
+  <li class="previous"><a class="get-page" data-into="#view-menu" data-url="{% url "multiviews customize view list" %}?page={{ Views.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+  {% endif %}
+  {% if Views.has_next %}
+  <li class="next"><a class="get-page" data-into="#view-menu" data-url="{% url "multiviews customize view list" %}?page={{ Views.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+  {% endif %}
+ </ul>
+</div>

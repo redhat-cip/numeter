@@ -1,6 +1,14 @@
 // GLOBAL VARS
 graphs = {};
+cancelable_request = [];
 res = 'Daily';
+
+// ABORT GRAPH PREVIE
+var stop_request = function() {
+  $.each( cancelable_request, function(i,xhr) {
+    xhr.abort();
+  });
+}
 
 // AJAX AND MAKE GRAPH
 var get_graph = function(view_id, into) {
@@ -59,7 +67,7 @@ var get_graph = function(view_id, into) {
 }
 
 // GET VIEW
-$(document).on('click', '.get-view', function() {
+$(document).on('click', 'view-list ul .get-view', function() {
   var view_id = $(this).attr('data-id');
   $('#graphs').html('');
   graphs = {};
@@ -87,23 +95,13 @@ $(document).on('click', '#resolution-pills li a', function() {
       for (j in data['datas']) {
         data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
       }
-      graphs[view_id][0].updateOptions({file: data['datas']})
+      graphs[view_id][0].updateOptions({
+        file: data['datas'],
+        labels: data['labels'],
+        colors: data['colors'],
+      });
     });
   });
-});
-
-// GET PAGE
-$(document).on('click', '.get-page', function() {
-  var url = $(this).attr('data-url');
-  var into = $(this).attr('data-into');
-  //var into = $(this).parentsUntil('div').parent();
-  $.ajax({type:'GET', url:url, async:true,
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $(into).html(data);
-    },
-  });
-  return false;
 });
 
 //// CUSTOMIZE MENU
@@ -134,7 +132,7 @@ $(document).on('click', '#toggle-editor', function() {
 });
 //
 // SHOW PREVIEW ON TOOLTIP
-$(document).on('mouseover', ".addable-source", function() {
+$(document).on('mouseover', "a:regex(class, get-(source|view))", function() {
   var pop = $(this);
   var url = $(this).attr('data-data-url');
   $(pop).popover({
@@ -146,7 +144,7 @@ $(document).on('mouseover', ".addable-source", function() {
 
   $(pop).popover('show');
   print_loading_gif('#preview-graph', 40, 40);
-  $.getJSON(url, function(data) {
+  xhr = $.getJSON(url, function(data) {
     for (i in data['datas']){
       data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
     }
@@ -160,11 +158,20 @@ $(document).on('mouseover', ".addable-source", function() {
       width: 300,
     });
   });
+  cancelable_request.push(xhr);
 });
-$(document).on('mouseout', ".addable-source", function() {
+$(document).on('mouseout', "a:regex(class, get-(source|view))", function() {
   $(this).popover('hide');
   $(this).popover('destroy');
+  stop_request();
 });
+
+// MENU TABS
+$(document).on('click', "#menu-tabs li a", function(e) {
+ e.preventDefault();
+ $(this).tab('show');
+});
+
 
 // SET SOURCE MODE
 $(document).on('click', "#source-mode-pills li a", function() {
@@ -180,7 +187,7 @@ $(document).on('click', "#source-mode-pills li a", function() {
 });
 // SEARCH IN LIST BY PRESS ENTER
 $(document).on('keypress', '.q', function(e) {
-  if (e.which == 13 && $(this).val().length ) {
+  if (e.which == 13 ) {
     var url = $(this).attr('data-url');
     var into = $(this).attr('data-into');
     var data = { q: $(this).val() };
@@ -193,7 +200,21 @@ $(document).on('keypress', '.q', function(e) {
   }
 });
 
-// SELECT SOURCE
+// GET PAGE
+$(document).on('click', '.get-page', function() {
+  var url = $(this).attr('data-url');
+  var into = $(this).attr('data-into');
+  //var into = $(this).parentsUntil('div').parent();
+  $.ajax({type:'GET', url:url, async:true,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $(into).html(data);
+    },
+  });
+  return false;
+});
+
+// CLICK ON SOURCE
 $(document).on('click', ".addable-source", function() {
   if ( source_mode == 'add' ) {
     $(this).toggleClass('to-add');
@@ -204,7 +225,54 @@ $(document).on('click', ".removable-source", function() {
     $(this).toggleClass('to-remove');
   }
 });
-
+// GET SOURCE
+$(document).on('click', ".get-source", function() {
+  if ( source_mode == 'normal' ) {
+    var url = $(this).attr('data-url');
+    var data_url = $(this).attr('data-data-url');
+    var into = $(this).attr('data-into');
+    var name = $(this).attr('data-name');
+    $.ajax({type:'GET', url:url, async:true,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $(into).html(data);
+        $("#edit-source-tab a").html(name)
+        $("#edit-source-tab a").tab('show');
+        $("#edit-source-tab").show(250);;
+        // ADD PREVIEW
+        print_loading_gif('#source-preview', 40, 40);
+        $.getJSON(data_url, function(data) {
+          for (i in data['datas']){
+            data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
+          }
+          g = new Dygraph(document.getElementById('source-preview'), data['datas'], {
+            labels: data['labels'],
+            colors: data['colors'],
+            pixelsPerLabel: 60,
+            gridLineWidth: 0.1,
+            labelsKMG2: true,
+            height: 150,
+            width: 300,
+          });
+        });
+      },
+    });
+  }
+});
+// EDIT SOURCE
+$(document).on('submit', "#source-form", function() {
+    var url = $(this).attr('action');
+    var form = $(this);
+    $.ajax({type:'POST', url:url, async:true,
+      data: $(this).serialize(),
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $('.messages').append(data);
+      },
+    });
+    return false;
+});
+// ACTION WHEN CLICK ON GRAPHS
 $(document).on('click', "#graphs div", function() {
   if ( $('.to-add').size() && $(this).attr('data-view-id') ) {
     var view_id = $(this).attr('data-view-id');
@@ -260,7 +328,18 @@ $(document).on('click', "#btn-remove-source", function() {
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('.messages').append(data);
+      $('.to-remove').hide(250);
       var url = graphs[view_id][1]+res;
+      $.getJSON(graphs[view_id][1]+res, function(data) {
+        for (j in data['datas']) {
+          data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
+        }
+        graphs[view_id][0].updateOptions({
+	  file: data['datas'],
+	  labels: data['labels'],
+	  colors: data['colors'],
+        });
+      });
     }
   });
 });
@@ -289,4 +368,52 @@ $(document).on('click', "#btn-add-view", function() {
       get_graph(view_id, '#graphs');
     }
   });
+});
+
+// GET VIEW
+$(document).on('click', ".edit-view", function() {
+    var url = $(this).attr('data-url');
+    var data_url = $(this).attr('data-data-url');
+    var into = $(this).attr('data-into');
+    var name = $(this).attr('data-name');
+    $(into).empty();
+    print_loading_gif(into, 60, 60);
+    $.ajax({type:'GET', url:url, async:true,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $(into).html(data);
+        $("#edit-view-tab a").html(name)
+        $("#view-mode-pills").show(250);
+        $("#edit-view-tab a").tab('show');
+        // ADD PREVIEW
+        print_loading_gif('#view-preview', 40, 40);
+        $.getJSON(data_url, function(data) {
+          for (i in data['datas']){
+            data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
+          }
+          g = new Dygraph(document.getElementById('view-preview'), data['datas'], {
+            labels: data['labels'],
+            colors: data['colors'],
+            pixelsPerLabel: 60,
+            gridLineWidth: 0.1,
+            labelsKMG2: true,
+            height: 150,
+            width: 300,
+          });
+        });
+      },
+    });
+});
+// EDIT SOURCE
+$(document).on('submit', "#view-form", function() {
+    var url = $(this).attr('action');
+    var form = $(this);
+    $.ajax({type:'POST', url:url, async:true,
+      data: $(this).serialize(),
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $('.messages').append(data);
+      },
+    });
+    return false;
 });

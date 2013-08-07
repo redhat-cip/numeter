@@ -14,6 +14,7 @@ class Data_Source_Manager(models.Manager):
             return self.filter(plugins__host__group__in=user.groups.all())
 
     def web_filter(self, q):
+        """Extended search from a string."""
         sources = self.filter(
             Q(name__icontains=q) |
             Q(plugin__name__icontains=q) |
@@ -22,7 +23,7 @@ class Data_Source_Manager(models.Manager):
         return sources
 
     def user_web_filter(self, q, user):
-        """Filter source authorized for a given user."""
+        """Extended search from a string only on authorized sources."""
         sources = self.web_filter(q)
         if user.is_superuser:
             return sources

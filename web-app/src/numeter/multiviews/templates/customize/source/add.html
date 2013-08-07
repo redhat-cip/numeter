@@ -4,7 +4,7 @@
  <ul class="unstyled">
   {% for source in Sources %}
   <li>
-   <a class="addable-source" data-placement="left" data-original-title="{% trans "Preview" %}" data-data-url="{% url "source data" source.id %}" source-id="{{ source.id }}">{{ source|truncatechars:"50" }}</a>
+  <a class="addable-source get-source" data-name="{{ source.name }}" data-placement="left" data-original-title="{% trans "Preview" %}" data-url="{% url "multiviews customize source edit" source.id %}" data-data-url="{% url "source data" source.id %}" source-id="{{ source.id }}" data-into="#edit-source-content">{{ source|truncatechars:"50" }}</a>
   </li>
   {% endfor %}
  </ul>

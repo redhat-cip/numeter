@@ -3,10 +3,12 @@
  <ul id="source-mode-pills" class="nav nav-pills">
   <li><a data-target="#list-source-content" data-source-mode="add" href="#">{% trans "Add" %}</a></li>
   <li><a data-target="#remove-source-content" data-source-mode="remove" href="#">{% trans "Remove" %}</a></li>
+  <li id="edit-source-tab" style="display: none;"><a data-target="#edit-source-content" data-source-mode="edit" href="#"></a></li>
  </ul>
 </div>
 
 <div class="tab-content">
  <div class="tab-pane" id="list-source-content">{% include "customize/source/add.html" %}</div>
  <div class="tab-pane" id="remove-source-content">{% include "customize/source/remove.html" %}</div>
+ <div class="tab-pane" id="edit-source-content"></div>
 </div>
