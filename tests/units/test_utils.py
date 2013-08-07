@@ -6,11 +6,16 @@ import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 from myRedisConnect import myRedisConnect
 class FakeRedis(myRedisConnect):
-
     def __init__(self, *args, **kwargs):
         self._error=False
-        self.zadd_data = {} if not 'zadd_data' is dir(self) else self.zadd_data
-        self.hset_data = {} if not 'hset_data' in dir(self) else self.hset_data
+        self.hset_data = self.init_hset()
+        self.zadd_data = self.init_zadd()
+
+    def init_hset(self):
+        return {}
+
+    def init_zadd(self):
+        return {}
 
     def redis_zadd(self, key, value, score, *args, **kwargs):
         if not key in self.zadd_data:

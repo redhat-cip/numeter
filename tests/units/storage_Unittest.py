@@ -188,13 +188,17 @@ class StorageTestCase(test_base.TestCase):
     def test_storage_getHostList(self):
         # Empty HOSTS in redis
         with mock.patch('numeter_storage.myRedisConnect', FakeRedis) as redis:
-            redis.hset_data = {}
             collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
             hostList = self.storage.getHostList(collectorLine)
             self.assertEqual(hostList, [])
         # 2 hosts
         with mock.patch('numeter_storage.myRedisConnect', FakeRedis) as redis:
-            redis.hset_data = {'HOSTS': {'host1': 'bar', 'host2':'foo'}}
+            initdb = redis()
+            initdb.redis_hset('HOSTS', 'host1', 'bar')
+            initdb.redis_hset('HOSTS', 'host2', 'foo')
+            def init_db(self):
+                return initdb.hset_data
+            redis.init_hset = init_db
             collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
             hostList = self.storage.getHostList(collectorLine)
             self.assertEqual(hostList, ['foo', 'bar'])
