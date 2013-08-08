@@ -3,7 +3,7 @@ graphs = {};
 cancelable_request = [];
 res = 'Daily';
 
-// ABORT GRAPH PREVIE
+// ABORT GRAPH PREVIEW
 var stop_request = function() {
   $.each( cancelable_request, function(i,xhr) {
     xhr.abort();
@@ -18,7 +18,7 @@ var get_graph = function(view_id, into) {
   res = $('#resolution-pills li.active').attr('data-value');
 
   $(into).append(graph_div);
-  $.getJSON('/multiviews/get-data/'+view_id+'?res='+res, function(data) {
+  $.getJSON('/multiviews/view/'+view_id+'/data?res='+res, function(data) {
 
     // Make date
     for (var i in data['datas']){
@@ -62,12 +62,12 @@ var get_graph = function(view_id, into) {
         },
       }
     });
-    graphs[view_id] = [g,'/multiviews/get-data/'+view_id+'?res='];
+    graphs[view_id] = [g,'/multiviews/view/'+view_id+'/data?res='];
   });
 }
 
 // GET VIEW
-$(document).on('click', 'view-list ul .get-view', function() {
+$(document).on('click', '.get-view', function() {
   var view_id = $(this).attr('data-id');
   $('#graphs').html('');
   graphs = {};
@@ -132,7 +132,7 @@ $(document).on('click', '#toggle-editor', function() {
 });
 //
 // SHOW PREVIEW ON TOOLTIP
-$(document).on('mouseover', "a:regex(class, get-(source|view))", function() {
+$(document).on('mouseover', "a:regex(class, edit-(source|view))", function() {
   var pop = $(this);
   var url = $(this).attr('data-data-url');
   $(pop).popover({
@@ -160,7 +160,7 @@ $(document).on('mouseover', "a:regex(class, get-(source|view))", function() {
   });
   cancelable_request.push(xhr);
 });
-$(document).on('mouseout', "a:regex(class, get-(source|view))", function() {
+$(document).on('mouseout', "a:regex(class, edit-(source|view))", function() {
   $(this).popover('hide');
   $(this).popover('destroy');
   stop_request();
@@ -168,6 +168,14 @@ $(document).on('mouseout', "a:regex(class, get-(source|view))", function() {
 
 // MENU TABS
 $(document).on('click', "#menu-tabs li a", function(e) {
+ e.preventDefault();
+ $(this).tab('show');
+});
+$(document).on('click', "#view-mode-pills li a", function(e) {
+ e.preventDefault();
+ $(this).tab('show');
+});
+$(document).on('click', "#multiview-mode-pills li a", function(e) {
  e.preventDefault();
  $(this).tab('show');
 });
@@ -226,7 +234,7 @@ $(document).on('click', ".removable-source", function() {
   }
 });
 // GET SOURCE
-$(document).on('click', ".get-source", function() {
+$(document).on('click', ".edit-source", function() {
   if ( source_mode == 'normal' ) {
     var url = $(this).attr('data-url');
     var data_url = $(this).attr('data-data-url');
@@ -289,6 +297,9 @@ $(document).on('click', "#graphs div", function() {
         $('.messages').append(data);
 	var url = graphs[view_id][1]+res;
         $.getJSON(url, function(data) {
+          for (j in data['datas']) {
+            data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
+          }
 	  graphs[view_id][0].updateOptions({
 	    file: data['datas'],
 	    labels: data['labels'],
@@ -370,21 +381,24 @@ $(document).on('click', "#btn-add-view", function() {
   });
 });
 
-// GET VIEW
+// EDIT VIEW
 $(document).on('click', ".edit-view", function() {
+    // SET VARS
     var url = $(this).attr('data-url');
     var data_url = $(this).attr('data-data-url');
     var into = $(this).attr('data-into');
     var name = $(this).attr('data-name');
+    // RENDER
     $(into).empty();
+    $("#edit-view-tab a").html(name)
+    $("#edit-view-tab a").show(250);
     print_loading_gif(into, 60, 60);
+    $("#edit-view-tab a").tab('show');
+    // GET FORM
     $.ajax({type:'GET', url:url, async:true,
       error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) {
         $(into).html(data);
-        $("#edit-view-tab a").html(name)
-        $("#view-mode-pills").show(250);
-        $("#edit-view-tab a").tab('show');
         // ADD PREVIEW
         print_loading_gif('#view-preview', 40, 40);
         $.getJSON(data_url, function(data) {
@@ -406,6 +420,57 @@ $(document).on('click', ".edit-view", function() {
 });
 // EDIT SOURCE
 $(document).on('submit', "#view-form", function() {
+    var url = $(this).attr('action');
+    var form = $(this);
+    $.ajax({type:'POST', url:url, async:true,
+      data: $(this).serialize(),
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $('.messages').append(data);
+      },
+    });
+    return false;
+});
+
+// EDIT MULTIVIEW
+$(document).on('click', ".edit-multiview", function() {
+    // SET VARS
+    var url = $(this).attr('data-url');
+    var data_url = $(this).attr('data-data-url');
+    var into = $(this).attr('data-into');
+    var name = $(this).attr('data-name');
+    // RENDER
+    $(into).empty();
+    $("#edit-multiview-tab a").html(name)
+    $("#edit-multiview-tab a").show(250);
+    print_loading_gif(into, 60, 60);
+    $("#edit-multiview-tab a").tab('show');
+    // GET FORM
+    $.ajax({type:'GET', url:url, async:true,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $(into).html(data);
+        // ADD PREVIEW
+        print_loading_gif('#multiview-preview', 40, 40);
+        $.getJSON(data_url, function(data) {
+          for (i in data['datas']){
+            data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
+          }
+          g = new Dygraph(document.getElementById('multiview-preview'), data['datas'], {
+            labels: data['labels'],
+            colors: data['colors'],
+            pixelsPerLabel: 60,
+            gridLineWidth: 0.1,
+            labelsKMG2: true,
+            height: 150,
+            width: 300,
+          });
+        });
+      },
+    });
+});
+// EDIT MULTIVIEW
+$(document).on('submit', "#multiview-form", function() {
     var url = $(this).attr('action');
     var form = $(this);
     $.ajax({type:'POST', url:url, async:true,

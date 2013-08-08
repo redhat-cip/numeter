@@ -1,5 +1,5 @@
 {% load i18n %}
-<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or view's name" %}" data-into="#view-menu" data-url="{% url 'multiviews customize view list' %}?page=1&q={{ q }}">
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or view's name" %}" data-into="#list-multiview-content" data-url="{% url 'multiviews customize view list' %}?page=1&q={{ q }}">
 
  <ul class="unstyled">
   {% for view in Views %}

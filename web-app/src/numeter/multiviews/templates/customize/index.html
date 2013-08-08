@@ -6,14 +6,15 @@
   <ul id="menu-tabs" class="nav nav-pills">
    <li class="active"><a data-target="#source-menu" data-url="{% url "multiviews customize source index" %}">{% trans "Sources" %}</a></li>
    <li><a data-target="#view-menu" data-url="{% url "multiviews customize view index" %}">{% trans "View" %}</a></li>
-   <li data-url="{# url "multiviews customize multiview index" #}"><a href="#">{% trans "Multiview" %}</a></li>
-   <li data-url="{# url "multiviews customize event index" #}"><a href="#">{% trans "Events" %}</a></li>
+   <li><a data-target="#multiview-menu" data-url="{% url "multiviews customize multiview index" %}">{% trans "Multiview" %}</a></li>
+   <!-- <li data-url="{# url "multiviews customize event index" #}"><a href="#">{% trans "Events" %}</a></li> --!>
   </ul>
  </div>
 
  <div class="tab-content">
   <div class="tab-pane active" id="source-menu">{% include "customize/source/index.html" %}</div>
   <div class="tab-pane" id="view-menu">{% include "customize/view/index.html" %}</div>
+  <div class="tab-pane" id="multiview-menu">{% include "customize/multiview/index.html" %}</div>
  </div>
 
 </div>

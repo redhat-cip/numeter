@@ -26,7 +26,7 @@ class View_Manager(models.Manager):
         views = self.web_filter(q)
         if user.is_superuser:
             return views
-        return sources.filter(sources__plugins__host__group__in=user.groups.all())
+        return views.filter(sources__plugins__host__group__in=user.groups.all())
 
 
 class View(models.Model):
@@ -119,21 +119,27 @@ class View(models.Model):
 
 
 class Multiview_Manager(models.Manager):
-    def web_filter(self, q):
-        if not q:
-            return self.all()
-        multiviews = self.filter(
-            Q(name__icontains=q) |
-            Q(views__name__icontains=q)
-        )
-        return multiviews
-
-    # TODO : Rename filter_user_multiview
-    def get_user_multiview(self, user):
+    def user_filter(self, user):
+        """Filter multiviews authorized for a given user."""
         if user.is_superuser:
             return self.all()
         else:
-            return self.filter(views__sources__plugins__host__group__in=user.groups.all())
+            return self.filter(views__plugins__host__group__in=user.groups.all())
+
+    def web_filter(self, q):
+        """Extended search from a string."""
+        views = self.filter(
+            Q(name__icontains=q) |
+            Q(views__name__icontains=q)
+        )
+        return views
+
+    def user_web_filter(self, q, user):
+        """Extended search from a string only on authorized multiviews."""
+        views = self.web_filter(q)
+        if user.is_superuser:
+            return views
+        return views.filter(sources__plugins__host__group__in=user.groups.all())
 
 
 class Multiview(models.Model):
@@ -167,6 +173,9 @@ class Multiview(models.Model):
 
     def get_list_url(self):
         return reverse('multiview list')
+
+    def get_customize_edit_url(self):
+        return reverse('multiviews customize multiview edit', args=[self.id])
 
 
 class Event(models.Model):

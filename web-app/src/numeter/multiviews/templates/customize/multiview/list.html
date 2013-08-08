@@ -1,0 +1,21 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or multiview's name" %}" data-into="#list-multiview-content" data-url="{% url 'multiviews customize multiview list' %}?page=1&q={{ q }}">
+
+ <ul class="unstyled">
+  {% for multiview in Multiviews %}
+  <li>
+  <a class="edit-multiview" data-url="{{ multiview.get_customize_edit_url }}" data-into="#edit-multiview-content" multiview-id="{{ multiview.id }}" data-name="{{ multiview.name }}">{{ multiview|truncatechars:"50" }}</a>
+  </li>
+  {% endfor %}
+ </ul>
+
+<div>
+ <ul class="pager">
+  {% if Multiviews.has_previous %}
+  <li class="previous"><a class="get-page" data-into="#multiview-menu" data-url="{% url "multiviews customize multiview list" %}?page={{ Multiviews.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+  {% endif %}
+  {% if Multiviews.has_next %}
+  <li class="next"><a class="get-page" data-into="#multiview-menu" data-url="{% url "multiviews customize multiview list" %}?page={{ Multiviews.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+  {% endif %}
+ </ul>
+</div>

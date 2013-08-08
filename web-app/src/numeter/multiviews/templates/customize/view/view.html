@@ -1,0 +1,19 @@
+{% load i18n %}
+<form id="view-form" class="ajax-form" action="{{ View_Form.instance.get_update_url }}" method="POST">
+ {% csrf_token %}
+ <fieldset>
+  {% for field in View_Form %}
+   {{ field }}
+  {% endfor %}
+
+  {% if View_Form.instance.id %}
+   <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
+   <button class="btn btn-danger btn-ajax" data-into=".messages" data-url="{{ View_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+  {% else %}
+   <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
+  {% endif %}
+
+  <hr>
+  <div id="view-preview"></div>
+ </fieldset>
+</form>
