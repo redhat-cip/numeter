@@ -79,7 +79,7 @@ class Data_Source(models.Model):
         r_data['colors'].append("#%s" % md5(self.name).hexdigest()[:6])
         # Walk on date for mix datas
         cur_date = r['TS_start']
-        step = r['TS_step'] * 60
+        step = r['TS_step']
         for v in zip(*datas):
             r_data['datas'].append((cur_date,) + v)
             cur_date += step

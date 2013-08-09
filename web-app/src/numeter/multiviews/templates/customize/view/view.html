@@ -8,12 +8,14 @@
 
   {% if View_Form.instance.id %}
    <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
-   <button class="btn btn-danger btn-ajax" data-into=".messages" data-url="{{ View_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+   <button id="btn-delete-view" class="btn btn-danger" data-id="{{ View_Form.instance.id }}" data-into=".messages" data-url="{{ View_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
   {% else %}
    <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
   {% endif %}
 
+  {% if View_Form.instance.id %}
   <hr>
   <div id="view-preview"></div>
+  {% endif %}
  </fieldset>
 </form>

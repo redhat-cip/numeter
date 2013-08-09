@@ -98,7 +98,7 @@ $(document).on('click', '.accordion-category', function() {
 // GET PLUGIN
 $(document).on('click', '.get-plugin', function() {
   var plugin = $(this).attr('plugin-name');
-  var host = $('.accordion-body a').attr('host-id');
+  var host = $(this).parent().parent().parent().parent().parent().parent().parent().children('.accordion-host').attr('host-id');
   $('#graphs').html('');
   get_graph(host, plugin, '#graphs');
 });

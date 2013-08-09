@@ -111,7 +111,7 @@ class View(models.Model):
             datas.insert(0, warning_data)
         # Walk on date for mix datas
         cur_date = r['TS_start']
-        step = r['TS_step'] * 60
+        step = r['TS_step']
         for v in zip(*datas):
             r_data['datas'].append((cur_date,) + v)
             cur_date += step

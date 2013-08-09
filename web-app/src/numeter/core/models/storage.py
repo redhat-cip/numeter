@@ -189,7 +189,7 @@ class Storage(models.Model):
 
         _url = self.URLS[url].format(**data)
         uri = ("%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__) + _url
-        #print uri
+        print uri
         logger.info('STORAGE-GET %s' % uri)
         r = self.proxy.open(uri, timeout=settings.STORAGE_TIMEOUT).read()
         return jloads(r)
@@ -231,6 +231,7 @@ class Storage(models.Model):
         for p in self.get_plugins(hostid):
             if p['Plugin'].lower() == plugin.lower():
                 return p['Infos'].keys()
+        return []
 
     def get_data(self, **data):
         return self._connect('data', data)

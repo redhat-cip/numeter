@@ -83,6 +83,7 @@ class Host(models.Model):
     def get_data_dygraph(self, **data):
         data['hostid'] = self.hostid
         # Get data sources name
+        print self.get_plugin_data_sources(data['plugin'])
         data['ds'] = ','.join(self.get_plugin_data_sources(data['plugin']))
         r = self.storage.get_data(**data)
         # Dict sent in AJAX
