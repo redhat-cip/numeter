@@ -12,6 +12,7 @@ import logging
 import sys
 from numeterQueue import NumeterQueueP
 from cachelastvalue import CacheLastValue
+from storeandforward import StoreAndForward
 
 import pprint # Debug (dumper)
 
@@ -38,6 +39,7 @@ class myPoller:
         self._redis_data_expire_time = 120
         self._redis_port             = 6379
         self._redis_host             = "127.0.0.1"
+        self._queue_addr             = "amqp://localhost:5672//"
         self._plugin_number          = 0
         self.disable_pollerTimeToGo  = False
         self._cache = None
@@ -54,6 +56,9 @@ class myPoller:
         # Init cache
         self._cache = CacheLastValue(cache_file='/dev/shm/numeter_poller_cache.json',
                                logger='numeter')
+        # Init StoreAndForward
+        self._store_and_forward = StoreAndForward(cache_file='/dev/shm/numeter_poller_storeandforward.json',
+                                 logger='numeter')
 
 
     def startPoller(self):
@@ -83,8 +88,14 @@ class myPoller:
         # load cache for DERIVE and other
         self._cache.load_cache()
 
+        # Load store and forward
+        self._store_and_forward.load_cache()
+
         # Lancement des modules + écriture des data dans redis
         self.loadModules()
+
+        # Dump store and forward
+        self._store_and_forward.dump_cache()
 
         # Refresh cache file
         self._cache.dump_cache()
@@ -145,6 +156,7 @@ class myPoller:
                                     value=data['Values'][ds_name])
                             # Replace value by gap for try
                             data['Values'][ds_name] = gap
+
                     dataJson = self.convertToJson(data)
                     self._logger.info("Write TimeStamp " + data["TimeStamp"]
                                       + " -- plugin : " + data["Plugin"] )
@@ -155,12 +167,19 @@ class myPoller:
                     self._redis_connexion.redis_zadd("DATAS",
                                                      dataJson,
                                                      int(data["TimeStamp"]))
-                    # send data in queue
-                    self.sendMsg(msgType='DATA',
-                                 plugin=data["Plugin"],
-                                 msgContent=data)
+                    # send data in queue (if fail store)
+                    last_send_status = self._store_and_forward_sendMsg(msgType='DATA',
+                                                    plugin=data["Plugin"],
+                                                    msgContent=data)
                     allTimeStamps.append(data["TimeStamp"])
                     self._plugin_number = self._plugin_number + 1
+            # Send stored datas
+            if last_send_status:
+                for msg in self._store_and_forward.consume():
+                    if not self._store_and_forward_sendMsg(msgType=msg['msgType'],
+                                 plugin=msg['plugin'],
+                                 msgContent=msg['msgContent']):
+                        break
             # Write all timeStamps
             seen = []
             for timeStamp in allTimeStamps:
@@ -170,16 +189,29 @@ class myPoller:
                                                      int(timeStamp))
                     seen.append(timeStamp)
 
-    def sendMsg(self, msgType, plugin, msgContent):
-        queue = NumeterQueueP(pool=['amqp://localhost:5672//'],
+    def _store_and_forward_sendMsg(self, msgType, plugin, msgContent):
+        last_status = self._sendMsg(msgType, plugin, msgContent)
+        if not last_status:
+            self._store_and_forward.add_message(msgType,
+                                                plugin,
+                                                msgContent)
+            return False
+        return True
+
+
+    def _sendMsg(self, msgType, plugin, msgContent):
+        queue = NumeterQueueP(pool=[self._queue_addr],
                               pooltype='F',
                               exchanger='numeter',
                               type='topic')
+        routing_key = '%s.%s.%s' % (self._myInfo_hostID, msgType, plugin)
         try:
-            queue.send('%s.%s.%s' % (self._myInfo_hostID, msgType, plugin),
-                   msgContent)
+            queue.send(routing_key, msgContent)
+            return True
         except:
-            self._logger.critical("Send message error : %s" % str(sys.exc_info()))
+            self._logger.warning("Send message %s error : %s - Adding to store and forward file"
+                                 % (routing_key, str(sys.exc_info())))
+            return False
 
 
     def writeInfo(self, allInfos):
@@ -201,11 +233,16 @@ class myPoller:
                     self._logger.debug("Write info -- plugin : "
                                        + info["Plugin"]
                                        + " -- value :" + str(info))
+                    # write info in redis
                     self._redis_connexion.redis_hset("INFOS",
                                                      info["Plugin"],
                                                      infoJson)
+                    # send info in queue (if fail store)
+                    last_send_status = self._store_and_forward_sendMsg(msgType='INFO',
+                                                    plugin=info["Plugin"],
+                                                    msgContent=info)
                     writedInfos.append(info["Plugin"])
-                    # Keep cache for DERIVE and other
+                    # Say keep cache for DERIVE and other
                     # Do not try to cache MyInfo
                     if info["Plugin"] is 'MyInfo':
                         continue
@@ -460,6 +497,11 @@ class myPoller:
         and self._configParse.getint('global', 'plugins_refresh_time'):
             self._plugins_refresh_time = self._configParse.getint('global', 'plugins_refresh_time')
             self._logger.info("Config : plugins_refresh_time = " + str(self._plugins_refresh_time))
+        # queue_addr
+        if self._configParse.has_option('global', 'queue_addr') \
+        and self._configParse.get('global', 'queue_addr'):
+            self._queue_addr = self._configParse.get('global', 'queue_addr')
+            self._logger.info("Config : queue_addr = " + self._queue_addr)
         # redis_host
         if self._configParse.has_option('global', 'redis_host') \
         and self._configParse.get('global', 'redis_host'):
