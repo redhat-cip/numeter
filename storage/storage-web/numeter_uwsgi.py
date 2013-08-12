@@ -5,8 +5,10 @@ from myRedisConnect import myRedisConnect
 import ConfigParser
 from flask import Flask, request
 import json
-import rrdtool
+#import rrdtool
+import whisper
 import os
+import time
 
 baseURL="/numeter-storage"
 
@@ -163,13 +165,13 @@ def data():
 
             # Set startpoint for resolution
             if resolution == "Daily":
-                startPoint = '-24h'
+                startPoint = 86400
             elif resolution == "Weekly":
-                startPoint = '-7day'
+                startPoint = 604800
             elif resolution == "Monthly":
-                startPoint = '-31day'
+                startPoint = 18748800
             elif resolution == "Yearly":
-                startPoint = '-1y'
+                startPoint = 224985600
 
             # Fetch all ds :
             VALUES_JSON=[]
@@ -177,9 +179,8 @@ def data():
 
                 # Fetch rrd
                 # ((1335530280, 1335530640, 60), ('_dev_shm',), [(None,), (None,), (None,), (None,)])
-                if os.path.isfile(str(path+'/'+plugin+'/'+ds+'.rrd')):
-                    result_rrd = rrdtool.fetch( str(path+'/'+plugin+'/'+ds+'.rrd'),
-                                            'AVERAGE', '-s '+startPoint, '-e N')
+                if os.path.isfile(str(path+'/'+plugin+'/'+ds+'.wsp')):
+                   result_rrd = whisper.fetch(str(path+'/'+plugin+'/'+ds+'.wsp'), time.time() - startPoint, time.time()) 
                 else:
                     return "{}"
 
@@ -193,11 +194,11 @@ def data():
 
                 # Format the list of value in [0,1,2,null]
                 tmp_data=[]
-                for value in result_rrd[2]:
-                    if value[0] == None:
+                for value in result_rrd[1]:
+                    if value == None:
                         tmp_data.append("null")
                     else:
-                        tmp_data.append(value[0])
+                        tmp_data.append(value)
                 # Trick for join null string and int
                 joined_values = ', '.join(["%s" % el for el in tmp_data]) 
                 # stock values
