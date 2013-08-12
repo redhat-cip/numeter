@@ -19,7 +19,10 @@ import random
 import subprocess # Clean old rrd
 
 #Python-rrdtool
-import rrdtool
+#import rrdtool
+
+#Python-whisper
+import whisper
 
 
 import pprint # Debug (dumper)
@@ -55,10 +58,10 @@ class myStorage:
         self._redis_storage_password          = None
         self._redis_storage_host              = "127.0.0.1"
         self._redis_storage_db                = 0
-        self._rrd_path                        = "/opt/numeter/rrd"
-        self._rrd_path_md5_char               = 2
-        self._rrd_clean_time                  = 48 # 48h
-        self._rrd_delete                      = False
+        self._wsp_path                        = "/opt/numeter/wsp"
+        self._wsp_path_md5_char               = 2
+        self._wsp_clean_time                  = 48 # 48h
+        self._wsp_delete                      = False
         self._redis_collector_port            = 6379
         self._redis_collector_timeout         = 10
         self._collectorList                   = []
@@ -320,26 +323,26 @@ class myStorage:
         and self._configParse.getint('global', 'redis_storage_db'):
             self._redis_storage_db = self._configParse.getint('global', 'redis_storage_db')
             self._logger.info("Config : redis_storage_db = "+str(self._redis_storage_db))
-        # rrd_path
-        if self._configParse.has_option('global', 'rrd_path') \
-        and self._configParse.get('global', 'rrd_path'):
-            self._rrd_path = self._configParse.get('global', 'rrd_path')
-            self._logger.info("Config : rrd_path = "+self._rrd_path)
-        # rrd_path_md5_char
-        if self._configParse.has_option('global', 'rrd_path_md5_char') \
-        and self._configParse.getint('global', 'rrd_path_md5_char'):
-            self._rrd_path_md5_char = self._configParse.getint('global', 'rrd_path_md5_char')
-            self._logger.info("Config : rrd_path_md5_char = "+str(self._rrd_path_md5_char))
-        # rrd_delete
-        if self._configParse.has_option('global', 'rrd_delete') \
-        and self._configParse.getboolean('global', 'rrd_delete'):
-            self._rrd_delete = self._configParse.getboolean('global', 'rrd_delete')
-            self._logger.info("Config : rrd_delete = "+str(self._rrd_delete))
-        # rrd_clean_time
-        if self._configParse.has_option('global', 'rrd_clean_time') \
-        and self._configParse.getint('global', 'rrd_clean_time'):
-            self._rrd_clean_time = self._configParse.getint('global', 'rrd_clean_time')
-            self._logger.info("Config : rrd_clean_time = "+str(self._rrd_clean_time))
+        # wsp_path
+        if self._configParse.has_option('global', 'wsp_path') \
+        and self._configParse.get('global', 'wsp_path'):
+            self._wsp_path = self._configParse.get('global', 'wsp_path')
+            self._logger.info("Config : wsp_path = "+self._wsp_path)
+        # wsp_path_md5_char
+        if self._configParse.has_option('global', 'wsp_path_md5_char') \
+        and self._configParse.getint('global', 'wsp_path_md5_char'):
+            self._wsp_path_md5_char = self._configParse.getint('global', 'wsp_path_md5_char')
+            self._logger.info("Config : wsp_path_md5_char = "+str(self._wsp_path_md5_char))
+        # wsp_delete
+        if self._configParse.has_option('global', 'wsp_delete') \
+        and self._configParse.getboolean('global', 'wsp_delete'):
+            self._wsp_delete = self._configParse.getboolean('global', 'wsp_delete')
+            self._logger.info("Config : wsp_delete = "+str(self._wsp_delete))
+        # wsp_clean_time
+        if self._configParse.has_option('global', 'wsp_clean_time') \
+        and self._configParse.getint('global', 'wsp_clean_time'):
+            self._wsp_clean_time = self._configParse.getint('global', 'wsp_clean_time')
+            self._logger.info("Config : wsp_clean_time = "+str(self._wsp_clean_time))
 
         # redis_collector_port
         if self._configParse.has_option('collector', 'redis_collector_port') \
@@ -470,227 +473,65 @@ class myStorage:
 
 
 
-    def writePyrrd(self, sortedTS, hostAllDatas, host, baseRRDPath):
-        "Write rrd with python-pyrrd"
+    def writewsp(self, sortedTS, hostAllDatas, host, basewspPath):
+        "Write wsp with python-whisper"
 
         # For each plugin
         for plugin in hostAllDatas["Infos"]:
             if plugin == "MyInfo":
                 continue
 
-            rrdOpen=None
-
             # For each DS
             if not hostAllDatas["Infos"][plugin].has_key("Infos"):
-                self._logger.error("writePyrrd host : " + host 
+                self._logger.error("writewsp host : " + host 
                     + " Plugin : " + plugin
                     + " don't have Infos, can't write data")
                 continue
             for DSname in hostAllDatas["Infos"][plugin]["Infos"]:
                 DSname = str(DSname)
 
-                # Create rrd file - config rrd here
-                rrdPath = str(baseRRDPath+"/"+plugin)
+                # Create wsp file - config wsp here
+                wspPath = str(basewspPath+"/"+plugin)
 
-                if not os.path.isfile(rrdPath+"/"+DSname+".rrd"):
-                    self._logger.warning("writePyrrd host : " + host 
-                        + " Create rrd file : "+rrdPath+"/"+DSname+".rrd")
-                    dss = []
-                    rras = []
-                    # Add DS
-                    DStype =  str(hostAllDatas["Infos"][plugin]["Infos"][DSname].get("type","GAUGE"))
-                    # Check rrd type
-                    if  DStype != "GAUGE" and DStype != "COUNTER" \
-                    and DStype != "DERIVE" and DStype != "ABSOLUTE" :
-                        DStype = "GAUGE"
-                    RRDheartbeat = 160
-                    RRDstep=60
-                    RRAxff=0.5
-                    # Fixe ERROR: Invalid DS name for long ds name
-                    ds = DS(dsName='42', dsType=DStype, heartbeat=RRDheartbeat)
-#                    ds = DS(dsName=DSname, dsType=DStype, heartbeat=RRDheartbeat)
-                    dss.append(ds)
-                    # add RRA
-                    # --- Daily (1 Minute Average)
-                    rra1     = RRA(cf='AVERAGE', xff=RRAxff, steps=1, rows=1440)
-                    rra2     = RRA(cf='LAST', xff=RRAxff, steps=1, rows=1440)
-                    rra3     = RRA(cf='MIN', xff=RRAxff, steps=1, rows=1440)
-                    rra4     = RRA(cf='MAX', xff=RRAxff, steps=1, rows=1440)
-                    rras.extend([rra1, rra2, rra3, rra4])
-                    # --- Weekly (5 Minute Average)
-                    rra1     = RRA(cf='AVERAGE', xff=RRAxff, steps=5, rows=2016)
-                    rra2     = RRA(cf='LAST', xff=RRAxff, steps=5, rows=2016)
-                    rra3     = RRA(cf='MIN', xff=RRAxff, steps=5, rows=2016)
-                    rra4     = RRA(cf='MAX', xff=RRAxff, steps=5, rows=2016)
-                    rras.extend([rra1, rra2, rra3, rra4])
-                    # --- Monthly (10 Min Average)
-                    rra1     = RRA(cf='AVERAGE', xff=RRAxff, steps=10, rows=4608)
-                    rra2     = RRA(cf='LAST', xff=RRAxff, steps=10, rows=4608)
-                    rra3     = RRA(cf='MIN', xff=RRAxff, steps=10, rows=4608)
-                    rra4     = RRA(cf='MAX', xff=RRAxff, steps=10, rows=4608)
-                    rras.extend([rra1, rra2, rra3, rra4])
-                    # --- Yearly (1 Hour Average)
-                    rra1     = RRA(cf='AVERAGE', xff=RRAxff, steps=60, rows=8784)
-                    rra2     = RRA(cf='LAST', xff=RRAxff, steps=60, rows=8784)
-                    rra3     = RRA(cf='MIN', xff=RRAxff, steps=60, rows=8784)
-                    rra4     = RRA(cf='MAX', xff=RRAxff, steps=60, rows=8784)
-                    rras.extend([rra1, rra2, rra3, rra4])
+                if not os.path.isfile(wspPath+"/"+DSname+".wsp"):
+                    self._logger.warning("writewsp host : " + host 
+                        + " Create wsp file : "+wspPath+"/"+DSname+".wsp")
                     # Create directory
-                    if not os.path.exists(rrdPath):
+                    if not os.path.exists(wspPath):
                         try:
-                            os.makedirs(rrdPath)
-                            self._logger.info("writePyrrd host : " + host \
-                            + " make directory :" + rrdPath)
+                            os.makedirs(wspPath)
+                            self._logger.info("writewsp host : " + host \
+                            + " make directory :" + wspPath)
                         except OSError:
-                            self._logger.error("writePyrrd host : " + host \
-                            + " can't make directory :" + rrdPath)
+                            self._logger.error("writewsp host : " + host \
+                            + " can't make directory :" + wspPath)
                             continue
                     try:
-                        # Create rrd
-                        rrdOpen = RRD(rrdPath+"/"+DSname+".rrd", ds=dss,
-                                     rra=rras, start=1178143200, step=RRDstep)
-                        rrdOpen.create()
+                        whisper.create(wspPath+"/"+DSname+".wsp",[(60, 1440),(300, 2016),(600, 4608),(3600, 8784)])
                     except Exception as e:
-                        self._logger.error("writePyrrd host : " + host
-                            + " Create rrd Error "
-                            + str(e))
-                        continue
-                else :
-                    try:
-                        rdOpen = RRD(rrdPath+"/"+DSname+".rrd")
-                        self._logger.debug("writePyrrd host : " + host 
-                            + " Update rrd file : "+rrdPath)
-                    except Exception as e:
-                        # Add delete rrd if update error ? (bad format)
-                        self._logger.error("writePyrrd host : " + host
-                            + " Open rrd Error "
+                        self._logger.error("writewsp host : " + host
+                            + " Create wsp Error "
                             + str(e))
                         continue
 
                 ## For each TS
                 for TS in sortedTS:
                     try:
-                        rrdOpen.bufferValue(TS,
-                            str(hostAllDatas["Datas"][plugin][TS][DSname]))
+                        self._logger.error("writewsp host : " + host
+                                + " Update wsp DEBUG Timestamp "
+                                + str(TS) 
+                                + " For value "
+                                + str(hostAllDatas["Datas"][plugin][TS][DSname])
+                                + " in file "
+                                + str(wspPath+"/"+DSname+".wsp"))
+                        whisper.update(wspPath+"/"+DSname+".wsp", 
+                            str(hostAllDatas["Datas"][plugin][TS][DSname]), str(TS) )
                     except Exception as e:
-                        self._logger.error("writePyrrd host : " + host
-                            + " Update buffer Error "
+                        self._logger.error("writewsp host : " + host
+                            + " Update Error "
                             + str(e))
                         continue
-    
-                #Updater du rrd
-                try:
-                    rrdOpen.update()
-                except Exception as e:
-                    self._logger.error("writePyrrd host : " + host
-                        + " Update Error "
-                        + str(e))
-                    continue
         return True
-
-
-    def writeRrdtool(self, sortedTS, hostAllDatas, host, baseRRDPath):
-        "Write rrd with python-rrdtool"
-
-        # For each plugin
-        for plugin in hostAllDatas["Infos"]:
-            if plugin == "MyInfo":
-                continue
-
-            rrdOpen=None
-
-            # For each DS
-            if not hostAllDatas["Infos"][plugin].has_key("Infos"):
-                self._logger.error("writerrdtool host : " + host 
-                    + " Plugin : " + plugin
-                    + " don't have Infos, can't write data")
-                continue
-            for DSname in hostAllDatas["Infos"][plugin]["Infos"]:
-
-                DSname = str(DSname)
-
-                # Create rrd file - config rrd here
-                rrdPath = str(baseRRDPath+"/"+plugin)
-                if not os.path.isfile(rrdPath+"/"+DSname+".rrd"):
-                    self._logger.warning("writerrdtool host : " + host 
-                        + " Create rrd file : "+rrdPath+"/"+DSname+".rrd")
-
-                    # Add DS
-                    DStype = str(hostAllDatas["Infos"][plugin]["Infos"][DSname].get("type","GAUGE"))
-                    if  DStype != "GAUGE" and DStype != "COUNTER" \
-                    and DStype != "DERIVE" and DStype != "ABSOLUTE" :
-                        DStype = "GAUGE"
-                    RRDheartbeat = "160"
-                    RRDstep = "60"
-                    RRAxff = "0.5"
-                    # Create directory
-                    if not os.path.exists(rrdPath):
-                        try:
-                            os.makedirs(rrdPath)
-                            self._logger.info("writerrdtool host : " + host \
-                            + " make directory :" + rrdPath)
-                        except OSError:
-                            self._logger.error("writerrdtool host : " + host \
-                            + " can't make directory :" + rrdPath)
-
-                    # Create rrd
-                    try:
-                        rrdOpen = rrdtool.create(rrdPath+"/"+DSname+".rrd",
-                         "--step", RRDstep, 
-                         "--start", "1178143200",
-                         "DS:42:"+DStype+":"+RRDheartbeat+":U:U", # Fixe ERROR: Invalid DS name for long ds name
-                         # "DS:"+DSname+":"+DStype+":"+RRDheartbeat+":U:U",
-                         "RRA:AVERAGE:"+RRAxff+":1:1440", # --- Daily (1 Minute Average)
-                         "RRA:LAST:"+RRAxff+":1:1440",
-                         "RRA:MIN:"+RRAxff+":1:1440",
-                         "RRA:MAX:"+RRAxff+":1:1440",
-                         "RRA:AVERAGE:"+RRAxff+":5:2016", # --- Weekly (5 Minute Average)
-                         "RRA:LAST:"+RRAxff+":5:2016",
-                         "RRA:MIN:"+RRAxff+":5:2016",
-                         "RRA:MAX:"+RRAxff+":5:2016",
-                         "RRA:AVERAGE:"+RRAxff+":10:4608", # --- Monthly (10 Min Average)
-                         "RRA:LAST:"+RRAxff+":10:4608",
-                         "RRA:MIN:"+RRAxff+":10:4608",
-                         "RRA:MAX:"+RRAxff+":10:4608",
-                         "RRA:AVERAGE:"+RRAxff+":60:8784", # --- Yearly (1 Hour Average)
-                         "RRA:LAST:"+RRAxff+":60:8784",
-                         "RRA:MIN:"+RRAxff+":60:8784",
-                         "RRA:MAX:"+RRAxff+":60:8784")
-                    except Exception as e:
-                        self._logger.error("writerrdtool host : " + host
-                            + " Create rrd Error "
-                        + str(e))
-                        continue
-
-                self._logger.info("writerrdtool host : " + host
-                        + " Update rrd file : "+rrdPath+"/"+DSname+".rrd")
-
-                ## For each TS
-                rrdUpdateBuffer = []
-                for TS in sortedTS:
-                    try:
-                        rrdUpdateBuffer.append(str(TS) + ':'
-                            + str(hostAllDatas["Datas"][plugin][TS][DSname]))
-                    except Exception:
-                        continue
-
-                self._logger.debug("writerrdtool host : " + host
-                    + " Update rrd file : " + rrdPath + "/" + DSname
-                    + " Datas : " + str(rrdUpdateBuffer))
-
-                #Updater du rrd
-                if rrdUpdateBuffer != []:
-                    try:
-                        rrdOpen = rrdtool.update(str(rrdPath+"/"+DSname+".rrd"),
-                                     rrdUpdateBuffer)
-                    except Exception as e:
-                        self._logger.error("writerrdtool host : " + host
-                            + " Error "
-                            + str(e))
-                        continue
-
-        return True
-
 
 
     def getInfos(self,redisCollector,host):
@@ -765,8 +606,8 @@ class myStorage:
             hostIDHash = ""
             hostIDHash = hashlib.md5()
             hostIDHash.update(hostID)
-            # Get X first char in md5 sum X=_rrd_path_md5_char 
-            hostIDHash = hostIDHash.hexdigest()[0:self._rrd_path_md5_char]
+            # Get X first char in md5 sum X=_wsp_path_md5_char 
+            hostIDHash = hostIDHash.hexdigest()[0:self._wsp_path_md5_char]
             # Update redis CLIENTS
             self._redis_connexion.redis_hset("HOST_ID",hostID,hostIDHash)
             # Log
@@ -781,7 +622,7 @@ class myStorage:
         hostInfos["MyInfo"]["HostIDFiltredName"] = re.sub("[ \"/.']","",hostID)
 
         # Write client infos in redis
-        rrdPath = str(self._rrd_path + "/" + hostIDHash + "/"
+        rrdPath = str(self._wsp_path + "/" + hostIDHash + "/"
                       + hostInfos["MyInfo"]["HostIDFiltredName"])
 
         self._redis_connexion.redis_hset("RRD_PATH", hostID, rrdPath)
@@ -894,7 +735,7 @@ class myStorage:
         toDelete=list(set(currentPlugin)-set(writedInfos))
 
         # Clean notify
-        if not self._rrd_delete: 
+        if not self._wsp_delete: 
             # Clean reappeared plugin 
             for plugin in writedInfos:
                 self._redis_connexion.redis_hdel("DELETED_PLUGINS",hostID
@@ -912,7 +753,7 @@ class myStorage:
                 self._logger.error("Redis - Clean info -- "
                     + "Can't get rrd path for " + hostID + " stop")
                 return
-            if self._rrd_delete: # Erase rrd
+            if self._wsp_delete: # Erase rrd
                 for plugin in toDelete:
                     self._logger.warning("Redis - Clean info -- delete "
                         + rrdPath + "/"+plugin)
@@ -947,7 +788,7 @@ class myStorage:
         toDelete=list(set(currentHosts)-set(writedHosts))
 
         # Clean notify
-        if not self._rrd_delete: 
+        if not self._wsp_delete: 
             # Clean reappeared hosts 
             for hostID in writedHosts:
                 self._redis_connexion.redis_hdel("DELETED_HOSTS",hostID)
@@ -967,7 +808,7 @@ class myStorage:
                         + "Can't get rrd path for " + hostID + " stop")
                     continue
 
-                if self._rrd_delete: # Erase rrd
+                if self._wsp_delete: # Erase rrd
                     self._logger.warning("Redis - Clean hosts -- delete rrd "
                         + rrdPath)
                     # Delete rrd
@@ -999,23 +840,23 @@ class myStorage:
         nowTimestamp = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H'))
 
         if lastFetch == None  \
-        or (int(lastFetch)+(self._rrd_clean_time*60*60)) <= int(nowTimestamp) \
+        or (int(lastFetch)+(self._wsp_clean_time*60*60)) <= int(nowTimestamp) \
         or not re.match("^[0-9]{10}$",lastFetch):
             rrdDelete = []
 
             # Set the new time
             self._redis_connexion.redis_set("LAST_RRD_CLEAN",nowTimestamp)
 
-            if not os.path.isdir(self._rrd_path):
+            if not os.path.isdir(self._wsp_path):
                 self._logger.warning("Clean old RRD -- path rrd "
-                    + self._rrd_path + " not found")
+                    + self._wsp_path + " not found")
                 return []
 
-            if self._rrd_delete: # Erase rrd
+            if self._wsp_delete: # Erase rrd
 
                 # Delete rrd
-                process = subprocess.Popen("find " + self._rrd_path 
-                + " -mmin +" + str(self._rrd_clean_time*60) 
+                process = subprocess.Popen("find " + self._wsp_path 
+                + " -mmin +" + str(self._wsp_clean_time*60) 
                 + " -type f" 
                 + " -print" 
                 + " -delete" , shell=True, stdout=subprocess.PIPE)
@@ -1025,7 +866,7 @@ class myStorage:
                 rrdDelete = result.split()
 
                 # Clean empty dirs
-                process = subprocess.Popen("find " + self._rrd_path 
+                process = subprocess.Popen("find " + self._wsp_path 
                 + " -type d"
                 + " -empty" 
                 + " -print"
@@ -1036,8 +877,8 @@ class myStorage:
                 return rrdDelete
 
             else : # Just notify
-                process = subprocess.Popen("find " + self._rrd_path
-                    + " -mmin +" + str(self._rrd_clean_time*60)
+                process = subprocess.Popen("find " + self._wsp_path
+                    + " -mmin +" + str(self._wsp_clean_time*60)
                     + " -type f", shell=True, stdout=subprocess.PIPE)
                 (result, stderr) =  process.communicate()
                 self._logger.info("Clean old RRD -- notify OLD_RRD : "
@@ -1055,7 +896,7 @@ class myStorage:
 
 
 
-    def workerRedis(self,threadId, sema,collectorLine,hostsList=[],simulateFileOpen=None):
+    def worker(self,threadId, sema,collectorLine,hostsList=[],simulateFileOpen=None):
         "Thread"
         #time.sleep(0)  # Debug add time
         simulateBuffer=[]
@@ -1118,10 +959,10 @@ class myStorage:
                     + hostID + " getData empty")
                 continue
             else:
-                # Write rrd
+                # Write wsp 
                 self._logger.info( "Worker " + str(threadId) + " host : "
-                    + hostID + " writeRrdtool")
-                self.writeRrdtool(sortedTS, hostAllDatas,
+                    + hostID + " writewsp")
+                self.writewsp(sortedTS, hostAllDatas,
                                   hostID, hostRRDPath)
                 # Clear data 
                 redisCollector.redis_zremrangebyscore("TS@" + hostID,
@@ -1187,11 +1028,11 @@ class myStorage:
                     sys.exit()
                     
                 if not self._simulate:
-                    t = threading.Thread(target=self.workerRedis,
+                    t = threading.Thread(target=self.worker,
                                          args=(threadId, sema,
                                                collectorLine, threadHostListe))
                 else:
-                    t = threading.Thread(target=self.workerRedis,
+                    t = threading.Thread(target=self.worker,
                                          args=(threadId, sema,collectorLine,
                                                threadHostListe,
                                                simulateFileOpen))
