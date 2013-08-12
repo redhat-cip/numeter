@@ -10,7 +10,8 @@ import socket
 import re
 import logging
 import sys
-
+from numeterQueue import NumeterQueueP
+from cachelastvalue import CacheLastValue
 
 import pprint # Debug (dumper)
 
@@ -39,6 +40,7 @@ class myPoller:
         self._redis_host             = "127.0.0.1"
         self._plugin_number          = 0
         self.disable_pollerTimeToGo  = False
+        self._cache = None
 
         # myInfo default value
         self._myInfo_name = socket.gethostname()
@@ -48,6 +50,10 @@ class myPoller:
         # Read de la conf
         self._configFile = configFile
         self.readConf()
+
+        # Init cache
+        self._cache = CacheLastValue(cache_file='/dev/shm/numeter_poller_cache.json',
+                               logger='numeter')
 
 
     def startPoller(self):
@@ -74,8 +80,14 @@ class myPoller:
             # Clear old datas
             self.rediscleanDataExpired()
 
+        # load cache for DERIVE and other
+        self._cache.load_cache()
+
         # Lancement des modules + écriture des data dans redis
         self.loadModules()
+
+        # Refresh cache file
+        self._cache.dump_cache()
 
         # End log time execution
         self._logger.warning("---- End : numeter_poller, "
@@ -115,15 +127,38 @@ class myPoller:
                 if data.has_key("TimeStamp") \
                 and data.has_key("Plugin") \
                 and re.match("[0-9]+",data["TimeStamp"]):
+                    # Get gap if type is DERIVE, COUNTER, ...
+                    for ds_name, ds_value in data['Values'].iteritems():
+                        key = '%s.%s' % (data["Plugin"], ds_name)
+                        lastValue = self._cache.get_value(key)
+                        if lastValue is not None:
+                            if lastValue['value'] == 'U' \
+                            or data['Values'][ds_name] == 'U':
+                                gap = 'U'
+                            else:
+                                gap_value = float(data['Values'][ds_name]) - float(lastValue['value'])
+                                timestamp_gap = int(data["TimeStamp"]) - int(lastValue['timestamp'])
+                                gap = gap_value / timestamp_gap
+                            # Update last value
+                            self._cache.save_value( key=key,
+                                    timestamp=data["TimeStamp"],
+                                    value=data['Values'][ds_name])
+                            # Replace value by gap for try
+                            data['Values'][ds_name] = gap
                     dataJson = self.convertToJson(data)
                     self._logger.info("Write TimeStamp " + data["TimeStamp"]
-                                      + " -- plugin : "+data["Plugin"] )
+                                      + " -- plugin : " + data["Plugin"] )
                     self._logger.debug("Write TimeStamp " + data["TimeStamp"]
                                        + " -- plugin : " + data["Plugin"]
-                                       + " -- value :"+str(dataJson))
+                                       + " -- value :" + str(dataJson))
+                    # write data in redis
                     self._redis_connexion.redis_zadd("DATAS",
                                                      dataJson,
                                                      int(data["TimeStamp"]))
+                    # send data in queue
+                    self.sendMsg(msgType='DATA',
+                                 plugin=data["Plugin"],
+                                 msgContent=data)
                     allTimeStamps.append(data["TimeStamp"])
                     self._plugin_number = self._plugin_number + 1
             # Write all timeStamps
@@ -135,7 +170,16 @@ class myPoller:
                                                      int(timeStamp))
                     seen.append(timeStamp)
 
-
+    def sendMsg(self, msgType, plugin, msgContent):
+        queue = NumeterQueueP(pool=['amqp://localhost:5672//'],
+                              pooltype='F',
+                              exchanger='numeter',
+                              type='topic')
+        try:
+            queue.send('%s.%s.%s' % (self._myInfo_hostID, msgType, plugin),
+                   msgContent)
+        except:
+            self._logger.critical("Send message error : %s" % str(sys.exc_info()))
 
 
     def writeInfo(self, allInfos):
@@ -161,6 +205,20 @@ class myPoller:
                                                      info["Plugin"],
                                                      infoJson)
                     writedInfos.append(info["Plugin"])
+                    # Keep cache for DERIVE and other
+                    # Do not try to cache MyInfo
+                    if info["Plugin"] is 'MyInfo':
+                        continue
+                    # Check if ds need to be cached
+                    # Write only if value is not in cache
+                    for ds_name, ds_info in info["Infos"].iteritems():
+                        key = '%s.%s' % (info["Plugin"], ds_name)
+                        if 'type' in ds_info \
+                        and self._cache.get_value(key) is None \
+                        and ds_info['type'] in ('DERIVE', 'COUNTER', 'ABSOLUTE'):
+                            self._cache.save_value(key=key,
+                                             timestamp='000000000',
+                                             value='U')
             return writedInfos
 
 
