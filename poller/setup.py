@@ -54,11 +54,9 @@ if __name__ == '__main__':
           scripts = ['poller/numeter-poller', 'poller/numeter-pollerd'],
           packages = [''],
           package_dir = {'':'poller/module'},
-          #package_data={'': ['collector/numeter_collector.py']},
           data_files = [('/etc/numeter', ['poller/numeter_poller.cfg', 'poller/redis-poller.conf']), 
                         ('/var/log/numeter', ''),
                         ('/etc/init.d', ['poller/numeter-poller.init']),
-                        #('/etc/default', ['poller/numeter-poller.default']),
                         ('/etc/init.d', ['poller/numeter-redis-poller.init']),
                         ],
           classifiers=[
