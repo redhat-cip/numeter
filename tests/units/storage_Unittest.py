@@ -61,68 +61,37 @@ class StorageTestCase(test_base.TestCase):
 #        self.assertEqual(len(called), 1)
 #######################
 
-#    def test_storage_getcollectorList_file(self):
-#        self.storage._collector_list_type = "file" 
-#        self.storage._collector_list_file = "/tmp/collectorList.unittest"
-#        # Test with no file
-#        os.system("rm -f "+self.storage._collector_list_file)
-#        self.assertRaises(SystemExit, self.storage.getcollectorList)
-#        # Test with Empty file
-#        os.system(":> "+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [])
-#        # Empty line
-#        os.system('echo "\n\n\n" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [])
-#        # Test with one hostname
-#        os.system("echo 'foo' > "+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo'}])
-#        # Test with 2 hostname
-#        os.system('echo "foo\nbar" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo'}, {'host': 'bar'}])
-#        # Test with hostname + good db
-#        os.system("echo 'foo:0' >"+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo', 'db': '0'}])
-#        # Test with hostname + bad db
-#        os.system("echo 'foo:db0' >"+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [])
-#        # Test with hostname + good db + passwd
-#        os.system("echo 'foo:0:password' >"+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo', 'password': 'password', 'db': '0'}])
-#        # Test 3 host + 2 db + 1 password
-#        os.system("echo 'foo\nbar:1\nbli:2:p' >"+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo',},
-#                                                    {'host': 'bar', 'db': '1'},
-#                                                    {'host': 'bli', 'password': 'p', 'db': '2'}])
-#        # One host + comment
-#        os.system('echo "foo\n#bar" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo'}])
-#        # One bad hostname (space)
-#        os.system('echo "foo bar" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [])
-#        # One bad hostname with space after
-#        os.system('echo "foobar     " > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foobar'}])
-#        # Only host with space after + db with space after
-#        os.system('echo "foobar     :0     " > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foobar', 'db': '0'}])
-#        # Only host + db + space after + passwrd
-#        os.system('echo "foobar     :0     :p" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foobar', 'password': 'p', 'db': '0'}])
-#
-#
+    def test_storage_getcollectorList_file(self):
+        self.storage._collector_list_type = "file" 
+        self.storage._collector_list_file = "/tmp/collectorList.unittest"
+        with mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
+            # Test with Empty file
+            file_mock.return_value.readlines.return_value = []
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [])
+            # Empty line
+            file_mock.return_value.readlines.return_value = ['','']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [])
+            # Test with 3 hostname and one db and password
+            file_mock.return_value.readlines.return_value = ['foo','bar:1', 'bli:2:pwd']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [{'host': 'foo'},
+                                                           {'db': '1', 'host': 'bar'},
+                                                           {'db': '2', 'host': 'bli', 'password': 'pwd'}])
+            # Test with hostname + bad db
+            file_mock.return_value.readlines.return_value = ['foo:db1']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [])
+            # One host + comment
+            file_mock.return_value.readlines.return_value = ['# my host','foo']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [{'host': 'foo'}])
+            # clear \s after hostname
+            file_mock.return_value.readlines.return_value = ['foo   :0']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [{'host': 'foo', 'db': '0'}])
+
 #    def test_storage_getData(self):
 #        # Start connexion storage (db2)
 #        self.storage._redis_storage_db = 2
