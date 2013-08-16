@@ -96,12 +96,30 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'storage': {
+            'format': '[%(asctime)s] "STORAGE-GET %(message)s"',
+            'datefmt' : '%d/%b/%Y %H:%M:%S'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'storage': {
+            'storage': 'storage',
         }
     },
     'handlers': {
+        'console':{
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'storage',
+            'filters': ['storage']
+        },
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
@@ -114,6 +132,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'storage': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'filters': ['storage']
+        }
     }
 }
 

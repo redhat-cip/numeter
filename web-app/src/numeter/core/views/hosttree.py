@@ -49,5 +49,5 @@ def get_data(request, host_id, plugin):
         raise Http404
 
     data = {'plugin':plugin, 'res':request.GET.get('res','Daily')}
-    r = H.get_data_dygraph(**data)
+    r = H.get_extended_data(**data)
     return HttpResponse(jdumps(r), content_type="application/json")

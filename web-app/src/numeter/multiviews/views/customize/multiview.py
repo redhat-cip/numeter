@@ -52,5 +52,5 @@ def edit(request, multiview_id):
 def fast_add(request):
     M = Multiview.objects.create(name=request.POST['multiview_name'])
     M.views.add(V)
-    r = V.get_data_dygraph(res=request.POST.get('res','Daily'))
+    r = V.get_extended_data(res=request.POST.get('res','Daily'))
     return HttpResponse(jdumps(r), content_type="application/json")

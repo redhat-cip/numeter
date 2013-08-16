@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from django.utils.timezone import now
 from hashlib import md5
 
 
@@ -73,7 +74,7 @@ class View(models.Model):
             datas.append(source.get_data())
         return zip(*datas)
 
-    def get_data_dygraph(self, res='Daily'):
+    def get_extended_data(self, res='Daily'):
         datas = []
         data = {'res':res}
         r_data = {
@@ -85,8 +86,7 @@ class View(models.Model):
             'id':self.id,
             'source_ids':[],
         }
-        if not self.sources.exists():
-            return r_data
+        # Set metadata
         # Set labels for warning lines
         if self.warning is not None:
             r_data['labels'].append('warning')
@@ -94,6 +94,15 @@ class View(models.Model):
         if self.critical is not None:
             r_data['labels'].append('critical')
             r_data['colors'].append("#FF3434")
+
+        ## Set datas
+        # Add warning and critical line
+        if self.critical is not None:
+            critical_data = [self.critical] * len(datas[0])
+            datas.insert(0, critical_data)
+        if self.warning is not None:
+            warning_data = [self.warning] * len(datas[0])
+            datas.insert(0, warning_data)
         # Get all data
         for s in self.sources.all():
             r = s.get_data(**data)
@@ -102,19 +111,17 @@ class View(models.Model):
             datas.append(r['DATAS'][s.name])
             r_data['colors'].append("#%s" % md5(unique_name).hexdigest()[:6])
             r_data['source_ids'].append(s.id)
-        # Add warning and critical line
-        if self.critical is not None:
-            critical_data = [self.critical] * len(datas[0])
-            datas.insert(0, critical_data)
-        if self.warning is not None:
-            warning_data = [self.warning] * len(datas[0])
-            datas.insert(0, warning_data)
+
+        # Append empty datas if there's no
+        if not 'r' in locals():
+            r_data['datas'].append( (int(now().strftime('%s'))*1000,) )
         # Walk on date for mix datas
-        cur_date = r['TS_start']
-        step = r['TS_step']
-        for v in zip(*datas):
-            r_data['datas'].append((cur_date,) + v)
-            cur_date += step
+        else:
+            cur_date = r['TS_start']
+            step = r['TS_step']
+            for v in zip(*datas):
+                r_data['datas'].append((cur_date,) + v)
+                cur_date += step
         return r_data
 
 

@@ -80,12 +80,11 @@ class Host(models.Model):
         data['hostid'] = self.hostid
         return self.storage.get_data(**data)
 
-    def get_data_dygraph(self, **data):
+    def get_extended_data(self, **data):
         data['hostid'] = self.hostid
         # Get data sources name
-        print self.get_plugin_data_sources(data['plugin'])
         data['ds'] = ','.join(self.get_plugin_data_sources(data['plugin']))
-        r = self.storage.get_data(**data)
+        r = self.get_data(**data)
         # Dict sent in AJAX
         r_data = {
             'labels':['Date'],
@@ -94,7 +93,7 @@ class Host(models.Model):
         }
         r_data['labels'].extend(self.get_plugin_data_sources(data['plugin']))
 
-        step = timedelta(seconds=r['TS_step']*60)
+        step = timedelta(seconds=r.get('TS_step', 60))
         cur_date = datetime.fromtimestamp(r['TS_start'])
         for v in zip(*r['DATAS'].values()):
             r_data['datas'].append( (mktime(cur_date.timetuple()),) + v )

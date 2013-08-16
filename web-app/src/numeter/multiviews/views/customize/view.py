@@ -56,7 +56,7 @@ def fast_add(request):
     M = get_object_or_404(Multiview.objects.filter(pk=request.POST['multiview_id']))
     V = View.objects.create(name=request.POST['view_name'])
     M.views.add(V)
-    r = V.get_data_dygraph(res=request.POST.get('res','Daily'))
+    r = V.get_extended_data(res=request.POST.get('res','Daily'))
     return HttpResponse(jdumps(r), content_type="application/json")
 
 

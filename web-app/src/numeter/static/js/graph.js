@@ -1,3 +1,18 @@
+graphs = {};
+graph_request = [];
+res = 'Daily';
+// ABORT GRAPH REQUEST
+var stop_request = function() {
+  $.each( graph_request, function(i,xhr) {
+    if ( xhr.state() == 'rejected' ) { console; }
+    else {
+      xhr.abort();
+      $(xhr).trigger('abort');
+    }
+  });
+}
+
+
 // HOST TREE
 // GET HOSTS FROM GROUP
 $('.accordion-body').on('shown', function() {
@@ -32,12 +47,11 @@ $(document).on('click', '.accordion-host', function() {
 
 // AJAX AND MAKE GRAPH
 var get_graph = function(host, plugin, into) {
-  var success = false;
   var graph_div = '<div id="graph-'+plugin+'-container" class="well"><div id="graph-'+plugin+'" class="" style="text-align: left; width: 100%; height: 320px; position: relative;"></div><div id="graphleg-'+plugin+'"></div></div>';
-  var res = $('#resolution-pills li.active').attr('data-value');
+  res = $('#resolution-pills li.active').attr('data-value');
 
   $(into).append(graph_div);
-  $.getJSON('/get/graph/'+host+'/'+plugin+'?res='+res, function(data) {
+  r = $.getJSON('/get/graph/'+host+'/'+plugin+'?res='+res, function(data) {
     for (i in data['datas']){
       data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
     }
@@ -59,7 +73,12 @@ var get_graph = function(host, plugin, into) {
         }
       },
     });
+    graphs[host+plugin] = [g,'/get/graph/'+host+'/'+plugin+'?res='];
   });
+  $(r).bind('abort', function () {
+    if (r.state() == 'pending') $('#graph-'+plugin+'-container').hide(250);
+  });
+  graph_request.push(r);
 }
 
 // GET PLUGIN LIST FROM CATEGORY
@@ -69,6 +88,7 @@ $(document).on('click', '.accordion-category', function() {
   var id = $(this).parentsUntil('.hosttree-host-li').parent().children('[host-id]').attr('host-id')
   var content = $(this).parent().children('div.category-content');
 
+  stop_request();
   if (! $(this).hasClass('active') ) {
     $.ajax({type:'GET', url:'/hosttree/category/'+id, async:true,
       data: {category: category },
@@ -100,6 +120,7 @@ $(document).on('click', '.get-plugin', function() {
   var plugin = $(this).attr('plugin-name');
   var host = $(this).parent().parent().parent().parent().parent().parent().parent().children('.accordion-host').attr('host-id');
   $('#graphs').html('');
+  stop_request();
   get_graph(host, plugin, '#graphs');
 });
 
@@ -107,4 +128,23 @@ $(document).on('click', '.get-plugin', function() {
 $(document).on('click', '#resolution-pills li a', function() {
   $('#resolution-pills li').removeClass('active');
   $(this).parent().addClass('active');
+  res = $(this).parent().attr('data-value');
+  // Walk on graphs for update
+  stop_request();
+  $.each(graphs, function(view_id,v) {
+    var r = $.getJSON(graphs[view_id][1]+res, function(data) {
+      for (j in data['datas']) {
+        data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
+      }
+      graphs[view_id][0].updateOptions({
+        file: data['datas'],
+        labels: data['labels'],
+        colors: data['colors'],
+      });
+    });
+    $(r).bind('abort', function () { 
+      if (r.state() == 'pending') $('#graph-'+plugin+'-container').hide(250);
+    });
+    graph_request.push(r);
+  });
 });

@@ -384,20 +384,22 @@ $(document).on('click', "#btn-add-view", function() {
 $(document).on('click', "#btn-add-view", function() {
   var name = $('#view-name').val();
   var url = $(this).attr('data-url');
-  var multiview_list = $(this).parentsUntil(".view-list").parent('ul');
+  var multiview_id = $(this).parentsUntil(".dropdown-submenu").parent().children('a').attr('data-id')
+  var view_list = $(this).parentsUntil(".view-list").parent('ul');
   var target = $(this).parent().parent().parent();
   $.ajax({type:'POST', url:url, async:true,
     data: {
       'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'multiview_name': name,
+      'view_name': name,
+      'multiview_id':multiview_id,
       'res': res,
     },
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       var data = xhr.responseJSON
-      var multiview_id = data['id'];
+      var view_id = data['id'];
       // Add line
-      var line = ' <li><a class="get-multiview" href="#" data-id="'+multiview_id+'" data-url="{{ view.get_data_url }}">'+name+'</a></li>';
+      var line = ' <li><a class="get-view" href="#" data-id="'+view_id+'" data-url="{{ view.get_data_url }}">'+name+'</a></li>';
       $(target).before(line);
       get_graph(view_id, '#graphs');
     }

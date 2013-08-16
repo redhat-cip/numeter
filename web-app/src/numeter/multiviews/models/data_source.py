@@ -63,7 +63,7 @@ class Data_Source(models.Model):
         data['ds'] = self.name
         return self.plugin.host.get_data(**data)
 
-    def get_data_dygraph(self, res='Daily'):
+    def get_extended_data(self, res='Daily'):
         datas = []
         data = {'res':res}
         r_data = {

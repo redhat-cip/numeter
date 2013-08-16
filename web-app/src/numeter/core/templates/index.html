@@ -8,13 +8,13 @@
 
 {% block body %}
  <div class="span3">
-  <div class="accordion" id="host-accordion" style="position: fixed;">
+  <div class="accordion" id="host-accordion">
    {% for host in hosts %}
     {% ifchanged host.group %}
      <div class="accordion-group">
       <div class="accordion-heading">
        <a href="#group-{{ host.group.id }}" data-parent="#host-accordion" data-toggle="collapse" class="accordion-toggle" group-id="{{ host.group.id }}">
-        {{ host.group }}
+        {% if not host.group %}{% trans "No group" %}{% else %}{{ host.group }}{% endif %}
        </a>
       </div>
       <div class="accordion-body collapse" id="group-{{ host.group.id }}" group-id="{{ host.group.id }}" style="height: 0px;">

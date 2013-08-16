@@ -11,7 +11,7 @@ from urllib import quote
 from json import load as jload, loads as jloads
 import socket
 from logging import getLogger
-logger = getLogger(__name__)
+logger = getLogger('storage')
 
 
 class Storage_Manager(models.Manager):
@@ -189,8 +189,7 @@ class Storage(models.Model):
 
         _url = self.URLS[url].format(**data)
         uri = ("%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__) + _url
-        print uri
-        logger.info('STORAGE-GET %s' % uri)
+        logger.info(uri)
         r = self.proxy.open(uri, timeout=settings.STORAGE_TIMEOUT).read()
         return jloads(r)
 
@@ -234,6 +233,7 @@ class Storage(models.Model):
         return []
 
     def get_data(self, **data):
+        """Get plugin's data from storage."""
         return self._connect('data', data)
 
     def _update_hosts(self):
