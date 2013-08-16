@@ -40,7 +40,7 @@ class Plugin_Manager(models.Manager):
         new_ps = []
         for p in plugins:
             if p in plugin_names or plugin_names == []:
-                if not Plugin.objects.filter(name=p).exists():
+                if not Plugin.objects.filter(name=p, host=host).exists():
                     new_p = Plugin(name=p, host=host)
                     new_ps.append(new_p)
         if commit:

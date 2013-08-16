@@ -5,10 +5,9 @@ Tests which browsing into website with GET and POST methods.
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
-from django.conf import settings
-from django.core import management
 
 from core.models import User, Storage, Group, Host
+from core.tests.utils import storage_enabled, set_storage
 
 
 class Index_TestCase(TestCase):
@@ -350,19 +349,10 @@ class Configuration_Storage_TestCase(TestCase):
 class Configuration_Host_TestCase(TestCase):
     fixtures = ['test_users.json','test_storage.json']
 
+    @set_storage()
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
-        if 'mock_storage' in settings.INSTALLED_APPS:
-            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
-            self.storage = Storage.objects.get(pk=1)
-        elif settings.TEST_STORAGE['address']:
-            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
-            if not self.storage.is_on():
-                self.skipTest("Configured storage unreachable.")
-        else:
-            self.skipTest("No test storage has been configurated.")
-
         self.storage._update_hosts()
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")

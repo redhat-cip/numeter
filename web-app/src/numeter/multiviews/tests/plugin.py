@@ -3,24 +3,15 @@ from django.core import management
 from django.conf import settings
 
 from core.models import Storage, Host
-from core.tests.utils import storage_enabled
+from core.tests.utils import storage_enabled, set_storage
 from multiviews.models import Plugin, Data_Source
 
 
 class Plugin_Manager_TestCase(TestCase):
     fixtures = ['test_storage.json']
 
+    @set_storage()
     def setUp(self):
-        if 'mock_storage' in settings.INSTALLED_APPS:
-            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
-            self.storage = Storage.objects.get(pk=1)
-        elif settings.TEST_STORAGE['address']:
-            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
-            if not self.storage.is_on():
-                self.skipTest("Configured storage unreachable.")
-        else:
-            self.skipTest("No test storage has been configurated.")
-
         self.storage._update_hosts()
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")
@@ -29,10 +20,17 @@ class Plugin_Manager_TestCase(TestCase):
     def tearDown(self):
         Host.objects.all().delete()
 
-    def test_create_host_plugins(self):
+    def test_create_from_host(self):
         host = Host.objects.all()[0]
-        Plugin.objects.create_from_host(host)
+        # Test to create all
+        ps = Plugin.objects.create_from_host(host)
         self.assertTrue(Plugin.objects.all().exists(), "No plugin was created.")
+        # Test to create one
+        p_name = ps[0].name
+        [ p.delete() for p in ps ]
+        ps = Plugin.objects.create_from_host(host, [p_name])
+        self.assertTrue(Plugin.objects.all().exists(), "No plugin was created.")
+        self.assertEqual(Plugin.objects.all().count(), 1, "More than 1 plugin was created.")
 
 
 class Plugin_TestCase(TestCase):

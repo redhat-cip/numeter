@@ -1,25 +1,13 @@
 from django.test import TestCase
-from django.core import management
-from django.conf import settings
-
 from core.models import Storage, Host
-from core.tests.utils import storage_enabled
+from core.tests.utils import storage_enabled, set_storage
 
 
 class Host_TestCase(TestCase):
     fixtures = ['test_storage.json']
 
+    @set_storage()
     def setUp(self):
-        if 'mock_storage' in settings.INSTALLED_APPS:
-            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
-            self.storage = Storage.objects.get(pk=1)
-        elif settings.TEST_STORAGE['address']:
-            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
-            if not self.storage.is_on():
-                self.skipTest("Configured storage unreachable.")
-        else:
-            self.skipTest("No test storage has been configurated.")
-
         self.storage._update_hosts()
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")
