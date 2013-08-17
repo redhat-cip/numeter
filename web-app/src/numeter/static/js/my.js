@@ -47,3 +47,19 @@ jQuery.expr[':'].regex = function(elem, index, match) {
   regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
   return regex.test(jQuery(elem)[attr.method](attr.property));
 }
+
+// MULTIPLE CHECKBOX SELECT
+var lastChecked = null;
+$(document).on('click', 'tr td input[type="checkbox"]', function(e) {
+  var $chkboxes = $('tr td input[type="checkbox"]');
+  if (!lastChecked) {
+    lastChecked = this;
+    return;
+  }
+  if (e.shiftKey) {
+    var start = $chkboxes.index(this);
+    var end = $chkboxes.index(lastChecked);
+    $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).attr('checked', lastChecked.checked);
+  }
+  lastChecked = this;
+});

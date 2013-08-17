@@ -8,12 +8,12 @@
 {% block body %}
 <div class="tabbable tabs-left">
  <ul class="nav nav-tabs ajax-tabs">
-  <li class="active"><a href="#profile-index" menu="profile" data-toggle="tab" data-url="{% url "profile index" %}">{% trans "Profile" %}</a></li>
+  <li class="active"><a data-target="#profile-index" menu="profile" data-toggle="tab" data-url="{% url "profile index" %}">{% trans "Profile" %}</a></li>
   {% if request.user.is_superuser %}
-  <li><a href="#user-index" menu="user" data-toggle="tab" data-url="{% url "user index" %}">{% trans "Users" %}</a></li>
-  <li><a href="#storage-index" data-toggle="tab" menu="storage" data-url="{% url "storage index" %}">{% trans "Storage" %}</a></li>
-  <li><a href="#plugin-index" data-toggle="tab" menu="plugin" data-url="{% url "plugin index" %}">{% trans "Plugin" %}</a></li>
-  <li><a href="#view-index" data-toggle="tab" menu="view" data-url="{% url "view index" %}">{% trans "View" %}</a></li>
+  <li><a data-target="#user-index" menu="user" data-toggle="tab" data-url="{% url "user index" %}">{% trans "Users" %}</a></li>
+  <li><a data-target="#storage-index" data-toggle="tab" menu="storage" data-url="{% url "storage index" %}">{% trans "Storage" %}</a></li>
+  <li><a data-target="#plugin-index" data-toggle="tab" menu="plugin" data-url="{% url "plugin index" %}">{% trans "Plugin" %}</a></li>
+  <li><a data-target="#view-index" data-toggle="tab" menu="view" data-url="{% url "view index" %}">{% trans "View" %}</a></li>
   {% endif %}
  </ul>
 

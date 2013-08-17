@@ -3,6 +3,7 @@
 <table class="table table-condensed table-striped">
  <thead>
   <tr>
+   <th></th>
    <th>{% trans "Name" %}</th>
    <th>{% trans "View" %}</th>
   </tr>
@@ -10,8 +11,13 @@
  <tbody>
   {% for multiview in Multiviews %}
   <tr>
+   <td><input type="checkbox" name="{{ multiview.id }}"></td>
    <td><a class="get-multiview" data-url="{{ multiview.get_absolute_url }}" data-into="#multiview-list">{{ multiview.name }}</a></td>
-   <td><a>{{ multiview.plugin.name }}</a></td>
+   <td>
+    {% for view in multiview.views.all %}
+    <a class="get-view" data-url="{{ view.get_absolute_url }}" data-into="#multiview-list" data-original-title="{% blocktrans %}Preview of {{ view }}{% endblocktrans %}" data-data-url="{% url "view data" view.id %}">{{ view.name }}</a>
+    {% endfor %}
+   </td>
   </tr>
   {% endfor %}
  </tbody>

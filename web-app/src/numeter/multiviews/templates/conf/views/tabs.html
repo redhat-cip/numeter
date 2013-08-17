@@ -1,5 +1,5 @@
 {% load i18n %}
-<li class="active"><a href="#view-list" data-url="{% url "view list" %}" data-toggle="tab">{{ Views_count }} {% trans "view(s)" %}</a></li>
-<li><a href="#multiview-list" data-url="{% url "multiview list" %}" data-toggle="tab">{{ Multiviews_count }} {% trans "multiview(s)" %}</a></li>
-<li><a href="#add-view" data-url="{% url "view add" %}" data-toggle="tab"> {% trans "Add view" %}</a></li>
-<li><a href="#add-multiview" data-url="{% url "multiview add" %}" data-toggle="tab"> {% trans "Add multiview" %}</a></li>
+<li class="active"><a id="view-list-tab" data-target="#view-list" data-url="{% url "view list" %}" data-toggle="tab">{{ Views_count }} {% trans "view(s)" %}</a></li>
+<li><a id="multiview-list-tab" data-target="#multiview-list" data-url="{% url "multiview list" %}" data-toggle="tab">{{ Multiviews_count }} {% trans "multiview(s)" %}</a></li>
+<li><a id="add-view-tab" data-target="#add-view" data-url="{% url "view add" %}" data-toggle="tab"> {% trans "Add view" %}</a></li>
+<li><a id="add-multiview-tab" data-target="#add-multiview" data-url="{% url "multiview add" %}" data-toggle="tab"> {% trans "Add multiview" %}</a></li>

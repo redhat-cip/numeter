@@ -3,6 +3,7 @@
 <table class="table table-condensed table-striped">
  <thead>
   <tr>
+   <th></th>
    <th>{% trans "Username" %}</th>
    <th>{% trans "Email" %}</th>
    <th>{% trans "Graph library" %}</th>
@@ -12,7 +13,8 @@
  <tbody>
   {% for user in Users %}
   <tr>
-      <td><a class="get-user" data-url="{{ user.get_absolute_url }}" data-into="#{% if Users.0.is_superuser %}super{% endif %}user-list">{{ user.username }}</a></td>
+   <td><input type="checkbox" name="{{ user.id }}"></td>
+   <td><a class="get-user" data-url="{{ user.get_absolute_url }}" data-into="#{% if Users.0.is_superuser %}super{% endif %}user-list">{{ user.username }}</a></td>
    <td>{{ user.email }}</td>
    <td>
     {% for src,name in user.graph_lib.get_source_and_name %}

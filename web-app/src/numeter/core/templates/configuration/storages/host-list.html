@@ -3,6 +3,7 @@
 <table class="table table-condensed table-striped">
  <thead>
   <tr>
+   <th></th>
    <th>{% trans "Name" %}</th>
    <th>Storage</th>
    <th>{% trans "Group" %}</th>
@@ -11,11 +12,12 @@
  <tbody>
   {% for host in Hosts %}
   <tr>
+   <td><input type="checkbox" name="{{ host.id }}"></td>
    <td><a class="get-host" data-url="{{ host.get_absolute_url }}" data-into="#host-list">{{ host }}</a></td>
-   <td><a class="get-storage" data-url="{{ host.storage.get_absolute_url }}" data-into="#storage-list">{{ host.storage }}</a></td>
+   <td><a class="get-storage" data-url="{{ host.storage.get_absolute_url }}" data-into="#host-list">{{ host.storage }}</a></td>
    <td>
     {% if host.group %}
-     <a class="get-group" data-url="{{ host.group.get_absolute_url }}" data-into="#group-list">{{ host.group }}</a>
+     <a class="get-group" data-url="{{ host.group.get_absolute_url }}" data-into="#host-list">{{ host.group }}</a>
     {% endif %}
    </td>
   </tr>

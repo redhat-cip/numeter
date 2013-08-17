@@ -28,13 +28,16 @@ $(document).on('submit', '#profile-update-password-form', function() {
 });
 
 // GET MENU INDEX
-$(document).on('click', '.ajax-tabs li a', function() {
-  menu = $(this).attr('menu');
+$(document).on('shown', '.ajax-tabs li a', function(e) {
+  e.target;
   var url = $(this).attr('data-url');
+  var target = $(this).attr('data-target');
+  $(target).empty();
+  print_loading_gif(target, 50, 50);
   $.ajax({type:'GET', url: url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('#'+menu+'-index').html(data);
+      $(target).html(data);
     },
   });
 });
@@ -68,30 +71,33 @@ $(document).on('keypress', '.q', function(e) {
 //   return false;
 // });
 
-// USER MENU
-$(document).on('click', '.sub-menu-tabs li a', function() {
+// CHOOSING SUB-MENU
+$(document).on('shown', '.sub-menu-tabs li a', function() {
   var url = $(this).attr('data-url');
-  var into = $(this).attr('href');
+  var target = $(this).attr('data-target');
+  $(target).empty();
+  print_loading_gif(target, 50, 50);
   $.ajax({type:'GET', url:url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $(into).html(data);
+      $(target).html(data);
     },
   });
 });
 
-// GET PAGE
+// GET OBJECT
 $(document).on('click', '[class*="get-"]', function() {
   var url = $(this).attr('data-url');
-  var into = $(this).attr('data-into');
-  //var into = $(this).parentsUntil('div').parent();
+  var target = $(this).attr('data-into');
+  var cur_tab = $(this).parentsUntil('.tab-pane').parent().attr('id')
+  $('a[data-target="#'+cur_tab+'"]').parent().removeClass('active');
+  print_loading_gif(target, 50, 50);
   $.ajax({type:'GET', url:url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $(into).html(data);
+      $(target).html(data);
     },
   });
-  return false;
 });
 
 
@@ -105,7 +111,6 @@ $(document).on('click', 'input[type="button"][name="back"]', function() {
       $(into).html(data);
     },
   });
-  return false;
 });
 
 // FOR STORAGE
@@ -134,13 +139,6 @@ $(document).on('click', '.ajax-tab-add', function (e) {
   $(this).parent().addClass('active');
 });
 
-// ENABLE UPDATE BUTTON
-$(document).on('keypress', 'form div dd input', function() {
-  var form = $(this).parentsUntil('form').parent();
-  form.children('div').children('div').children('p').children('input[name="update"]').removeAttr('disabled');
-  form.children('div').children('div').children('p').children('input[name="cancel"]').show(250);
-});
-
 // SUBMIT FORM
 $(document).on('submit', '.ajax-form', function() {
   var form = $(this);
@@ -159,13 +157,14 @@ $(document).on('submit', '.ajax-form', function() {
 // DELETE BUTTON
 $(document).on('click', 'input[name="delete"]', function() {
   var url = $(this).attr('data-url');
-  if ( $(this).attr('disabled') == '' ) { return false ; }
+  var next_tab = $(this).attr('data-next-tab');
   $.ajax({
     type: 'POST', url: url, async: true,
     data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('.messages').append(data);
+      $(next_tab).tab('show');
     },
   });
   return false;

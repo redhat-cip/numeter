@@ -3,12 +3,14 @@
 <table class="table table-condensed table-striped">
  <thead>
   <tr>
+   <th></th>
    <th>{% trans "Name" %}</th>
   </tr>
  </thead>
  <tbody>
   {% for group in Groups %}
   <tr>
+   <td><input type="checkbox" name="{{ group.id }}"></td>
    <td><a class="get-group" data-url="{{ group.get_absolute_url }}" data-into="#group-list">{{ group }}</a></td>
   </tr>
   {% endfor %}

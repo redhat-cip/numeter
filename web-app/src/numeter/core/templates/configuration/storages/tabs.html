@@ -1,5 +1,5 @@
 {% load i18n %}
-<li class="active"><a href="#storage-list" data-url="{% url "storage list" %}" data-toggle="tab">{{ Storages_count }} storage(s)</a></li>
-<li><a href="#host-list" data-url="{% url "host list" %}" data-toggle="tab">{{ Hosts_count }} {% trans "host(s)" %}</a></li>
-<li><a href="#add-storage" data-url="{% url "storage add" %}" data-toggle="tab">{% trans "Add storage" %}</a></li>
-<li><a href="#bad-hosts" data-url="{% url "storage bad hosts" %}" data-toggle="tab">{{ Bad_hosts_count }} {% trans "bad referenced hosts" %}</a></li>
+<li class="active"><a id="storage-list-tab" data-target="#storage-list" data-url="{% url "storage list" %}" data-toggle="tab">{{ Storages_count }} storage(s)</a></li>
+<li><a id="host-list-tab" data-target="#host-list" data-url="{% url "host list" %}" data-toggle="tab">{{ Hosts_count }} {% trans "host(s)" %}</a></li>
+<li><a id="add-storage-tab" data-target="#add-storage" data-url="{% url "storage add" %}" data-toggle="tab">{% trans "Add storage" %}</a></li>
+<li><a id="bad-hosts-tab" data-target="#bad-hosts" data-url="{% url "storage bad hosts" %}" data-toggle="tab">{{ Bad_hosts_count }} {% trans "bad referenced hosts" %}</a></li>
