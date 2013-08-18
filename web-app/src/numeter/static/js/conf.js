@@ -75,6 +75,7 @@ $(document).on('keypress', '.q', function(e) {
 $(document).on('shown', '.sub-menu-tabs li a', function() {
   var url = $(this).attr('data-url');
   var target = $(this).attr('data-target');
+  console.log(target);
   $(target).empty();
   print_loading_gif(target, 50, 50);
   $.ajax({type:'GET', url:url, async:true,

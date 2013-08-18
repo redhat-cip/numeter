@@ -6,6 +6,7 @@ from core.models import Group
 from core.forms import Group_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
+from core.utils.http import render_HTML_JSON
 
 
 @login_required()
@@ -71,3 +72,14 @@ def delete(request, group_id):
     G.delete()
     messages.success(request, _("Group deleted with success."))
     return render(request, 'base/messages.html', {})
+
+
+# TODO : Make unittest
+@login_required()
+@superuser_only()
+def bulk_delete(request):
+    """Delete several groups in one request."""
+    groups = Group.objects.filter(pk__in=request.POST.getlist('ids[]'))
+    groups.delete()
+    messages.success(request, _("Group(s) deleted with success."))
+    return render_HTML_JSON(request, {}, 'base/messages.html', {})

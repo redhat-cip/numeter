@@ -99,3 +99,12 @@ def add_sources(request):
           'sources': Data_Source.objects.filter(pk__in=request.GET.getlist('ids[]'))
         })
 
+# TODO : Make unittest
+@login_required()
+@superuser_only()
+def bulk_delete(request):
+    """Delete several views in one request."""
+    views = View.objects.filter(pk__in=request.POST.getlist('ids[]'))
+    views.delete()
+    messages.success(request, _("View(s) deleted with success."))
+    return render_HTML_JSON(request, {}, 'base/messages.html', {})

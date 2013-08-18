@@ -7,12 +7,13 @@ from multiviews.forms import Plugin_Form
 from core.models import Host
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
+from core.utils.http import render_HTML_JSON
 
 
 @login_required()
 @superuser_only()
 def index(request):
-    """Get plugins and hosts list."""
+    """Get plugins and sources list."""
     Plugins = Plugin.objects.all()
     Plugins_count = Plugins.count()
     Plugins = make_page(Plugins, 1, 20)
@@ -109,3 +110,14 @@ def create_sources(request, plugin_id):
             'plugin': P,
             'sources': P.get_unsaved_sources()
         })
+
+
+# TODO : Make unittest
+@login_required()
+@superuser_only()
+def bulk_delete(request):
+    """Delete several plugins in one request."""
+    plugins = Plugin.objects.filter(pk__in=request.POST.getlist('ids[]'))
+    plugins.delete()
+    messages.success(request, _("Plugin(s) deleted with success."))
+    return render_HTML_JSON(request, {}, 'base/messages.html', {})

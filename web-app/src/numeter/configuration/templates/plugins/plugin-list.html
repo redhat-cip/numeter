@@ -13,7 +13,7 @@
   <tbody>
    {% for plugin in Plugins %}
    <tr>
-    <td><input type="checkbox" name="{{ plugin.id }}"></td>
+    <td><input class="plugin-checkbox" type="checkbox" name="{{ plugin.id }}"></td>
     <td><a class="get-plugin" data-url="{{ plugin.get_absolute_url }}" data-into="#plugin-list">{{ plugin.name }}</a></td>
     <td><a class="get-host" data-url="{{ plugin.host.get_absolute_url }}" data-into="#plugin-list">{{ plugin.host }}</a></td>
    </tr>
@@ -34,9 +34,22 @@
 </div>
 
 <div class="span3">
- <button id="btn-choose-host" class="btn btn-primary" data-url="{% url "plugin create" %}">{% trans "Create from hosts" %}</button>
- <br><br>
- <select class="span" name="host_id">
-  {% for h in Hosts %}<option value="{{ h.id }}">{{ h }}</option>{% endfor %}
- </select>
+ <h5>{% trans "Action:" %}</h5>
+ <div class="input-append">
+  <select id="plugins-action">
+   <option data-url="{% url "plugin bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+  </select>
+  <button class="btn bulk-action" type="button" data-action-element="#plugins-action" data-checkboxes=".plugin-checkbox">{% trans "Apply" %}</button>
+ </div>
+
+ <hr>
+ 
+ <h5>{% trans "Create plugins from host:" %}</h5>
+ <div class="input-append">
+  <select name="host_id">
+   {% for h in Hosts %}<option value="{{ h.id }}">{{ h }}</option>{% endfor %}
+  </select>
+  <button id="btn-choose-host" class="btn" data-url="{% url "plugin create" %}">{% trans "Go" %}</button>
+ </div>
+
 </div>

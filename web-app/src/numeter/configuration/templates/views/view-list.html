@@ -13,7 +13,7 @@
   <tbody>
    {% for view in Views %}
    <tr>
-    <td><input type="checkbox" name="{{ host.id }}"></td>
+    <td><input class="view-checkbox" type="checkbox" name="{{ view.id }}"></td>
     <td><a class="get-view" data-url="{{ view.get_absolute_url }}" data-into="#view-list" data-original-title="{% blocktrans %}Preview of {{ view }}{% endblocktrans %}" data-data-url="{% url "view data" view.id %}">{{ view.name }}</a></td>
     <td>
      {% for source in view.sources.all %}
@@ -38,4 +38,11 @@
 </div>
 
 <div class="span3">
+ <h5>{% trans "Action:" %}</h5>
+ <div class="input-append">
+  <select id="views-action">
+   <option data-url="{% url "view bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+  </select>
+  <button class="btn bulk-action" type="button" data-action-element="#views-action" data-checkboxes=".view-checkbox">{% trans "Apply" %}</button>
+ </div>
 </div>

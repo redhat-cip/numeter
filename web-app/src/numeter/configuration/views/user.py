@@ -4,6 +4,7 @@ from django.contrib import messages
 
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
+from core.utils.http import render_HTML_JSON
 from core.models import User, Group
 from core.forms import User_CreationForm, User_Admin_EditForm
 
@@ -92,3 +93,14 @@ def delete(request, user_id):
     U.delete()
     messages.success(request, _("User deleted with success."))
     return render(request, 'base/messages.html', {})
+
+
+# TODO : Make unittest
+@login_required()
+@superuser_only()
+def bulk_delete(request):
+    """Delete several users in one request."""
+    users = User.objects.filter(pk__in=request.POST.getlist('ids[]'))
+    users.delete()
+    messages.success(request, _("User(s) deleted with success."))
+    return render_HTML_JSON(request, {}, 'base/messages.html', {})

@@ -1,43 +1,56 @@
 {% load i18n %}
 <input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by username" %}" data-into="#{% if Users.0.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page=1&q={{ q }}">
-<table class="table table-condensed table-striped">
- <thead>
-  <tr>
-   <th></th>
-   <th>{% trans "Username" %}</th>
-   <th>{% trans "Email" %}</th>
-   <th>{% trans "Graph library" %}</th>
-   <th>{% trans "Groups" %}</th>
-  </tr>
- </thead>
- <tbody>
-  {% for user in Users %}
-  <tr>
-   <td><input type="checkbox" name="{{ user.id }}"></td>
-   <td><a class="get-user" data-url="{{ user.get_absolute_url }}" data-into="#{% if Users.0.is_superuser %}super{% endif %}user-list">{{ user.username }}</a></td>
-   <td>{{ user.email }}</td>
-   <td>
-    {% for src,name in user.graph_lib.get_source_and_name %}
-     <a href="{{ src }}">{{ name }}</a>
-    {% endfor %}
-   </td>
-   <td>
-    {% for group in user.groups.all %}
-     <a class="get-group" data-url="{{ group.get_absolute_url }}" data-into="#group-list">{{ group }}</a>
-    {% endfor %}
-   </td>
-  </tr>
-  {% endfor %}
- </tbody>
-</table>
 
-<div>
- <ul class="pager">
-  {% if Users.has_previous %}
-  <li class="previous"><a class="get-page" data-into="#{% if user.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page={{ Users.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
-  {% endif %}
-  {% if Users.has_next %}
-  <li class="next"><a class="get-page" data-into="#{% if user.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page={{ Users.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
-  {% endif %}
- </ul>
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>{% trans "Username" %}</th>
+    <th>{% trans "Email" %}</th>
+    <th>{% trans "Graph library" %}</th>
+    <th>{% trans "Groups" %}</th>
+   </tr>
+  </thead>
+  <tbody>
+   {% for user in Users %}
+   <tr>
+    <td><input class="user-checkbox" type="checkbox" name="{{ user.id }}"></td>
+    <td><a class="get-user" data-url="{{ user.get_absolute_url }}" data-into="#{% if Users.0.is_superuser %}super{% endif %}user-list">{{ user.username }}</a></td>
+    <td>{{ user.email }}</td>
+    <td>
+     {% for src,name in user.graph_lib.get_source_and_name %}
+      <a href="{{ src }}">{{ name }}</a>
+     {% endfor %}
+    </td>
+    <td>
+     {% for group in user.groups.all %}
+      <a class="get-group" data-url="{{ group.get_absolute_url }}" data-into="#group-list">{{ group }}</a>
+     {% endfor %}
+    </td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   {% if Users.has_previous %}
+   <li class="previous"><a class="get-page" data-into="#{% if user.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page={{ Users.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+   {% endif %}
+   {% if Users.has_next %}
+   <li class="next"><a class="get-page" data-into="#{% if user.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page={{ Users.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+   {% endif %}
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>{% trans "Action:" %}</h5>
+ <div class="input-append">
+  <select id="users-action">
+   <option data-url="{% url "user bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+  </select>
+  <button class="btn bulk-action" type="button" data-action-element="#users-action" data-checkboxes=".user-checkbox">{% trans "Apply" %}</button>
+ </div>
 </div>
