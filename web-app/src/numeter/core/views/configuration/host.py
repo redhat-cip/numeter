@@ -6,6 +6,7 @@ from core.models import Host
 from core.forms import Host_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
+from core.utils.http import render_HTML_JSON
 
 
 @login_required()
@@ -62,3 +63,14 @@ def host_plugins(request, host_id):
     return render(request, 'configuration/storages/plugin-list.html', {
       'plugins': plugins
     })
+
+
+# TODO : Make unittest
+@login_required()
+@superuser_only()
+def bulk_delete(request):
+    """Delete several hosts in one request."""
+    hosts = Host.objects.filter(pk__in=request.POST.getlist('ids[]'))
+    hosts.delete()
+    messages.success(request, _("Hosts deleted with success."))
+    return render_HTML_JSON(request, {}, 'base/messages.html', {})

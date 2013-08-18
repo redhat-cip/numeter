@@ -305,3 +305,30 @@ $(document).on('mouseout', "a:regex('class,get-(source|view)')", function() {
   $(this).popover('hide');
   $(this).popover('destroy');
 });
+
+// USE BULK ACTION
+$(document).on('click', '.bulk-action', function() {
+  var action_element_id = $(this).attr('data-action-element');
+  var checkboxes_class = $(this).attr('data-checkboxes');
+  var action = $(action_element_id).val();
+  var url = $(action_element_id+' option:selected').attr('data-url');
+  var ids = [];
+  $(checkboxes_class+':checked').each( function() {
+    ids.push( $(this).attr('name') );
+  });
+  $.ajax({
+    type: 'POST', url: url, async: true,
+    data: { 
+      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+      'ids': ids
+    },
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('.messages').append(data['html']);
+      if ( action == 'delete' ) {
+        $(checkboxes_class+':checked').parent().parent().hide(250);
+        $(checkboxes_class+':checked').parent().parent().remove();
+      }
+    },
+  });
+});

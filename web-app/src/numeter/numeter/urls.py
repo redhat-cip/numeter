@@ -42,6 +42,7 @@ urlpatterns = patterns('',
     url(r'^configuration/storage/bad_hosts$', 'core.views.configuration.storage_bad_hosts', name='storage bad hosts'),
 
     url(r'^configuration/host/list$', 'core.views.configuration.host_list', name='host list'),
+    url(r'^configuration/host/list/delete$', 'core.views.configuration.host.bulk_delete', name='host bulk delete'),
     url(r'^configuration/host/(?P<host_id>\d+)$', 'core.views.configuration.host_get', name='host'),
     url(r'^configuration/host/(?P<host_id>\d+)/update$', 'core.views.configuration.host_update', name='host update'),
     url(r'^configuration/host/(?P<host_id>\d+)/delete$', 'core.views.configuration.host_delete', name='host delete'),
