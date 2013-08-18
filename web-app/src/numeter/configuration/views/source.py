@@ -36,14 +36,17 @@ def get(request, source_id):
 def update(request, source_id):
     S = get_object_or_404(Data_Source.objects.filter(pk=source_id))
     F = Data_Source_Form(data=request.POST, instance=S)
+    data = {}
     if F.is_valid():
         F.save()
         messages.success(request, _("Source updated with success."))
+        data['response'] = 'ok'
+        data['callback-url'] = S.get_absolute_url()
     else:
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))
-
-    return render(request, 'base/messages.html', {})
+        data['response'] = 'error'
+    return render_HTML_JSON(request, data, 'base/messages.html', {})
 
 
 @login_required()

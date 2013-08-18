@@ -49,13 +49,17 @@ def superuser_list(request):
 def add(request):
     if request.method == 'POST':
         F = User_CreationForm(request.POST)
+        data = {}
         if F.is_valid():
-            F.save()
+            U = F.save()
             messages.success(request, _("User added with success."))
+            data['response'] = 'ok'
+            data['callback-url'] = U.get_absolute_url()
         else:
             for field,error in F.errors.items():
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
-        return render(request, 'base/messages.html', {})
+            data['response'] = 'error'
+        return render_HTML_JSON(request, data, 'base/messages.html', {})
     else:
         return render(request, 'users/user.html', {
             'User_Form': User_CreationForm(),
@@ -77,13 +81,17 @@ def get(request, user_id):
 def update(request, user_id):
     U = get_object_or_404(User.objects.filter(pk=user_id))
     F = User_Admin_EditForm(data=request.POST, instance=U)
+    data = {}
     if F.is_valid():
         F.save()
         messages.success(request, _("User updated with success."))
+        data['response'] = 'ok'
+        data['callback-url'] = U.get_absolute_url()
     else:
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))
-    return render(request, 'base/messages.html', {})
+        data['response'] = 'error'
+    return render_HTML_JSON(request, data, 'base/messages.html', {})
 
 
 @login_required()

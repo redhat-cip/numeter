@@ -131,12 +131,30 @@ $(document).on('click', '.ajax-tab-add', function (e) {
 $(document).on('submit', '.ajax-form', function() {
   var form = $(this);
   var url = $(this).attr('action');
+  var cur_tab_container = $(this).parentsUntil('.tab-pane').parent()
+  var cur_tab = $(this).parentsUntil('.tab-pane').parent().attr('id')
   $.ajax({
     type: 'POST', url: url, async: true,
     data: $(form).serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('.messages').append(data);
+      // OK
+      if ( data['response'] == 'ok' ) {
+        $('.messages').append(data['html']);
+        $('a[data-target="#'+cur_tab+'"]').parent().removeClass('active');
+        print_loading_gif(cur_tab, 50, 50);
+        // Reload form
+        if ( data['callback-url'] ) {
+          $.ajax({type:'GET', url:data['callback-url'], async:true,
+            error: function(data, status, xhr) { error_modal() },
+            success: function(data, status, xhr) {
+              $(cur_tab_container).html(data);
+            },
+          });
+        }
+      } else if ( data['response'] == 'error' ) {
+        $('.messages').append(data['html']);
+      }
     },
   });
   return false;

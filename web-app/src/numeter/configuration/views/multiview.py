@@ -26,13 +26,17 @@ def list(request):
 def add(request):
     if request.method == 'POST':
         F = Multiview_Form(request.POST)
+        data = {}
         if F.is_valid():
-            F.save()
+            M = F.save()
             messages.success(request, _("Multiview added with success."))
+            data['response'] = 'ok'
+            data['callback-url'] = M.get_absolute_url()
         else:
             for field,error in F.errors.items():
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
-        return render(request, 'base/messages.html', {})
+            data['response'] = 'error'
+        return render_HTML_JSON(request, data, 'base/messages.html', {})
     else:
         return render(request, 'views/multiview.html', {
             'Multiview_Form': Multiview_Form(),
@@ -54,14 +58,17 @@ def get(request, multiview_id):
 def update(request, multiview_id):
     M = get_object_or_404(Multiview.objects.filter(pk=multiview_id))
     F = Multiview_Form(data=request.POST, instance=M)
+    data = {}
     if F.is_valid():
         F.save()
         messages.success(request, _("Multiview updated with success."))
+        data['response'] = 'ok'
+        data['callback-url'] = M.get_absolute_url()
     else:
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))
-    return render(request, 'base/messages.html', {})
-
+        data['response'] = 'error'
+    return render_HTML_JSON(request, data, 'base/messages.html', {})
 
 @login_required()
 @superuser_only()

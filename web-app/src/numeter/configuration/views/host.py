@@ -36,14 +36,17 @@ def get(request, host_id):
 def update(request, host_id):
     H = get_object_or_404(Host.objects.filter(pk=host_id))
     F = Host_Form(data=request.POST, instance=H)
+    data = {}
     if F.is_valid():
         F.save()
         messages.success(request, _("Host updated with success."))
+        data['response'] = 'ok'
+        data['callback-url'] = H.get_absolute_url()
     else:
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))
-
-    return render(request, 'base/messages.html', {})
+        data['response'] = 'error'
+    return render_HTML_JSON(request, data, 'base/messages.html', {})
 
 
 @login_required()

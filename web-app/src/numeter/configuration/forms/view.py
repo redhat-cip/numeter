@@ -15,3 +15,6 @@ class View_Form(forms.ModelForm):
           'critical': forms.TextInput({'placeholder':_('Critical threshold (optional)'),'class':'span'}),
         }
 
+# TODO:
+# View_Form with search field
+# When have API

@@ -28,13 +28,17 @@ def list(request):
 def add(request):
     if request.method == 'POST':
         F = Group_Form(request.POST)
+        data = {}
         if F.is_valid():
-            F.save()
+            G = F.save()
             messages.success(request, _("Group added with success."))
+            data['response'] = 'ok'
+            data['callback-url'] = G.get_absolute_url()
         else:
             for field,error in F.errors.items():
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
-        return render(request, 'base/messages.html', {})
+            data['response'] = 'error'
+        return render_HTML_JSON(request, data, 'base/messages.html', {})
     else:
         return render(request, 'users/group.html', {
             'Group_Form': Group_Form(),
@@ -54,15 +58,19 @@ def get(request, group_id):
 @login_required()
 @superuser_only()
 def update(request, group_id):
-    U = get_object_or_404(Group.objects.filter(pk=group_id))
-    F = Group_Form(data=request.POST, instance=U)
+    G = get_object_or_404(Group.objects.filter(pk=group_id))
+    F = Group_Form(data=request.POST, instance=G)
+    data = {}
     if F.is_valid():
         F.save()
         messages.success(request, _("Group updated with success."))
+        data['response'] = 'ok'
+        data['callback-url'] = G.get_absolute_url()
     else:
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))
-    return render(request, 'base/messages.html', {})
+        data['response'] = 'error'
+    return render_HTML_JSON(request, data, 'base/messages.html', {})
 
 
 @login_required()
