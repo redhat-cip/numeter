@@ -15,7 +15,7 @@ class UserManager(UserManager):
             Q(username__icontains=q) |
             Q(email__icontains=q) |
             Q(groups__name__icontains=q)
-        )
+        ).distinct()
         return users
 
     def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):

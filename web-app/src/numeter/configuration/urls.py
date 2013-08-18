@@ -1,0 +1,70 @@
+from django.conf.urls import patterns, url
+
+
+urlpatterns = patterns('',
+    url(r'^$', 'configuration.views.index.index', name='configuration'),
+    url(r'^profile$', 'configuration.views.profile.index', name='profile index'),
+    url(r'^profile/(?P<user_id>\d+)/update$', 'configuration.views.profile.update', name='update profile'),
+    url(r'^profile/(?P<user_id>\d+)/update_password$', 'configuration.views.profile.update_password', name='update password'),
+    # Users
+    url(r'^user$', 'configuration.views.user.index', name='user index'),
+    url(r'^user/list$', 'configuration.views.user.user_list', name='user list'),
+    url(r'^superuser/list$', 'configuration.views.user.superuser_list', name='superuser list'),
+    url(r'^user/add$', 'configuration.views.user.add', name='user add'),
+    url(r'^user/(?P<user_id>\d+)$', 'configuration.views.user.get', name='user'),
+    url(r'^user/(?P<user_id>\d+)/update$', 'configuration.views.user.update', name='user update'),
+    url(r'^user/(?P<user_id>\d+)/delete$', 'configuration.views.user.delete', name='user delete'),
+    # Groups
+    url(r'^group/list$', 'configuration.views.group.list', name='group list'),
+    url(r'^group/add$', 'configuration.views.group.add', name='group add'),
+    url(r'^group/(?P<group_id>\d+)$', 'configuration.views.group.get', name='group'),
+    url(r'^group/(?P<group_id>\d+)/update$', 'configuration.views.group.update', name='group update'),
+    url(r'^group/(?P<group_id>\d+)/delete$', 'configuration.views.group.delete', name='group delete'),
+    # Storages
+    url(r'^storage$', 'configuration.views.storage.index', name='storage index'),
+    url(r'^storage/list$', 'configuration.views.storage.list', name='storage list'),
+    url(r'^storage/add$', 'configuration.views.storage.add', name='storage add'),
+    url(r'^storage/(?P<storage_id>\d+)$', 'configuration.views.storage.get', name='storage'),
+    url(r'^storage/(?P<storage_id>\d+)/update$', 'configuration.views.storage.update', name='storage update'),
+    url(r'^storage/(?P<storage_id>\d+)/delete$', 'configuration.views.storage.delete', name='storage delete'),
+    url(r'^storage/(?P<storage_id>\d+)/create_hosts$', 'configuration.views.storage.create_hosts', name='storage create hosts'),
+    url(r'^storage/bad_hosts$', 'configuration.views.storage.bad_hosts', name='storage bad hosts'),
+    # Hosts
+    url(r'^host/list$', 'configuration.views.host.list', name='host list'),
+    url(r'^host/list/delete$', 'configuration.views.host.bulk_delete', name='host bulk delete'),
+    url(r'^host/(?P<host_id>\d+)$', 'configuration.views.host.get', name='host'),
+    url(r'^host/(?P<host_id>\d+)/update$', 'configuration.views.host.update', name='host update'),
+    url(r'^host/(?P<host_id>\d+)/delete$', 'configuration.views.host.delete', name='host delete'),
+    url(r'^host/(?P<host_id>\d+)/plugins$', 'configuration.views.host.plugins', name='host plugins'),
+    # Plugin
+    url(r'^plugin$', 'configuration.views.plugin.index', name='plugin index'),
+    url(r'^plugin/list$', 'configuration.views.plugin.list', name='plugin list'),
+    url(r'^plugin/create$', 'configuration.views.plugin.create_from_host', name='plugin create'),
+    url(r'^plugin/(?P<plugin_id>\d+)$', 'configuration.views.plugin.get', name='plugin'),
+    url(r'^plugin/(?P<plugin_id>\d+)/update$', 'configuration.views.plugin.update', name='plugin update'),
+    url(r'^plugin/(?P<plugin_id>\d+)/delete$', 'configuration.views.plugin.delete', name='plugin delete'),
+    url(r'^plugin/(?P<plugin_id>\d+)/create_sources$', 'configuration.views.plugin.create_sources', name='plugin create sources'),
+    # Source
+    url(r'^source/list$', 'configuration.views.source.list', name='source list'),
+    url(r'^source/(?P<source_id>\d+)$', 'configuration.views.source.get', name='source'),
+    url(r'^source/(?P<source_id>\d+)/update$', 'configuration.views.source.update', name='source update'),
+    url(r'^source/(?P<source_id>\d+)/delete$', 'configuration.views.source.delete', name='source delete'),
+    # View
+    url(r'^view$', 'configuration.views.view.index', name='view index'),
+    url(r'^view/list$', 'configuration.views.view.list', name='view list'),
+    url(r'^view/add$', 'configuration.views.view.add', name='view add'),
+    url(r'^view/(?P<view_id>\d+)$', 'configuration.views.view.get', name='view'),
+    url(r'^view/(?P<view_id>\d+)/update$', 'configuration.views.view.update', name='view update'),
+    url(r'^view/(?P<view_id>\d+)/delete$', 'configuration.views.view.delete', name='view delete'),
+    # Multiview
+    url(r'^multiview/list$', 'configuration.views.multiview.list', name='multiview list'),
+    url(r'^multiview/add$', 'configuration.views.multiview.add', name='multiview add'),
+    url(r'^multiview/(?P<multiview_id>\d+)$', 'configuration.views.multiview.get', name='multiview'),
+    url(r'^multiview/(?P<multiview_id>\d+)/update$', 'configuration.views.multiview.update', name='multiview update'),
+    url(r'^multiview/(?P<multiview_id>\d+)/delete$', 'configuration.views.multiview.delete', name='multiview delete'),
+
+    # url(r'^event/add$', 'multiviews.views.event_delete', name='event add'),
+    # url(r'^event/(?P<event_id>\d+)$', 'multiviews.views.event', name='event'),
+    # url(r'^event/(?P<event_id>\d+)/update$', 'multiviews.views.event_update', name='event update'),
+    # url(r'^event/(?P<event_id>\d+)/delete$', 'multiviews.views.event_delete', name='event delete'),
+)

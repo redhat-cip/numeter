@@ -14,7 +14,7 @@ def index(request):
     Views = View.objects.all()
     Views_count = Views.count()
     Views = make_page(Views, 1, 20)
-    return render(request, 'conf/views/index.html', {
+    return render(request, 'views/index.html', {
         'Views': Views,
         'Views_count': Views_count,
         'Multiviews_count': Multiview.objects.count(),
@@ -27,7 +27,7 @@ def list(request):
     q = request.GET.get('q','')
     Views = View.objects.filter()
     Views = make_page(Views, int(request.GET.get('page',1)), 20)
-    return render(request, 'conf/views/view-list.html', {
+    return render(request, 'views/view-list.html', {
         'Views': Views,
         'q':q,
     })
@@ -46,7 +46,7 @@ def add(request):
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
         return render(request, 'base/messages.html', {})
     else:
-        return render(request, 'conf/views/view.html', {
+        return render(request, 'views/view.html', {
             'View_Form': View_Form(),
         })
 
@@ -56,7 +56,7 @@ def add(request):
 def get(request, view_id):
     V = get_object_or_404(View.objects.filter(pk=view_id))
     F = View_Form(instance=V)
-    return render(request, 'conf/views/view.html', {
+    return render(request, 'views/view.html', {
         'View_Form': F,
     })
 

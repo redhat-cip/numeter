@@ -8,15 +8,15 @@ from core.models import User
 from core.forms import User_EditForm, User_PasswordForm
 
 @login_required()
-def profile_index(request):
-    return render(request, 'configuration/profile.html', {
+def index(request):
+    return render(request, 'profile.html', {
         'EditForm': User_EditForm(instance=request.user),
         'PasswordForm': User_PasswordForm(instance=request.user),
     })
 
 
 @login_required()
-def update_profile(request, user_id):
+def update(request, user_id):
     U = get_object_or_404(User.objects.filter(pk=user_id))
     F = User_EditForm(data=request.POST, instance=U)
     if F.is_valid():

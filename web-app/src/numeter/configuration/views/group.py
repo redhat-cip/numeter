@@ -10,13 +10,13 @@ from core.utils import make_page
 
 @login_required()
 @superuser_only()
-def group_list(request):
+def list(request):
     Groups = Group.objects.all()
     q = request.GET.get('q','')
     if q:
         Groups = Groups.filter(name__icontains=request.GET.get('q',''))
     Groups = make_page(Groups, int(request.GET.get('page',1)), 20)
-    return render(request, 'configuration/users/group-list.html', {
+    return render(request, 'users/group-list.html', {
         'Groups': Groups,
         'q':q,
     })
@@ -24,7 +24,7 @@ def group_list(request):
 
 @login_required()
 @superuser_only()
-def group_add(request):
+def add(request):
     if request.method == 'POST':
         F = Group_Form(request.POST)
         if F.is_valid():
@@ -35,24 +35,24 @@ def group_add(request):
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
         return render(request, 'base/messages.html', {})
     else:
-        return render(request, 'configuration/users/group.html', {
+        return render(request, 'users/group.html', {
             'Group_Form': Group_Form(),
         })
 
 
 @login_required()
 @superuser_only()
-def group_get(request, group_id):
+def get(request, group_id):
     G = get_object_or_404(Group.objects.filter(pk=group_id))
     F = Group_Form(instance=G)
-    return render(request, 'configuration/users/group.html', {
+    return render(request, 'users/group.html', {
         'Group_Form': F,
     })
 
 
 @login_required()
 @superuser_only()
-def group_update(request, group_id):
+def update(request, group_id):
     U = get_object_or_404(Group.objects.filter(pk=group_id))
     F = Group_Form(data=request.POST, instance=U)
     if F.is_valid():
@@ -66,7 +66,7 @@ def group_update(request, group_id):
 
 @login_required()
 @superuser_only()
-def group_delete(request, group_id):
+def delete(request, group_id):
     G = get_object_or_404(Group.objects.filter(pk=group_id))
     G.delete()
     messages.success(request, _("Group deleted with success."))

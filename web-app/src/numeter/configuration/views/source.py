@@ -14,7 +14,7 @@ def list(request):
     q = request.GET.get('q','')
     Sources = Data_Source.objects.web_filter(q)
     Sources = make_page(Sources, int(request.GET.get('page',1)), 20)
-    return render(request, 'conf/plugins/source-list.html', {
+    return render(request, 'plugins/source-list.html', {
         'Sources': Sources,
         'q':q,
     })
@@ -25,7 +25,7 @@ def list(request):
 def get(request, source_id):
     S = get_object_or_404(Data_Source.objects.filter(pk=source_id))
     F = Data_Source_Form(instance=S)
-    return render(request, 'conf/plugins/source.html', {
+    return render(request, 'plugins/source.html', {
         'Source_Form': F,
     })
 
@@ -59,6 +59,6 @@ def delete(request, source_id):
 @superuser_only()
 def add_to_view(request, source_id):
     S = get_object_or_404(Data_Source.objects.filter(pk=source_id))
-    return render(request, 'conf/plugins/plugin-list.html', {
+    return render(request, 'plugins/plugin-list.html', {
       'plugins': plugins
     })

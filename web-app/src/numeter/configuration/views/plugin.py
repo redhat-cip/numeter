@@ -16,7 +16,7 @@ def index(request):
     Plugins = Plugin.objects.all()
     Plugins_count = Plugins.count()
     Plugins = make_page(Plugins, 1, 20)
-    return render(request, 'conf/plugins/index.html', {
+    return render(request, 'plugins/index.html', {
         'Plugins': Plugins,
         'Plugins_count': Plugins_count,
         'Sources_count': Data_Source.objects.count(),
@@ -30,7 +30,7 @@ def list(request):
     q = request.GET.get('q','')
     Plugins = Plugin.objects.web_filter(q)
     Plugins = make_page(Plugins, int(request.GET.get('page',1)), 20)
-    return render(request, 'conf/plugins/plugin-list.html', {
+    return render(request, 'plugins/plugin-list.html', {
         'Plugins': Plugins,
         'Hosts': Host.objects.all(),
         'q':q,
@@ -48,7 +48,7 @@ def create_from_host(request):
     else:
         host = Host.objects.get(id=request.GET['host_id'])
         plugins = Plugin.objects.get_unsaved_plugins(host)
-        return render(request, 'conf/plugins/create-plugins.html', {
+        return render(request, 'plugins/create-plugins.html', {
             'plugins':plugins,
             'host':host,
         })
@@ -60,7 +60,7 @@ def create_from_host(request):
 def get(request, plugin_id):
     P = get_object_or_404(Plugin.objects.filter(pk=plugin_id))
     F = Plugin_Form(instance=P)
-    return render(request, 'conf/plugins/plugin.html', {
+    return render(request, 'plugins/plugin.html', {
         'Plugin_Form': F,
     })
 
@@ -105,7 +105,7 @@ def create_sources(request, plugin_id):
         messages.success(request, _("Sources creation finished."))
         return render(request, 'base/messages.html', {})
     else:
-        return render(request, 'conf/plugins/create-sources.html', {
+        return render(request, 'plugins/create-sources.html', {
             'plugin': P,
             'sources': P.get_unsaved_sources()
         })

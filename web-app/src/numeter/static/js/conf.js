@@ -113,19 +113,6 @@ $(document).on('click', 'input[type="button"][name="back"]', function() {
   });
 });
 
-// FOR STORAGE
-// GET MODEL INSTANCE
-$(document).on('click', '.ajax-tabs-list li a', function() {
-  model = $(this).parent().parent().parent().attr('model');
-  id = $(this).attr('model-id');
-  $.ajax({type:'GET', url:'/configuration/'+model+'/'+id, async:true,
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('#'+menu+'-content').html(data);
-    },
-  });
-});
-
 // GET EMPTY FORM
 $(document).on('click', '.ajax-tab-add', function (e) {
   var url = $(this).attr('url');

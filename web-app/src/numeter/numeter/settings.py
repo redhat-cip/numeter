@@ -86,6 +86,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'core',
     'multiviews',
+    'configuration',
 )
 
 # A sample logging configuration. The only tangible logging

@@ -14,7 +14,7 @@ def list(request):
     q = request.GET.get('q','')
     Multiviews = Multiview.objects.web_filter(q)
     Multiviews = make_page(Multiviews, int(request.GET.get('page',1)), 20)
-    return render(request, 'conf/views/multiview-list.html', {
+    return render(request, 'views/multiview-list.html', {
         'Multiviews': Multiviews,
         'q':q,
     })
@@ -33,7 +33,7 @@ def add(request):
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
         return render(request, 'base/messages.html', {})
     else:
-        return render(request, 'conf/views/multiview.html', {
+        return render(request, 'views/multiview.html', {
             'Multiview_Form': Multiview_Form(),
         })
 
@@ -43,7 +43,7 @@ def add(request):
 def get(request, multiview_id):
     M = get_object_or_404(Multiview.objects.filter(pk=multiview_id))
     F = Multiview_Form(instance=M)
-    return render(request, 'conf/views/multiview.html', {
+    return render(request, 'views/multiview.html', {
         'Multiview_Form': F,
     })
 
