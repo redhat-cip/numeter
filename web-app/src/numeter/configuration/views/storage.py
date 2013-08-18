@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
 from core.models import Storage, Host
-from core.forms import Storage_Form
+from configuration.forms.storage import Storage_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 

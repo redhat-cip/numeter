@@ -49,7 +49,7 @@ class User_TestCase(TestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         # Test to add
-        POST = { 'username': 'new test', 'password': 'toto', 'graph_lib': 'dygraph-combined.js' }
+        POST = { 'username': 'new test', 'password1': 'toto', 'password2': 'toto', 'graph_lib': 'dygraph-combined.js' }
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         # Test to get

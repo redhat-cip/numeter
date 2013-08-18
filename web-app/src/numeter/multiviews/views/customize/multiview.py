@@ -6,7 +6,7 @@ from django.contrib import messages
 from core.utils.decorators import login_required
 from core.utils import make_page
 from multiviews.models import Multiview
-from multiviews.forms import Multiview_Form
+from configuration.forms.multiview import Multiview_Form
 from json import dumps as jdumps
 
 

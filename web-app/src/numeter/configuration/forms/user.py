@@ -1,18 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
-
-from core.models import User, Host, Storage, Group
-
-
-class Group_Form(forms.ModelForm):
-    """
-    """
-    class Meta:
-        model = Group
-        widgets = {
-            'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
-        }
+from core.models import User
 
 
 class User_Form(forms.ModelForm):
@@ -23,11 +11,11 @@ class User_Form(forms.ModelForm):
         model = User
         fields = ('username','email','password','graph_lib','is_superuser','groups')
         widgets = {
-            'username': forms.TextInput({'placeholder':_('Username'),'class':'span'}),
-            'email': forms.TextInput({'placeholder':_('Email'),'class':'span'}),
-            'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span'}),
-            'graph_lib': forms.SelectMultiple({'class':'span'}),
-            'groups': forms.SelectMultiple({'class':'span'}),
+          'username': forms.TextInput({'placeholder':_('Username'),'class':'span'}),
+          'email': forms.TextInput({'placeholder':_('Email'),'class':'span'}),
+          'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span'}),
+          'graph_lib': forms.SelectMultiple({'class':'span'}),
+          'groups': forms.SelectMultiple({'class':'span'}),
         }
 
 
@@ -43,12 +31,28 @@ class User_CreationForm(User_Form):
     """
     Form with sensitive fields.
     """
+    password1 = forms.CharField(label=_('Password'), widget=forms.PasswordInput(attrs={
+      'placeholder': _('Password'),
+      'class': 'span'
+    }))
+    password2 = forms.CharField(label=_('Confirmation'), widget=forms.PasswordInput(attrs={
+      'placeholder': _('Confirmation'),
+      'class': 'span'
+    }))
     class Meta(User_Form.Meta):
-        exclude = ('last_login','is_staff','date_joined','is_active')
+        exclude = ('last_login','is_staff','date_joined','is_active','password')
+
+    def clean_password2(self):
+        """Check that the two password entries match."""
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError(_('Password and confirmation are not the same.'))
+        return password2
 
     def save(self, commit=True):
         user = super(User_CreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password"])
+        user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
         return user
@@ -87,34 +91,3 @@ class User_PasswordForm(User_Form):
         self.instance.set_password(self.data['new_1'])
         self.instance.save()
         return self.instance
-
-
-class Storage_Form(forms.ModelForm):
-    """
-    Basic Storage ModelForm.
-    """
-    class Meta:
-        model = Storage
-        widgets = {
-            'name': forms.TextInput({'placeholder':_('Name'), 'class':'span'}),
-            'address': forms.TextInput({'placeholder':_('Address'), 'class':'span'}),
-            'port': forms.TextInput({'placeholder':_('Port'), 'class':'span'}),
-            'protocol': forms.Select({'class':'span'}),
-            'url_prefix': forms.TextInput({'placeholder':_('URL prefix'), 'class':'span'}),
-            'login': forms.TextInput({'placeholder':_('Login'), 'class':'span'}),
-            'password': forms.TextInput({'placeholder':_('Password'), 'class':'span'}),
-        }
-
-
-class Host_Form(forms.ModelForm):
-    """
-    Basic Host ModelForm.
-    """
-    class Meta:
-        model = Host
-        widgets = {
-            'name': forms.TextInput({'placeholder':_("Host's name"), 'class':'span'}),
-            'hostid': forms.TextInput({'placeholder':'ID', 'class':'span'}),
-            'storage': forms.Select({'class':'span'}),
-            'group': forms.Select({'class':'span'}),
-        }

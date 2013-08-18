@@ -6,7 +6,7 @@ from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 from core.utils.http import render_HTML_JSON
 from core.models import User, Group
-from core.forms import User_CreationForm, User_Admin_EditForm
+from configuration.forms.user import User_CreationForm, User_Admin_EditForm
 
 
 @login_required()

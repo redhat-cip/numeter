@@ -4,7 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from core.utils.decorators import login_required
 from core.utils import make_page
 from multiviews.models import Multiview, View, Data_Source
-from multiviews.forms import View_Form, Multiview_Form
+from configuration.forms.view import View_Form
+from configuration.forms.multiview import Multiview_Form
 
 
 @login_required()

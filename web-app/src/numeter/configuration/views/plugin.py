@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
 from multiviews.models import Plugin, Data_Source
-from multiviews.forms import Plugin_Form
+from configuration.forms.plugin import Plugin_Form
 from core.models import Host
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
