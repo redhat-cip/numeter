@@ -45,7 +45,7 @@ $(document).on('shown', '.ajax-tabs li a', function(e) {
 
 // SEARCH IN LIST BY PRESS ENTER
 $(document).on('keypress', '.q', function(e) {
-  if (e.which == 13 && $(this).val().length ) {
+  if (e.which == 13 ) {
     var url = $(this).attr('data-url');
     var into = $(this).attr('data-into');
     var data = { q: $(this).val() };
@@ -299,23 +299,49 @@ $(document).on('click', '.bulk-action', function() {
   var checkboxes_class = $(this).attr('data-checkboxes');
   var action = $(action_element_id).val();
   var url = $(action_element_id+' option:selected').attr('data-url');
+  var method = $(action_element_id+' option:selected').attr('data-method') || 'POST';
   var ids = [];
   $(checkboxes_class+':checked').each( function() {
     ids.push( $(this).attr('name') );
   });
   $.ajax({
-    type: 'POST', url: url, async: true,
+    type: method, url: url, async: true,
     data: { 
       'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
       'ids': ids
     },
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('.messages').append(data['html']);
       if ( action == 'delete' ) {
+        $('.messages').append(data['html']);
         $(checkboxes_class+':checked').parent().parent().hide(250);
         $(checkboxes_class+':checked').parent().parent().remove();
+      } else if ( action == 'add-to-view' ) {
+        $('#myModal').html(data);
+        $('#myModal').modal('show');
       }
     },
   });
 });
+
+// BTN ADD SOURCE TO VIEW
+$(document).on('click', '#btn-add-sources-to-view', function() {
+  var url = $(this).attr('data-url');
+  var view_id = $('#chosen-view').val()
+  var ids = [];
+  $('.source-to-add-checkbox:checked').each( function() {
+    ids.push( $(this).attr('name') );
+  });
+  $.ajax({
+    type: 'POST', url: url, async: true,
+    data: { 
+      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+      'view_id': view_id,
+      'source_ids': ids
+    },
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('.messages').append(data['html']);
+    },
+  });
+})

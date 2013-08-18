@@ -41,8 +41,8 @@
 <div class="span3">
  <h5>{% trans "Action:" %}</h5>
  <div class="input-append">
-  <select id="host-action">
-      <option name="delete" data-url="{% url "host bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+  <select id="hosts-action">
+   <option data-url="{% url "host bulk delete" %}" value="delete">{% trans "Delete" %}</option>
   </select>
-  <button class="btn bulk-action" type="button" data-action-element="#host-action" data-checkboxes=".host-checkbox">{% trans "Apply" %}</button>
+  <button class="btn bulk-action" type="button" data-action-element="#hosts-action" data-checkboxes=".host-checkbox">{% trans "Apply" %}</button>
 </div>

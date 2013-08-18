@@ -2,10 +2,11 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
-from multiviews.models import View, Multiview
+from multiviews.models import View, Multiview, Data_Source
 from multiviews.forms import View_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
+from core.utils.http import render_HTML_JSON
 
 
 @login_required()
@@ -82,3 +83,19 @@ def delete(request, view_id):
     V.delete()
     messages.success(request, _("View deleted with success."))
     return render(request, 'base/messages.html', {})
+
+
+@login_required()
+@superuser_only()
+def add_sources(request):
+    if request.method == 'POST':
+        V = get_object_or_404(View.objects.filter(pk=request.POST['view_id']))
+        V.sources.add(*request.POST.getlist('source_ids[]'))
+        messages.success(request, _("Source(s) added with success."))
+        return render_HTML_JSON(request, {}, 'base/messages.html', {})
+    else:
+        return render(request, 'modals/add_sources.html', {
+          'views': View.objects.all(),
+          'sources': Data_Source.objects.filter(pk__in=request.GET.getlist('ids[]'))
+        })
+

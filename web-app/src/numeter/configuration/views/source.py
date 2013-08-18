@@ -6,6 +6,7 @@ from multiviews.models import Data_Source
 from multiviews.forms import Data_Source_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
+from core.utils.http import render_HTML_JSON
 
 
 @login_required()
@@ -54,11 +55,12 @@ def delete(request, source_id):
     return render(request, 'base/messages.html', {})
 
 
-# TODO
+# TODO : Make unittest
 @login_required()
 @superuser_only()
-def add_to_view(request, source_id):
-    S = get_object_or_404(Data_Source.objects.filter(pk=source_id))
-    return render(request, 'plugins/plugin-list.html', {
-      'plugins': plugins
-    })
+def bulk_delete(request):
+    """Delete several sources in one request."""
+    sources = Data_Source.objects.filter(pk__in=request.POST.getlist('ids[]'))
+    sources.delete()
+    messages.success(request, _("Source(s) deleted with success."))
+    return render_HTML_JSON(request, {}, 'base/messages.html', {})

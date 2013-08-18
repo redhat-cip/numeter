@@ -1,33 +1,45 @@
 {% load i18n %}
-<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or source's name" %}" href="#source-list" data-url="{% url 'source list' %}?page=1&q={{ q }}">
-<table class="table table-condensed table-striped">
- <thead>
-  <tr>
-   <th></th>
-   <th>{% trans "Name" %}</th>
-   <th>{% trans "Plugin" %}</th>
-   <th>{% trans "Host" %}</th>
-  </tr>
- </thead>
- <tbody>
-  {% for source in Sources %}
-  <tr>
-   <td><input type="checkbox" name="{{ source.id }}"></td>
-   <td><a class="get-source" data-url="{{ source.get_absolute_url }}" data-into="#source-list" data-original-title="{% blocktrans %}Preview of {{ source }}{% endblocktrans %}" data-data-url="{% url "source data" source.id %}">{{ source.name }}</a></td>
-   <td><a class="get-plugin" data-url="{{ source.plugin.get_absolute_url }}" data-into="#source-list">{{ source.plugin.name }}</a></td>
-   <td><a class="get-host" data-url="{{ source.plugin.host.get_absolute_url }}" data-into="#source-list">{{ source.plugin.host }}</a></td>
-  </tr>
-  {% endfor %}
- </tbody>
-</table>
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or source's name" %}" data-into="#source-list" data-url="{% url 'source list' %}?page=1&q={{ q }}">
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>{% trans "Name" %}</th>
+    <th>{% trans "Plugin" %}</th>
+    <th>{% trans "Host" %}</th>
+   </tr>
+  </thead>
+  <tbody>
+   {% for source in Sources %}
+   <tr>
+    <td><input class="source-checkbox" type="checkbox" name="{{ source.id }}"></td>
+    <td><a class="get-source" data-url="{{ source.get_absolute_url }}" data-into="#source-list" data-original-title="{% blocktrans %}Preview of {{ source }}{% endblocktrans %}" data-data-url="{% url "source data" source.id %}">{{ source.name }}</a></td>
+    <td><a class="get-plugin" data-url="{{ source.plugin.get_absolute_url }}" data-into="#source-list">{{ source.plugin.name }}</a></td>
+    <td><a class="get-host" data-url="{{ source.plugin.host.get_absolute_url }}" data-into="#source-list">{{ source.plugin.host }}</a></td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   {% if Sources.has_previous %}
+   <li class="previous"><a class="get-page" data-into="#source-list" data-url="{{ Sources.0.get_list_url }}?page={{ Sources.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+   {% endif %}
+   {% if Sources.has_next %}
+   <li class="next"><a class="get-page" data-into="#source-list" data-url="{{ Sources.0.get_list_url }}?page={{ Sources.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+   {% endif %}
+  </ul>
+ </div>
+</div>
 
-<div>
- <ul class="pager">
-  {% if Sources.has_previous %}
-  <li class="previous"><a class="get-page" data-into="#source-list" data-url="{{ Sources.0.get_list_url }}?page={{ Sources.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
-  {% endif %}
-  {% if Sources.has_next %}
-  <li class="next"><a class="get-page" data-into="#source-list" data-url="{{ Sources.0.get_list_url }}?page={{ Sources.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
-  {% endif %}
- </ul>
+<div class="span3">
+ <h5>{% trans "Action:" %}</h5>
+ <div class="input-append">
+  <select id="sources-action">
+   <option data-url="{% url "source bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+   <option data-method="GET" data-url="{% url "view add sources" %}" value="add-to-view">{% trans "Add to a view" %}</option>
+  </select>
+  <button class="btn bulk-action" type="button" data-action-element="#sources-action" data-checkboxes=".source-checkbox">{% trans "Apply" %}</button>
 </div>
