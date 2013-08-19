@@ -21,11 +21,9 @@ class myMuninModule(modulesGeneric):
         self._logger = logger
         self._logger.info("Plugin Munin start")
         self._configParser = configParser
-        #self._munin_host = "127.0.0.2"
-        #self._munin_port = 4948
+        self._munin_host = "127.0.0.1"
+        self._munin_port = 4949
         self._plugins_enable = ".*"
-        #self.munin_connection = None
-        #self.watchdog = 1000 # watchdog for munin socket error
 
         if configParser: self.getParserConfig()
         self._logger.info("section myMuninModule : plugins_enable = " 
@@ -38,12 +36,6 @@ class myMuninModule(modulesGeneric):
 
     def getData(self):
         "get and return all data collected"
-
-        # Open new connect for each plugins because fucked plugin break the
-        # read / write buffer
-        #if self.munin_connection == None:
-        #    # Start munin connexion
-        #    self.munin_connect()
 
         # Get list of all plugins 
         pluginList = self.munin_connection.munin_list()
@@ -61,10 +53,6 @@ class myMuninModule(modulesGeneric):
 
     def pluginsRefresh(self):
         "Return plugins info for refresh"
-
-        #if self.munin_connection == None:
-        #    # Start munin connexion
-        #    self.munin_connect()
 
         pluginList = self.munin_connection.munin_list()
 

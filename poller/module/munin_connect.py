@@ -5,10 +5,11 @@ import re
 
 class MuninSock:
 
-    def __init__(self, host="127.0.0.1", port=4949):
+    def __init__(self, host, port):
 	self.host = host
 	self.port = port
-    def __enter__(self, host="127.0.0.1", port=4949):
+
+    def __enter__(self):
         self.munin_sock = socket.create_connection((self.host
                                             , self.port))
         self._s = self.munin_sock.makefile()
@@ -21,7 +22,7 @@ class MuninSock:
 
 class MuninConnection:
     
-    def __init__(self, munin_host, munin_port):
+    def __init__(self, munin_host="127.0.0.1", munin_port=4949):
         self.watchdog = 1000 # watchdog for munin socket error
 	self.munin_host = munin_host
 	self.munin_port = munin_port
@@ -62,14 +63,14 @@ class MuninConnection:
     def munin_list(self):
         # Get node name
         node = self.munin_nodes()
-        with MuninSock() as self.sock:
+        with MuninSock(self.munin_host, self.munin_port) as self.sock:
             self._s = self.sock.makefile()
             self.sock.sendall("list %s\n" % node)
             return_list = self._readline().split(' ')
         return return_list if return_list != [''] else []
 
     def munin_nodes(self):
-        with MuninSock() as self.sock:
+        with MuninSock(self.munin_host, self.munin_port) as self.sock:
             self._s = self.sock.makefile()
             self.sock.sendall("nodes\n")
             return_node = [ line for line in self._iterline() ]
@@ -77,7 +78,7 @@ class MuninConnection:
 
 
     def munin_config(self, key):
-        with MuninSock() as self.sock:
+        with MuninSock(self.munin_host, self.munin_port) as self.sock:
             self._s = self.sock.makefile()
             self.sock.sendall("config %s\n" % key)
             ret = {}
