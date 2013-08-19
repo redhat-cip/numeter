@@ -6,12 +6,11 @@ import re
 class MuninSock:
 
     def __init__(self, host="127.0.0.1", port=4949):
-        self._munin_host = host
-        self._munin_port = port
-
-    def __enter__(self):
-        self.munin_sock = socket.create_connection((self._munin_host
-                                            , self._munin_port))
+	self.host = host
+	self.port = port
+    def __enter__(self, host="127.0.0.1", port=4949):
+        self.munin_sock = socket.create_connection((self.host
+                                            , self.port))
         self._s = self.munin_sock.makefile()
         self.hello_string = self._s.readline().strip()
 	return self.munin_sock
@@ -22,8 +21,10 @@ class MuninSock:
 
 class MuninConnection:
     
-    def __init__(self):
+    def __init__(self, munin_host, munin_port):
         self.watchdog = 1000 # watchdog for munin socket error
+	self.munin_host = munin_host
+	self.munin_port = munin_port
 
     def _readline(self):
         return self._s.readline().strip()
@@ -43,7 +44,7 @@ class MuninConnection:
 
 
     def munin_fetch(self, key):
-        with MuninSock() as self.sock:
+        with MuninSock(self.munin_host, self.munin_port) as self.sock:
 	    self._s = self.sock.makefile()
             self.sock.sendall("fetch %s\n" % key)
             ret = {}
