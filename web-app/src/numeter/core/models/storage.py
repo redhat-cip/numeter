@@ -77,6 +77,7 @@ class Storage_Manager(models.Manager):
 
     def which_storage(self, hostid):
         """Return the storage of owner of an hostid."""
+        # TODO: Remake with better meth
         for s in self.get_query_set():
             hosts = s._get_hostids()
             for h in hosts:
@@ -185,6 +186,7 @@ class Storage(models.Model):
 
         data['res'] = data.get('res','Daily')
         if 'plugin' in data:
+            print data
             data['plugin'] = quote(data['plugin'])
 
         _url = self.URLS[url].format(**data)
