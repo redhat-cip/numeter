@@ -6,6 +6,7 @@ from functools import wraps
 
 
 def find_storage():
+    """Decorator for valid request and get storage from request.GET['host']."""
     def decorator(func):
         @wraps(func, assigned=available_attrs(func))
         def inner(self, request, *args, **kwargs):
@@ -31,12 +32,18 @@ class Wild_Storage_Resource(Resource):
 
     def base_urls(self):
         return [
-            url(r"^hosts$", self.wrap_view('hosts'), name="api_hosts"),
-            url(r"^hinfo$", self.wrap_view('hinfo'), name="api_hinfo"),
-            url(r"^list$", self.wrap_view('list'), name="api_list"),
-            url(r"^info$", self.wrap_view('info'), name="api_info"),
-            url(r"^data$", self.wrap_view('data'), name="api_data"),
+            url(r"^$", self.wrap_view('index'), name="wild_storage_index"),
+            url(r"^hosts$", self.wrap_view('hosts'), name="wild_storage_hosts"),
+            url(r"^hinfo$", self.wrap_view('hinfo'), name="wild_storage_hinfo"),
+            url(r"^list$", self.wrap_view('list'), name="wild_storage_list"),
+            url(r"^info$", self.wrap_view('info'), name="wild_storage_info"),
+            url(r"^data$", self.wrap_view('data'), name="wild_storage_data"),
         ]
+
+    def index(self, request, *args, **kwargs):
+        # TODO: make index
+        data = {}
+        return self.create_response(request, data)
 
     def hosts(self, request, *args, **kwargs):
         data = {}
@@ -60,7 +67,6 @@ class Wild_Storage_Resource(Resource):
 
     @find_storage()
     def data(self, request, *args, **kwargs):
-        # Get data
         req = {
           'hostid':request.GET['host'],
           'plugin':request.GET['plugin'],
