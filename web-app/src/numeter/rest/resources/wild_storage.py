@@ -5,9 +5,6 @@ from core.models import Storage
 from functools import wraps
 
 
-
-
-
 def find_storage():
     def decorator(func):
         @wraps(func, assigned=available_attrs(func))
@@ -34,11 +31,17 @@ class Wild_Storage_Resource(Resource):
 
     def base_urls(self):
         return [
+            url(r"^hosts$", self.wrap_view('hosts'), name="api_hosts"),
             url(r"^hinfo$", self.wrap_view('hinfo'), name="api_hinfo"),
             url(r"^list$", self.wrap_view('list'), name="api_list"),
             url(r"^info$", self.wrap_view('info'), name="api_info"),
             url(r"^data$", self.wrap_view('data'), name="api_data"),
         ]
+
+    def hosts(self, request, *args, **kwargs):
+        data = {}
+        [ data.update(s.get_hosts()) for s in Storage.objects.exclude(name__icontains='wild') ]
+        return self.create_response(request, data)
 
     @find_storage()
     def hinfo(self, request, *args, **kwargs):
@@ -47,7 +50,7 @@ class Wild_Storage_Resource(Resource):
 
     @find_storage()
     def list(self, request, *args, **kwargs):
-        data = self.storage.get_plugins(request.GET['host'])
+        data = self.storage._connect('plugins', {'hostid':request.GET['host']})
         return self.create_response(request, data)
 
     @find_storage()

@@ -23,6 +23,7 @@ def index(request):
 @login_required()
 @superuser_only()
 def user_list(request):
+    """List  users and filter by request."""
     q = request.GET.get('q','')
     Users = User.objects.web_filter(q).filter(is_superuser=False)
     Users = make_page(Users, int(request.GET.get('page',1)), 20)
@@ -35,6 +36,7 @@ def user_list(request):
 @login_required()
 @superuser_only()
 def superuser_list(request):
+    """List superusers and filter by request."""
     q = request.GET.get('q','')
     Users = User.objects.web_filter(q).filter(is_superuser=True)
     Users = make_page(Users, int(request.GET.get('page',1)), 20)
@@ -47,6 +49,10 @@ def superuser_list(request):
 @login_required()
 @superuser_only()
 def add(request):
+    """
+    GET: User Form.
+    POST: Create user.
+    """
     if request.method == 'POST':
         F = User_CreationForm(request.POST)
         data = {}
@@ -69,6 +75,7 @@ def add(request):
 @login_required()
 @superuser_only()
 def get(request, user_id):
+    """Get a user."""
     U = get_object_or_404(User.objects.filter(pk=user_id))
     F = User_Admin_EditForm(instance=U)
     return render(request, 'users/user.html', {
@@ -79,6 +86,7 @@ def get(request, user_id):
 @login_required()
 @superuser_only()
 def update(request, user_id):
+    """Update a user."""
     U = get_object_or_404(User.objects.filter(pk=user_id))
     F = User_Admin_EditForm(data=request.POST, instance=U)
     data = {}
@@ -97,6 +105,7 @@ def update(request, user_id):
 @login_required()
 @superuser_only()
 def delete(request, user_id):
+    """Delete a user."""
     U = get_object_or_404(User.objects.filter(pk=user_id))
     U.delete()
     messages.success(request, _("User deleted with success."))

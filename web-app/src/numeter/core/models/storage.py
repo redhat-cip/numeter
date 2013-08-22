@@ -126,10 +126,10 @@ class Storage(models.Model):
         super(Storage, self).__init__(*args, **kwargs)
         self._set_proxy()
         self.URLS = {
-            'hosts': '/numeter-storage/hosts',
-            'host': '/numeter-storage/hinfo?host={hostid}',
-            'plugins': '/numeter-storage/list?host={hostid}',
-            'data': '/numeter-storage/data?host={hostid}&plugin={plugin}&ds={ds}&res={res}',
+            'hosts': '/hosts',
+            'host': '/hinfo?host={hostid}',
+            'plugins': '/list?host={hostid}',
+            'data': '/data?host={hostid}&plugin={plugin}&ds={ds}&res={res}',
         }
 
     def _set_proxy(self):
@@ -148,6 +148,7 @@ class Storage(models.Model):
         install_opener(self.proxy)
 
     def is_on(self):
+        """Test if storage is reachable"""
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((self.address, self.port))
@@ -186,7 +187,6 @@ class Storage(models.Model):
 
         data['res'] = data.get('res','Daily')
         if 'plugin' in data:
-            print data
             data['plugin'] = quote(data['plugin'])
 
         _url = self.URLS[url].format(**data)
@@ -196,6 +196,7 @@ class Storage(models.Model):
         return jloads(r)
 
     def create_host(self, hostid):
+        """Create a host in DB from its storage ID."""
         hosts = self.get_hosts()
         h = hosts[hostid]
         Host.objects.create(
@@ -205,11 +206,17 @@ class Storage(models.Model):
         )
 
     def get_hosts(self):
-        """Return a dictionnary representing storage's hosts."""
+        """
+        Return a dictionnary representing storage's hosts.
+        It is raw data from storage API.
+        """
         return self._connect('hosts')
 
     def get_info(self, hostid):
-        """Return a dictionnary representing an host on storage."""
+        """
+        Return a dictionnary representing an host on storage.
+        It is raw data from storage API.
+        """
         if isinstance(hostid, Host): hostid = hostid.hostid
         return self._connect('host', {'hostid': hostid})
 
@@ -220,7 +227,10 @@ class Storage(models.Model):
         return list(categories)
 
     def get_plugins(self, hostid):
-        """Return a list representing an host's plugins."""
+        """
+        Return a list representing an host's plugins.
+        Modify storage's data before returning.
+        """
         r = self._connect('plugins', {'hostid': hostid})
         return [ p for p in r.values() ]
 
@@ -235,7 +245,10 @@ class Storage(models.Model):
         return []
 
     def get_data(self, **data):
-        """Get plugin's data from storage."""
+        """
+        Get plugin's data from storage.
+        It is raw data from storage API.
+        """
         return self._connect('data', data)
 
     def _update_hosts(self):

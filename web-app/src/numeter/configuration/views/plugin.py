@@ -13,7 +13,7 @@ from core.utils.http import render_HTML_JSON
 @login_required()
 @superuser_only()
 def index(request):
-    """Get plugins and sources list."""
+    """Get plugins and sources menu."""
     Plugins = Plugin.objects.all()
     Plugins_count = Plugins.count()
     Plugins = make_page(Plugins, 1, 20)
@@ -28,6 +28,7 @@ def index(request):
 @login_required()
 @superuser_only()
 def list(request):
+    """List plugins and filter by request."""
     q = request.GET.get('q','')
     Plugins = Plugin.objects.web_filter(q)
     Plugins = make_page(Plugins, int(request.GET.get('page',1)), 20)
@@ -41,6 +42,10 @@ def list(request):
 @login_required()
 @superuser_only()
 def create_from_host(request):
+    """
+    GET: Return plugin creation's modal.
+    POST: Create submitted plguins.
+    """
     if request.method == 'POST':
         host = Host.objects.get(id=request.POST['host_id'])
         plugins = Plugin.objects.create_from_host(host, request.POST.getlist('plugins[]'))
@@ -59,6 +64,7 @@ def create_from_host(request):
 @login_required()
 @superuser_only()
 def get(request, plugin_id):
+    """Get a plugin."""
     P = get_object_or_404(Plugin.objects.filter(pk=plugin_id))
     F = Plugin_Form(instance=P)
     return render(request, 'plugins/plugin.html', {
@@ -69,6 +75,7 @@ def get(request, plugin_id):
 @login_required()
 @superuser_only()
 def update(request, plugin_id):
+    """Update a plugin."""
     P = get_object_or_404(Plugin.objects.filter(pk=plugin_id))
     F = Plugin_Form(data=request.POST, instance=P)
     data = {}
@@ -87,6 +94,7 @@ def update(request, plugin_id):
 @login_required()
 @superuser_only()
 def delete(request, plugin_id):
+    """Delete a plugin."""
     P = get_object_or_404(Plugin.objects.filter(pk=plugin_id))
     P.delete()
     messages.success(request, _("Plugin deleted with success."))

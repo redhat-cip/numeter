@@ -149,6 +149,7 @@ LOGIN_URL = '/login'
 AUTH_USER_MODEL = 'core.User'
 
 from settings_local import *
+from settings_tastypie import *
 
 import os
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
