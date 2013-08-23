@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
+from core.models import Host
 from hashlib import md5
 
 
@@ -86,6 +87,10 @@ class View(models.Model):
             'id':self.id,
             'source_ids':[],
         }
+        # Get All host and Events
+        #host_pk = self.sources.all().values_list('plugin__host')
+        #events = Event.objects.filter(hosts__pk__in=hosts_pk)
+        #r_data['event'] = events.values('name','date','comment')
         # Set metadata
         # Set labels for warning lines
         if self.warning is not None:
@@ -94,7 +99,6 @@ class View(models.Model):
         if self.critical is not None:
             r_data['labels'].append('critical')
             r_data['colors'].append("#FF3434")
-
         ## Set datas
         # Add warning and critical line
         if self.critical is not None:
@@ -187,7 +191,7 @@ class Multiview(models.Model):
 
 class Event(models.Model):
     name = models.CharField(_('name'), max_length=300)
-    source = models.ForeignKey('multiviews.Data_Source')
+    hosts = models.ManyToManyField('core.host')
     start_date = models.DateTimeField(_('start date'))
     end_date = models.DateTimeField(_('end date'))
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
@@ -215,4 +219,3 @@ class Event(models.Model):
 
     def get_list_url(self):
         return reverse('Event list')
-

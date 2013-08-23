@@ -15,7 +15,6 @@ logger = getLogger('storage')
 
 
 class Storage_Manager(models.Manager):
-
     def web_filter(self, q):
         storages = self.filter(
             Q(name__icontains=q) |
@@ -116,6 +115,14 @@ class Storage(models.Model):
         verbose_name = _('storage')
         verbose_name_plural = _('storages')
 
+    class ConnectionError(Exception):
+        "Can't connect to storage"
+        pass
+
+    class UnvalidDataError(Exception):
+        "Can't read data from storage"
+        pass
+
     def __unicode__(self):
         if self.name:
             return self.name
@@ -192,7 +199,10 @@ class Storage(models.Model):
         _url = self.URLS[url].format(**data)
         uri = ("%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__) + _url
         logger.info(uri)
-        r = self.proxy.open(uri, timeout=settings.STORAGE_TIMEOUT).read()
+        try:
+            r = self.proxy.open(uri, timeout=settings.STORAGE_TIMEOUT).read()
+        except IOError, e:
+            raise self.ConnectionError(e)
         return jloads(r)
 
     def create_host(self, hostid):
@@ -313,4 +323,3 @@ class Storage(models.Model):
                 )
             else:
                 Host.objects.filter(hostid=h['ID']).update(storage=self)
-
