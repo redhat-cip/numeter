@@ -14,7 +14,7 @@
    {% for view in Views %}
    <tr>
     <td><input class="view-checkbox" type="checkbox" name="{{ view.id }}"></td>
-    <td><a class="get-view" data-url="{{ view.get_absolute_url }}" data-into="#view-list" data-original-title="{% blocktrans %}Preview of {{ view }}{% endblocktrans %}" data-data-url="{% url "view data" view.id %}">{{ view.name }}</a></td>
+    <td><a class="preview-view get-view" data-url="{{ view.get_absolute_url }}" data-into="#view-list" data-original-title="{% blocktrans %}Preview of {{ view }}{% endblocktrans %}" data-data-url="{% url "view data" view.id %}">{{ view.name }}</a></td>
     <td>
      {% for source in view.sources.all %}
      <a class="get-source" data-url="{{ source.get_absolute_url }}" data-into="#view-list" data-original-title="{% blocktrans %}Preview of {{ source }}{% endblocktrans %}" data-data-url="{% url "source data" source.id %}">{{ source }}</a>,

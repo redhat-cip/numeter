@@ -33,7 +33,7 @@ $(document).on('shown', '.ajax-tabs li a', function(e) {
   var url = $(this).attr('data-url');
   var target = $(this).attr('data-target');
   $(target).empty();
-  print_loading_gif(target, 50, 50);
+  print_loading_gif(target, 250, 250);
   $.ajax({type:'GET', url: url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -77,7 +77,7 @@ $(document).on('shown', '.sub-menu-tabs li a', function() {
   var target = $(this).attr('data-target');
   console.log(target);
   $(target).empty();
-  print_loading_gif(target, 50, 50);
+  print_loading_gif(target, 250, 250);
   $.ajax({type:'GET', url:url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -92,7 +92,8 @@ $(document).on('click', '[class*="get-"]', function() {
   var target = $(this).attr('data-into');
   var cur_tab = $(this).parentsUntil('.tab-pane').parent().attr('id')
   $('a[data-target="#'+cur_tab+'"]').parent().removeClass('active');
-  print_loading_gif(target, 50, 50);
+  $(target).html('')
+  print_loading_gif(target, 250, 250);
   $.ajax({type:'GET', url:url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -142,7 +143,7 @@ $(document).on('submit', '.ajax-form', function() {
       if ( data['response'] == 'ok' ) {
         $('.messages').append(data['html']);
         $('a[data-target="#'+cur_tab+'"]').parent().removeClass('active');
-        print_loading_gif(cur_tab, 50, 50);
+        print_loading_gif(cur_tab, 250, 250);
         // Reload form
         if ( data['callback-url'] ) {
           $.ajax({type:'GET', url:data['callback-url'], async:true,
@@ -277,39 +278,6 @@ $(document).on('click', '#btn-create-sources', function() {
       $('.messages').append(data);
     },
   });
-});
-
-// SHOW PREVIEW ON TOOLTIP
-$(document).on('mouseover', "a:regex('class,get-(source|view)')", function() {
-  var pop = $(this);
-  var url = $(this).attr('data-data-url');
-  $(pop).popover({
-    content: '<div id="preview-graph"></div>',
-    html: true,
-    trigger: 'manual',
-    delay: {'show':1000, 'hide':250},
-  })
-
-  $(pop).popover('show');
-  print_loading_gif('#preview-graph', 40, 40);
-  $.getJSON(url, function(data) {
-    for (i in data['datas']){
-      data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-    }
-    g = new Dygraph(document.getElementById('preview-graph'), data['datas'], {
-      labels: data['labels'],
-      colors: data['colors'],
-      pixelsPerLabel: 60,
-      gridLineWidth: 0.1,
-      labelsKMG2: true,
-      height: 150,
-      width: 300,
-    });
-  });
-});
-$(document).on('mouseout', "a:regex('class,get-(source|view)')", function() {
-  $(this).popover('hide');
-  $(this).popover('destroy');
 });
 
 // USE BULK ACTION

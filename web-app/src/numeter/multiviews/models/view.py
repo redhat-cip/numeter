@@ -100,13 +100,6 @@ class View(models.Model):
             r_data['labels'].append('critical')
             r_data['colors'].append("#FF3434")
         ## Set datas
-        # Add warning and critical line
-        if self.critical is not None:
-            critical_data = [self.critical] * len(datas[0])
-            datas.insert(0, critical_data)
-        if self.warning is not None:
-            warning_data = [self.warning] * len(datas[0])
-            datas.insert(0, warning_data)
         # Get all data
         for s in self.sources.all():
             r = s.get_data(**data)
@@ -115,6 +108,13 @@ class View(models.Model):
             datas.append(r['DATAS'][s.name])
             r_data['colors'].append("#%s" % md5(unique_name).hexdigest()[:6])
             r_data['source_ids'].append(s.id)
+        # Add warning and critical line
+        if self.critical is not None:
+            critical_data = [self.critical] * len(datas[0])
+            datas.insert(0, critical_data)
+        if self.warning is not None:
+            warning_data = [self.warning] * len(datas[0])
+            datas.insert(0, warning_data)
 
         # Append empty datas if there's no
         if not 'r' in locals():

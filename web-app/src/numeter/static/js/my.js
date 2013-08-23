@@ -10,11 +10,19 @@ var error_modal = function() {
   $('#myModal').html('<center><h4>Connection error !</h4></center>');
 }
 
+// ABORT GRAPH PREVIEW
+preview_requests = [];
+var stop_preview = function() {
+  $.each( preview_requests, function(i,xhr) {
+    xhr.abort();
+  });
+}
+
 // ADD LOADING GIF
 var print_loading_gif = function(into, heigth, width) {
-  if(typeof(heigth)==='undefined') heigth = 100;
-  if(typeof(width)==='undefined') width = 100;
-  $(into).append('<img class="loader center" src="/static/img/ajax-loader.gif" height="'+heigth+'%" width="'+width+'%">' );
+  if(typeof(heigth)==='undefined') heigth = '100%';
+  if(typeof(width)==='undefined') width = '100%';
+  $(into).append('<div class="loader" style="text-align:center;"><img src="/static/img/ajax-loader.gif" height="'+heigth+'" width="'+width+'">' );
 }
 var remove_loading_gif = function(from) {
   $(from+ ' .loader').remove();
@@ -62,4 +70,39 @@ $(document).on('click', 'tr td input[type="checkbox"]', function(e) {
     $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).attr('checked', lastChecked.checked);
   }
   lastChecked = this;
+});
+
+// SHOW PREVIEW ON TOOLTIP
+$(document).on('mouseover', "a:regex(class, preview-(source|view))", function() {
+  var pop = $(this);
+  var url = $(this).attr('data-data-url');
+  $(pop).popover({
+    content: '<div id="preview-graph"></div>',
+    html: true,
+    trigger: 'manual',
+    delay: {'show':1000, 'hide':250},
+  })
+
+  $(pop).popover('show');
+  print_loading_gif('#preview-graph', 150, 150);
+  xhr = $.getJSON(url, function(data) {
+    for (i in data['datas']){
+      data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
+    }
+    g = new Dygraph(document.getElementById('preview-graph'), data['datas'], {
+      labels: data['labels'],
+      colors: data['colors'],
+      pixelsPerLabel: 60,
+      gridLineWidth: 0.1,
+      labelsKMG2: true,
+      height: 150,
+      width: 300,
+    });
+  });
+  preview_requests.push(xhr);
+});
+$(document).on('mouseout', "a:regex(class, preview-(source|view))", function() {
+  $(this).popover('hide');
+  $(this).popover('destroy');
+  stop_preview();
 });

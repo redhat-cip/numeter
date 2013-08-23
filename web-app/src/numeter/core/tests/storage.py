@@ -21,7 +21,7 @@ class Storage_TestCase(TestCase):
     @storage_enabled()
     def test_proxy(self):
         """Connection to storage."""
-        url = "%(protocol)s://%(address)s:%(port)i%(url_prefix)s/numeter-storage/hosts" % self.storage.__dict__
+        url = "%(protocol)s://%(address)s:%(port)i%(url_prefix)s/hosts" % self.storage.__dict__
         r = self.storage.proxy.open(url)
         self.assertEqual(r.code, 200, "Bad response code (%i)." % r.code)
 

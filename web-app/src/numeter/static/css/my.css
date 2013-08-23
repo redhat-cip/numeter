@@ -26,6 +26,14 @@ div[id="body"] {
   max-width: 1000px;
 }
 
+.accordion-group .accordion-heading {
+  text-align: center;
+}
+
+.accordion-group .accordion-body.in {
+  margin-bottom: 15px;
+}
+
 #multiview-toggle {
   position: fixed;
   right: 20px;

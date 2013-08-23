@@ -8,23 +8,40 @@
 
 {% block body %}
 
- <div class="span3">
-  <ul class="dropdown-menu span multiview-list" style="display: block; position: static;">
-   {% include "li-multiviews.html" %}
+ <div class="navbar navbar-static" id="navbarExample">
+ <div class="navbar-inner">
+ <div style="width: auto;" class="container">
+  <ul class="nav">
+   {% for multiview in multiviews %}
+   <li class="dropdown active">
+    <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ multiview }} <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+     {% for view in multiview.views.all %}
+      <li><a href="#three">{{ view }}</a></li>
+     {% endfor %}
+    </ul>
+   </li>
+   {% endfor %}
   </ul>
  </div>
-
- <div class="span9">
-  <div class="row-fluid">
-
-   <ul id="resolution-pills" class="nav nav-pills">
-    <li data-value="Daily" class="active"><a href="#">{% trans "Daily" %}</a></li>
-    <li data-value="Weekly"><a href="#">{% trans "Weekly" %}</a></li>
-    <li data-value="Monthly"><a href="#">{% trans "Monthly" %}</a></li>
-    <li data-value="Yearly"><a href="#">{% trans "Yearly" %}</a></li>
-   </ul>
+ </div>
+ </div>
 
    <div id="graphs"></div>
+ <div id="accordion" class="accordion">
+  <div class="accordion-group">
+   {% for multiview in multiviews %}
+    <div class="accordion-heading">
+     <a href="#multiview-{{ multiview.id }}" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle">{{ multiview }}</a>
+    </div>
+    <div class="accordion-body collapse" data-id="{{ multiview.id }}" id="multiview-{{ multiview.id }}">  
+     <div class="accordion-inner">
+      {% for view in multiview.views.all %}
+       <div class="graph span6" data-id="{{ view.id }}" id="view-{{ view.id }}"></div>
+      {% endfor %}
+     </div>
+    </div>
+   {% endfor %}
   </div>
  </div>
 
@@ -35,6 +52,13 @@
    </li>
   </ul>
  </div>
+
+   <ul id="resolution-pills" class="nav nav-pills">
+    <li data-value="Daily" class="active"><a href="#">{% trans "Daily" %}</a></li>
+    <li data-value="Weekly"><a href="#">{% trans "Weekly" %}</a></li>
+    <li data-value="Monthly"><a href="#">{% trans "Monthly" %}</a></li>
+    <li data-value="Yearly"><a href="#">{% trans "Yearly" %}</a></li>
+   </ul>
 
  <div id="multiview-index" class="well" style="display: none;"></div>
  <div class="messages"></div>

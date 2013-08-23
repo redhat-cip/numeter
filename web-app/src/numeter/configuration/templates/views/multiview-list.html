@@ -17,7 +17,7 @@
     <td><a class="get-multiview" data-url="{{ multiview.get_absolute_url }}" data-into="#multiview-list">{{ multiview.name }}</a></td>
     <td>
      {% for view in multiview.views.all %}
-     <a class="get-view" data-url="{{ view.get_absolute_url }}" data-into="#multiview-list" data-original-title="{% blocktrans %}Preview of {{ view }}{% endblocktrans %}" data-data-url="{% url "view data" view.id %}">{{ view.name }}</a>
+     <a class="preview-view get-view" data-url="{{ view.get_absolute_url }}" data-into="#multiview-list" data-original-title="{% blocktrans %}Preview of {{ view }}{% endblocktrans %}" data-data-url="{% url "view data" view.id %}">{{ view.name }}</a>
      {% endfor %}
     </td>
    </tr>

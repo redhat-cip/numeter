@@ -12,21 +12,20 @@ var stop_request = function() {
 
 // AJAX AND MAKE GRAPH
 var get_graph = function(view_id, into) {
-  last_view_id = view_id;
-  last_into = into;
-  var graph_div = '<div id="view-'+view_id+'-container" class="well" data-view-id='+view_id+'><div id="view-'+view_id+'" class="" style="text-align: left; width: 100%; height: 320px; position: relative;"></div><div id="graphleg-'+view_id+'"></div></div>';
-  res = $('#resolution-pills li.active').attr('data-value');
 
-  $(into).append(graph_div);
   $.getJSON('/multiviews/view/'+view_id+'/data?res='+res, function(data) {
 
+    // Compute width
+    var width = $('.collapse').css('width').replace('px','') / 2 - 50
     // Make date
     for (var i in data['datas']){
       data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
     }
 
-    g = new Dygraph(document.getElementById('view-'+view_id), data['datas'], {
+    g = new Dygraph(document.getElementById(into), data['datas'], {
       title: data['name'],
+      height: 250,
+      width: width,
       legend: 'always',
       fillGraph: true,
       pixelsPerLabel: 60,
@@ -75,12 +74,13 @@ $(document).on('click', '.get-view', function() {
 });
 
 // GET MULTIVIEW
-$(document).on('click', '.get-multiview', function() {
-  $('#graphs').html('');
+$(document).on('shown', '.collapse', function() {
   graphs = {};
-  $(this).parent().children('ul').children('li').children('.get-view').each( function(index,value) {
+  $(this).children('div.accordion-inner').children('.graph').each( function(index,value) {
     var view_id = $(this).attr('data-id');
-    get_graph(view_id, '#graphs');
+    var view_div = $(this).attr('id');
+    print_loading_gif(this, '200px', '200px');
+    get_graph(view_id, view_div);
   })
 });
 
@@ -131,40 +131,6 @@ $(document).on('click', '#toggle-editor', function() {
   }
 });
 //
-// SHOW PREVIEW ON TOOLTIP
-$(document).on('mouseover', "a:regex(class, edit-(source|view))", function() {
-  var pop = $(this);
-  var url = $(this).attr('data-data-url');
-  $(pop).popover({
-    content: '<div id="preview-graph"></div>',
-    html: true,
-    trigger: 'manual',
-    delay: {'show':1000, 'hide':250},
-  })
-
-  $(pop).popover('show');
-  print_loading_gif('#preview-graph', 40, 40);
-  xhr = $.getJSON(url, function(data) {
-    for (i in data['datas']){
-      data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-    }
-    g = new Dygraph(document.getElementById('preview-graph'), data['datas'], {
-      labels: data['labels'],
-      colors: data['colors'],
-      pixelsPerLabel: 60,
-      gridLineWidth: 0.1,
-      labelsKMG2: true,
-      height: 150,
-      width: 300,
-    });
-  });
-  cancelable_request.push(xhr);
-});
-$(document).on('mouseout', "a:regex(class, edit-(source|view))", function() {
-  $(this).popover('hide');
-  $(this).popover('destroy');
-  stop_request();
-});
 
 // MENU TABS
 $(document).on('click', "#menu-tabs li a", function(e) {
