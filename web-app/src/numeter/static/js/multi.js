@@ -109,7 +109,7 @@ $(document).on('click', '#resolution-pills li a', function() {
 $(document).on('click', '#toggle-editor', function() {
   if (! $(this).parent().hasClass('active') ) {
     $('#multiview-index').empty();
-    print_loading_gif('#multiview-index');
+    print_loading_gif('#multiview-index', '200px', '200px');
     var url = $(this).attr('data-url');
     $('#multiview-index').show(300);
     $.ajax({type:'GET', url:url, async:true,

@@ -34,22 +34,6 @@ div[id="body"] {
   margin-bottom: 15px;
 }
 
-#multiview-toggle {
-  position: fixed;
-  right: 20px;
-  top: 50px;
-  width: 300px;
-  z-index: 9999;
-}
-
-#multiview-index {
-  position: fixed;
-  right: 20px;
-  top: 100px;
-  width: 300px;
-  z-index: 9999;
-}
-
 .messages {
   position: fixed;
   right: 20px;
