@@ -1,0 +1,21 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or source's name" %}" data-into="#list-source-content" data-url="{% url 'multiviews customize source list' %}?page=1&q={{ q }}">
+
+ <ul class="unstyled">
+  {% for source in Sources %}
+  <li>
+  <a class="edit-source preview-source" data-url="{% url "multiviews customize source edit" source.id %}" data-into="#edit-source-content" data-placement="right" data-original-title="{% blocktrans %}Preview of {{ source }}{% endblocktrans %}" data-data-url="{% url "source data" source.id %}" source-id="{{ source.id }}" data-name="{{ source.name }}">{{ source|truncatechars:"50" }}</a>
+  </li>
+  {% endfor %}
+ </ul>
+
+<div>
+ <ul class="pager">
+  {% if Sources.has_previous %}
+  <li class="previous"><a class="get-page" data-into="#list-source-content" data-url="{% url "multiviews customize source list" %}?page={{ Sources.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+  {% endif %}
+  {% if Sources.has_next %}
+  <li class="next"><a class="get-page" data-into="#list-source-content" data-url="{% url "multiviews customize source list" %}?page={{ Sources.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+  {% endif %}
+ </ul>
+</div>

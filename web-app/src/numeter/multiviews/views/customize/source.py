@@ -26,7 +26,7 @@ def list(request):
     q = request.GET.get('q','')
     Sources = Data_Source.objects.user_web_filter(q, request.user)
     Sources = make_page(Sources, int(request.GET.get('page',1)), 10)
-    return render(request, 'customize/source/add.html', {
+    return render(request, 'customize/source/list.html', {
         'Sources': Sources,
         'q':q,
     })
@@ -46,6 +46,6 @@ def edit(request, source_id):
         return render(request, 'base/messages.html', {})
 
     F = Data_Source_Form(instance=S)
-    return render(request, 'customize/source/edit.html', {
+    return render(request, 'customize/source/source.html', {
         'Source_Form': F,
     })

@@ -81,3 +81,9 @@ div[id="body"] {
 .condensed {
   margin-bottom: 0px;
 }
+
+.condensed *,
+.condensed * *,
+.condensed * * *, {
+  margin-bottom: 2px;
+}

@@ -146,6 +146,10 @@ $(document).on('click', "#multiview-mode-pills li a", function(e) {
  e.preventDefault();
  $(this).tab('show');
 });
+$(document).on('click', "#source-mode-pills li a", function(e) {
+ e.preventDefault();
+ $(this).tab('show');
+});
 
 
 // SET SOURCE MODE
@@ -200,22 +204,24 @@ $(document).on('click', '.get-page', function() {
 //     $(this).toggleClass('to-remove');
 //   }
 // });
-// GET SOURCE
+// EDIT SOURCE
 $(document).on('click', ".edit-source", function() {
   if ( source_mode == 'normal' ) {
     var url = $(this).attr('data-url');
     var data_url = $(this).attr('data-data-url');
     var into = $(this).attr('data-into');
     var name = $(this).attr('data-name');
+    // GET FORM
+    print_loading_gif(into, '25%', '25%');
     $.ajax({type:'GET', url:url, async:true,
       error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) {
         $(into).html(data);
         $("#edit-source-tab a").html(name)
         $("#edit-source-tab a").tab('show');
-        $("#edit-source-tab").show(250);;
+        $("#edit-source-tab a").show(250);
         // ADD PREVIEW
-        print_loading_gif('#source-preview', 40, 40);
+        print_loading_gif('#source-preview', '10%', '10%');
         $.getJSON(data_url, function(data) {
           for (i in data['datas']){
             data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
@@ -227,14 +233,13 @@ $(document).on('click', ".edit-source", function() {
             gridLineWidth: 0.1,
             labelsKMG2: true,
             height: 150,
-            width: 300,
           });
         });
       },
     });
   }
 });
-// EDIT SOURCE
+// ADD/UPDATE SOURCE
 $(document).on('submit', "#source-form", function() {
     var url = $(this).attr('action');
     var form = $(this);
@@ -242,7 +247,7 @@ $(document).on('submit', "#source-form", function() {
       data: $(this).serialize(),
       error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) {
-        $('.messages').append(data);
+        $('.messages').append(data['html']);
       },
     });
     return false;
