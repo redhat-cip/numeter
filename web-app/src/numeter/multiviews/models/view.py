@@ -3,7 +3,6 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
-from core.models import Host
 from hashlib import md5
 
 
@@ -20,7 +19,7 @@ class View_Manager(models.Manager):
         views = self.filter(
             Q(name__icontains=q) |
             Q(sources__name__icontains=q)
-        )
+        ).distinct()
         return views
 
     def user_web_filter(self, q, user):
@@ -33,7 +32,7 @@ class View_Manager(models.Manager):
 
 class View(models.Model):
     name = models.CharField(_('name'), max_length=300)
-    sources = models.ManyToManyField('multiviews.Data_Source')
+    sources = models.ManyToManyField('core.Data_Source')
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
     warning = models.IntegerField(blank=True, null=True)
     critical = models.IntegerField(blank=True, null=True)
@@ -108,6 +107,9 @@ class View(models.Model):
             datas.append(r['DATAS'][s.name])
             r_data['colors'].append("#%s" % md5(unique_name).hexdigest()[:6])
             r_data['source_ids'].append(s.id)
+        # Skip if there's no data
+        if not datas:
+            return r_data
         # Add warning and critical line
         if self.critical is not None:
             critical_data = [self.critical] * len(datas[0])
@@ -127,95 +129,3 @@ class View(models.Model):
                 r_data['datas'].append((cur_date,) + v)
                 cur_date += step
         return r_data
-
-
-class Multiview_Manager(models.Manager):
-    def user_filter(self, user):
-        """Filter multiviews authorized for a given user."""
-        if user.is_superuser:
-            return self.all()
-        else:
-            return self.filter(views__plugins__host__group__in=user.groups.all())
-
-    def web_filter(self, q):
-        """Extended search from a string."""
-        views = self.filter(
-            Q(name__icontains=q) |
-            Q(views__name__icontains=q)
-        )
-        return views
-
-    def user_web_filter(self, q, user):
-        """Extended search from a string only on authorized multiviews."""
-        views = self.web_filter(q)
-        if user.is_superuser:
-            return views
-        return views.filter(sources__plugins__host__group__in=user.groups.all())
-
-
-class Multiview(models.Model):
-    name = models.CharField(_('name'), max_length=300)
-    views = models.ManyToManyField(View)
-    comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
-
-    objects = Multiview_Manager()
-    class Meta:
-        app_label = 'multiviews'
-        ordering = ('name',)
-        verbose_name = 'multiview'
-        verbose_name_plural = 'multiviews'
-
-    def __unicode__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('multiview', args=[self.id])
-
-    def get_add_url(self):
-        return reverse('multiview add')
-
-    def get_update_url(self):
-        if not self.id:
-            return reverse('multiview add')
-        return reverse('multiview update', args=[self.id])
-
-    def get_delete_url(self):
-        return reverse('multiview delete', args=[self.id])
-
-    def get_list_url(self):
-        return reverse('multiview list')
-
-    def get_customize_edit_url(self):
-        return reverse('multiviews customize multiview edit', args=[self.id])
-
-
-class Event(models.Model):
-    name = models.CharField(_('name'), max_length=300)
-    hosts = models.ManyToManyField('core.host')
-    start_date = models.DateTimeField(_('start date'))
-    end_date = models.DateTimeField(_('end date'))
-    comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
-
-    class Meta:
-        app_label = 'multiviews'
-        ordering = ('source__plugin__host__name','name')
-        verbose_name = _('Event')
-        verbose_name_plural = _('Events')
-
-    def __unicode__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('Event', args=[self.id])
-
-    def get_add_url(self):
-        return reverse('Event add')
-
-    def get_update_url(self):
-        return reverse('Event update', args=[self.id])
-
-    def get_delete_url(self):
-        return reverse('Event delete', args=[self.id])
-
-    def get_list_url(self):
-        return reverse('Event list')

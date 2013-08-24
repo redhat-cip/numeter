@@ -1,6 +1,5 @@
 from tastypie.resources import ModelResource
-from core.models import Storage, Host, User, Group
-from multiviews.models import Plugin, Data_Source
+from core.models import Storage, Host, User, Group, Plugin, Data_Source
 
 
 class StorageResource(ModelResource):

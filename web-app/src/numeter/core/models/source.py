@@ -33,12 +33,12 @@ class Data_Source_Manager(models.Manager):
 
 class Data_Source(models.Model):
     name = models.CharField(_('name'), max_length=300)
-    plugin = models.ForeignKey('multiviews.Plugin')
+    plugin = models.ForeignKey('core.Plugin')
     comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)
 
     objects = Data_Source_Manager()
     class Meta:
-        app_label = 'multiviews'
+        app_label = 'core'
         ordering = ('plugin','name')
         verbose_name = _('data source')
         verbose_name_plural = _('data_sources')

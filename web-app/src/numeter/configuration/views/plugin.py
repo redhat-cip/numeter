@@ -2,9 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
-from multiviews.models import Plugin, Data_Source
 from configuration.forms.plugin import Plugin_Form
-from core.models import Host
+from core.models import Host, Plugin, Data_Source
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 from core.utils.http import render_HTML_JSON
@@ -111,6 +110,10 @@ def delete(request, plugin_id):
 @login_required()
 @superuser_only()
 def create_sources(request, plugin_id):
+    """
+    GET: Return source creation's modal.
+    POST: Create submitted plguins.
+    """
     P = get_object_or_404(Plugin.objects.filter(pk=plugin_id))
     if request.method == 'POST':
         P.create_data_sources(request.POST.getlist('sources[]'))

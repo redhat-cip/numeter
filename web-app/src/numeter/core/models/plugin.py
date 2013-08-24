@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-from multiviews.models import Data_Source
+from core.models import Data_Source
 
 
 class Plugin_Manager(models.Manager):
@@ -55,7 +55,7 @@ class Plugin(models.Model):
 
     objects = Plugin_Manager()
     class Meta:
-        app_label = 'multiviews'
+        app_label = 'core'
         ordering = ('host','name')
         verbose_name = _('plugin')
         verbose_name_plural = _('plugins')

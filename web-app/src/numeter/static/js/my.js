@@ -106,3 +106,13 @@ $(document).on('mouseout', "a:regex(class, preview-(source|view))", function() {
   $(this).popover('destroy');
   stop_preview();
 });
+
+// MOVE OPTIONS BETWEEN SELECT INPUT
+$(document).on('click', '.move-option', function(e) {
+  e.preventDefault();
+  var from = $(this).attr('data-from');
+  var to = $(this).attr('data-to');
+  var html = $(from+' option:selected').detach();
+  $(html).appendTo(to);
+})
+

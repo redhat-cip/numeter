@@ -3,9 +3,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from core.utils.decorators import login_required
 from core.utils import make_page
-from multiviews.models import Multiview, View, Data_Source
-from configuration.forms.view import View_Form
-from configuration.forms.multiview import Multiview_Form
+from core.models import Data_Source
+from multiviews.models import Multiview, View
+from multiviews.forms.view import Small_View_Form as View_Form
+from multiviews.forms.multiview import Small_Multiview_Form as Multiview_Form
 
 
 @login_required()
@@ -22,7 +23,7 @@ def index(request):
     return render(request, 'customize/index.html', {
         'Sources': sources,
         'Views': views,
-        'View_Form': View_Form(),
+        'View_Form': View_Form(user=request.user),
         'Multiviews': multiviews,
-        'Multiview_Form': Multiview_Form(),
+        'Multiview_Form': Multiview_Form(user=request.user),
     })

@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
-from multiviews.models import View, Multiview, Data_Source
+from core.models import Data_Source
+from multiviews.models import View, Multiview
 from configuration.forms.view import View_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
@@ -43,8 +44,11 @@ def add(request):
         if F.is_valid():
             V = F.save()
             messages.success(request, _("View added with success."))
-            data['response'] = 'ok'
-            data['callback-url'] = V.get_absolute_url()
+            data.update({
+              'response': 'ok',
+              'callback-url': V.get_absolute_url(),
+              'id':V.pk,
+            })
         else:
             for field,error in F.errors.items():
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
@@ -75,8 +79,11 @@ def update(request, view_id):
     if F.is_valid():
         F.save()
         messages.success(request, _("View updated with success."))
-        data['response'] = 'ok'
-        data['callback-url'] = V.get_absolute_url()
+        data.update({
+          'response':'ok',
+          'callback-url': V.get_absolute_url(),
+          'id': V.pk,
+        })
     else:
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))

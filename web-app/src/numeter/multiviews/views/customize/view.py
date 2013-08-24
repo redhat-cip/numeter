@@ -6,7 +6,7 @@ from django.contrib import messages
 from core.utils.decorators import login_required
 from core.utils import make_page
 from multiviews.models import View, Multiview
-from configuration.forms.view import View_Form
+from multiviews.forms.view import Small_View_Form as View_Form
 
 from json import dumps as jdumps
 
@@ -26,7 +26,7 @@ def index(request):
 @login_required()
 def add(request):
     return render(request, 'customize/view/view.html', {
-       'View_Form': View_Form(),
+       'View_Form': View_Form(user=request.user),
     })
 
 
@@ -45,7 +45,7 @@ def list(request):
 def edit(request, view_id):
     """Only in GET, POST is conf/add."""
     V = get_object_or_404(View.objects.filter(id=view_id))
-    F = View_Form(instance=V)
+    F = View_Form(instance=V, user=request.user)
     return render(request, 'customize/view/view.html', {
         'View_Form': F,
     })

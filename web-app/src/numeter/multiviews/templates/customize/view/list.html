@@ -4,7 +4,7 @@
  <ul class="unstyled">
   {% for view in Views %}
   <li>
-  <a class="edit-view" data-url="{% url "multiviews customize view edit" view.id %}" data-into="#edit-view-content" data-placement="left" data-original-title="{% trans "Preview" %}" data-data-url="{% url "view data" view.id %}" view-id="{{ view.id }}" data-name="{{ view.name }}">{{ view|truncatechars:"50" }}</a>
+  <a class="edit-view preview-view" data-url="{% url "multiviews customize view edit" view.id %}" data-into="#edit-view-content" data-placement="right" data-original-title="{% blocktrans %}Preview of {{ view }}{% endblocktrans %}" data-data-url="{% url "view data" view.id %}" view-id="{{ view.id }}" data-name="{{ view.name }}">{{ view|truncatechars:"50" }}</a>
   </li>
   {% endfor %}
  </ul>

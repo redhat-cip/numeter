@@ -1,7 +1,6 @@
 from django.test import TestCase
-from core.models import Storage, Host
+from core.models import Storage, Host, Plugin, Data_Source
 from core.tests.utils import storage_enabled, set_storage
-from multiviews.models import Plugin, Data_Source
 
 
 class Data_Source_TestCase(TestCase):

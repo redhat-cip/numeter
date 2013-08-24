@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from core.utils.decorators import login_required
 from core.models import User
-from core.forms import User_EditForm, User_PasswordForm
+from configuration.forms.user import User_EditForm, User_PasswordForm
 
 @login_required()
 def index(request):

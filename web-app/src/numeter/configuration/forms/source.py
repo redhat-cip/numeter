@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from multiviews.models import Data_Source
+from core.models import Data_Source
 
 
 class Data_Source_Form(forms.ModelForm):

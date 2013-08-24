@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from multiviews.models import Plugin
+from core.models import Plugin
 
 
 class Plugin_Form(forms.ModelForm):

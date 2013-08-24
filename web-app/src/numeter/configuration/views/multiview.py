@@ -30,8 +30,11 @@ def add(request):
         if F.is_valid():
             M = F.save()
             messages.success(request, _("Multiview added with success."))
-            data['response'] = 'ok'
-            data['callback-url'] = M.get_absolute_url()
+            data.update({
+              'response': 'ok',
+              'callback-url': M.get_absolute_url(),
+              'id': M.pk,
+            })
         else:
             for field,error in F.errors.items():
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
@@ -62,8 +65,11 @@ def update(request, multiview_id):
     if F.is_valid():
         F.save()
         messages.success(request, _("Multiview updated with success."))
-        data['response'] = 'ok'
-        data['callback-url'] = M.get_absolute_url()
+        data.update({
+          'response': 'ok',
+          'callback-url': M.get_absolute_url(),
+          'id': M.id,
+        })
     else:
         for field,error in F.errors.items():
             messages.error(request, '<b>%s</b>: %s' % (field,error))

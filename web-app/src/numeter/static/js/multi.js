@@ -18,7 +18,7 @@ var get_graph = function(view_id, into) {
     // Compute width
     var width = $('.collapse').css('width').replace('px','') / 2 - 50
     // Make date
-    for (var i in data['datas']){
+    for (var i in data['datas']) {
       data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
     }
 
@@ -61,17 +61,18 @@ var get_graph = function(view_id, into) {
         },
       }
     });
+    $('#'+into).css('margin-left','0px')
     graphs[view_id] = [g,'/multiviews/view/'+view_id+'/data?res='];
   });
 }
 
 // GET VIEW
-$(document).on('click', '.get-view', function() {
-  var view_id = $(this).attr('data-id');
-  $('#graphs').html('');
-  graphs = {};
-  get_graph(view_id, '#graphs');
-});
+// $(document).on('click', '.get-view', function() {
+//   var view_id = $(this).attr('data-id');
+//   $('#graphs').html('');
+//   graphs = {};
+//   get_graph(view_id, '#graphs');
+// });
 
 // GET MULTIVIEW
 $(document).on('shown', '.collapse', function() {
@@ -148,17 +149,17 @@ $(document).on('click', "#multiview-mode-pills li a", function(e) {
 
 
 // SET SOURCE MODE
-$(document).on('click', "#source-mode-pills li a", function() {
-  $("#source-mode-pills li").removeClass('active');
-  $('.to-add').removeClass('to-add');
-  $('.to-remove').removeClass('to-remove');
-  if ( source_mode == $(this).attr('data-source-mode') ) {
-    source_mode = 'normal';
-  } else {
-    $(this).tab('show');
-    source_mode = $(this).attr('data-source-mode');
-  }
-});
+// $(document).on('click', "#source-mode-pills li a", function() {
+//   $("#source-mode-pills li").removeClass('active');
+//   $('.to-add').removeClass('to-add');
+//   $('.to-remove').removeClass('to-remove');
+//   if ( source_mode == $(this).attr('data-source-mode') ) {
+//     source_mode = 'normal';
+//   } else {
+//     $(this).tab('show');
+//     source_mode = $(this).attr('data-source-mode');
+//   }
+// });
 // SEARCH IN LIST BY PRESS ENTER
 $(document).on('keypress', '.q', function(e) {
   if (e.which == 13 ) {
@@ -189,16 +190,16 @@ $(document).on('click', '.get-page', function() {
 });
 
 // CLICK ON SOURCE
-$(document).on('click', ".addable-source", function() {
-  if ( source_mode == 'add' ) {
-    $(this).toggleClass('to-add');
-  }
-});
-$(document).on('click', ".removable-source", function() {
-  if ( source_mode == 'remove' ) {
-    $(this).toggleClass('to-remove');
-  }
-});
+// $(document).on('click', ".addable-source", function() {
+//   if ( source_mode == 'add' ) {
+//     $(this).toggleClass('to-add');
+//   }
+// });
+// $(document).on('click', ".removable-source", function() {
+//   if ( source_mode == 'remove' ) {
+//     $(this).toggleClass('to-remove');
+//   }
+// });
 // GET SOURCE
 $(document).on('click', ".edit-source", function() {
   if ( source_mode == 'normal' ) {
@@ -247,79 +248,79 @@ $(document).on('submit', "#source-form", function() {
     return false;
 });
 // ACTION WHEN CLICK ON GRAPHS
-$(document).on('click', "#graphs div", function() {
-  if ( $('.to-add').size() && $(this).attr('data-view-id') ) {
-    var view_id = $(this).attr('data-view-id');
-    var url = "customize/view/"+view_id+"/add_source";
-    var source_ids = [];
-    $.each( $('.to-add'), function() { source_ids.push($(this).attr('source-id')) } ); 
-    $.ajax({type:'POST', url:url, async:true,
-      data: {
-	'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-	'source_ids': source_ids,
-      },
-      error: function(data, status, xhr) { error_modal() },
-      success: function(data, status, xhr) {
-        $('.messages').append(data);
-	var url = graphs[view_id][1]+res;
-        $.getJSON(url, function(data) {
-          for (j in data['datas']) {
-            data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
-          }
-	  graphs[view_id][0].updateOptions({
-	    file: data['datas'],
-	    labels: data['labels'],
-	    colors: data['colors'],
-	  });
-	});
-      },
-    });
-
-  } else if ( source_mode == 'remove' && $(this).attr('data-view-id') ) {
-    var view_id = $(this).attr('data-view-id');
-    $('#chosen-view').html(graphs[view_id][0].user_attrs_.title);
-    $('#source-to-remove').empty();
-    $('#source-to-remove').attr('data-view-id', view_id);
-    var j = 0;
-    $.each(graphs[view_id][0].user_attrs_.labels, function(i,s) {
-      if ( s != 'Date' && s != 'warning' && s != 'critical' ) {
-        $('#source-to-remove').append(
-	  '<li><a class="removable-source" data-num="'+j+'">'+s+'</a></li>'
-	);
-	j += 1
-      }
-    });
-  }
-});
+// $(document).on('click', "#graphs div", function() {
+//   if ( $('.to-add').size() && $(this).attr('data-view-id') ) {
+//     var view_id = $(this).attr('data-view-id');
+//     var url = "customize/view/"+view_id+"/add_source";
+//     var source_ids = [];
+//     $.each( $('.to-add'), function() { source_ids.push($(this).attr('source-id')) } ); 
+//     $.ajax({type:'POST', url:url, async:true,
+//       data: {
+// 	'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+// 	'source_ids': source_ids,
+//       },
+//       error: function(data, status, xhr) { error_modal() },
+//       success: function(data, status, xhr) {
+//         $('.messages').append(data);
+// 	var url = graphs[view_id][1]+res;
+//         $.getJSON(url, function(data) {
+//           for (j in data['datas']) {
+//             data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
+//           }
+// 	  graphs[view_id][0].updateOptions({
+// 	    file: data['datas'],
+// 	    labels: data['labels'],
+// 	    colors: data['colors'],
+// 	  });
+// 	});
+//       },
+//     });
+// 
+//   } else if ( source_mode == 'remove' && $(this).attr('data-view-id') ) {
+//     var view_id = $(this).attr('data-view-id');
+//     $('#chosen-view').html(graphs[view_id][0].user_attrs_.title);
+//     $('#source-to-remove').empty();
+//     $('#source-to-remove').attr('data-view-id', view_id);
+//     var j = 0;
+//     $.each(graphs[view_id][0].user_attrs_.labels, function(i,s) {
+//       if ( s != 'Date' && s != 'warning' && s != 'critical' ) {
+//         $('#source-to-remove').append(
+// 	  '<li><a class="removable-source" data-num="'+j+'">'+s+'</a></li>'
+// 	);
+// 	j += 1
+//       }
+//     });
+//   }
+// });
 // REMOVE SOURCE
-$(document).on('click', "#btn-remove-source", function() {
-  var source_nums = [];
-  var view_id = $('#source-to-remove').attr('data-view-id');
-  var url = '/multiviews/customize/view/'+view_id+'/remove_source';
-  $.each( $('.to-remove'), function() { source_nums.push($(this).attr('data-num')) } ); 
-  $.ajax({type:'POST', url:url, async:true,
-    data: {
-      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'source_nums': source_nums,
-    },
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
-      $('.to-remove').hide(250);
-      var url = graphs[view_id][1]+res;
-      $.getJSON(graphs[view_id][1]+res, function(data) {
-        for (j in data['datas']) {
-          data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
-        }
-        graphs[view_id][0].updateOptions({
-	  file: data['datas'],
-	  labels: data['labels'],
-	  colors: data['colors'],
-        });
-      });
-    }
-  });
-});
+// $(document).on('click', "#btn-remove-source", function() {
+//   var source_nums = [];
+//   var view_id = $('#source-to-remove').attr('data-view-id');
+//   var url = '/multiviews/customize/view/'+view_id+'/remove_source';
+//   $.each( $('.to-remove'), function() { source_nums.push($(this).attr('data-num')) } ); 
+//   $.ajax({type:'POST', url:url, async:true,
+//     data: {
+//       'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+//       'source_nums': source_nums,
+//     },
+//     error: function(data, status, xhr) { error_modal() },
+//     success: function(data, status, xhr) {
+//       $('.messages').append(data);
+//       $('.to-remove').hide(250);
+//       var url = graphs[view_id][1]+res;
+//       $.getJSON(graphs[view_id][1]+res, function(data) {
+//         for (j in data['datas']) {
+//           data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
+//         }
+//         graphs[view_id][0].updateOptions({
+// 	  file: data['datas'],
+// 	  labels: data['labels'],
+// 	  colors: data['colors'],
+//         });
+//       });
+//     }
+//   });
+// });
 
 // FAST ADD A VIEW
 $(document).on('click', "#btn-add-view", function() {
@@ -383,7 +384,7 @@ $(document).on('click', ".edit-view", function() {
   $(into).empty();
   $("#edit-view-tab a").html(name)
   $("#edit-view-tab a").show(250);
-  print_loading_gif(into, 60, 60);
+  print_loading_gif(into, '25%', '25%');
   $("#edit-view-tab a").tab('show');
   // GET FORM
   $.ajax({type:'GET', url:url, async:true,
@@ -391,7 +392,7 @@ $(document).on('click', ".edit-view", function() {
     success: function(data, status, xhr) {
       $(into).html(data);
       // ADD PREVIEW
-      print_loading_gif('#view-preview', 40, 40);
+      print_loading_gif('#view-preview', '10%', '10%');
       $.getJSON(data_url, function(data) {
         for (i in data['datas']){
           data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
@@ -402,8 +403,7 @@ $(document).on('click', ".edit-view", function() {
           pixelsPerLabel: 60,
           gridLineWidth: 0.1,
           labelsKMG2: true,
-          height: 150,
-          width: 300,
+          height: 250,
         });
       });
     },
@@ -411,13 +411,52 @@ $(document).on('click', ".edit-view", function() {
 });
 // ADD OR UPDATE VIEW
 $(document).on('submit', "#view-form", function() {
+  // SET VARS
   var url = $(this).attr('action');
+  var data_url = $(this).attr('data-data-url');
+  var method = $(this).attr('method');
   var form = $(this);
-  $.ajax({type:'POST', url:url, async:true,
+  var name = $(this).find('input[name="name"]').val();
+  var into = '#edit-view-content';
+  // RENDER
+  $("#edit-view-tab a").html(name);
+  $("#edit-view-tab a").show(250);
+  $("#edit-view-tab a").tab('show');
+  // POST FORM
+  $.ajax({type:method, url:url, async:true,
     data: $(this).serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('.messages').append(data);
+      $('.messages').append(data['html']);
+      // IF FORM IS VALIDATE
+      if ( data['response'] == 'ok' ) {
+        var view_id = data['id'];
+        var url = 'customize/view/'+view_id;
+        $(into).empty();
+        print_loading_gif(into, '25%', '25%');
+        $.ajax({type:'GET', url:url, async:true,
+          error: function(data, status, xhr) { error_modal() },
+          success: function(data, status, xhr) {
+            $(into).html(data);
+            // ADD PREVIEW
+            print_loading_gif('#view-preview', '10%', '10%');
+            data_url = data_url || '/multiviews/view/'+view_id+'/data';
+            $.getJSON(data_url, function(data) {
+              for (i in data['datas']){
+                data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
+              }
+              g = new Dygraph(document.getElementById('view-preview'), data['datas'], {
+                labels: data['labels'],
+                colors: data['colors'],
+                pixelsPerLabel: 60,
+                gridLineWidth: 0.1,
+                labelsKMG2: true,
+                height: 250,
+              });
+            });
+          },
+        });
+      } 
     },
   });
   return false;
@@ -493,11 +532,32 @@ $(document).on('submit', ".multiview-form", function(e) {
   e.preventDefault();
   var url = $(this).attr('action');
   var form = $(this);
+  var method = $(this).attr('method');
+  var name = $(this).find('input[name="name"]').val();
+  var into = '#edit-multiview-content';
+  // RENDER
+  $("#edit-multiview-tab a").html(name);
+  $("#edit-multiview-tab a").show(250);
+  $("#edit-multiview-tab a").tab('show');
+  // POST FORM
   $.ajax({type:'POST', url:url, async:true,
     data: $(this).serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
-      $('.messages').append(data);
+      $('.messages').append(data['html']);
+      // IF FORM IS VALIDATE
+      if ( data['response'] == 'ok' ) {
+        var multiview_id = data['id'];
+        var url = 'customize/multiview/'+multiview_id;
+        $(into).empty();
+        print_loading_gif(into, '25%', '25%');
+        $.ajax({type:'GET', url:url, async:true,
+          error: function(data, status, xhr) { error_modal() },
+          success: function(data, status, xhr) {
+            $(into).html(data);
+          },
+        });
+      }
     },
   });
   return false;

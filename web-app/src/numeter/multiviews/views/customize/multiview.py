@@ -6,7 +6,7 @@ from django.contrib import messages
 from core.utils.decorators import login_required
 from core.utils import make_page
 from multiviews.models import Multiview
-from configuration.forms.multiview import Multiview_Form
+from multiviews.forms.multiview import Small_Multiview_Form as Multiview_Form
 from json import dumps as jdumps
 
 
@@ -35,14 +35,14 @@ def list(request):
 @login_required()
 def add(request):
     return render(request, 'customize/view/multiview.html', {
-       'Multiview_Form': Multiview_Form(),
+       'Multiview_Form': Multiview_Form(user=request.user),
     })
 
 
 @login_required()
 def edit(request, multiview_id):
     M = get_object_or_404(Multiview.objects.filter(id=multiview_id))
-    F = Multiview_Form(instance=M)
+    F = Multiview_Form(instance=M, user=request.user)
     return render(request, 'customize/multiview/multiview.html', {
         'Multiview_Form': F,
     })

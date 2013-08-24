@@ -2,9 +2,8 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 
-from core.models import Host
+from core.models import Host, Plugin, Data_Source
 from core.tests.utils import storage_enabled, set_storage
-from multiviews.models import Plugin, Data_Source
 
 
 class Plugin_TestCase(TestCase):

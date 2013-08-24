@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from core.utils.decorators import login_required
-from multiviews.models import Multiview, View, Data_Source
+from core.models import Data_Source
+from multiviews.models import Multiview, View
 from json import dumps as jdumps
 
 

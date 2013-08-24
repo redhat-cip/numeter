@@ -2,9 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
+from core.models import Data_Source
+from multiviews.models import View
 from core.utils.decorators import login_required
 from core.utils import make_page
-from multiviews.models import View, Data_Source
 from configuration.forms.source import Data_Source_Form
 from json import dumps as jdumps
 

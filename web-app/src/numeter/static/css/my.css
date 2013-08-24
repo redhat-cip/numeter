@@ -71,5 +71,13 @@ div[id="body"] {
 .input-li,
 .input-li * * {
   vertical-align: middle;
-  margin-bottom: 0px
+  margin-bottom: 0px;
+}
+
+.graph {
+  margin-left: 0px;
+}
+
+.condensed {
+  margin-bottom: 0px;
 }
