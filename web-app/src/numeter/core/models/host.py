@@ -8,6 +8,13 @@ from time import mktime
 
 
 class Host_Manager(models.Manager):
+    def user_filter(self, user):
+        """Filter hosts authorized for a given user."""
+        if user.is_superuser:
+            return self.all()
+        else:
+            return self.filter(group__in=user.groups.all())
+
     def web_filter(self, q):
         hosts = self.filter(
             Q(name__icontains=q) |

@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     # Source
     url(r'^customize/source$', 'multiviews.views.customize.source.index', name='multiviews customize source index'),
     url(r'^customize/source/list$', 'multiviews.views.customize.source.list', name='multiviews customize source list'),
+    url(r'^customize/source/add$', 'multiviews.views.customize.source.add', name='multiviews customize source add'),
     url(r'^customize/source/(?P<source_id>\d+)$', 'multiviews.views.customize.source.edit', name='multiviews customize source edit'),
     # View
     url(r'^customize/view$', 'multiviews.views.customize.view.index', name='multiviews customize view index'),

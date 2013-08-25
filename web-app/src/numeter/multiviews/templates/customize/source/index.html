@@ -2,12 +2,13 @@
 <div class="row-fluid">
  <ul id="source-mode-pills" class="nav nav-pills">
   <li id="list-source-tab" class="active"><a data-target="#list-source-content" data-source-mode="add">{% trans "List" %}</a></li>
+  <li id="add-source-tab"><a data-target="#add-source-content" data-source-mode="add">{% trans "Add" %}</a></li>
   <li id="edit-source-tab"><a data-target="#edit-source-content" data-source-mode="edit" style="display: none;"></a></li>
  </ul>
 </div>
 
 <div class="tab-content">
  <div class="tab-pane active" id="list-source-content">{% include "customize/source/list.html" %}</div>
- <div class="tab-pane" id="remove-source-content">{% include "customize/source/remove.html" %}</div>
+ <div class="tab-pane" id="add-source-content">{% include "customize/source/add.html" %}</div>
  <div class="tab-pane" id="edit-source-content"></div>
 </div>

@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from core.utils.decorators import login_required
 from core.utils import make_page
-from core.models import Data_Source
+from core.models import Host, Data_Source
 from multiviews.models import Multiview, View
 from multiviews.forms.view import Small_View_Form as View_Form
 from multiviews.forms.multiview import Small_Multiview_Form as Multiview_Form
@@ -21,6 +21,7 @@ def index(request):
     multiviews = make_page(multiviews, 1, 10)
 
     return render(request, 'customize/index.html', {
+        'Hosts': Host.objects.user_filter(request.user),
         'Sources': sources,
         'Views': views,
         'View_Form': View_Form(user=request.user),

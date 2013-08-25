@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from core.models import Host
 from hashlib import md5
 
 
@@ -29,6 +30,14 @@ class Data_Source_Manager(models.Manager):
             return sources
         else:
             return sources.filter(plugins__host__group__in=user.groups.all())
+
+    def full_create(self, POST):
+        """Create sources and plugin if doesn't exist."""
+        from core.models import Plugin
+        host = Host.objects.get(hostid=POST['host'])
+        plugin = Plugin.objects.get_or_create(host=host, name=POST['plugin'])[0]
+        return [ self.create(name=source, plugin=plugin) \
+                for source in POST.getlist('sources[]') ]
 
 
 class Data_Source(models.Model):

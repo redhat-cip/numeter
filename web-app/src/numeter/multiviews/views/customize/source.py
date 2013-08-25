@@ -49,3 +49,10 @@ def edit(request, source_id):
     return render(request, 'customize/source/source.html', {
         'Source_Form': F,
     })
+
+@login_required()
+def add(request):
+    """Add sources and create plugin if doesn't exist."""
+    Data_Source.objects.full_create(request.POST)
+    messages.success(request, _("Source(s) added with success."))
+    return render(request, 'base/messages.html', {})
