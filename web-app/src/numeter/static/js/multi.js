@@ -74,6 +74,22 @@ var get_graph = function(view_id, into) {
 //   get_graph(view_id, '#graphs');
 // });
 
+// SEARCH MULTIVIEW
+$(document).on('submit', '#main-q', function(e) {
+  e.preventDefault();
+  var url = $(this).attr('action');
+  var into = $(this).attr('data-into');
+  var data = { q: $(this).children('input').val() };
+  $(into).empty();
+  print_loading_gif(into, '25%', '25%')
+  $.ajax({url:url, async:true, data:data,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $(into).html(data);
+    },
+  });
+});
+
 // GET MULTIVIEW
 $(document).on('shown', '.collapse', function() {
   graphs = {};

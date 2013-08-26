@@ -1,0 +1,12 @@
+{% for multiview in multiviews %}
+ <div class="accordion-heading">
+  <a href="#multiview-{{ multiview.id }}" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle">{{ multiview }}</a>
+ </div>
+ <div class="accordion-body collapse" data-id="{{ multiview.id }}" id="multiview-{{ multiview.id }}">  
+  <div class="accordion-inner">
+   {% for view in multiview.views.all %}
+    <div class="graph span6" data-id="{{ view.id }}" id="view-{{ view.id }}"></div>
+   {% endfor %}
+  </div>
+ </div>
+{% endfor %}

@@ -3,6 +3,7 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns('',
     url(r'^$', 'multiviews.views.index.multiviews_index', name='multiviews index'),
+    url(r'^search$', 'multiviews.views.index.search', name='multiviews search'),
     ## JSON
     url(r'^view/(?P<view_id>\d+)/data$', 'multiviews.views.get_data.view', name='view data'),
     url(r'^source/(?P<source_id>\d+)/data$', 'multiviews.views.get_data.source', name='source data'),

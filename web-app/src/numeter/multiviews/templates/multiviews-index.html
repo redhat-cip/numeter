@@ -16,7 +16,7 @@
      <li data-value="Monthly"><a href="#">{% trans "Monthly" %}</a></li>
      <li data-value="Yearly"><a href="#">{% trans "Yearly" %}</a></li>
      <li class="divider-vertical"></li>
-     <form action="" class="navbar-search">
+     <form id="main-q" method="GET" action="{% url "multiviews search" %}" data-into="#multiviews-list" class="navbar-search">
       <input type="text" placeholder="{% trans "Search a multiview or a view" %}" class="search-query span2" style="width: 400px">
      </form>
     </ul>
@@ -35,19 +35,8 @@
  </div>
 
  <div id="accordion" class="accordion">
-  <div class="accordion-group">
-   {% for multiview in multiviews %}
-    <div class="accordion-heading">
-     <a href="#multiview-{{ multiview.id }}" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle">{{ multiview }}</a>
-    </div>
-    <div class="accordion-body collapse" data-id="{{ multiview.id }}" id="multiview-{{ multiview.id }}">  
-     <div class="accordion-inner">
-      {% for view in multiview.views.all %}
-       <div class="graph span6" data-id="{{ view.id }}" id="view-{{ view.id }}"></div>
-      {% endfor %}
-     </div>
-    </div>
-   {% endfor %}
+  <div class="accordion-group" id="multiviews-list">
+   {% include "multiviews-list.html" %}
   </div>
  </div>
 

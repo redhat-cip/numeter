@@ -11,3 +11,10 @@ def multiviews_index(request):
         'multiviews': multiviews,
         'title': 'Numeter - Multiviews',
     })
+
+@login_required()
+def search(request):
+    multiviews = Multiview.objects.user_web_filter(request.GET.get('q',''), request.user)
+    return render(request, 'multiviews-list.html', {
+        'multiviews': multiviews,
+    })
