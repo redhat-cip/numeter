@@ -12,7 +12,7 @@ class Data_Source_TestCase(TestCase):
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]
-        self.plugin = Plugin.objects.create_from_host(self.host)[0]
+        self.plugin = self.host.create_plugins()[0]
         self.source = self.plugin.create_data_sources()[0]
 
     def tearDown(self):

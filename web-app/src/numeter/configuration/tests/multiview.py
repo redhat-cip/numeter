@@ -18,7 +18,7 @@ class Multiview_TestCase(TestCase):
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]
-        plugin = Plugin.objects.create_from_host(self.host)[0]
+        plugin = self.host.create_plugins()[0]
         plugin.create_data_sources()
         self.view = View.objects.create(name='test view')
 

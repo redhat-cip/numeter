@@ -7,6 +7,7 @@ from core.tests.utils import storage_enabled, set_storage
 
 
 class Plugin_TestCase(TestCase):
+    """Test to manage plugins with browser."""
     fixtures = ['test_users.json','test_storage.json']
 
     @set_storage()
@@ -35,6 +36,7 @@ class Plugin_TestCase(TestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
+    @storage_enabled()
     def test_create_plugin_from_host(self):
         """Create plugin from host ids."""
         # Test GET
@@ -63,22 +65,24 @@ class Plugin_TestCase(TestCase):
         saved_plugins = Plugin.objects.all()
         self.assertEqual(saved_plugins.count(), 1, "Can create duplicate plugin.")
 
+    @storage_enabled()
     def test_get(self):
         """Get a plugin."""
-        plugin = Plugin.objects.create_from_host(self.host)[0]
+        plugin = self.host.create_plugins()[0]
         url = reverse('plugin', args=[1])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
+    @storage_enabled()
     def test_create_sources(self):
         """Create sources from a plugin."""
-        plugin = Plugin.objects.create_from_host(self.host)[0]
+        plugin = self.host.create_plugins()[0]
         # Test GET
         url = reverse('plugin create sources', args=[plugin.id])
         GET = {'host_id':self.host.id}
         r = self.c.get(url, GET)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
+        # Create source
         sources = plugin.get_data_sources()
         chosen_sources = sources[:1]
         POST = {'host_id':self.host.id, 'sources[]':chosen_sources}
@@ -93,9 +97,8 @@ class Plugin_TestCase(TestCase):
         Test to see if comment has changed.
         """
         # Test to update
-        plugins = Plugin.objects.create_from_host(self.host)
-        plugin = Plugin.objects.get(pk=1)
-        url = reverse('plugin update', args=[1])
+        plugin = self.host.create_plugins()[0]
+        url = reverse('plugin update', args=[plugin.id])
         POST = { 'comment': 'test comment' }
         r = self.c.post(url, POST) 
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
@@ -108,7 +111,7 @@ class Plugin_TestCase(TestCase):
         """
         Test to delete plugin and if can't get it.
         """
-        plugin = Plugin.objects.create_from_host(self.host)[0]
+        plugin = self.host.create_plugins()[0]
         # Test to delete
         url = reverse('plugin delete', args=[plugin.id])
         r = self.c.post(url)
@@ -118,5 +121,3 @@ class Plugin_TestCase(TestCase):
         url = reverse('plugin', args=[plugin.id])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
-
-

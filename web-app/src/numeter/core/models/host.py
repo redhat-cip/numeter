@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-
 from datetime import datetime, timedelta
 from time import mktime
 
@@ -106,3 +105,31 @@ class Host(models.Model):
             r_data['datas'].append( (mktime(cur_date.timetuple()),) + v )
             cur_date += step
         return r_data
+
+    def create_plugins(self, plugin_names=[], commit=True):
+        """
+        Create plugins from the given plugins list.
+        If not plugins is given, all are created.
+        """
+        from core.models import Plugin
+        plugins = self.get_plugin_list()
+        new_ps = []
+        for p in plugins:
+            if p in plugin_names or plugin_names == []:
+                if not Plugin.objects.filter(name=p, host=self).exists():
+                    new_p = Plugin(name=p, host=self)
+                    new_ps.append(new_p)
+        if commit:
+            [ p.save() for p in new_ps ]
+        return new_ps
+
+    def get_unsaved_plugins(self):
+        """List plugins aren't in db."""
+        from core.models import Plugin
+        plugins = set(self.get_plugin_list())
+        saved_plugins = Plugin.objects.filter(host=self)
+        if saved_plugins.exists():
+            saved = set(zip(*saved_plugins.values_list('name'))[0])
+        else:
+            saved = set()
+        return list(plugins ^ saved)

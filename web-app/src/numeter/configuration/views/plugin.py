@@ -47,12 +47,12 @@ def create_from_host(request):
     """
     if request.method == 'POST':
         host = Host.objects.get(id=request.POST['host_id'])
-        plugins = Plugin.objects.create_from_host(host, request.POST.getlist('plugins[]'))
+        plugins = host.create_plugins(request.POST.getlist('plugins[]'))
         messages.success(request, _("Plugin(s) created with success."))
         return render(request, 'base/messages.html', {})
     else:
         host = Host.objects.get(id=request.GET['host_id'])
-        plugins = Plugin.objects.get_unsaved_plugins(host)
+        plugins = host.get_unsaved_plugins()
         return render(request, 'plugins/create-plugins.html', {
             'plugins':plugins,
             'host':host,

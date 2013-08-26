@@ -19,41 +19,22 @@ class Plugin_Manager_TestCase(TestCase):
     def tearDown(self):
         Host.objects.all().delete()
 
-    def test_create_from_host(self):
-        host = Host.objects.all()[0]
-        # Test to create all
-        ps = Plugin.objects.create_from_host(host)
-        self.assertTrue(Plugin.objects.all().exists(), "No plugin was created.")
-        # Test to create one
-        p_name = ps[0].name
-        [ p.delete() for p in ps ]
-        ps = Plugin.objects.create_from_host(host, [p_name])
-        self.assertTrue(Plugin.objects.all().exists(), "No plugin was created.")
-        self.assertEqual(Plugin.objects.all().count(), 1, "More than 1 plugin was created.")
-
 
 class Plugin_TestCase(TestCase):
     fixtures = ['test_storage.json']
 
+    @set_storage()
     def setUp(self):
-        if 'mock_storage' in settings.INSTALLED_APPS:
-            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
-            self.storage = Storage.objects.get(pk=1)
-        elif settings.TEST_STORAGE['address']:
-            self.storage = Storage.objects.create(**settings.TEST_STORAGE)
-            if not self.storage.is_on():
-                self.skipTest("Configured storage unreachable.")
-        else:
-            self.skipTest("No test storage has been configurated.")
-
         self.storage._update_hosts()
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]
-        self.plugin = Plugin.objects.create_from_host(self.host)[0]
+        self.plugin = self.host.create_plugins()[0]
 
     def tearDown(self):
         Host.objects.all().delete()
+        Plugin.objects.all().delete()
+        Data_Source.objects.all().delete()
 
     @storage_enabled()
     def test_get_data_sources(self):
@@ -71,5 +52,31 @@ class Plugin_TestCase(TestCase):
 
     @storage_enabled()
     def test_create_data_sources(self):
-        self.plugin.create_data_sources()
-        self.assertTrue(Data_Source.objects.all().exists(), "No data source was created.")
+        """Create sources."""
+        sources = self.plugin.get_data_sources()
+        # Without args
+        new_sources = self.plugin.create_data_sources()
+        self.assertTrue(new_sources, "No data source was created.")
+        Data_Source.objects.all().delete()
+        # Test with args
+        new_sources = self.plugin.create_data_sources(sources[:1])
+        self.assertTrue(new_sources, "No data source was created.")
+        # Test create again
+        new_sources = self.plugin.create_data_sources(sources[:1])
+        self.assertFalse(new_sources, "Data source created twice times.")
+
+    @storage_enabled()
+    def test_get_unsaved_sources(self):
+        """Get sources not saved in db."""
+        sources = self.plugin.get_data_sources()
+        # Try to find all before creation
+        unsaved = self.plugin.create_data_sources()
+        self.assertEqual(len(sources), len(unsaved), 
+            ("False result (%i), length should be %i." % (len(unsaved), len(sources)) )
+        )
+        # Create sources and try to find others
+        new = self.plugin.create_data_sources(sources[:1])
+        unsaved = self.plugin.get_unsaved_sources()
+        self.assertEqual(len(sources)-1, len(unsaved), 
+          ("False result (%i), length should be %i." % (len(unsaved), len(sources))) 
+        )

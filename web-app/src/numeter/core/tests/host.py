@@ -1,5 +1,5 @@
 from django.test import TestCase
-from core.models import Storage, Host
+from core.models import Host, Plugin
 from core.tests.utils import storage_enabled, set_storage
 
 
@@ -15,6 +15,7 @@ class Host_TestCase(TestCase):
 
     def tearDown(self):
         Host.objects.all().delete()
+        Plugin.objects.all().delete()
 
     @storage_enabled()
     def test_get_info(self):
@@ -56,3 +57,35 @@ class Host_TestCase(TestCase):
         data = {'plugin':plugin, 'ds':source, 'res':'Daily'}
         r = self.host.get_data(**data)
         self.assertIsInstance(r, dict, "Invalide response type, should be dict.")
+
+    @storage_enabled()
+    def test_create_plugins(self):
+        """Create plugins."""
+        plugins = self.host.get_plugin_list()
+        # Without args
+        new_plugins = self.host.create_plugins()
+        self.assertTrue(new_plugins, "No plugin was created.")
+        Plugin.objects.all().delete()
+        # Test with args
+        new_plugins = self.host.create_plugins(plugins[:1])
+        self.assertTrue(new_plugins, "No plugin was created.")
+        # Test create again
+        new_plugins = self.host.create_plugins(plugins[:1])
+        self.assertFalse(new_plugins, "Plugins created twice times.")
+
+
+    @storage_enabled()
+    def test_get_unsaved_plugins(self):
+        """List plugins aren't in db."""
+        plugins = self.host.get_plugin_list()
+        # Try to find all before creation
+        unsaved = self.host.get_unsaved_plugins()
+        self.assertEqual( len(plugins), len(unsaved),
+            ("False result (%i), length should be %i." % (len(unsaved), len(plugins)) )
+        )
+        # Create sources and try to find others
+        new = self.host.create_plugins(plugins[:1])
+        unsaved = self.host.get_unsaved_plugins()
+        self.assertEqual( len(plugins)-1, len(unsaved),
+            ("False result (%i), length should be %i." % (len(unsaved), len(plugins)-1) )
+        )

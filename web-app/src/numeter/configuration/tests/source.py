@@ -17,7 +17,7 @@ class Source_TestCase(TestCase):
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]
-        plugin = Plugin.objects.create_from_host(self.host)[0]
+        plugin = self.host.create_plugins()[0]
         plugin.create_data_sources()
         self.source = Data_Source.objects.all()[0]
 
@@ -44,7 +44,7 @@ class Source_TestCase(TestCase):
         """
         # Test to update
         url = reverse('source update', args=[self.source.id])
-        POST = { 'comment': 'test comment' }
+        POST = { 'name': self.source.name, 'comment': 'test comment' }
         r = self.c.post(url, POST) 
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         # Test if updated

@@ -11,41 +11,18 @@ class Plugin_Manager(models.Manager):
         plugins = self.filter(
             Q(name__icontains=q) |
             Q(host__name__icontains=q)
-        )
+        ).distinct()
         return plugins
 
+    # TODO : USELESS ?
     def get_from_host(self, host):
         """List plugin of an hosts."""
         return host.get_plugins()
 
+    # TODO : USELESS ?
     def get_list_from_host(self, host):
         """Return a list of plugin names from an host."""
         return host.get_plugin_list()
-
-    def get_unsaved_plugins(self, host):
-        """List plugins aren't in db."""
-        plugins = set(self.get_list_from_host(host))
-        if self.filter(host=host).exists():
-            saved = set(zip(*self.filter(host=host).values_list('name'))[0])
-        else:
-            saved = set()
-        return list(plugins ^ saved)
-
-    def create_from_host(self, host, plugin_names=[], commit=True):
-        """
-        Create plugins from the given plugins list.
-        If not plugins is given, all are created.
-        """
-        plugins = self.get_list_from_host(host)
-        new_ps = []
-        for p in plugins:
-            if p in plugin_names or plugin_names == []:
-                if not Plugin.objects.filter(name=p, host=host).exists():
-                    new_p = Plugin(name=p, host=host)
-                    new_ps.append(new_p)
-        if commit:
-            [ p.save() for p in new_ps ]
-        return new_ps
 
 
 class Plugin(models.Model):
