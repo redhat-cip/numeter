@@ -58,15 +58,29 @@ class Host(models.Model):
         return reverse('host plugins', args=[str(self.id)])
 
     def get_info(self):
-        """Get host's info from storage."""
+        """
+        Hard coding of self.storage.get_info.
+
+        Return a dictionnary representing an host on storage.
+        It is raw data from storage API.
+        """
         return self.storage.get_info(self.hostid)
 
     def get_categories(self):
-        """Get host's categories from storage."""
+        """
+        Hard coding of self.storage.get_categories.
+
+        Return a list representing an host plugins' category.
+        """
         return self.storage.get_categories(self.hostid)
 
     def get_plugins(self):
-        """Get all host plugin's from storage."""
+        """
+        Hard coding of self.storage.get_plugins.
+
+        Return a list representing an host's plugins.
+        Modify storage's data before returning.
+        """
         return self.storage.get_plugins(self.hostid)
 
     def get_plugin_list(self):
@@ -74,15 +88,28 @@ class Host(models.Model):
         return [ p['Plugin'] for p in self.get_plugins() ]
 
     def get_plugins_by_category(self, category):
-        """Get host's plugins by category from storage."""
+        """
+        Hard coding of self.storage.get_plugins_by_category.
+
+        Get host's plugins by category from storage.
+        """
         return self.storage.get_plugins_by_category(self.hostid, category)
 
     def get_plugin_data_sources(self, plugin):
-        """Return a list of data sources of a plugin."""
+        """
+        Hard coding of self.storage.get_plugin_data_sources.
+
+        Return a list of data sources of a plugin.
+        """
         return self.storage.get_plugin_data_sources(self.hostid, plugin)
 
     def get_data(self, **data):
-        """Get plugin's data from storage."""
+        """
+        Hard coding of self.storage.get_data.
+
+        Get plugin's data from storage.
+        It is raw data from storage API.
+        """
         data['hostid'] = self.hostid
         return self.storage.get_data(**data)
 

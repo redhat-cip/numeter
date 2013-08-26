@@ -68,6 +68,9 @@ class View(models.Model):
         return reverse('view data', args=[self.id])
 
     def get_data(self, ds='nice', res='Daily'):
+        """
+        Get sources' data from storage.
+        """
         data = {'res':res}
         datas = []
         for source in self.sources.all():

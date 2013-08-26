@@ -23,7 +23,7 @@ class Storage_Manager(models.Manager):
         return storages
 
     def get_all_host_info(self):
-        """Return a list of all hosts' datas."""
+        """Return a list of all hosts' infos."""
         host_list = []
         for S in Storage.objects.all():
             host_list.extend(S.get_hosts())
@@ -185,10 +185,18 @@ class Storage(models.Model):
         return reverse('storage create hosts', args=[str(self.id)])
 
     def get_external_url(self):
+        """Return the storage's API url."""
         return "%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__
 
     def _connect(self, url, data={}):
-        """Basic method for use proxy to storage."""
+        """
+        Basic method for use proxy to storage.
+        `data` rae the following:
+         - host: requested host id on storage
+         - plugin: requested plugin name
+         - ds: requested data sources separated by ','
+         - res: resolution by default Daily
+        """
         if url not in self.URLS:
             raise ValueError("URL key does not exists.")
 
@@ -205,6 +213,7 @@ class Storage(models.Model):
             raise self.ConnectionError(e)
         return jloads(r)
 
+    # TODO : Remake like Host.create_plugins
     def create_host(self, hostid):
         """Create a host in DB from its storage ID."""
         hosts = self.get_hosts()
@@ -245,6 +254,7 @@ class Storage(models.Model):
         return [ p for p in r.values() ]
 
     def get_plugins_by_category(self, hostid, category):
+        """Get host's plugins by category."""
         return [ p for p in self.get_plugins(hostid) if p['Category'] == category ] 
 
     def get_plugin_data_sources(self, hostid, plugin):

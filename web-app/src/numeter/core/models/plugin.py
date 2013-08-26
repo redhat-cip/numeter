@@ -8,21 +8,10 @@ from core.models import Data_Source
 class Plugin_Manager(models.Manager):
     def web_filter(self, q):
         """Search string in plugins' name or plugins' host's name."""
-        plugins = self.filter(
+        return plugins = self.filter(
             Q(name__icontains=q) |
             Q(host__name__icontains=q)
         ).distinct()
-        return plugins
-
-    # TODO : USELESS ?
-    def get_from_host(self, host):
-        """List plugin of an hosts."""
-        return host.get_plugins()
-
-    # TODO : USELESS ?
-    def get_list_from_host(self, host):
-        """Return a list of plugin names from an host."""
-        return host.get_plugin_list()
 
 
 class Plugin(models.Model):
@@ -56,7 +45,6 @@ class Plugin(models.Model):
     def get_create_sources_url(self):
         return reverse('plugin create sources', args=[self.id])
 
-    # TODO : Make test
     def create_data_sources(self, source_names=[]):
         """
         Create sources from the given sources list.
@@ -75,10 +63,20 @@ class Plugin(models.Model):
         return new_ds
 
     def get_data_sources(self):
-        """Return a list of data sources."""
+        """
+        Hard coding of self.host.get_plugin_data_sources.
+
+        Return a list of data sources.
+        """
         return self.host.get_plugin_data_sources(self.name)
 
     def get_data(self, **data):
+        """
+        Hard coding of self.host.get_data.
+
+        Get plugin's data from storage.
+        It is raw data from storage API.
+        """
         data['plugin'] = self.name
         return self.host.get_data(**data)
 

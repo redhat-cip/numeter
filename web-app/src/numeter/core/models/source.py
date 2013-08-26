@@ -68,11 +68,21 @@ class Data_Source(models.Model):
         return reverse('source list')
 
     def get_data(self, **data):
+        """
+        Hard coding of self.host.get_data.
+
+        Get plugin's data from storage.
+        It is raw data from storage API.
+        """
         data['plugin'] = self.plugin.name
         data['ds'] = self.name
         return self.plugin.host.get_data(**data)
 
     def get_extended_data(self, res='Daily'):
+        """
+        Make extended data for graphic library.
+        Set more options than simple storage API like time.
+        """
         datas = []
         data = {'res':res}
         r_data = {
@@ -93,3 +103,7 @@ class Data_Source(models.Model):
             r_data['datas'].append((cur_date,) + v)
             cur_date += step
         return r_data
+
+    def make_HTML_color(self):
+        """Make a unique HTML color from source, plugin and host's names."""
+        return md5(self.name+self.plugin.name+self.plugin.host.name).hexdigest()[:6]
