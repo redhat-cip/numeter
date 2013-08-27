@@ -8,7 +8,7 @@ from core.models import Data_Source
 class Plugin_Manager(models.Manager):
     def web_filter(self, q):
         """Search string in plugins' name or plugins' host's name."""
-        return plugins = self.filter(
+        return self.filter(
             Q(name__icontains=q) |
             Q(host__name__icontains=q)
         ).distinct()

@@ -93,7 +93,7 @@ $(document).on('submit', '#main-q', function(e) {
 // GET MULTIVIEW
 $(document).on('shown', '.collapse', function() {
   graphs = {};
-  $(this).children('div.accordion-inner').children('.graph').each( function(index,value) {
+  $(this).children('div.accordion-inner').find('.graph').each( function(index,value) {
     var view_id = $(this).attr('data-id');
     var view_div = $(this).attr('id');
     print_loading_gif(this, '200px', '200px');
