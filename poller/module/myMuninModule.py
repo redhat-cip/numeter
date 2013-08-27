@@ -26,13 +26,15 @@ class myMuninModule(modulesGeneric):
         self._plugins_enable = ".*"
 
         if configParser: self.getParserConfig()
-        self._logger.info("section myMuninModule : plugins_enable = " 
+        self._logger.info("section myMuninModule : plugins_enable = "
                         + self._plugins_enable)
-        self._logger.info("section myMuninModule : munin_host = " 
+        self._logger.info("section myMuninModule : munin_host = "
                         + self._munin_host)
-        self._logger.info("section myMuninModule : munin_port = " 
+        self._logger.info("section myMuninModule : munin_port = "
                         + str(self._munin_port))
-	self.munin_connection = munin_connect.MuninConnection(self._munin_host, self._munin_port)
+        self.munin_connection = munin_connect.MuninConnection(self._logger,
+                                                          self._munin_host,
+                                                          self._munin_port)
 
     def getData(self):
         "get and return all data collected"
