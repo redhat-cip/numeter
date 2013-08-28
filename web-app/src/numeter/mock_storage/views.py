@@ -1,9 +1,12 @@
 from django.http import HttpResponse
+from django.utils.timezone import now
 from django.conf import settings
 BASEDIR = settings.BASEDIR
 
 from mock_storage.models import Host
+from mock_storage.sources import full_random, sinus, linear, random_func
 from mock_storage.utils import get_hosts_json, get_host_json, get_list_json
+from mock_storage.utils import get_start_date
 
 from json import load as jload, loads as jloads, dumps as jdumps
 from random import random, randrange
@@ -43,16 +46,16 @@ def list(request):
 
 def data(request):
     sources = request.GET['ds'].split(',')
+    start_date = get_start_date(request.GET['res'])
+    step = res[request.GET['res']]
+    step_num = int((now() - start_date).total_seconds() / 60) / step
     r = {
-        "TS_start": 1372951380,
-        "TS_step": res[request.GET['res']],
-        "DATAS": dict([ (k,[]) for k in sources ])
+      "TS_start": int(start_date.strftime('%s')),
+      "TS_step": step*60,
+      "DATAS": dict([ (k,[]) for k in sources ])
     }
-    val = random() * 100
-    for s in r["DATAS"]:
-        for i in range(100):
+    for s in sources:
+        for val in random_func(step_num):
             r['DATAS'][s].append( val )
-            val += randrange(-5,6,0.1,float)
     r = jdumps(r)
-        
     return HttpResponse(r)
