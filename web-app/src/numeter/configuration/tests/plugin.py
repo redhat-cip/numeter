@@ -8,15 +8,12 @@ from core.tests.utils import storage_enabled, set_storage
 
 class Plugin_TestCase(TestCase):
     """Test to manage plugins with browser."""
-    fixtures = ['test_users.json','test_storage.json']
+    fixtures = ['test_users.json']
 
-    @set_storage()
+    @set_storage(extras=['host'])
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
-        self.storage._update_hosts()
-        if not Host.objects.exists():
-            self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]
 
     def tearDown(self):
@@ -52,13 +49,11 @@ class Plugin_TestCase(TestCase):
         # Test if plugins have been created
         saved_plugins = Plugin.objects.all()
         self.assertTrue(saved_plugins.exists(), "No plugin have been created.")
-
         # Test to create false plugin
         POST = {'host_id':self.host.id, 'plugins[]':['FALSE']}
         r = self.c.post(url, POST)
         saved_plugins = Plugin.objects.all()
         self.assertEqual(saved_plugins.count(), 1, "False plugins can be created.")
-
         # Test to recreate a plugin
         POST = {'host_id':self.host.id, 'plugins[]':chosen_plugins}
         r = self.c.post(url, POST)

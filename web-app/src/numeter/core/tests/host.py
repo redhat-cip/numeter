@@ -6,9 +6,8 @@ from core.tests.utils import storage_enabled, set_storage
 class Host_TestCase(TestCase):
     fixtures = ['test_storage.json']
 
-    @set_storage()
+    @set_storage(extras=['host'])
     def setUp(self):
-        self.storage._update_hosts()
         if not Host.objects.exists():
             self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]

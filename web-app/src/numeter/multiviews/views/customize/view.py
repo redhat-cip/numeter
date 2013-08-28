@@ -25,6 +25,7 @@ def index(request):
 
 @login_required()
 def add(request):
+    """Only for get empty View_Form."""
     return render(request, 'customize/view/view.html', {
        'View_Form': View_Form(user=request.user),
     })

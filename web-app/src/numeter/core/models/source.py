@@ -16,12 +16,11 @@ class Data_Source_Manager(models.Manager):
 
     def web_filter(self, q):
         """Extended search from a string."""
-        sources = self.filter(
+        return self.filter(
             Q(name__icontains=q) |
             Q(plugin__name__icontains=q) |
             Q(plugin__host__name__icontains=q)
-        )
-        return sources
+        ).distinct()
 
     def user_web_filter(self, q, user):
         """Extended search from a string only on authorized sources."""
@@ -35,9 +34,18 @@ class Data_Source_Manager(models.Manager):
         """Create sources and plugin if doesn't exist."""
         from core.models import Plugin
         host = Host.objects.get(hostid=POST['host'])
-        plugin = Plugin.objects.get_or_create(host=host, name=POST['plugin'])[0]
-        return [ self.create(name=source, plugin=plugin) \
-                for source in POST.getlist('sources[]') ]
+        # Check if plugin exists in storage and get_or_create
+        if POST['plugin'] in host.get_plugin_list():
+            plugin, created = Plugin.objects.get_or_create(host=host, name=POST['plugin'])
+        else:
+            raise ValueError('No existing plugin for this name and this host.')
+        # Check if source exists in storage and create
+        sources = []
+        for source in POST.getlist('sources[]'):
+            if not self.filter(name=source, plugin=plugin).exists() and \
+                    source in plugin.get_data_sources():
+                sources.append(self.create(name=source, plugin=plugin))
+        return sources
 
 
 class Data_Source(models.Model):

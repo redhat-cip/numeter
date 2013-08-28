@@ -9,16 +9,12 @@ from core.tests.utils import storage_enabled, set_storage
 class Source_TestCase(TestCase):
     fixtures = ['test_users.json','test_storage.json']
 
-    @set_storage()
+    @set_storage(extras=['host','plugin','source'])
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
-        self.storage._update_hosts()
-        if not Host.objects.exists():
-            self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]
-        plugin = self.host.create_plugins()[0]
-        plugin.create_data_sources()
+        self.plugin = Plugin.objects.all()[0]
         self.source = Data_Source.objects.all()[0]
 
     def tearDown(self):

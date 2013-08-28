@@ -44,10 +44,10 @@ def edit(request, source_id):
             for field,error in F.errors.items():
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
         return render(request, 'base/messages.html', {})
-
-    F = Data_Source_Form(instance=S)
-    return render(request, 'customize/source/source.html', {
-        'Source_Form': F,
+    else:
+        F = Data_Source_Form(instance=S)
+        return render(request, 'customize/source/source.html', {
+            'Source_Form': F,
     })
 
 @login_required()

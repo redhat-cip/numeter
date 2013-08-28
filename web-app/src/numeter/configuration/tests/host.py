@@ -9,13 +9,10 @@ from core.tests.utils import storage_enabled, set_storage
 class Host_TestCase(TestCase):
     fixtures = ['test_users.json','test_storage.json']
 
-    @set_storage()
+    @set_storage(extras=['host'])
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
-        self.storage._update_hosts()
-        if not Host.objects.exists():
-            self.skipTest("There's no host in storage.")
 
     def tearDown(self):
         Host.objects.all().delete()
@@ -46,7 +43,6 @@ class Host_TestCase(TestCase):
         url = reverse('host delete', args=[1])
         r = self.c.post(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
         # Test to get it
         url = reverse('host', args=[1])
         r = self.c.get(url)

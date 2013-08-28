@@ -23,13 +23,10 @@ class Plugin_Manager_TestCase(TestCase):
 class Plugin_TestCase(TestCase):
     fixtures = ['test_storage.json']
 
-    @set_storage()
+    @set_storage(extras=['host','plugin'])
     def setUp(self):
-        self.storage._update_hosts()
-        if not Host.objects.exists():
-            self.skipTest("There's no host in storage.")
         self.host = Host.objects.all()[0]
-        self.plugin = self.host.create_plugins()[0]
+        self.plugin = Plugin.objects.all()[0]
 
     def tearDown(self):
         Host.objects.all().delete()
@@ -74,6 +71,7 @@ class Plugin_TestCase(TestCase):
         self.assertEqual(len(sources), len(unsaved), 
             ("False result (%i), length should be %i." % (len(unsaved), len(sources)) )
         )
+        Data_Source.objects.all().delete()
         # Create sources and try to find others
         new = self.plugin.create_data_sources(sources[:1])
         unsaved = self.plugin.get_unsaved_sources()

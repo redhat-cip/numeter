@@ -3,7 +3,7 @@ from perms import Perms_TestCase
 from storage import Storage_TestCase, Storage_Manager_TestCase
 from host import Host_TestCase
 from plugin import Plugin_Manager_TestCase, Plugin_TestCase
-from source import Data_Source_TestCase
+from source import Data_Source_Manager_TestCase, Data_Source_TestCase
 from browsing import Index_TestCase
 from management import Manage_User_TestCase, Manage_Storage_TestCase
 from hosttree import Hosttree_TestCase
