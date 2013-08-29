@@ -61,105 +61,69 @@ class StorageTestCase(test_base.TestCase):
 #        self.assertEqual(len(called), 1)
 #######################
 
-#    def test_storage_getcollectorList_file(self):
-#        self.storage._collector_list_type = "file" 
-#        self.storage._collector_list_file = "/tmp/collectorList.unittest"
-#        # Test with no file
-#        os.system("rm -f "+self.storage._collector_list_file)
-#        self.assertRaises(SystemExit, self.storage.getcollectorList)
-#        # Test with Empty file
-#        os.system(":> "+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [])
-#        # Empty line
-#        os.system('echo "\n\n\n" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [])
-#        # Test with one hostname
-#        os.system("echo 'foo' > "+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo'}])
-#        # Test with 2 hostname
-#        os.system('echo "foo\nbar" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo'}, {'host': 'bar'}])
-#        # Test with hostname + good db
-#        os.system("echo 'foo:0' >"+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo', 'db': '0'}])
-#        # Test with hostname + bad db
-#        os.system("echo 'foo:db0' >"+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [])
-#        # Test with hostname + good db + passwd
-#        os.system("echo 'foo:0:password' >"+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo', 'password': 'password', 'db': '0'}])
-#        # Test 3 host + 2 db + 1 password
-#        os.system("echo 'foo\nbar:1\nbli:2:p' >"+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo',},
-#                                                    {'host': 'bar', 'db': '1'},
-#                                                    {'host': 'bli', 'password': 'p', 'db': '2'}])
-#        # One host + comment
-#        os.system('echo "foo\n#bar" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foo'}])
-#        # One bad hostname (space)
-#        os.system('echo "foo bar" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [])
-#        # One bad hostname with space after
-#        os.system('echo "foobar     " > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foobar'}])
-#        # Only host with space after + db with space after
-#        os.system('echo "foobar     :0     " > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foobar', 'db': '0'}])
-#        # Only host + db + space after + passwrd
-#        os.system('echo "foobar     :0     :p" > '+self.storage._collector_list_file)
-#        self.storage.getcollectorList()
-#        self.assertEqual(self.storage._collectorList, [{'host': 'foobar', 'password': 'p', 'db': '0'}])
-#
-#
-#    def test_storage_getData(self):
-#        # Start connexion storage (db2)
-#        self.storage._redis_storage_db = 2
-#        storageRedis = self.storage.redisStartConnexion()
-#        # Start connexion client (db1)
-#        self.storage._redis_storage_db = 1
-#        collectorRedis = self.storage.redisStartConnexion()
-#        # no data
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        (allTS,hostDatas) = self.storage.getData(collectorRedis,'myhost')
-#        self.assertEqual((allTS,hostDatas), ([], {}))
-#        # One TS but no datas (clean TS)
-#        collectorRedis.redis_zadd("TS@myhost",'1000000000',1000000000)
-#        (allTS,hostDatas) = self.storage.getData(collectorRedis,'myhost')
-#        self.assertEqual((allTS,hostDatas), ([], {}))
-#        result = collectorRedis.redis_zrangebyscore("TS@myhost",'-inf','+inf')
-#        self.assertEqual(result, [])
-#        # Fetch data and delete older data with no TS
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        collectorRedis.redis_zadd("TS@myhost",'1000000001',1000000001)
-#        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000000","Values":{"old": "0"}}',1000000000)
-#        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000001","Values":{"new": "0"}}',1000000001)
-#        (allTS,hostDatas) = self.storage.getData(collectorRedis,'myhost')
-#        self.assertEqual((allTS,hostDatas), (['1000000001'], {u'foo': {u'1000000001': {u'new': u'0'}}}))
-#        result = collectorRedis.redis_zrangebyscore("DATAS@myhost",'-inf','+inf')
-#        self.assertEqual(result, ['{"Plugin":"foo","TimeStamp":"1000000001","Values":{"new": "0"}}']) # Clean old datas
-#        # Dont fetch or delete new data without TS + clean old without ts
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        collectorRedis.redis_zadd("TS@myhost",'1000000001',1000000001)
-#        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000000","Values":{"old": "0"}}',1000000000)
-#        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000001","Values":{"curr": "0"}}',1000000001)
-#        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000002","Values":{"new": "0"}}',1000000002)
-#        (allTS,hostDatas) = self.storage.getData(collectorRedis,'myhost')
-#        self.assertEqual((allTS,hostDatas), (['1000000001'], {u'foo': {u'1000000001': {u'curr': u'0'}}}))
-#        result = collectorRedis.redis_zrangebyscore("DATAS@myhost",'-inf','+inf')
-#        self.assertEqual(result, ['{"Plugin":"foo","TimeStamp":"1000000001","Values":{"curr": "0"}}',
-#                                  '{"Plugin":"foo","TimeStamp":"1000000002","Values":{"new": "0"}}']) # Clean old datas
+    def test_storage_getcollectorList_file(self):
+        self.storage._collector_list_type = "file" 
+        self.storage._collector_list_file = "/tmp/collectorList.unittest"
+        with mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
+            # Test with Empty file
+            file_mock.return_value.readlines.return_value = []
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [])
+            # Empty line
+            file_mock.return_value.readlines.return_value = ['','']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [])
+            # Test with 3 hostname and one db and password
+            file_mock.return_value.readlines.return_value = ['foo','bar:1', 'bli:2:pwd']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [{'host': 'foo'},
+                                                           {'db': '1', 'host': 'bar'},
+                                                           {'db': '2', 'host': 'bli', 'password': 'pwd'}])
+            # Test with hostname + bad db
+            file_mock.return_value.readlines.return_value = ['foo:db1']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [])
+            # One host + comment
+            file_mock.return_value.readlines.return_value = ['# my host','foo']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [{'host': 'foo'}])
+            # clear \s after hostname
+            file_mock.return_value.readlines.return_value = ['foo   :0']
+            self.storage.getcollectorList()
+            self.assertEqual(self.storage._collectorList, [{'host': 'foo', 'db': '0'}])
+
+    def test_storage_getData(self):
+        # no data
+        collectorRedis = FakeRedis()
+        (allTS,hostDatas) = self.storage.getData(collectorRedis,'myhost')
+        self.assertEqual((allTS,hostDatas), ([], {}))
+        # One TS but no datas (clean TS)
+        collectorRedis = FakeRedis()
+        collectorRedis.redis_zadd("TS@myhost",'1000000000',1000000000)
+        (allTS,hostDatas) = self.storage.getData(collectorRedis,'myhost')
+        self.assertEqual((allTS,hostDatas), ([], {}))
+        result = collectorRedis.redis_zrangebyscore("TS@myhost",'-inf','+inf')
+        self.assertEqual(result, [])
+        # Fetch data and delete older data with no TS
+        collectorRedis = FakeRedis()
+        collectorRedis.redis_zadd("TS@myhost",'1000000001',1000000001)
+        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000000","Values":{"old": "0"}}',1000000000)
+        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000001","Values":{"new": "0"}}',1000000001)
+        (allTS,hostDatas) = self.storage.getData(collectorRedis,'myhost')
+        self.assertEqual((allTS,hostDatas), (['1000000001'], {u'foo': {u'1000000001': {u'new': u'0'}}}))
+        result = collectorRedis.redis_zrangebyscore("DATAS@myhost",'-inf','+inf')
+        self.assertEqual(result, ['{"Plugin":"foo","TimeStamp":"1000000001","Values":{"new": "0"}}']) # Clean old datas
+        # Fetch data and don't fetch or delete new data without TS, clean old datas without TS
+        collectorRedis = FakeRedis()
+        collectorRedis.redis_zadd("TS@myhost",'1000000001',1000000001)
+        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000000","Values":{"old": "0"}}',1000000000)
+        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000001","Values":{"curr": "0"}}',1000000001)
+        collectorRedis.redis_zadd("DATAS@myhost",'{"Plugin":"foo","TimeStamp":"1000000002","Values":{"new": "0"}}',1000000002)
+        (allTS,hostDatas) = self.storage.getData(collectorRedis,'myhost')
+        self.assertEqual((allTS,hostDatas), (['1000000001'], {u'foo': {u'1000000001': {u'curr': u'0'}}}))
+        result = collectorRedis.redis_zrangebyscore("DATAS@myhost",'-inf','+inf')
+        self.assertEqual(result, ['{"Plugin":"foo","TimeStamp":"1000000001","Values":{"curr": "0"}}',
+                                  '{"Plugin":"foo","TimeStamp":"1000000002","Values":{"new": "0"}}']) # Clean old datas
 #        # Fetch bad data and dont stock them
 #        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
 #        collectorRedis.redis_zadd("TS@myhost",'1000000001',1000000001)
@@ -188,130 +152,120 @@ class StorageTestCase(test_base.TestCase):
     def test_storage_getHostList(self):
         # Empty HOSTS in redis
         with mock.patch('numeter_storage.myRedisConnect', FakeRedis) as redis:
-            redis.hset_data = {}
             collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
             hostList = self.storage.getHostList(collectorLine)
             self.assertEqual(hostList, [])
         # 2 hosts
         with mock.patch('numeter_storage.myRedisConnect', FakeRedis) as redis:
-            redis.hset_data = {'HOSTS': {'host1': 'bar', 'host2':'foo'}}
+            initdb = redis()
+            initdb.redis_hset('HOSTS', 'host1', 'bar')
+            initdb.redis_hset('HOSTS', 'host2', 'foo')
+            init_hset_back = redis.init_hset
+            def init_db(self):
+                return initdb.hset_data
+            redis.init_hset = init_db
             collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
             hostList = self.storage.getHostList(collectorLine)
             self.assertEqual(hostList, ['foo', 'bar'])
+            redis.init_hset = init_hset_back
 
 
-#    def test_storage_getInfos(self):
-#        # Start connexion storage (db2)
-#        self.storage._redis_storage_db = 2
-#        storageRedis = self.storage.redisStartConnexion()
-#        self.storage._redis_connexion = storageRedis
-#        self.storage._rrd_path_md5_char = 2
-#        # Start connexion client (db1)
-#        self.storage._redis_storage_db = 1
-#        collectorRedis = self.storage.redisStartConnexion()
-#        # No Infos
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result, {})
-#        self.assertEqual(writedinfo, [])
-#        # One good info + MyInfo
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        foo = '{"Plugin": "foo", "Infos": { "bar":{"id": "bar"}, "gnu":{"type": "COUNTER", "id": "gnu"}}}'
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "myhost", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@myhost","foo",foo)
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result, {'MyInfo': {u'Name': u'myhostName', 'HostIDHash': 'cc', u'ID': u'myhost', 'HostIDFiltredName': u'myhost', u'Plugin': u'MyInfo'}, 'foo': {u'Infos': {u'bar': {u'id': u'bar'}, u'gnu': {u'type': u'COUNTER', u'id': u'gnu'}}, u'Plugin': u'foo'}} )
-#        self.assertEqual(writedinfo, ['foo', 'MyInfo'])
-#        # Only myinfo.
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "myhost", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result, {'MyInfo': {u'Name': u'myhostName', 'HostIDHash': 'cc', u'ID': u'myhost', 'HostIDFiltredName': u'myhost', u'Plugin': u'MyInfo'}} )
-#        # Plugin with no Infos so return only MyInfo
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "myhost", "Name": "myhostName"}'
-#        foo = '{"Plugin": "foo"}'
-#        collectorRedis.redis_hset("INFOS@myhost","foo",foo)
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result, {'MyInfo': {u'Name': u'myhostName', 'HostIDHash': 'cc', u'ID': u'myhost', 'HostIDFiltredName': u'myhost', u'Plugin': u'MyInfo'}} )
-#        self.assertEqual(writedinfo, ['MyInfo'])
-#        # No MyInfo so return {} (can't write rrd)
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        foo = '{"Plugin": "foo", "Infos": {}}'
-#        collectorRedis.redis_hset("INFOS@myhost","foo",foo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result, {} )
-#        self.assertEqual(writedinfo, [])
-#        # Test hostid name filter
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        MyInfo = '{"Name": "myhostName", "Plugin": "MyInfo", "ID": "myhost"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result["MyInfo"]["HostIDFiltredName"], "myhost" )
-#        MyInfo = '{"Name": "myhostName", "Plugin": "MyInfo", "ID": "my\'host"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result["MyInfo"]["HostIDFiltredName"], "myhost" )
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "Foo bar", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result["MyInfo"]["HostIDFiltredName"], "Foobar" )
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "Foo\\"bar", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result["MyInfo"]["HostIDFiltredName"], "Foobar" )
-#        # Test md5 sum
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        self.storage._rrd_path_md5_char = 32
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "foobar", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result["MyInfo"]["HostIDHash"], "3858f62230ac3c915f300c664312c63f" )
-#        # Test md5 rrd_path_md5_char
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        self.storage._rrd_path_md5_char = 5
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "foobar", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result["MyInfo"]["HostIDHash"], "3858f" )
-#        #
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        self.storage._rrd_path_md5_char = 2
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "foobar", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result["MyInfo"]["HostIDHash"], "38" )
-#        # Try to read in cache
-#        result = storageRedis.redis_hset("HOST_ID","foobar","42")
-#        (writedinfo, result, rrdPath) = self.storage.getInfos(collectorRedis,'myhost')
-#        self.assertEqual(result["MyInfo"]["HostIDHash"], "42")
-#        # Test rrd path fot host
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        self.storage._rrd_path_md5_char = 2
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "myhost", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@myhost","MyInfo",MyInfo)
-#        self.storage.getInfos(collectorRedis,'myhost')
-#        result = storageRedis.redis_hget("RRD_PATH","myhost")
-#        self.assertEqual(result, "/tmp/numeter_rrds/cc/myhost")
-#        # Test filtred name
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "foo bar", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@foo bar","MyInfo",MyInfo)
-#        self.storage.getInfos(collectorRedis,'foo bar')
-#        result = storageRedis.redis_hget("RRD_PATH","foo bar")
-#        self.assertEqual(result, "/tmp/numeter_rrds/32/foobar")
-#        # Test rrd path fot host
-#        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-#        self.storage._rrd_path_md5_char = 2
-#        MyInfo = '{ "Plugin": "MyInfo", "ID": "foo", "Name": "myhostName"}'
-#        collectorRedis.redis_hset("INFOS@foo","MyInfo",MyInfo)
-#        self.storage.getInfos(collectorRedis,'foo')
-#        result = storageRedis.redis_hget("HOSTS","foo")
-#        self.assertEqual(result, '{"Name": "myhostName", "HostIDHash": "ac", "ID": "foo", "HostIDFiltredName": "foo", "Plugin": "MyInfo"}')
-#
-#
+    def test_storage_getInfos(self):
+        # Fake storage db
+        self.storage._redis_connexion = FakeRedis()
+        self.storage._rrd_path_md5_char = 2
+        # Fake collector db
+        self.storage._redis_storage_db = 1
+        # No Infos
+        collector_db = FakeRedis()
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result, {})
+        self.assertEqual(writedinfo, [])
+        # One good info + MyInfo plugin
+        collector_db = FakeRedis()
+        foo = '{"Plugin": "foo", "Infos": { "bar":{"id": "bar"}, "gnu":{"type": "COUNTER", "id": "gnu"}}}'
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "myhost", "Name": "myhostName"}'
+        collector_db.redis_hset('INFOS@myhost', 'foo', foo)
+        collector_db.redis_hset('INFOS@myhost', 'MyInfo', MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db, 'myhost')
+        self.assertEqual(result, {'MyInfo': {u'Name': u'myhostName', 'HostIDHash': 'cc', u'ID': u'myhost', 'HostIDFiltredName': u'myhost', u'Plugin': u'MyInfo'}, 'foo': {u'Infos': {u'bar': {u'id': u'bar'}, u'gnu': {u'type': u'COUNTER', u'id': u'gnu'}}, u'Plugin': u'foo'}} )
+        self.assertEqual(writedinfo, ['foo', 'MyInfo'])
+        # Only myinfo.
+        collector_db = FakeRedis()
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "myhost", "Name": "myhostName"}'
+        collector_db.redis_hset("INFOS@myhost", "MyInfo", MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db, 'myhost')
+        self.assertEqual(result, {'MyInfo': {u'Name': u'myhostName', 'HostIDHash': 'cc', u'ID': u'myhost', 'HostIDFiltredName': u'myhost', u'Plugin': u'MyInfo'}} )
+        # Plugin with no Infos so return only MyInfo
+        collector_db = FakeRedis()
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "myhost", "Name": "myhostName"}'
+        foo = '{"Plugin": "foo"}'
+        collector_db.redis_hset("INFOS@myhost","foo",foo)
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result, {'MyInfo': {u'Name': u'myhostName', 'HostIDHash': 'cc', u'ID': u'myhost', 'HostIDFiltredName': u'myhost', u'Plugin': u'MyInfo'}} )
+        self.assertEqual(writedinfo, ['MyInfo'])
+        # No MyInfo so return {} (can't write rrd)
+        collector_db = FakeRedis()
+        foo = '{"Plugin": "foo", "Infos": {}}'
+        collector_db.redis_hset("INFOS@myhost","foo",foo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result, {} )
+        self.assertEqual(writedinfo, [])
+        # Test hostid name filter
+        collector_db = FakeRedis()
+        foo = '{"Plugin": "foo", "Infos": {}}'
+        MyInfo = '{"Name": "myhostName", "Plugin": "MyInfo", "ID": "myhost"}'
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result["MyInfo"]["HostIDFiltredName"], "myhost" )
+        MyInfo = '{"Name": "myhostName", "Plugin": "MyInfo", "ID": "my\'host"}'
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result["MyInfo"]["HostIDFiltredName"], "myhost" )
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "Foo bar", "Name": "myhostName"}'
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result["MyInfo"]["HostIDFiltredName"], "Foobar" )
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "Foo\\"bar", "Name": "myhostName"}'
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result["MyInfo"]["HostIDFiltredName"], "Foobar" )
+        # Test md5 sum
+        collector_db = FakeRedis()
+        self.storage._redis_connexion = FakeRedis()
+        self.storage._rrd_path_md5_char = 32
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "foobar", "Name": "myhostName"}'
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result["MyInfo"]["HostIDHash"], "3858f62230ac3c915f300c664312c63f" )
+        # Test md5 rrd_path_md5_char
+        collector_db = FakeRedis()
+        self.storage._redis_connexion = FakeRedis()
+        self.storage._rrd_path_md5_char = 5
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "foobar", "Name": "myhostName"}'
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result["MyInfo"]["HostIDHash"], "3858f" )
+        # Try to read in cache
+        collector_db = FakeRedis()
+        self.storage._redis_connexion = FakeRedis()
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "foobar", "Name": "myhostName"}'
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        result = self.storage._redis_connexion.redis_hset("HOST_ID","foobar","42")
+        (writedinfo, result, rrdPath) = self.storage.getInfos(collector_db,'myhost')
+        self.assertEqual(result["MyInfo"]["HostIDHash"], "42")
+        # Test rrd path fot host
+        collector_db = FakeRedis()
+        self.storage._redis_connexion = FakeRedis()
+        self.storage._rrd_path_md5_char = 2
+        MyInfo = '{ "Plugin": "MyInfo", "ID": "myhost", "Name": "myhostName"}'
+        collector_db.redis_hset("INFOS@myhost","MyInfo",MyInfo)
+        self.storage.getInfos(collector_db,'myhost')
+        result = self.storage._redis_connexion.redis_hget("RRD_PATH","myhost")
+        self.assertEqual(result, "/tmp/numeter_rrds/cc/myhost")
+
+
 #    def test_sorage_cleanInfo(self):
 #        # Start connexion storage (db2)
 #        self.storage._redis_storage_db = 2
