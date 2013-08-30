@@ -10,7 +10,7 @@ class Multiview_Manager(models.Manager):
         if user.is_superuser:
             return self.all()
         else:
-            return self.filter(views__plugins__host__group__in=user.groups.all())
+            return self.filter(views__sources__plugin__host__group__in=user.groups.all()).distinct()
 
     def web_filter(self, q):
         """Extended search from a string."""
@@ -25,7 +25,7 @@ class Multiview_Manager(models.Manager):
         views = self.web_filter(q)
         if user.is_superuser:
             return views
-        return views.filter(sources__plugins__host__group__in=user.groups.all())
+        return views.filter(views__sources__plugin__host__group__in=user.groups.all()).distinct()
 
 
 class Multiview(models.Model):

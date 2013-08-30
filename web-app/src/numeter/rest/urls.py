@@ -1,18 +1,18 @@
 from django.conf.urls import patterns, url, include
 from tastypie.api import Api
-from rest.api import StorageResource, HostResource, UserResource, GroupResource, PluginResource, SourceResource
+from rest.resources.models import Storage_Resource, Host_Resource, User_Resource, Group_Resource, Plugin_Resource, Source_Resource, View_Resource, Multiview_Resource 
 from rest.resources.wild_storage import Wild_Storage_Resource
-from rest.resources.view import View_Resource
 
 # Core API
 core_api = Api(api_name='api')
-core_api.register(StorageResource())
-core_api.register(HostResource())
-core_api.register(UserResource())
-core_api.register(GroupResource())
-core_api.register(PluginResource())
-core_api.register(SourceResource())
+core_api.register(Storage_Resource())
+core_api.register(Host_Resource())
+core_api.register(User_Resource())
+core_api.register(Group_Resource())
+core_api.register(Plugin_Resource())
+core_api.register(Source_Resource())
 core_api.register(View_Resource())
+core_api.register(Multiview_Resource())
 
 urlpatterns = patterns('',
   (r'', include(core_api.urls)),

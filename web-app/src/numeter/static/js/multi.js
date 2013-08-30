@@ -259,7 +259,8 @@ $(document).on('click', ".edit-source", function() {
 $(document).on('submit', "#source-form", function() {
     var url = $(this).attr('action');
     var form = $(this);
-    $.ajax({type:'POST', url:url, async:true,
+    var method = $(this).attr('method');
+    $.ajax({type:method, url:url, async:true,
       data: $(this).serialize(),
       error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) {
@@ -445,6 +446,7 @@ $(document).on('submit', "#view-form", function() {
   $("#edit-view-tab a").tab('show');
   // POST FORM
   $.ajax({type:method, url:url, async:true,
+    contentType:'application/json',
     data: $(this).serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {

@@ -1,5 +1,5 @@
 {% load i18n %}
-<form id="view-form" class="ajax-form" action="{{ View_Form.instance.get_update_url }}" method="POST" data-data-url="{{ View_Form.instance.get_data_url }}">
+<form id="view-form" class="ajax-form" action="{{ View_Form.instance.get_update_url }}" method="{{ View_Form.method }}" data-data-url="{{ View_Form.instance.get_data_url }}">
  {% csrf_token %}
  <fieldset>
   <div class="span6">

@@ -1,9 +1,10 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from configuration.forms.base import Base_ModelForm
 from multiviews.models import View
 
 
-class View_Form(forms.ModelForm):
+class View_Form(Base_ModelForm):
     """Simple View ModelForm."""
     class Meta:
         model = View

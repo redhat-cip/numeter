@@ -12,7 +12,7 @@ class Data_Source_Manager(models.Manager):
         if user.is_superuser:
             return self.all()
         else:
-            return self.filter(plugins__host__group__in=user.groups.all())
+            return self.filter(plugin__host__group__in=user.groups.all())
 
     def web_filter(self, q):
         """Extended search from a string."""
@@ -28,7 +28,7 @@ class Data_Source_Manager(models.Manager):
         if user.is_superuser:
             return sources
         else:
-            return sources.filter(plugins__host__group__in=user.groups.all())
+            return sources.filter(plugin__host__group__in=user.groups.all())
 
     def full_create(self, POST):
         """Create sources and plugin if doesn't exist."""
