@@ -49,6 +49,7 @@ class Data_Source_Manager(models.Manager):
 
 
 class Data_Source(models.Model):
+    """Plugin's data source, more often called shortly source."""
     name = models.CharField(_('name'), max_length=300)
     plugin = models.ForeignKey('core.Plugin')
     comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)

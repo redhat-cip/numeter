@@ -31,6 +31,10 @@ class View_Manager(models.Manager):
 
 
 class View(models.Model):
+    """
+    Graphic unit with assembled data sources.
+    It mays include warning and critical line.
+    """
     name = models.CharField(_('name'), max_length=300)
     sources = models.ManyToManyField('core.Data_Source')
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)

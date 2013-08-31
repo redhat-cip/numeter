@@ -20,16 +20,18 @@ class Host_Resource(ModelResource):
         }
 
 
-class User_Resource(ModelResource):
-    class Meta:
-        queryset = User.objects.all()
-        resource_name = 'user'
-
-
 class Group_Resource(ModelResource):
     class Meta:
         queryset = Group.objects.all()
         resource_name = 'group'
+
+
+class User_Resource(ModelResource):
+    groups = fields.ManyToManyField(Group_Resource, 'groups')
+    class Meta:
+        queryset = User.objects.all()
+        resource_name = 'user'
+        fields = ['username','email','is_superuser','groups']
 
 
 class Plugin_Resource(ModelResource):
@@ -44,18 +46,21 @@ class Plugin_Resource(ModelResource):
 
 
 class Source_Resource(ModelResource):
+    plugin = fields.ForeignKey(Plugin_Resource, 'plugin')
     class Meta:
         queryset = Data_Source.objects.all()
         resource_name = 'source'
 
 
 class View_Resource(ModelResource):
+    sources = fields.ManyToManyField(Source_Resource, 'sources')
     class Meta:
         queryset = View.objects.all()
         resource_name = 'view'
 
 
 class Multiview_Resource(ModelResource):
+    views = fields.ManyToManyField(View_Resource, 'views')
     class Meta:
         queryset = Multiview.objects.all()
         resource_name = 'multiview'

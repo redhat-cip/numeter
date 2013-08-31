@@ -4,6 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Group(models.Model):
+    """
+    Angular stone of permissions.
+    A user can only access to host in one of his groups.
+    """
     name = models.CharField(_('name'), max_length=80, unique=True)
 
     class Meta:
