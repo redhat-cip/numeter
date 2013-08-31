@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
+from multiviews.models import Event
 from hashlib import md5
 
 
@@ -71,7 +72,12 @@ class View(models.Model):
     def get_data_url(self):
         return reverse('view data', args=[self.id])
 
-    def get_data(self, ds='nice', res='Daily'):
+    def get_events(self):
+        """Return QuerySet of Events of this view."""
+        host_ids = self.sources.values_list('plugin__host')
+        return Event.objects.filter(hosts__id__in=host_ids)
+
+    def get_data(self, res='Daily'):
         """
         Get sources' data from storage.
         """

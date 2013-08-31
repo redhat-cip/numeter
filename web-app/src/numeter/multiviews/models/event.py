@@ -7,13 +7,12 @@ from django.core.urlresolvers import reverse
 class Event(models.Model):
     name = models.CharField(_('name'), max_length=300)
     hosts = models.ManyToManyField('core.host')
-    start_date = models.DateTimeField(_('start date'))
-    end_date = models.DateTimeField(_('end date'))
+    date = models.DateTimeField(_('start date'))
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
 
     class Meta:
         app_label = 'multiviews'
-        ordering = ('source__plugin__host__name','name')
+        ordering = ('date','name')
         verbose_name = _('Event')
         verbose_name_plural = _('Events')
 
@@ -34,4 +33,3 @@ class Event(models.Model):
 
     def get_list_url(self):
         return reverse('Event list')
-
