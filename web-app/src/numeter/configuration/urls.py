@@ -70,8 +70,12 @@ urlpatterns = patterns('',
     url(r'^multiview/(?P<multiview_id>\d+)/update$', 'configuration.views.multiview.update', name='multiview update'),
     url(r'^multiview/(?P<multiview_id>\d+)/delete$', 'configuration.views.multiview.delete', name='multiview delete'),
 
-    # url(r'^event/add$', 'multiviews.views.event_delete', name='event add'),
-    # url(r'^event/(?P<event_id>\d+)$', 'multiviews.views.event', name='event'),
-    # url(r'^event/(?P<event_id>\d+)/update$', 'multiviews.views.event_update', name='event update'),
-    # url(r'^event/(?P<event_id>\d+)/delete$', 'multiviews.views.event_delete', name='event delete'),
+    # Event
+    url(r'^event/list$', 'configuration.views.event.list', name='event list'),
+    url(r'^event/list/delete$', 'configuration.views.event.bulk_delete', name='event bulk delete'),
+    url(r'^event/add$', 'configuration.views.event.add', name='event add'),
+    url(r'^event/(?P<event_id>\d+)$', 'configuration.views.event.get', name='event'),
+    url(r'^event/(?P<event_id>\d+)/update$', 'configuration.views.event.update', name='event update'),
+    url(r'^event/(?P<event_id>\d+)/delete$', 'configuration.views.event.delete', name='event delete'),
+
 )

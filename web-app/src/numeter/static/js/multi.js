@@ -61,7 +61,19 @@ var get_graph = function(view_id, into) {
         },
       }
     });
-    $('#'+into).css('margin-left','0px')
+      var annotations = []
+      $.each( data['events'], function(i,v) {
+        annotations.push({
+          series: data['labels'][1],
+          x: v['date'] * 1000,
+          attachAtBottom: true,
+          shortText: v['short_text'],
+          text: v['comment']
+        })
+      });
+      g.ready(function() {
+        g.setAnnotations(annotations);
+      })
     graphs[view_id] = [g,'/multiviews/view/'+view_id+'/data?res='];
   });
 }

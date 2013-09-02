@@ -7,9 +7,9 @@ class Event_Form(forms.ModelForm):
         model = Event
         widgets = {
           'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
-          'source': forms.Select({'class':'span'}),
-          'start_date': forms.TextInput({'placeholder':_('End date'),'class':'span'}),
-          'end_date': forms.TextInput({'placeholder':_('Start date'),'class':'span'}),
+          'short_text': forms.TextInput({'placeholder':_('Text shown on graph'),'class':'span'}),
+          'hosts': forms.SelectMultiple({'class':'span', 'size':4}),
+          'date': forms.DateTimeInput(format="%Y-%m-%d %H:%M", attrs={'placeholder':_('Date (format: "Y-m-d H:M")'),'class':'span'}),
           'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'4'}),
         }
 

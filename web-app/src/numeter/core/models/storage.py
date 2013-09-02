@@ -14,6 +14,13 @@ from logging import getLogger
 logger = getLogger('storage')
 
 
+RESOLUTION_STEP = { # in minute
+  'Daily': 60, # Hour
+  'Weekly': 720, # Half-day 
+  'Monthly': 1140, # Day
+  'Yearly': 17100 # Half-month
+}
+
 class Storage_Manager(models.Manager):
     def web_filter(self, q):
         storages = self.filter(

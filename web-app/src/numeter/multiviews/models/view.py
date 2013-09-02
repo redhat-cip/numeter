@@ -77,6 +77,13 @@ class View(models.Model):
         host_ids = self.sources.values_list('plugin__host')
         return Event.objects.filter(hosts__id__in=host_ids)
 
+    def get_events_source_matching(self):
+        """Return a dict with key/value = Source/Events."""
+        match = {}
+        for s in self.sources.all():
+            match[s] = Event.objects.filter(hosts=s.plugin.host)
+        return match
+
     def get_data(self, res='Daily'):
         """
         Get sources' data from storage.
@@ -98,6 +105,7 @@ class View(models.Model):
             'type':'view',
             'id':self.id,
             'source_ids':[],
+            'events':[]
         }
         # Get All host and Events
         #host_pk = self.sources.all().values_list('plugin__host')
@@ -112,14 +120,17 @@ class View(models.Model):
             r_data['labels'].append('critical')
             r_data['colors'].append("#FF3434")
         ## Set datas
-        # Get all data
         for s in self.sources.all():
-            r = s.get_data(**data)
+            r = s.get_data(**data) # Get data
+            # Make color
             unique_name = '%s %s' % (s.plugin.host.name, s.name)
             r_data['labels'].append(unique_name)
-            datas.append(r['DATAS'][s.name])
             r_data['colors'].append("#%s" % md5(unique_name).hexdigest()[:6])
+            # Add name
+            datas.append(r['DATAS'][s.name])
             r_data['source_ids'].append(s.id)
+        # Get Events
+        events = self.get_events()
         # Skip if there's no data
         if not datas:
             return r_data
@@ -130,15 +141,19 @@ class View(models.Model):
         if self.warning is not None:
             warning_data = [self.warning] * len(datas[0])
             datas.insert(0, warning_data)
-
         # Append empty datas if there's no
         if not 'r' in locals():
             r_data['datas'].append( (int(now().strftime('%s'))*1000,) )
-        # Walk on date for mix datas
+        # Add timestamp to data
         else:
             cur_date = r['TS_start']
             step = r['TS_step']
+            # Walk on data and add date by step
             for v in zip(*datas):
                 r_data['datas'].append((cur_date,) + v)
+                # Add events with step_date
+                for e in events.in_step(cur_date, res).values('comment','short_text'):
+                    e['date'] = cur_date
+                    r_data['events'].append(e)
                 cur_date += step
         return r_data

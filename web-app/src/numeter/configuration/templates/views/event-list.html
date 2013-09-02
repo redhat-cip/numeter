@@ -1,0 +1,50 @@
+{% load i18n %}
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or event's name" %}" data-into="#event-list" data-url="{% url 'event list' %}?page=1&q={{ q }}">
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>{% trans "Name" %}</th>
+    <th>{% trans "Short text" %}</th>
+    <th>{% trans "Hosts" %}</th>
+    <th>{% trans "Date" %}</th>
+   </tr>
+  </thead>
+  <tbody>
+   {% for event in Events %}
+   <tr>
+    <td><input class="event-checkbox" type="checkbox" name="{{ event.id }}"></td>
+    <td><a class="get-event" data-url="{{ event.get_absolute_url }}" data-into="#event-list" data-original-title="{% blocktrans %}Preview of {{ event }}{% endblocktrans %}" data-data-url="{% url "event data" event.id %}">{{ event.name }}</a></td>
+    <td>{{ event.short_text }}</td>
+    <td>
+     {% for host in event.hosts.all %}
+      <a class="get-host" data-url="{{ host.get_absolute_url }}" data-into="#event-list">{{ host.name }}</a>
+     {% endfor %}
+    </td>
+    <td>{{ event.date|date:"j b Y H:i" }}</td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   {% if Events.has_previous %}
+   <li class="previous"><a class="get-page" data-into="#event-list" data-url="{{ Events.0.get_list_url }}?page={{ Events.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+   {% endif %}
+   {% if Events.has_next %}
+   <li class="next"><a class="get-page" data-into="#event-list" data-url="{{ Events.0.get_list_url }}?page={{ Events.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+   {% endif %}
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>{% trans "Action:" %}</h5>
+ <div class="input-append">
+  <select id="events-action">
+   <option data-url="{% url "event bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+  </select>
+  <button class="btn bulk-action" type="button" data-action-element="#events-action" data-checkboxes=".event-checkbox">{% trans "Apply" %}</button>
+</div>
