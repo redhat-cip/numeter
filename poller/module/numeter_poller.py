@@ -238,7 +238,7 @@ class myPoller:
                                                      info["Plugin"],
                                                      infoJson)
                     # send info in queue (if fail store)
-                    last_send_status = self._store_and_forward_sendMsg(msgType='INFO',
+                    last_send_status = self._sendMsg(msgType='INFO',
                                                     plugin=info["Plugin"],
                                                     msgContent=info)
                     writedInfos.append(info["Plugin"])
