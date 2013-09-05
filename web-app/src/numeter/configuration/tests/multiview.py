@@ -10,16 +10,10 @@ from multiviews.models import View, Multiview
 class Multiview_TestCase(TestCase):
     fixtures = ['test_users.json','test_storage.json']
 
-    @set_storage()
+    @set_storage(extras=['host','plugin','source'])
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
-        self.storage._update_hosts()
-        if not Host.objects.exists():
-            self.skipTest("There's no host in storage.")
-        self.host = Host.objects.all()[0]
-        plugin = self.host.create_plugins()[0]
-        plugin.create_data_sources()
         self.view = View.objects.create(name='test view')
 
     def tearDown(self):
@@ -71,7 +65,7 @@ class Multiview_TestCase(TestCase):
         """
         multiview = Multiview.objects.create(name='test multiview')
         # Test to update
-        url = reverse('source update', args=[multiview.id])
+        url = reverse('multiview update', args=[multiview.id])
         POST = {'name':'test multiview'}
         r = self.c.post(url, POST) 
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)

@@ -178,6 +178,10 @@ $(document).on('click', "#source-mode-pills li a", function(e) {
  e.preventDefault();
  $(this).tab('show');
 });
+$(document).on('click', "#event-mode-pills li a", function(e) {
+ e.preventDefault();
+ $(this).tab('show');
+});
 
 
 // SET SOURCE MODE
@@ -458,9 +462,8 @@ $(document).on('submit', "#view-form", function() {
   $("#edit-view-tab a").tab('show');
   // POST FORM
   $.ajax({type:method, url:url, async:true,
-    contentType:'application/json',
-    data: $(this).serialize(),
-    error: function(data, status, xhr) { error_modal() },
+    data: $(form).serialize(),
+    error: function(data, status, xhr) { error_modal(data) },
     success: function(data, status, xhr) {
       $('.messages').append(data['html']);
       // IF FORM IS VALIDATE
@@ -470,7 +473,7 @@ $(document).on('submit', "#view-form", function() {
         $(into).empty();
         print_loading_gif(into, '25%', '25%');
         $.ajax({type:'GET', url:url, async:true,
-          error: function(data, status, xhr) { error_modal() },
+          error: function(data, status, xhr) { error_modal(data) },
           success: function(data, status, xhr) {
             $(into).html(data);
             // ADD PREVIEW
@@ -576,7 +579,7 @@ $(document).on('submit', ".multiview-form", function(e) {
   $("#edit-multiview-tab a").tab('show');
   // POST FORM
   $.ajax({type:'POST', url:url, async:true,
-    data: $(this).serialize(),
+    data: $(form).serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('.messages').append(data['html']);
@@ -616,6 +619,91 @@ $(document).on('click', "#btn-delete-multiview", function(e) {
       $('.messages').append(data);
       // HIDE CURRENT MULTIVIEW
       $("#list-multiview-content .q").trigger({
+        type: "keypress",
+        which: 13,
+        KeyCode: 13,
+      });
+    },
+  });
+});
+
+//// EVENT
+// EDIT EVENT
+$(document).on('click', ".edit-event", function() {
+  // SET VARS
+  var url = $(this).attr('data-url');
+  var data_url = $(this).attr('data-data-url');
+  var into = $(this).attr('data-into');
+  var name = $(this).attr('data-name');
+  // RENDER
+  $(into).empty();
+  $("#edit-event-tab a").html(name)
+  $("#edit-event-tab a").show(250);
+  print_loading_gif(into, 60, 60);
+  $("#edit-event-tab a").tab('show');
+  // GET FORM
+  $.ajax({type:'GET', url:url, async:true,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $(into).html(data);
+    },
+  });
+});
+
+// ADD OR UPDATE EVENT
+$(document).on('submit', ".event-form", function(e) {
+  e.preventDefault();
+  var url = $(this).attr('action');
+  var form = $(this);
+  var method = $(this).attr('method');
+  var name = $(this).find('input[name="name"]').val();
+  var into = '#edit-event-content';
+  // RENDER
+  $("#edit-event-tab a").html(name);
+  $("#edit-event-tab a").show(250);
+  $("#edit-event-tab a").tab('show');
+  // POST FORM
+  $.ajax({type:'POST', url:url, async:true,
+    data: $(form).serialize(),
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('.messages').append(data['html']);
+      // IF FORM IS VALIDATE
+      if ( data['response'] == 'ok' ) {
+        var event_id = data['id'];
+        var url = 'customize/event/'+event_id;
+        $(into).empty();
+        print_loading_gif(into, '25%', '25%');
+        $.ajax({type:'GET', url:url, async:true,
+          error: function(data, status, xhr) { error_modal() },
+          success: function(data, status, xhr) {
+            $(into).html(data);
+          },
+        });
+      }
+    },
+  });
+  return false;
+});
+// DELETE EVENT
+$(document).on('click', "#btn-delete-event", function(e) {
+  e.preventDefault();
+  // SET VARS
+  var url = $(this).attr('data-url');
+  var into = $(this).attr('data-into');
+  var id = $(this).attr('data-id');
+  // SET RENDER
+  $("#edit-event-tab a").hide(250);
+  $("#list-event-tab a").tab('show');
+  $('.get-event[data-id="'+id+'"]').hide(250);
+  // SEND DEL REQUEST
+  $.ajax({type:'POST', url:url, async:true,
+    data: $(this).serialize()+'csrfmiddlewaretoken='+$('[name="csrfmiddlewaretoken"]').val(),
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('.messages').append(data);
+      // HIDE CURRENT MULTIVIEW
+      $("#list-event-content .q").trigger({
         type: "keypress",
         which: 13,
         KeyCode: 13,

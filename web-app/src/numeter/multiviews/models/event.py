@@ -29,11 +29,11 @@ class Event_Manager(models.Manager):
 
     def user_web_filter(self, q, user):
         """Extended search from a string only on authorized events."""
-        sources = self.web_filter(q)
+        events = self.web_filter(q)
         if user.is_superuser:
-            return sources
+            return events
         else:
-            return sources.filter(hosts__groups__in=user.groups.all())
+            return events.filter(hosts__groups=user.groups.all())
 
 class Event_QuerySet(models.query.QuerySet):
     """QuerySet with extras method."""
@@ -46,9 +46,9 @@ class Event_QuerySet(models.query.QuerySet):
 
 class Event(models.Model):
     name = models.CharField(_('name'), max_length=300)
-    short_text = models.CharField(_('short text'), max_length=20)
+    short_text = models.CharField(_('short text'), max_length=20, blank=True, null=True)
     hosts = models.ManyToManyField('core.host')
-    date = models.DateTimeField(_('date'), default=now)
+    date = models.DateTimeField(_('date'), default=now, blank=True, null=True)
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
 
     objects = Event_Manager()

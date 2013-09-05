@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="row-fluid">
+ <ul id="event-mode-pills" class="nav nav-pills">
+  <li id="list-event-tab" class="active"><a data-target="#list-event-content" data-event-mode="list" href="#">{% trans "List" %}</a></li>
+  <li id="add-event-tab"><a data-target="#add-event-content" data-event-mode="add" href="#">{% trans "Add" %}</a></li>
+  <li id="edit-event-tab"><a data-target="#edit-event-content" data-event-mode="edit" href="#" style="display: none;"></a></li>
+ </ul>
+</div>
+
+<div class="tab-content">
+ <div class="tab-pane active" id="list-event-content">{% include "customize/event/list.html" %}</div>
+ <div class="tab-pane" id="add-event-content">{% include "customize/event/event.html" %}</div>
+ <div class="tab-pane" id="edit-event-content"></div>
+</div>

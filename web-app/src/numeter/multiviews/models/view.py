@@ -152,8 +152,8 @@ class View(models.Model):
             for v in zip(*datas):
                 r_data['datas'].append((cur_date,) + v)
                 # Add events with step_date
-                for e in events.in_step(cur_date, res).values('comment','short_text'):
-                    e['date'] = cur_date
-                    r_data['events'].append(e)
+                #for e in events.in_step(cur_date, res).values('comment','short_text'):
+                #    e['date'] = cur_date
+                #    r_data['events'].append(e)
                 cur_date += step
         return r_data

@@ -1,0 +1,21 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by event's name or host's name" %}" data-into="#list-event-content" data-url="{% url 'multiviews customize event list' %}?page=1&q={{ q }}">
+
+ <ul class="unstyled">
+  {% for event in Event %}
+  <li>
+   <a class="edit-event" data-url="{% url "multiviews customize event edit" event.id %}" data-into="#edit-event-content"  event-id="{{ event.id }}" data-name="{{ event.name }}">{{ event|truncatechars:"50" }}</a>
+  </li>
+  {% endfor %}
+ </ul>
+
+<div>
+ <ul class="pager">
+  {% if Events.has_previous %}
+  <li class="previous"><a class="get-page" data-into="#list-event-content" data-url="{% url "multiviews customize event list" %}?page={{ Events.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+  {% endif %}
+  {% if Events.has_next %}
+  <li class="next"><a class="get-page" data-into="#list-event-content" data-url="{% url "multiviews customize event list" %}?page={{ Events.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+  {% endif %}
+ </ul>
+</div>

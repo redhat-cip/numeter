@@ -48,6 +48,7 @@ def edit(request, multiview_id):
     })
 
 
+# TODO : Replace by api
 @login_required()
 def fast_add(request):
     M = Multiview.objects.create(name=request.POST['multiview_name'])

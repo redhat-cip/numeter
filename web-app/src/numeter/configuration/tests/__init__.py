@@ -7,6 +7,8 @@ from plugin import Plugin_TestCase
 from source import Source_TestCase
 from view import View_TestCase
 from multiview import Multiview_TestCase
+from event import Event_TestCase
+
 
 def suite():
     import unittest
@@ -20,6 +22,7 @@ def suite():
         'configuration.tests.source',
         'configuration.tests.view',
         'configuration.tests.multiview',
+        'configuration.tests.event',
     )
     suite = unittest.TestSuite()
     for t in TEST_CASES:

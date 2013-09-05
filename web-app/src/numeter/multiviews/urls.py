@@ -27,4 +27,9 @@ urlpatterns = patterns('',
     url(r'^customize/multiview/list$', 'multiviews.views.customize.multiview.list', name='multiviews customize multiview list'),
     url(r'^customize/multiview/add$', 'multiviews.views.customize.multiview.add', name='multiviews customize multiview add'),
     url(r'^customize/multiview/(?P<multiview_id>\d+)$', 'multiviews.views.customize.multiview.edit', name='multiviews customize multiview edit'),
+    # Event
+    url(r'^customize/event$', 'multiviews.views.customize.event.index', name='multiviews customize event index'),
+    url(r'^customize/event/list$', 'multiviews.views.customize.event.list', name='multiviews customize event list'),
+    url(r'^customize/event/add$', 'multiviews.views.customize.event.add', name='multiviews customize event add'),
+    url(r'^customize/event/(?P<event_id>\d+)$', 'multiviews.views.customize.event.edit', name='multiviews customize event edit'),
 )

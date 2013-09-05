@@ -1,5 +1,5 @@
 {% load i18n %}
-<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or event's name" %}" data-into="#event-list" data-url="{% url 'event list' %}?page=1&q={{ q }}">
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by event's name or host's name" %}" data-into="#event-list" data-url="{% url 'event list' %}?page=1&q={{ q }}">
 <div class="span8">
  <table class="table table-condensed table-striped">
   <thead>
@@ -15,7 +15,7 @@
    {% for event in Events %}
    <tr>
     <td><input class="event-checkbox" type="checkbox" name="{{ event.id }}"></td>
-    <td><a class="get-event" data-url="{{ event.get_absolute_url }}" data-into="#event-list" data-original-title="{% blocktrans %}Preview of {{ event }}{% endblocktrans %}" data-data-url="{% url "event data" event.id %}">{{ event.name }}</a></td>
+    <td><a class="get-event" data-url="{{ event.get_absolute_url }}" data-into="#event-list">{{ event.name }}</a></td>
     <td>{{ event.short_text }}</td>
     <td>
      {% for host in event.hosts.all %}

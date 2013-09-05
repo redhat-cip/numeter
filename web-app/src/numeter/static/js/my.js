@@ -5,9 +5,12 @@ var print_message = function(msg,tag,into) {
   $(into).append(html);
 }
 
-var error_modal = function() {
+var error_modal = function(err) {
   $('#myModal').modal('show');
   $('#myModal').html('<center><h4>Connection error !</h4></center>');
+  //if ( err ) {
+    $('#myModal').append('<div class="span"><pre>'+err+'</pre></div>');
+  //}
 }
 
 // ABORT GRAPH PREVIEW
