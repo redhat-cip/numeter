@@ -2,6 +2,7 @@ from django.utils.timezone import now
 from core.models import Host, Data_Source
 from multiviews.models import View, Multiview, Event
 
+
 def create_view():
     """Fast create a view with the 2 first sources."""
     v = View(name="Test view")

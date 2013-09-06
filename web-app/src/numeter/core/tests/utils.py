@@ -9,6 +9,7 @@ class False_HttpRequest_dict(dict):
     def getlist(self, x):
         return self.get(x, [])
 
+
 def storage_enabled():
     """ 
     Test to connect to self.storage.
@@ -22,6 +23,7 @@ def storage_enabled():
             return func(self, *args, **kwargs)
         return inner
     return decorator
+
 
 def set_storage(extras=[]):
     """

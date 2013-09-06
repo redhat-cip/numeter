@@ -26,7 +26,7 @@ class Command(BaseCommand):
             options['address'] = raw_input('Address or IP > ')
 
         if options['password']:
-            logger.warning('Password is saved as row in database. Be sure it has restricted access.')
+            logger.warning('Password is saved as raw in database. Be sure it has restricted access.')
 
         # Create user
         S = Storage(

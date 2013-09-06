@@ -35,6 +35,7 @@ class Event_Manager(models.Manager):
         else:
             return events.filter(hosts__groups=user.groups.all())
 
+
 class Event_QuerySet(models.query.QuerySet):
     """QuerySet with extras method."""
     def in_step(self, timestamp, res):
