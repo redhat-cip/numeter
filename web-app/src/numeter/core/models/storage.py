@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.core.cache import cache
 
 from core.models import Host
 
@@ -10,6 +11,7 @@ from urllib2 import urlopen
 from urllib import quote
 from json import load as jload, loads as jloads
 import socket
+from hashlib import md5
 from logging import getLogger
 logger = getLogger('storage')
 
@@ -236,7 +238,12 @@ class Storage(models.Model):
         Return a dictionnary representing storage's hosts.
         It is raw data from storage API.
         """
-        return self._connect('hosts')
+        key_hash = md5( ('storage/%i/hosts' % self.id) ).hexdigest()
+        data = cache.get(key_hash)
+        if not data:
+            data = self._connect('hosts')
+            cache.set(key_hash, data)
+        return data
 
     def get_info(self, hostid):
         """
@@ -244,11 +251,28 @@ class Storage(models.Model):
         It is raw data from storage API.
         """
         if isinstance(hostid, Host): hostid = hostid.hostid
-        return self._connect('host', {'hostid': hostid})
+        key_hash = md5( ('storage/%i/hinfo/%s' % (self.id, hostid) ) ).hexdigest()
+        data = cache.get(key_hash)
+        if not data:
+            data = self._connect('host', {'hostid': hostid})
+            cache.set(key_hash, data)
+        return data
+
+    def get_plugins_raw(self, hostid):
+        """
+        Return a dict representing an host plugins' category.
+        It is raw data from storage API.
+        """
+        key_hash = md5( ('storage/%i/plugins/%s' % (self.id, hostid) ) ).hexdigest()
+        data = cache.get(key_hash)
+        if not data:
+            data = self._connect('plugins', {'hostid': hostid})
+            cache.set(key_hash, data)
+        return data
 
     def get_categories(self, hostid):
         """Return a list representing an host plugins' category."""
-        r = self._connect('plugins', {'hostid': hostid})
+        r = self.get_plugins_raw(hostid)
         categories = set([ p['Category']  for p in r.values() ])
         return list(categories)
 
@@ -257,7 +281,7 @@ class Storage(models.Model):
         Return a list representing an host's plugins.
         Modify storage's data before returning.
         """
-        r = self._connect('plugins', {'hostid': hostid})
+        r = self.get_plugins_raw(hostid)
         return [ p for p in r.values() ]
 
     def get_plugins_by_category(self, hostid, category):
@@ -276,7 +300,12 @@ class Storage(models.Model):
         Get plugin's data from storage.
         It is raw data from storage API.
         """
-        return self._connect('data', data)
+        key_hash = md5( ('storage/%i/data/%s/%s/%s/%s' % (self.id, data['hostid'], data['plugin'], data['ds'], data['res']) ) ).hexdigest()
+        _data = cache.get(key_hash)
+        if not _data:
+            _data =  self._connect('data', data)
+            cache.set(key_hash, _data )
+        return _data
 
     def _update_hosts(self):
         """

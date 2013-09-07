@@ -165,3 +165,6 @@ from sys import argv
 if len(argv) > 1:
     if argv[1] == 'test' :
         from settings_test import *
+
+# Make validation
+import settings_validation
