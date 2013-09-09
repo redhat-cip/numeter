@@ -38,7 +38,7 @@ class Manage_Repair_TestCase(TestCase):
     @set_storage(extras=['host'])
     def setUp(self):
         if Storage.objects.count() < 2:
-            self.skip("Cannot do this test with less than 2 storages.")
+            self.skipTest("Cannot do this test with less than 2 storages.")
         self.host = Host.objects.all()[0]
 
     def test_repair(self):

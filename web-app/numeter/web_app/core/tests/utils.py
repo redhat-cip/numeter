@@ -45,7 +45,21 @@ def set_storage(extras=[]):
                 if not self.storage.is_on():
                     self.skipTest("Configured storage unreachable.")
                 else:
-                    self.storage._update_hosts()
+                    if 'host' in extras:
+                        hostids = self.storage.get_hosts().keys()
+                        if not hostids:
+                            self.skipTest("No hosts found in this test storage.")
+                        self.host = self.storage.create_host(hostids[0])
+                        if 'plugin' in extras:
+                            plugins = self.host.create_plugins()
+                            if not plugins:
+                                self.skipTest("No plugin found in test storage.")
+                            self.plugin = plugins[0]
+                            if 'source' in extras:
+                                sources = self.plugin.create_data_sources()
+                                if not sources:
+                                    self.skipTest("No source found in test storage.")
+                                self.source = sources[0]
             # Skip
             else:
                 self.skipTest("No test storage has been configurated.")

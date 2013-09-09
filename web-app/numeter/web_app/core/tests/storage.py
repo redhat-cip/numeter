@@ -7,7 +7,6 @@ from core.tests.utils import storage_enabled, set_storage
 
 
 class Storage_TestCase(TestCase):
-    fixtures = ['test_storage.json']
 
     @set_storage()
     def setUp(self):
@@ -112,13 +111,10 @@ class Storage_TestCase(TestCase):
 
 class Storage_Manager_TestCase(TestCase):
 
+    @set_storage()
     def setUp(self):
-        if 'mock_storage' in settings.INSTALLED_APPS:
-            management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
-            self.storage1 = Storage.objects.get(pk=1)
-            self.storage2 = Storage.objects.get(pk=2)
-        else:
-            self.skipTest("No test storage has been configurated.")
+        if Storage.objects.count() < 2:
+            self.skipTest('Need storages to launch this test.')
 
     def tearDown(self):
         Host.objects.all().delete()

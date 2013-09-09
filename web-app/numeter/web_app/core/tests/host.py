@@ -4,7 +4,6 @@ from core.tests.utils import storage_enabled, set_storage
 
 
 class Host_TestCase(TestCase):
-    fixtures = ['test_storage.json']
 
     @set_storage(extras=['host'])
     def setUp(self):

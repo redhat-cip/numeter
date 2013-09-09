@@ -1,6 +1,5 @@
 # Django settings for numeter project.
 
-SECRET_KEY = 'upaxf2)kcv&amp;!z0qgoi)3sq847=rk1dobhzpev5q5vfkt67ujn5'
 
 SITE_ID = 1
 
@@ -81,7 +80,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     # Django required extensions
@@ -147,6 +146,7 @@ LOGGING = {
 
 LOGIN_URL = '/login'
 AUTH_USER_MODEL = 'core.User'
+SECRET_KEY = 'secret'
 
 from settings_local import *
 from settings_tastypie import *

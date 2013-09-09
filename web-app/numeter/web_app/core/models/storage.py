@@ -227,11 +227,12 @@ class Storage(models.Model):
         """Create a host in DB from its storage ID."""
         hosts = self.get_hosts()
         h = hosts[hostid]
-        Host.objects.create(
+        h = Host.objects.create(
             name=h['Name'],
             hostid=h['ID'],
             storage=self,
         )
+        return h
 
     def get_hosts(self):
         """
@@ -300,7 +301,7 @@ class Storage(models.Model):
         Get plugin's data from storage.
         It is raw data from storage API.
         """
-        key_hash = md5( ('storage/%i/data/%s/%s/%s/%s' % (self.id, data['hostid'], data['plugin'], data['ds'], data['res']) ) ).hexdigest()
+        key_hash = md5( ('storage/%i/data/%s/%s/%s/%s' % (self.id, data['hostid'], data['plugin'], data['ds'], data.get('res','Daily')) ) ).hexdigest()
         _data = cache.get(key_hash)
         if not _data:
             _data =  self._connect('data', data)
