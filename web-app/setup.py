@@ -23,8 +23,10 @@
 from distutils.core import setup
 from distutils.command.install_data import install_data
 from pkgutil import walk_packages
-import shutil
+from django.core.management import call_command
 import os
+import sys
+from random import choice
 
 import numeter
 os.environ['DJANGO_SETTINGS_MODULE'] = 'numeter.web_app.numeter.settings'
@@ -73,10 +75,17 @@ for dirpath, dirnames, filenames in os.walk('numeter'):
 class my_install(install_data):
     def run(self):
         install_data.run(self)
-        for script in self.get_outputs():
-            # Rename name.init in name
-            if script.endswith(".init"):
-                shutil.move(script, script[:-5])
+        # Add secret key
+        NEW_SECRET_KEY = ''.join([choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)])
+        with open('/etc/numeter/secret_key.txt', 'w') as f:
+            f.write(NEW_SECRET_KEY)
+        # Syncdb
+        from numeter.web_app import numeter
+        NUMETER_DIR = os.path.dirname(os.path.dirname(os.path.abspath(numeter.__file__)))
+
+        sys.path.append(NUMETER_DIR)
+        call_command('syncdb', verbosity=1, interactive=False)
+        
 
 if __name__ == '__main__':
 
@@ -100,6 +109,7 @@ if __name__ == '__main__':
           # package_dir = {'numeter': 'src'},
           package_data = package_data,
           packages = packages,
+          scripts = ['extras/numeter-webapp'],
           data_files = [
             ('/etc/numeter', ['numeter_webapp.cfg']),
           ],

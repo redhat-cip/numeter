@@ -115,6 +115,7 @@ class Storage_Manager_TestCase(TestCase):
     def setUp(self):
         if Storage.objects.count() < 2:
             self.skipTest('Need storages to launch this test.')
+        self.storage1, self.storage2 = Storage.objects.all()[:2]
 
     def tearDown(self):
         Host.objects.all().delete()
