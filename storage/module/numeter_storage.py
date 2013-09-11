@@ -6,6 +6,8 @@ import time
 import os
 import json
 from myRedisConnect import myRedisConnect
+from numeter_storage_endpoints import StorageEndpoint
+from numeterQueue import server as NumeterQueueC
 #import socket
 import re
 import logging
@@ -76,6 +78,23 @@ class myStorage:
         self._configFile = configFile
         self.readConf()
 
+        # try rabbitmq
+        mylogger = logging.getLogger("numeterQueue")
+        ch = logging.StreamHandler(sys.stdout)
+        mylogger.addHandler(ch)
+        mylogger.setLevel(logging.INFO)
+        mylogger = logging.getLogger("oslo")
+        ch = logging.StreamHandler(sys.stdout)
+        mylogger.addHandler(ch)
+        mylogger.setLevel(logging.INFO)
+        topics = [ 'foo',
+                   'bar',
+                   'bla',
+                   'myPoller',]
+        self._queue_consumer = NumeterQueueC.get_rpc_server(topics=topics,
+                                                      server='storage1',
+                                                      endpoints=[StorageEndpoint(self)],
+                                                      hosts=['10.66.6.206:5672'])
 
     def startStorage(self):
         self._startTime = time.time()
@@ -109,8 +128,14 @@ class myStorage:
             self._logger.critical("Args verification error")
             exit(1)
 
-        # Start threads
-        self.startThreads()
+#        # Start threads
+#        self.startThreads()
+        # start consumer
+        try:
+            self._queue_consumer.start()
+        except KeyboardInterrupt:
+            self._queue_consumer.stop()
+            #raise Exception('test catch')
 
         # End log time execution
         self._logger.warning("---- End : numeter_storage, "
@@ -472,6 +497,67 @@ class myStorage:
         return jsonData
 
 
+    def _write_data(self, hostID, plugin, data_json):
+
+        # For each plugin
+        if plugin == None:
+            return False
+
+        data =  self.jsonToPython(data_json)
+
+        # TODO dont write data if no infos
+
+        # Get rrdpath
+        rrd_path = self._redis_connexion.redis_hget("RRD_PATH", hostID)
+        if rrd_path is None:
+            return False
+        print data
+        #data['TimeStamp']
+        wspPath = '%s/%s' % (rrd_path, plugin)
+        for ds_name, value in data["Values"].iteritems():
+
+            ds_path = '%s/%s.wsp' % (wspPath, ds_name)
+            # Create wsp file - config wsp here
+            if not os.path.isfile(ds_path):
+                self._logger.warning("writewsp host : %s Create wsp file : %s"
+                                        % (hostID, ds_path))
+                # Create directory
+                if not os.path.exists(wspPath):
+                    try:
+                        os.makedirs(wspPath)
+                        self._logger.info("writewsp host : %s make directory : %s"
+                                            % (hostID, wspPath))
+                    except OSError:
+                        self._logger.error("writewsp host : %s can't make directory : %s"
+                                            % (hostID, wspPath))
+                        return False
+                try:
+                    whisper.create(ds_path, 
+                                   [(60, 1440),   # --- Daily (1 Minute Average)
+                                   (300, 2016),   # --- Weekly (5 Minute Average)
+                                   (600, 4608),   # --- Monthly (10 Min Average)
+                                   (3600, 8784)]) # --- Yearly (1 Hour Average)
+                except Exception as e:
+                    self._logger.error("writewsp host : %s Create wsp Error %s"
+                        % (host, str(e)))
+                    return False
+                # Update whisper
+                try:
+                    self._logger.error("writewsp host : " + host
+                            + " Update wsp DEBUG Timestamp "
+                            + str(TS) 
+                            + " For value "
+                            + str(hostAllDatas["Datas"][plugin][TS][DSname])
+                            + " in file "
+                            + str(wspPath+"/"+DSname+".wsp"))
+                    whisper.update(wspPath+"/"+DSname+".wsp", 
+                        str(hostAllDatas["Datas"][plugin][TS][DSname]), str(TS) )
+                except Exception as e:
+                    self._logger.error("writewsp host : " + host
+                        + " Update Error "
+                        + str(e))
+                    continue
+        
 
     def writewsp(self, sortedTS, hostAllDatas, host, basewspPath):
         "Write wsp with python-whisper"
@@ -531,6 +617,69 @@ class myStorage:
                             + " Update Error "
                             + str(e))
                         continue
+        return True
+
+    def _get_hostIDHash(self, hostID):
+        "Get cached hostID hash or add in cache"
+        hostIDHash = self._redis_connexion.redis_hget("HOST_ID",hostID)
+        if hostIDHash == None:
+            hostIDHash = hashlib.md5()
+            hostIDHash.update(hostID)
+            # Get X first char in md5 sum X=_wsp_path_md5_char 
+            hostIDHash = hostIDHash.hexdigest()[0:self._wsp_path_md5_char]
+            # Update redis cache
+            self._redis_connexion.redis_hset("HOST_ID",hostID,hostIDHash)
+            # Log
+            self._logger.debug("_get_hostIDHash : %s Set new md5(%s)"
+                               % (hostIDHash, hostID))
+        return hostIDHash
+
+    def _write_info(self, hostID, info_json):
+        # info=   {    'Plugin': plugin, 
+        #               'Base': '1000', 
+        #               'ClientHash': 'md5(client)', <---- add by this function (in MyInfo)
+        #               'Describ': '', 
+        #               'Title': plugin, 
+        #               'Vlabel': '', 
+        #               'Order': '', 
+        #               'Infos': {
+        #                    "down" : {"type": "COUNTER", "id": "down", "label": "received"},
+        #                     "up" : {"type": "COUNTER", "id": "up", "label": "upload"},
+        #                }
+        #          }
+        info =  self.jsonToPython(info_json)
+        plugin = info.get('Plugin', None)
+
+        self._logger.debug("_write_infos  hostID : %s -- plugin : %s" 
+                                % (hostID, plugin))
+
+        # Get infos
+        if info == {} \
+        or ( plugin != "MyInfo" \
+        and ( not info.has_key("Infos") or info["Infos"] == {} )):
+            self._logger.warning("_write_infos  hostID : error, no Infos %s -- plugin : %s" 
+                                    % (hostID, plugin))
+            return False
+
+        if plugin == "MyInfo":
+            # Add hash + filtered and other (see in comments)
+            if not "ID" in info or not "Name" in info:
+                self._logger.error("_write_infos  hostID : error, no Infos %s -- plugin : %s" 
+                                    % (hostID, plugin))
+                return False
+            # Get hash from cache for data path
+            hostIDHash = self._get_hostIDHash(hostID)
+            HostIDFiltredName = re.sub("[ \"/.']","",hostID)
+            info['hostIDHash'] = hostIDHash
+            info['HostIDFiltredName'] = HostIDFiltredName
+            info_json = self.pythonToJson(info)
+            self._redis_connexion.redis_hset("HOSTS", hostID, info_json)
+
+            # Write client infos in redis
+            rrdPath = str('%s/%s/%s' % (self._wsp_path, hostIDHash, HostIDFiltredName))
+            self._redis_connexion.redis_hset("RRD_PATH", hostID, rrdPath)
+        else:
+            self._redis_connexion.redis_hset("INFOS@%s" % hostID, plugin, info_json)
         return True
 
 

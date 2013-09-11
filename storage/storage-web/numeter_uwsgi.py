@@ -76,7 +76,6 @@ def jsonToPython(data):
 configFile = "/etc/numeter/numeter_storage.cfg"
 readConf(configFile)
 
-
 app = Flask(__name__)
 
 @app.route(baseURL + '/')
@@ -88,10 +87,13 @@ def hosts():
     myConnect = redisStartConnexion()
     response={}
     allhosts = myConnect.redis_hgetall("HOSTS")
-    for addr,value in allhosts.iteritems():
-        value = jsonToPython(value)
-        value['address'] = addr
-        response[addr] = value
+
+    # Convert key: json to key:dict
+    for hostID, value_json in allhosts.iteritems():
+        value = jsonToPython(value_json)
+        # TODO FIXEME : delete Address (backward compatibility)
+        value['Address'] = hostID
+        response[hostID] = value
     return pythonToJson(response)
 
 # test url http://127.0.0.1:3031/hinfo?host=1350646673-fe526c202a1812c0640877cebe801cc3
