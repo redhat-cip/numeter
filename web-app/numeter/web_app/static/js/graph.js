@@ -1,4 +1,3 @@
-graphs = {};
 graph_request = [];
 res = 'Daily';
 // ABORT GRAPH REQUEST
@@ -51,34 +50,8 @@ var get_graph = function(host, plugin, into) {
   res = $('#resolution-pills li.active').attr('data-value');
 
   $(into).append(graph_div);
-  r = $.getJSON('/get/graph/'+host+'/'+plugin+'?res='+res, function(data) {
-    for (i in data['datas']){
-      data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-    }
-    g = new Dygraph(document.getElementById('graph-'+plugin), data['datas'], {
-      title: data['name'],
-      labels: data['labels'],
-      legend: 'always',
-      labelsSeparateLines: true,
-      labelsDiv: 'graphleg-'+plugin,
-      fillGraph: true,
-      labelsDivWidth: 100,
-      pixelsPerLabel: 60,
-      gridLineWidth: 0.1,
-      labelsKMG2: true,
-      showRangeSelector: true,
-      axes: {
-        y: {
-          axisLabelWidth: 30000,
-        }
-      },
-    });
-    graphs[host+plugin] = [g,'/get/graph/'+host+'/'+plugin+'?res='];
-  });
-  $(r).bind('abort', function () {
-    if (r.state() == 'pending') $('#graph-'+plugin+'-container').hide(250);
-  });
-  graph_request.push(r);
+  var url = '/get/graph/'+host+'/'+plugin;
+  Get_Graph(url, 'graph-'+plugin);
 }
 
 // GET PLUGIN LIST FROM CATEGORY
@@ -100,6 +73,7 @@ $(document).on('click', '.accordion-category', function() {
 
         $('#graphs').html('');
         a.toggleClass('active');
+        graphs = [];
         $('.get-plugin').each( function(index,value) {
           var plugin = $(this).attr('plugin-name');
           var host = $(this).parentsUntil('.hosttree-host-li').parent().children('a').attr('host-id');
@@ -121,6 +95,7 @@ $(document).on('click', '.get-plugin', function() {
   var host = $(this).parent().parent().parent().parent().parent().parent().parent().children('.accordion-host').attr('host-id');
   $('#graphs').html('');
   stop_request();
+  graphs = [];
   get_graph(host, plugin, '#graphs');
 });
 
@@ -130,21 +105,7 @@ $(document).on('click', '#resolution-pills li a', function() {
   $(this).parent().addClass('active');
   res = $(this).parent().attr('data-value');
   // Walk on graphs for update
-  stop_request();
-  $.each(graphs, function(view_id,v) {
-    var r = $.getJSON(graphs[view_id][1]+res, function(data) {
-      for (j in data['datas']) {
-        data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
-      }
-      graphs[view_id][0].updateOptions({
-        file: data['datas'],
-        labels: data['labels'],
-        colors: data['colors'],
-      });
-    });
-    $(r).bind('abort', function () { 
-      if (r.state() == 'pending') $('#graph-'+plugin+'-container').hide(250);
-    });
-    graph_request.push(r);
+  $.each(graphs, function(i,g) {
+    Update_Graph(g);
   });
 });

@@ -6,7 +6,7 @@
   <div class="accordion-inner">
    <div class="row-fluid">
     {% for view in multiview.views.all %}
-     <div class="graph span6" data-id="{{ view.id }}" id="view-{{ multiview.id }}-{{ view.id }}"></div>
+     <div class="graph span6" data-id="{{ view.id }}" id="view-{{ multiview.id }}-{{ view.id }}" data-url="{{ view.get_data_url }}"></div>
      {% if not forloop.counter0|divisibleby:"2" %}</div><div class="row-fluid">{% endif %}
     {% endfor %}
    </div>

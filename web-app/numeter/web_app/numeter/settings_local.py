@@ -6,11 +6,12 @@ config.read('/etc/numeter/numeter_webapp.cfg')
 import os
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
 
+# Use a file to get SECRET_KEY
 SECRET_KEY_FILE = config.get_d('global', 'secret_key_file', '/etc/numeter/secret_key.txt')
 with open(SECRET_KEY_FILE, 'r') as f:
     SECRET_KEY = f.read().strip()
 
-DEBUG = config.getboolean_d('global', 'debug', False)
+DEBUG = config.getboolean_d('debug', 'debug', False)
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = config.getobj_d('global', 'admins') 
@@ -68,7 +69,7 @@ from django.conf import settings
 INSTALLED_APPS = settings.INSTALLED_APPS
 
 # Mock storage
-if config.getboolean_d('global', 'use_mock_storage', False):
+if config.getboolean_d('debug', 'use_mock_storage', False):
     INSTALLED_APPS = INSTALLED_APPS+('mock_storage',)
 
 ## Custom configuration

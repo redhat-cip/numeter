@@ -7,7 +7,6 @@ from core.tests.utils import storage_enabled, set_storage
 
 
 class Plugin_Manager_TestCase(TestCase):
-    fixtures = ['test_storage.json']
 
     @set_storage()
     def setUp(self):
@@ -21,7 +20,6 @@ class Plugin_Manager_TestCase(TestCase):
 
 
 class Plugin_TestCase(TestCase):
-    fixtures = ['test_storage.json']
 
     @set_storage(extras=['host','plugin'])
     def setUp(self):

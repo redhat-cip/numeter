@@ -112,6 +112,8 @@ if __name__ == '__main__':
           scripts = ['extras/numeter-webapp'],
           data_files = [
             ('/etc/numeter', ['numeter_webapp.cfg']),
+            ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-combined.js']),
+            ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-numeter.js']),
           ],
           classifiers=[
               'Development Status :: 4 - Beta',

@@ -24,11 +24,12 @@ RESOLUTION_STEP = { # in minute
 }
 
 class Storage_Manager(models.Manager):
+    """Custom Manager with extra methods."""
     def web_filter(self, q):
         storages = self.filter(
             Q(name__icontains=q) |
             Q(address__icontains=q)
-        )
+        ).distinct()
         return storages
 
     def get_all_host_info(self):
@@ -103,6 +104,7 @@ class Storage_Manager(models.Manager):
 class Storage(models.Model):
     """
     Corresponding to a storage.
+    Attributes are needed informations for connect to storage's API.
     """
     HTTP_PROTOCOLS = (
       ('http','HTTP'),
@@ -112,9 +114,9 @@ class Storage(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
     address = models.CharField(_('address'), max_length=200)
     port = models.IntegerField(_('port'), blank=True,null=True,default=80)
-    url_prefix = models.CharField(_('URL prefix'), max_length=100, blank=True, null=True)
+    url_prefix = models.CharField(_('URL prefix'), max_length=100, blank=True, null=True, help_text=_('Start point of API'))
     protocol = models.CharField(_('protocol'), max_length=5, default='http', choices=HTTP_PROTOCOLS)
-    login = models.CharField(_('login'), max_length=100, blank=True, null=True)
+    login = models.CharField(_('login'), max_length=100, blank=True, null=True, help_text=('Used for HTTP authentification'))
     password = models.CharField(_('password'), max_length=100, blank=True, null=True)
 
     objects = Storage_Manager()
@@ -200,7 +202,7 @@ class Storage(models.Model):
     def _connect(self, url, data={}):
         """
         Basic method for use proxy to storage.
-        `data` rae the following:
+        `data` should be as following:
          - host: requested host id on storage
          - plugin: requested plugin name
          - ds: requested data sources separated by ','

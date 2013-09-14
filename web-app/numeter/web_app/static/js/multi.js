@@ -1,5 +1,4 @@
 // GLOBAL VARS
-graphs = {};
 cancelable_request = [];
 res = 'Daily';
 
@@ -9,82 +8,6 @@ var stop_request = function() {
     xhr.abort();
   });
 }
-
-// AJAX AND MAKE GRAPH
-var get_graph = function(view_id, into) {
-
-  $.getJSON('/multiviews/view/'+view_id+'/data?res='+res, function(data) {
-
-    // Compute width
-    var width = $('.collapse').css('width').replace('px','') / 2 - 50
-    // Make date
-    for (var i in data['datas']) {
-      data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-    }
-
-    g = new Dygraph(document.getElementById(into), data['datas'], {
-      title: data['name'],
-      height: 250,
-      width: width,
-      legend: 'always',
-      fillGraph: true,
-      pixelsPerLabel: 60,
-      gridLineWidth: 0.1,
-      strokeWidth: 1.5,
-      colors: data['colors'],
-      showRangeSelector: true,
-      highlightCircleSize: 4.0,
-      labels: data['labels'],
-      labelsKMG2: true,
-      labelsSeparateLines: true,
-      labelsDivWidth: 300,
-      labelsDivStyles: {
-        backgroundColor: 'rgba(200, 200, 200, 0.20)',
-        borderRadius: '10px',
-        padding: '4px',
-      },
-      axes: {
-        y: {
-          axisLabelWidth: 30000,
-        }
-      },
-      series: {
-        warning: {
-          fillGraph: false,
-          strokeWidth: 1.0,
-          highlightCircleSize: 0.0,
-        },
-        critical: {
-          fillGraph: false,
-          strokeWidth: 1.0,
-          highlightCircleSize: 0.0,
-        },
-      }
-    });
-      var annotations = []
-      $.each( data['events'], function(i,v) {
-        annotations.push({
-          series: data['labels'][1],
-          x: v['date'] * 1000,
-          attachAtBottom: true,
-          shortText: v['short_text'],
-          text: v['comment']
-        })
-      });
-      g.ready(function() {
-        g.setAnnotations(annotations);
-      })
-    graphs[view_id] = [g,'/multiviews/view/'+view_id+'/data?res='];
-  });
-}
-
-// GET VIEW
-// $(document).on('click', '.get-view', function() {
-//   var view_id = $(this).attr('data-id');
-//   $('#graphs').html('');
-//   graphs = {};
-//   get_graph(view_id, '#graphs');
-// });
 
 // SEARCH MULTIVIEW
 $(document).on('submit', '#main-q', function(e) {
@@ -104,12 +27,12 @@ $(document).on('submit', '#main-q', function(e) {
 
 // GET MULTIVIEW
 $(document).on('shown', '.collapse', function() {
-  graphs = {};
   $(this).children('div.accordion-inner').find('.graph').each( function(index,value) {
     var view_id = $(this).attr('data-id');
     var view_div = $(this).attr('id');
+    var data_url = $(this).attr('data-url');
     print_loading_gif(this, '200px', '200px');
-    get_graph(view_id, view_div);
+    Get_Graph(data_url, view_div);
   })
 });
 
@@ -119,17 +42,8 @@ $(document).on('click', '#resolution-pills li a', function() {
   $(this).parent().addClass('active');
   res = $(this).parent().attr('data-value');
   // Walk on graphs for update
-  $.each(graphs, function(view_id,v) {
-    $.getJSON(graphs[view_id][1]+res, function(data) {
-      for (j in data['datas']) {
-        data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
-      }
-      graphs[view_id][0].updateOptions({
-        file: data['datas'],
-        labels: data['labels'],
-        colors: data['colors'],
-      });
-    });
+  $.each(graphs, function(i,g) {
+    Update_Graph(g);
   });
 });
 
@@ -183,19 +97,6 @@ $(document).on('click', "#event-mode-pills li a", function(e) {
  $(this).tab('show');
 });
 
-
-// SET SOURCE MODE
-// $(document).on('click', "#source-mode-pills li a", function() {
-//   $("#source-mode-pills li").removeClass('active');
-//   $('.to-add').removeClass('to-add');
-//   $('.to-remove').removeClass('to-remove');
-//   if ( source_mode == $(this).attr('data-source-mode') ) {
-//     source_mode = 'normal';
-//   } else {
-//     $(this).tab('show');
-//     source_mode = $(this).attr('data-source-mode');
-//   }
-// });
 // SEARCH IN LIST BY PRESS ENTER
 $(document).on('keypress', '.q', function(e) {
   if (e.which == 13 ) {
@@ -225,17 +126,6 @@ $(document).on('click', '.get-page', function() {
   return false;
 });
 
-// CLICK ON SOURCE
-// $(document).on('click', ".addable-source", function() {
-//   if ( source_mode == 'add' ) {
-//     $(this).toggleClass('to-add');
-//   }
-// });
-// $(document).on('click', ".removable-source", function() {
-//   if ( source_mode == 'remove' ) {
-//     $(this).toggleClass('to-remove');
-//   }
-// });
 // EDIT SOURCE
 $(document).on('click', ".edit-source", function() {
   if ( source_mode == 'normal' ) {
@@ -254,19 +144,7 @@ $(document).on('click', ".edit-source", function() {
         $("#edit-source-tab a").show(250);
         // ADD PREVIEW
         print_loading_gif('#source-preview', '10%', '10%');
-        $.getJSON(data_url, function(data) {
-          for (i in data['datas']){
-            data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-          }
-          g = new Dygraph(document.getElementById('source-preview'), data['datas'], {
-            labels: data['labels'],
-            colors: data['colors'],
-            pixelsPerLabel: 60,
-            gridLineWidth: 0.1,
-            labelsKMG2: true,
-            height: 150,
-          });
-        });
+        Get_Simple_Graph(data_url, 'source-preview');
       },
     });
   }
@@ -284,131 +162,6 @@ $(document).on('submit', "#source-form", function() {
       },
     });
     return false;
-});
-// ACTION WHEN CLICK ON GRAPHS
-// $(document).on('click', "#graphs div", function() {
-//   if ( $('.to-add').size() && $(this).attr('data-view-id') ) {
-//     var view_id = $(this).attr('data-view-id');
-//     var url = "customize/view/"+view_id+"/add_source";
-//     var source_ids = [];
-//     $.each( $('.to-add'), function() { source_ids.push($(this).attr('source-id')) } ); 
-//     $.ajax({type:'POST', url:url, async:true,
-//       data: {
-// 	'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-// 	'source_ids': source_ids,
-//       },
-//       error: function(data, status, xhr) { error_modal() },
-//       success: function(data, status, xhr) {
-//         $('.messages').append(data);
-// 	var url = graphs[view_id][1]+res;
-//         $.getJSON(url, function(data) {
-//           for (j in data['datas']) {
-//             data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
-//           }
-// 	  graphs[view_id][0].updateOptions({
-// 	    file: data['datas'],
-// 	    labels: data['labels'],
-// 	    colors: data['colors'],
-// 	  });
-// 	});
-//       },
-//     });
-// 
-//   } else if ( source_mode == 'remove' && $(this).attr('data-view-id') ) {
-//     var view_id = $(this).attr('data-view-id');
-//     $('#chosen-view').html(graphs[view_id][0].user_attrs_.title);
-//     $('#source-to-remove').empty();
-//     $('#source-to-remove').attr('data-view-id', view_id);
-//     var j = 0;
-//     $.each(graphs[view_id][0].user_attrs_.labels, function(i,s) {
-//       if ( s != 'Date' && s != 'warning' && s != 'critical' ) {
-//         $('#source-to-remove').append(
-// 	  '<li><a class="removable-source" data-num="'+j+'">'+s+'</a></li>'
-// 	);
-// 	j += 1
-//       }
-//     });
-//   }
-// });
-// REMOVE SOURCE
-// $(document).on('click', "#btn-remove-source", function() {
-//   var source_nums = [];
-//   var view_id = $('#source-to-remove').attr('data-view-id');
-//   var url = '/multiviews/customize/view/'+view_id+'/remove_source';
-//   $.each( $('.to-remove'), function() { source_nums.push($(this).attr('data-num')) } ); 
-//   $.ajax({type:'POST', url:url, async:true,
-//     data: {
-//       'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-//       'source_nums': source_nums,
-//     },
-//     error: function(data, status, xhr) { error_modal() },
-//     success: function(data, status, xhr) {
-//       $('.messages').append(data);
-//       $('.to-remove').hide(250);
-//       var url = graphs[view_id][1]+res;
-//       $.getJSON(graphs[view_id][1]+res, function(data) {
-//         for (j in data['datas']) {
-//           data['datas'][j][0] = new Date(data['datas'][j][0] * 1000);
-//         }
-//         graphs[view_id][0].updateOptions({
-// 	  file: data['datas'],
-// 	  labels: data['labels'],
-// 	  colors: data['colors'],
-//         });
-//       });
-//     }
-//   });
-// });
-
-// FAST ADD A VIEW
-$(document).on('click', "#btn-add-view", function() {
-  var name = $('#view-name').val();
-  var url = $(this).attr('data-url');
-  var multiview_id = $(this).parentsUntil(".dropdown-submenu").parent().children('a').attr('data-id')
-  var view_list = $(this).parentsUntil(".view-list").parent('ul');
-  var target = $(this).parent().parent().parent();
-  $.ajax({type:'POST', url:url, async:true,
-    data: {
-      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'view_name': name,
-      'multiview_id':multiview_id,
-      'res': res,
-    },
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      var data = xhr.responseJSON
-      var view_id = data['id'];
-      // Add line
-      var line = ' <li><a class="get-view" href="#" data-id="'+view_id+'" data-url="{{ view.get_data_url }}">'+name+'</a></li>';
-      $(target).before(line);
-      get_graph(view_id, '#graphs');
-    }
-  });
-});
-// FAST ADD A VIEW
-$(document).on('click', "#btn-add-view", function() {
-  var name = $('#view-name').val();
-  var url = $(this).attr('data-url');
-  var multiview_id = $(this).parentsUntil(".dropdown-submenu").parent().children('a').attr('data-id')
-  var view_list = $(this).parentsUntil(".view-list").parent('ul');
-  var target = $(this).parent().parent().parent();
-  $.ajax({type:'POST', url:url, async:true,
-    data: {
-      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'view_name': name,
-      'multiview_id':multiview_id,
-      'res': res,
-    },
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      var data = xhr.responseJSON
-      var view_id = data['id'];
-      // Add line
-      var line = ' <li><a class="get-view" href="#" data-id="'+view_id+'" data-url="{{ view.get_data_url }}">'+name+'</a></li>';
-      $(target).before(line);
-      get_graph(view_id, '#graphs');
-    }
-  });
 });
 
 // EDIT VIEW
@@ -431,22 +184,11 @@ $(document).on('click', ".edit-view", function() {
       $(into).html(data);
       // ADD PREVIEW
       print_loading_gif('#view-preview', '10%', '10%');
-      $.getJSON(data_url, function(data) {
-        for (i in data['datas']){
-          data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-        }
-        g = new Dygraph(document.getElementById('view-preview'), data['datas'], {
-          labels: data['labels'],
-          colors: data['colors'],
-          pixelsPerLabel: 60,
-          gridLineWidth: 0.1,
-          labelsKMG2: true,
-          height: 250,
-        });
-      });
+      Get_Simple_Graph(data_url, 'view-preview');
     },
   });
 });
+
 // ADD OR UPDATE VIEW
 $(document).on('submit', "#view-form", function() {
   // SET VARS
@@ -479,19 +221,7 @@ $(document).on('submit', "#view-form", function() {
             // ADD PREVIEW
             print_loading_gif('#view-preview', '10%', '10%');
             data_url = data_url || '/multiviews/view/'+view_id+'/data';
-            $.getJSON(data_url, function(data) {
-              for (i in data['datas']){
-                data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-              }
-              g = new Dygraph(document.getElementById('view-preview'), data['datas'], {
-                labels: data['labels'],
-                colors: data['colors'],
-                pixelsPerLabel: 60,
-                gridLineWidth: 0.1,
-                labelsKMG2: true,
-                height: 250,
-              });
-            });
+            Get_Simple_Graph(data_url, 'view-preview');
           },
         });
       } 
@@ -545,22 +275,6 @@ $(document).on('click', ".edit-multiview", function() {
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $(into).html(data);
-      // ADD PREVIEW
-      print_loading_gif('#multiview-preview', 40, 40);
-      $.getJSON(data_url, function(data) {
-        for (i in data['datas']){
-          data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-        }
-        g = new Dygraph(document.getElementById('multiview-preview'), data['datas'], {
-          labels: data['labels'],
-          colors: data['colors'],
-          pixelsPerLabel: 60,
-          gridLineWidth: 0.1,
-          labelsKMG2: true,
-          height: 150,
-          width: 300,
-        });
-      });
     },
   });
 });

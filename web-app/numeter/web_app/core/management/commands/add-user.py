@@ -12,7 +12,7 @@ logger = getLogger('main')
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-u', '--username', action='store', default=False, help="Set username"),
-        make_option('-e', '--email', action='store', default=False, help="Set email"),
+        make_option('-e', '--email', action='store', default='', help="Set email"),
         make_option('-S', '--superuser', action='store_true', default=False, help="Set as superuser"),
         make_option('-g', '--graphlib', action='store', default=False, help="Set graph library as filename separated by ','"),
         make_option('-p', '--password', action='store', default=False, help="Set password"),

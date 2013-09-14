@@ -7,6 +7,7 @@ from time import mktime
 
 
 class Host_Manager(models.Manager):
+    """Custom Manager with extra methods."""
     def user_filter(self, user):
         """Filter hosts authorized for a given user."""
         if user.is_superuser:

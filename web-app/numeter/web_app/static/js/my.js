@@ -13,14 +13,6 @@ var error_modal = function(err) {
   //}
 }
 
-// ABORT GRAPH PREVIEW
-preview_requests = [];
-var stop_preview = function() {
-  $.each( preview_requests, function(i,xhr) {
-    xhr.abort();
-  });
-}
-
 // ADD LOADING GIF
 var print_loading_gif = function(into, heigth, width) {
   if(typeof(heigth)==='undefined') heigth = '100%';
@@ -88,26 +80,12 @@ $(document).on('mouseover', "a:regex(class, preview-(source|view))", function() 
 
   $(pop).popover('show');
   print_loading_gif('#preview-graph', 150, 150);
-  xhr = $.getJSON(url, function(data) {
-    for (i in data['datas']){
-      data['datas'][i][0] = new Date(data['datas'][i][0] * 1000);
-    }
-    g = new Dygraph(document.getElementById('preview-graph'), data['datas'], {
-      labels: data['labels'],
-      colors: data['colors'],
-      pixelsPerLabel: 60,
-      gridLineWidth: 0.1,
-      labelsKMG2: true,
-      height: 150,
-      width: 300,
-    });
-  });
-  preview_requests.push(xhr);
+  Get_Simple_Graph(url, 'preview-graph');
 });
 $(document).on('mouseout', "a:regex(class, preview-(source|view))", function() {
   $(this).popover('hide');
   $(this).popover('destroy');
-  stop_preview();
+  preview_request.abort()
 });
 
 // MOVE OPTIONS BETWEEN SELECT INPUT
