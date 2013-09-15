@@ -3,10 +3,11 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from core.models import Host
+from core.models.utils import QuerySetManager, QuerySet
 from hashlib import md5
 
 
-class Data_Source_Manager(models.Manager):
+class Data_Source_QuerySetManager(QuerySet):
     def user_filter(self, user):
         """Filter source authorized for a given user."""
         if user.is_superuser:
@@ -54,7 +55,7 @@ class Data_Source(models.Model):
     plugin = models.ForeignKey('core.Plugin')
     comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)
 
-    objects = Data_Source_Manager()
+    objects = Data_Source_QuerySetManager.as_manager()
     class Meta:
         app_label = 'core'
         ordering = ('plugin','name')

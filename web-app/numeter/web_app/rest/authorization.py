@@ -4,7 +4,6 @@ from tastypie.exceptions import Unauthorized
 
 class AdminAuthorization(Authorization):
     """Only admin can use this Authorization."""
-
     def read_list(self, object_list, bundle):
         if bundle.request.user.is_superuser:
             return True
@@ -44,3 +43,8 @@ class AdminAuthorization(Authorization):
         if bundle.request.user.is_superuser:
             return True
         raise Unauthorized('Only superuser can access.')
+
+
+class FilteringAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        return object_list.user_filter(bundle.request.user)
