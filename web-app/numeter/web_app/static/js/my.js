@@ -97,3 +97,18 @@ $(document).on('click', '.move-option', function(e) {
   $(html).appendTo(to);
 })
 
+// SEARCH IN LIST BY PRESS ENTER
+$(document).on('keypress', '.q', function(e) {
+  if (e.which == 13 ) {
+    var url = $(this).attr('data-url');
+    var into = $(this).attr('data-into');
+    var data = { q: $(this).val() };
+    $.ajax({url:url, async:true, data:data,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $(into).html(data);
+      },
+    });
+  }
+});
+

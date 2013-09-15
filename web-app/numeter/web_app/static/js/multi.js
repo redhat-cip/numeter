@@ -31,7 +31,8 @@ $(document).on('shown', '.collapse', function() {
     var view_id = $(this).attr('data-id');
     var view_div = $(this).attr('id');
     var data_url = $(this).attr('data-url');
-    print_loading_gif(this, '200px', '200px');
+    if ( $('#'+view_div).html() == '' ) print_loading_gif(this, '200px', '200px');
+    graphs = [];
     Get_Graph(data_url, view_div);
   })
 });
@@ -76,41 +77,37 @@ $(document).on('click', '#toggle-editor', function() {
 //
 
 // MENU TABS
-$(document).on('click', "#menu-tabs li a", function(e) {
- e.preventDefault();
- $(this).tab('show');
-});
-$(document).on('click', "#view-mode-pills li a", function(e) {
- e.preventDefault();
- $(this).tab('show');
-});
-$(document).on('click', "#multiview-mode-pills li a", function(e) {
- e.preventDefault();
- $(this).tab('show');
-});
-$(document).on('click', "#source-mode-pills li a", function(e) {
- e.preventDefault();
- $(this).tab('show');
-});
-$(document).on('click', "#event-mode-pills li a", function(e) {
- e.preventDefault();
- $(this).tab('show');
+$(document).on('click', '.ajax-tabs li a', function(e) {
+  var url = $(this).attr('data-url');
+  var target = $(this).attr('data-target');
+  $(this).tab('show');
+  // DONT AJAX IF ALREADY
+  if ( $(target).html() != '' ) return false;
+  print_loading_gif(target, 250, 250);
+  $.ajax({type:'GET', url: url, async:true,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $(target).html(data);
+    },
+  });
 });
 
-// SEARCH IN LIST BY PRESS ENTER
-$(document).on('keypress', '.q', function(e) {
-  if (e.which == 13 ) {
-    var url = $(this).attr('data-url');
-    var into = $(this).attr('data-into');
-    var data = { q: $(this).val() };
-    $.ajax({url:url, async:true, data:data,
-      error: function(data, status, xhr) { error_modal() },
-      success: function(data, status, xhr) {
-        $(into).html(data);
-      },
-    });
-  }
+// CHOOSING SUB-MENU
+$(document).on('click', '.sub-menu-tabs li a', function() {
+  var url = $(this).attr('data-url');
+  var target = $(this).attr('data-target');
+  $(this).tab('show');
+  // DONT AJAX IF ALREADY
+  if ( $(target).html() != '' ) return false;
+  print_loading_gif(target, 250, 250);
+  $.ajax({type:'GET', url:url, async:true,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $(target).html(data);
+    },
+  });
 });
+
 
 // GET PAGE
 $(document).on('click', '.get-page', function() {
@@ -171,9 +168,10 @@ $(document).on('click', ".edit-view", function() {
   var data_url = $(this).attr('data-data-url');
   var into = $(this).attr('data-into');
   var name = $(this).attr('data-name');
+  var view_id = $(this).attr('data-id');
   // RENDER
   $(into).empty();
-  $("#edit-view-tab a").html(name)
+  $("#edit-view-tab a").html(name);
   $("#edit-view-tab a").show(250);
   print_loading_gif(into, '25%', '25%');
   $("#edit-view-tab a").tab('show');
@@ -426,7 +424,7 @@ $(document).on('click', "#btn-delete-event", function(e) {
   });
 });
 
-//// SOURCE ADD
+//// SOURCE FAST ADD
 // CHOOSE HOST
 $(document).on('change', '#chosen-host', function() {
   stop_request();

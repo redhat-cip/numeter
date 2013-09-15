@@ -42,40 +42,10 @@ $(document).on('shown', '.ajax-tabs li a', function(e) {
   });
 });
 
-
-// SEARCH IN LIST BY PRESS ENTER
-$(document).on('keypress', '.q', function(e) {
-  if (e.which == 13 ) {
-    var url = $(this).attr('data-url');
-    var into = $(this).attr('data-into');
-    var data = { q: $(this).val() };
-    $.ajax({url:url, async:true, data:data,
-      error: function(data, status, xhr) { error_modal() },
-      success: function(data, status, xhr) {
-        $(into).html(data);
-      },
-    });
-  }
-});
-
-// USER-LIST GET PAGE
-// $(document).on('click', '.get-page', function() {
-//   var url = $(this).attr('data-url');
-//   var into = $(this).attr('href');
-//   $.ajax({type:'GET', url:url, async:true,
-//     error: function(data, status, xhr) { error_modal() },
-//     success: function(data, status, xhr) {
-//       $(into).html(data);
-//     },
-//   });
-//   return false;
-// });
-
 // CHOOSING SUB-MENU
 $(document).on('shown', '.sub-menu-tabs li a', function() {
   var url = $(this).attr('data-url');
   var target = $(this).attr('data-target');
-  console.log(target);
   $(target).empty();
   print_loading_gif(target, 250, 250);
   $.ajax({type:'GET', url:url, async:true,
@@ -222,7 +192,7 @@ $(document).on('click', 'input[name="plugins"]', function() {
   }
 });
 
-// BUTTON CHOOSE NOST FOR PLUGINS
+// BUTTON CHOOSE HOST FOR PLUGINS
 $(document).on('click', '#btn-choose-host', function() {
   var url = $(this).attr('data-url');
   $.ajax({

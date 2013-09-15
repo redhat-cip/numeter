@@ -4,7 +4,7 @@
 <div class="row-fluid">
  <div class="span4">
   <ul class="unstyled">
-   {% for event in Event %}
+   {% for event in Events %}
     {% if forloop.counter0 == 10 or forloop.counter0 == 20 %}</ul></div><div class="span4"><ul class="unstyled">{% endif %}
     <li>
      <a class="edit-event" data-url="{% url "multiviews customize event edit" event.id %}" data-into="#edit-event-content"  event-id="{{ event.id }}" data-name="{{ event.name }}">{{ event|truncatechars:"50" }}</a>

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
-from core.models import Data_Source
+from core.models import Host, Data_Source
 from multiviews.models import View
 from core.utils.decorators import login_required
 from core.utils import make_page
@@ -16,6 +16,7 @@ def index(request):
     Sources = Data_Source.objects.user_web_filter(q, request.user)
     Sources = make_page(Sources, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/source/index.html', {
+        'Hosts': Host.objects.user_filter(request.user),
         'Sources': Sources,
         'q':q,
     })

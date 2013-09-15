@@ -1,14 +1,14 @@
 {% load i18n %}
 <div class="row-fluid">
- <ul id="multiview-mode-pills" class="nav nav-pills">
-  <li id="list-multiview-tab" class="active"><a data-target="#list-multiview-content" data-multiview-mode="list" href="#">{% trans "List" %}</a></li>
-  <li id="add-multiview-tab"><a data-target="#add-multiview-content" data-multiview-mode="add" href="#">{% trans "Add" %}</a></li>
+ <ul id="multiview-mode-pills" class="nav nav-pills sub-menu-tabs">
+  <li id="list-multiview-tab" class="active"><a data-target="#list-multiview-content" data-multiview-mode="list" data-url="{% url "multiviews customize multiview list" %}">{% trans "List" %}</a></li>
+  <li id="add-multiview-tab"><a data-target="#add-multiview-content" data-multiview-mode="add" data-url="{% url "multiviews customize multiview add" %}">{% trans "Add" %}</a></li>
   <li id="edit-multiview-tab"><a data-target="#edit-multiview-content" data-multiview-mode="edit" href="#" style="display: none;"></a></li>
  </ul>
 </div>
 
 <div class="tab-content">
  <div class="tab-pane active" id="list-multiview-content">{% include "customize/multiview/list.html" %}</div>
- <div class="tab-pane" id="add-multiview-content">{% include "customize/multiview/multiview.html" %}</div>
+ <div class="tab-pane" id="add-multiview-content">{# include "customize/multiview/multiview.html" #}</div>
  <div class="tab-pane" id="edit-multiview-content"></div>
 </div>

@@ -12,25 +12,9 @@ from multiviews.forms.event import Small_Event_Form as Event_Form
 
 @login_required()
 def index(request):
-    sources = Data_Source.objects.user_filter(request.user)
-    sources = make_page(sources, 1, 30)
-
     views = View.objects.user_filter(request.user)
     views = make_page(views, 1, 30)
-
-    multiviews = Multiview.objects.user_filter(request.user)
-    multiviews = make_page(multiviews, 1, 30)
-
-    events = Event.objects.user_filter(request.user)
-    events = make_page(events, 1, 30)
-
     return render(request, 'customize/index.html', {
-        'Hosts': Host.objects.user_filter(request.user),
-        'Sources': sources,
         'Views': views,
         'View_Form': View_Form(user=request.user),
-        'Multiviews': multiviews,
-        'Multiview_Form': Multiview_Form(user=request.user),
-        'Events': events,
-        'Event_Form': Event_Form(user=request.user),
     })
