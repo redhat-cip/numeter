@@ -14,7 +14,7 @@ from json import dumps as jdumps
 def index(request):
     q = request.GET.get('q','')
     events = Event.objects.user_web_filter(q, request.user)
-    events = make_page(events, int(request.GET.get('page',1)), 10)
+    events = make_page(events, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/event/index.html', {
         'Events': events,
         'q':q,
@@ -25,7 +25,7 @@ def index(request):
 def list(request):
     q = request.GET.get('q','')
     events = Event.objects.user_web_filter(q, request.user)
-    events = make_page(events, int(request.GET.get('page',1)), 10)
+    events = make_page(events, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/event/list.html', {
         'Events': events,
         'q':q,

@@ -16,7 +16,7 @@ from json import dumps as jdumps
 def index(request):
     q = request.GET.get('q','')
     views = View.objects.user_web_filter(q, request.user)
-    views = make_page(views, int(request.GET.get('page',1)), 10)
+    views = make_page(views, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/view/index.html', {
         'Views': views,
         'q':q,
@@ -35,7 +35,7 @@ def add(request):
 def list(request):
     q = request.GET.get('q','')
     views = View.objects.user_web_filter(q, request.user)
-    views = make_page(views, int(request.GET.get('page',1)), 10)
+    views = make_page(views, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/view/list.html', {
         'Views': views,
         'q':q,

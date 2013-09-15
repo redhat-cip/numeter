@@ -14,7 +14,7 @@ from json import dumps as jdumps
 def index(request):
     q = request.GET.get('q','')
     multiviews = Multiview.objects.user_web_filter(q, request.user)
-    multiviews = make_page(multiviews, int(request.GET.get('page',1)), 10)
+    multiviews = make_page(multiviews, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/multiview/index.html', {
         'Multiviews': multiviews,
         'q':q,
@@ -25,7 +25,7 @@ def index(request):
 def list(request):
     q = request.GET.get('q','')
     multiviews = Multiview.objects.user_web_filter(q, request.user)
-    multiviews = make_page(multiviews, int(request.GET.get('page',1)), 10)
+    multiviews = make_page(multiviews, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/multiview/list.html', {
         'Multiviews': multiviews,
         'q':q,

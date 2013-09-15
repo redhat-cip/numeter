@@ -14,7 +14,7 @@ from json import dumps as jdumps
 def index(request):
     q = request.GET.get('q','')
     Sources = Data_Source.objects.user_web_filter(q, request.user)
-    Sources = make_page(Sources, int(request.GET.get('page',1)), 10)
+    Sources = make_page(Sources, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/source/index.html', {
         'Sources': Sources,
         'q':q,
@@ -25,7 +25,7 @@ def index(request):
 def list(request):
     q = request.GET.get('q','')
     Sources = Data_Source.objects.user_web_filter(q, request.user)
-    Sources = make_page(Sources, int(request.GET.get('page',1)), 10)
+    Sources = make_page(Sources, int(request.GET.get('page',1)), 30)
     return render(request, 'customize/source/list.html', {
         'Sources': Sources,
         'q':q,
