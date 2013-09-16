@@ -26,11 +26,10 @@ RESOLUTION_STEP = { # in minute
 class Storage_Manager(models.Manager):
     """Custom Manager with extra methods."""
     def web_filter(self, q):
-        storages = self.filter(
+        return self.filter(
             Q(name__icontains=q) |
             Q(address__icontains=q)
         ).distinct()
-        return storages
 
     def get_all_host_info(self):
         """Return a list of all hosts' infos."""

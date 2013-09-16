@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.conf import settings
 
 from core.models import User
-from core.models.fields import MediaList
+from core.models.utils import MediaList
 
 from os import path, mkdir
 from shutil import rmtree

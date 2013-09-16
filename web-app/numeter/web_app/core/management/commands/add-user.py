@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from core.models import User
-from core.models.fields import MediaList
+from core.models.utils import MediaList
 
 from optparse import make_option
 from getpass import getpass

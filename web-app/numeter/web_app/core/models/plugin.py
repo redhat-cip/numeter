@@ -3,15 +3,29 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from core.models import Data_Source
+from core.models.utils import QuerySet
 
 
-class Plugin_Manager(models.Manager):
+class Plugin_QuerySetManager(QuerySet):
+    def user_filter(self, user):
+        """Filters plugins authorized for a given user."""
+        if user.is_superuser:
+            return self.all()
+        return self.filter(host__group__in=user.groups.all())
+
     def web_filter(self, q):
-        """Search string in plugins' name or plugins' host's name."""
+        """Extended search from a string."""
         return self.filter(
             Q(name__icontains=q) |
             Q(host__name__icontains=q)
         ).distinct()
+
+    def user_web_filter(self, q, user):
+        """Extended search from a string only on authorized plugin."""
+        plugins = self.web_filter(q)
+        if user.is_superuser:
+            return plugins
+        return plugins.filter(host__group__in=user.groups.all())
 
 
 class Plugin(models.Model):
@@ -19,7 +33,7 @@ class Plugin(models.Model):
     host = models.ForeignKey('core.Host')
     comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)
 
-    objects = Plugin_Manager()
+    objects = Plugin_QuerySetManager.as_manager()
     class Meta:
         app_label = 'core'
         ordering = ('host','name')

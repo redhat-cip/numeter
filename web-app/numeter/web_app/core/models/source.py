@@ -3,17 +3,16 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from core.models import Host
-from core.models.utils import QuerySetManager, QuerySet
+from core.models.utils import QuerySet
 from hashlib import md5
 
 
 class Data_Source_QuerySetManager(QuerySet):
     def user_filter(self, user):
-        """Filter source authorized for a given user."""
+        """Filters source authorized for a given user."""
         if user.is_superuser:
             return self.all()
-        else:
-            return self.filter(plugin__host__group__in=user.groups.all())
+        return self.filter(plugin__host__group__in=user.groups.all())
 
     def web_filter(self, q):
         """Extended search from a string."""
@@ -28,8 +27,7 @@ class Data_Source_QuerySetManager(QuerySet):
         sources = self.web_filter(q)
         if user.is_superuser:
             return sources
-        else:
-            return sources.filter(plugin__host__group__in=user.groups.all())
+        return sources.filter(plugin__host__group__in=user.groups.all())
 
     def full_create(self, POST):
         """Create sources and plugin if doesn't exist."""

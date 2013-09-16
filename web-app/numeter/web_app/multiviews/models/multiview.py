@@ -2,23 +2,22 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from core.models.utils import QuerySet
 
 
-class Multiview_Manager(models.Manager):
+class Multiview_QuerySetManager(QuerySet):
     def user_filter(self, user):
         """Filter multiviews authorized for a given user."""
         if user.is_superuser:
             return self.all()
-        else:
-            return self.filter(views__sources__plugin__host__group__in=user.groups.all()).distinct()
+        return self.filter(views__sources__plugin__host__group__in=user.groups.all()).distinct()
 
     def web_filter(self, q):
         """Extended search from a string."""
-        views = self.filter(
+        return self.filter(
             Q(name__icontains=q) |
             Q(views__name__icontains=q)
         ).distinct()
-        return views
 
     def user_web_filter(self, q, user):
         """Extended search from a string only on authorized multiviews."""
@@ -33,7 +32,7 @@ class Multiview(models.Model):
     views = models.ManyToManyField('multiviews.View')
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
 
-    objects = Multiview_Manager()
+    objects = Multiview_QuerySetManager.as_manager()
     class Meta:
         app_label = 'multiviews'
         ordering = ('name',)

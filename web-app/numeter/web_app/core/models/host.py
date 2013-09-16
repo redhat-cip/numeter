@@ -2,27 +2,34 @@ from django.db import models
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from core.models.utils import QuerySet
 from datetime import datetime, timedelta
 from time import mktime
 
 
-class Host_Manager(models.Manager):
+class Host_QuerySetManager(QuerySet):
     """Custom Manager with extra methods."""
     def user_filter(self, user):
         """Filter hosts authorized for a given user."""
         if user.is_superuser:
             return self.all()
-        else:
-            return self.filter(group__in=user.groups.all())
+        return self.filter(group__in=user.groups.all())
 
     def web_filter(self, q):
-        hosts = self.filter(
+        """Extended search from a string."""
+        return self.filter(
             Q(name__icontains=q) |
             Q(storage__name__icontains=q) |
             Q(group__name__icontains=q) |
             Q(hostid__icontains=q)
-        )
-        return hosts
+        ).distinct()
+
+    def user_web_filter(self, q, user):
+        """Extended search from a string only on authorized sources."""
+        hosts = self.web_filter(q)
+        if user.is_superuser:
+            return hosts
+        return hosts.filter(plugin__host__group__in=user.groups.all())
 
 class Host(models.Model):
     """
@@ -33,7 +40,7 @@ class Host(models.Model):
     storage = models.ForeignKey('Storage')
     group = models.ForeignKey('core.Group', null=True, blank=True)
 
-    objects = Host_Manager()
+    objects = Host_QuerySetManager.as_manager()
     class Meta:
         app_label = 'core'
         ordering = ('group', 'storage', 'name','hostid')

@@ -3,25 +3,24 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
+from core.models.utils import QuerySet
 from multiviews.models import Event
 from hashlib import md5
 
 
-class View_Manager(models.Manager):
+class View_QuerySetManager(QuerySet):
     def user_filter(self, user):
         """Filter views authorized for a given user."""
         if user.is_superuser:
             return self.all()
-        else:
-            return self.filter(sources__plugin__host__group__in=user.groups.all()).distinct()
+        return self.filter(sources__plugin__host__group__in=user.groups.all()).distinct()
 
     def web_filter(self, q):
         """Extended search from a string."""
-        views = self.filter(
+        return self.filter(
             Q(name__icontains=q) |
             Q(sources__name__icontains=q)
         ).distinct()
-        return views
 
     def user_web_filter(self, q, user):
         """Extended search from a string only on authorized views."""
@@ -42,7 +41,7 @@ class View(models.Model):
     warning = models.IntegerField(blank=True, null=True)
     critical = models.IntegerField(blank=True, null=True)
 
-    objects = View_Manager()
+    objects = View_QuerySetManager.as_manager()
     class Meta:
         app_label = 'multiviews'
         ordering = ('name',)

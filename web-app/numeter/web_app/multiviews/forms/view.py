@@ -7,6 +7,10 @@ from multiviews.models import View
 
 class Small_View_Form(View_Form):
     """Small View ModelForm."""
+    search_source = forms.CharField(widget=forms.TextInput({
+      'placeholder':_('Search for sources'),
+      'class':'span:q-opt',
+    }))
     available_sources = forms.ModelMultipleChoiceField(
       queryset = Data_Source.objects.all(),
       widget=forms.SelectMultiple({'class':'span'})

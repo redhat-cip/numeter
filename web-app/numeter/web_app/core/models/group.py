@@ -1,6 +1,13 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from core.models.utils import QuerySet
+
+
+class Group_QuerySetManager(QuerySet):
+    def web_filter(self, q):
+        """Extended search from a string."""
+        return self.filter(name__icontains=q)
 
 
 class Group(models.Model):
@@ -10,6 +17,7 @@ class Group(models.Model):
     """
     name = models.CharField(_('name'), max_length=80, unique=True)
 
+    objects = Group_QuerySetManager.as_manager()
     class Meta:
         app_label = 'core'
         ordering = ('name',)

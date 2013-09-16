@@ -4,20 +4,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
 from core.models.storage import RESOLUTION_STEP
+from core.models.utils import QuerySet
 from datetime import datetime, timedelta
 
 
-class Event_Manager(models.Manager):
-    def get_queryset(self):
-        """Use Event_QuerySet."""
-        return Event_QuerySet(self.model)
-
+class Event_QuerySetManager(QuerySet):
     def user_filter(self, user):
         """Filter events authorized for a given user."""
         if user.is_superuser:
             return self.all()
-        else:
-            return self.filter(hosts__groups__in=user.groups.all())
+        return self.filter(hosts__groups__in=user.groups.all())
 
     def web_filter(self, q):
         """Extended search from a string."""
@@ -32,12 +28,8 @@ class Event_Manager(models.Manager):
         events = self.web_filter(q)
         if user.is_superuser:
             return events
-        else:
-            return events.filter(hosts__groups=user.groups.all())
+        return events.filter(hosts__groups=user.groups.all())
 
-
-class Event_QuerySet(models.query.QuerySet):
-    """QuerySet with extras method."""
     def in_step(self, timestamp, res):
         """Filter events in a step defined by a timestamp and a resolution."""
         margin = timedelta(seconds=RESOLUTION_STEP[res]*60)
@@ -52,7 +44,7 @@ class Event(models.Model):
     date = models.DateTimeField(_('date'), default=now, blank=True, null=True)
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
 
-    objects = Event_Manager()
+    objects = Event_QuerySetManager.as_manager()
     class Meta:
         app_label = 'multiviews'
         ordering = ('date','name')
