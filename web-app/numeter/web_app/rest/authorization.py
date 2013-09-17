@@ -16,7 +16,7 @@ class AdminAuthorization(Authorization):
 
     def create_list(self, object_list, bundle):
         if bundle.request.user.is_superuser:
-            return True
+            return object_list
         raise Unauthorized('Only superuser can access.')
 
     def create_detail(self, object_list, bundle):
@@ -26,7 +26,7 @@ class AdminAuthorization(Authorization):
 
     def update_list(self, object_list, bundle):
         if bundle.request.user.is_superuser:
-            return True
+            return object_list
         raise Unauthorized('Only superuser can access.')
 
     def update_detail(self, object_list, bundle):

@@ -12,6 +12,7 @@ class User_Resource(ModelResource):
     class Meta:
         authorization = AdminAuthorization()
         queryset = User.objects.all()
+        excludes = ['password']
         resource_name = 'user'
         filtering = {
           'name': ALL,
