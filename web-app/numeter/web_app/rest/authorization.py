@@ -6,7 +6,7 @@ class AdminAuthorization(Authorization):
     """Only admin can use this Authorization."""
     def read_list(self, object_list, bundle):
         if bundle.request.user.is_superuser:
-            return True
+            return object_list
         raise Unauthorized('Only superuser can access.')
 
     def read_detail(self, object_list, bundle):
