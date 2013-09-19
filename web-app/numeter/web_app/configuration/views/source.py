@@ -58,7 +58,7 @@ def delete(request, source_id):
     return render(request, 'base/messages.html', {})
 
 
-# TODO : Make unittest
+# TODO : MV TO API
 @login_required()
 @superuser_only()
 def bulk_delete(request):

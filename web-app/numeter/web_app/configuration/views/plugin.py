@@ -53,7 +53,7 @@ def create_from_host(request):
     else:
         host = Host.objects.get(id=request.GET['host_id'])
         plugins = host.get_unsaved_plugins()
-        return render(request, 'plugins/create-plugins.html', {
+        return render(request, 'modals/create-plugins.html', {
             'plugins':plugins,
             'host':host,
         })
@@ -120,7 +120,7 @@ def create_sources(request, plugin_id):
         messages.success(request, _("Sources creation finished."))
         return render(request, 'base/messages.html', {})
     else:
-        return render(request, 'plugins/create-sources.html', {
+        return render(request, 'modals/create-sources.html', {
             'plugin': P,
             'sources': P.get_unsaved_sources()
         })

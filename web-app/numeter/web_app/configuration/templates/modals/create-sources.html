@@ -8,7 +8,7 @@
 <div class="modal-body">
  {% if sources %}
   <h5>{% trans "Select which sources you want to add" %}</h5>
-  <select id="chosen-sources" class="span" multiple rows="20">
+  <select id="chosen-sources" class="span8" multiple rows="20">
    {% for s in sources %}
    <option selected value="{{ s }}">{{ s }}</option>
    {% endfor %}

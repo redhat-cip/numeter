@@ -7,7 +7,7 @@
 
 <div class="modal-body">
  <h5>{% trans "Add source(s) to:" %}</h5>
- <select id="chosen-view">
+ <select class="span" id="chosen-view" size="6">
   {% for v in views %}<option value="{{ v.id }}">{{ v }}</option>{% endfor %}
  <select>
 
