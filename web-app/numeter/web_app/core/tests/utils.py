@@ -2,6 +2,7 @@ from django.core import management
 from django.conf import settings
 from django.utils.decorators import available_attrs
 from core.models import Storage, Host
+from core.models import User, Group
 from functools import wraps
 
 
@@ -69,3 +70,19 @@ def set_storage(extras=[]):
     return decorator
 
 
+def set_users():
+    """ 
+    Set 1 superuser and 2 users with 2 different groups.
+    """
+    def decorator(func):
+        @wraps(func, assigned=available_attrs(func))
+        def inner(self, *args, **kwargs):
+            management.call_command('loaddata', 'test_groups.json', database='default', verbosity=0)
+            management.call_command('loaddata', 'test_users.json', database='default', verbosity=0)
+            self.admin = User.objects.get(pk=1)
+            self.user = User.objects.get(pk=2)
+            self.user2 = User.objects.get(pk=3)
+            self.group = Group.objects.get(pk=1)
+            return func(self, *args, **kwargs)
+        return inner
+    return decorator

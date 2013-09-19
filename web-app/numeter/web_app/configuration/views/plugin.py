@@ -4,6 +4,7 @@ from django.contrib import messages
 
 from configuration.forms.plugin import Plugin_Form
 from core.models import Host, Plugin, Data_Source
+from core.models import User, Group
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 from core.utils.http import render_HTML_JSON
