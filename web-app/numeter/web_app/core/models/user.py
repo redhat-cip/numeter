@@ -51,7 +51,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(_('active'), default=True)
     date_joined = models.DateTimeField(_('date joined'), default=now)
     graph_lib = MediaField()
-    groups = models.ManyToManyField('core.Group', blank=True)
+    groups = models.ManyToManyField('core.Group', null=True, blank=True)
 
     objects = UserManager()
     USERNAME_FIELD = 'username'
