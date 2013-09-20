@@ -1,5 +1,5 @@
 from wild_storage import Wild_Storage_Test
-from user import User_Test
+from user import User_Test, User_Forbidden_Test
 
 
 def suite():
