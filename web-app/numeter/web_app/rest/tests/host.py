@@ -6,12 +6,12 @@ from core.models import Host
 class Host_Test(ResourceTestCase):
     """
     Tests for host management API.
-    Only available for admins.
     """
     @set_users()
-    @set_storage()
+    @set_storage(extras=['host'])
     def setUp(self):
         super(Host_Test, self).setUp()
+        self.host = Host.objects.all()[0]
 
     def get_credentials(self):
         return self.create_basic('root', 'toto')
@@ -24,7 +24,7 @@ class Host_Test(ResourceTestCase):
 
     def test_get_detail(self):
         """Get host's detail."""
-        url = '/api/host/%i/' % self.admin.pk
+        url = '/api/host/%i/' % self.host.pk
         r = self.api_client.get(url, authentication=self.get_credentials())
         self.assertValidJSONResponse(r)
 
@@ -41,7 +41,7 @@ class Host_Test(ResourceTestCase):
 
     def test_patch(self):
         """Update a host."""
-        url = '/api/host/%i/' % self.admin.pk
+        url = '/api/host/%i/' % self.host.pk
         data = { 'name': 'roott' }
         r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
         self.assertHttpAccepted(r)
@@ -86,7 +86,7 @@ class Host_Forbidden_Test(ResourceTestCase):
         self.assertHttpUnauthorized(r)
 
     def test_simple_user(self):
-        """Ban non admin."""
+        """Ban non host."""
         url = '/api/host/'
         r = self.api_client.get(url, authentication=self.get_credentials())
         self.assertHttpForbidden(r)

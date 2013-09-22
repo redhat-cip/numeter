@@ -1,94 +1,92 @@
 from tastypie.test import ResourceTestCase
 from core.tests.utils import set_storage, set_users
-from core.models import Storage
+from core.models import Data_Source as Source
 
 
-class Storage_Test(ResourceTestCase):
+class Source_Test(ResourceTestCase):
     """
-    Tests for storage management API.
-    Only available for admins.
+    Tests for source management API.
     """
     @set_users()
-    @set_storage()
+    @set_storage(extras=['host','plugin','source'])
     def setUp(self):
-        super(Storage_Test, self).setUp()
-        self.storage = Storage.objects.all()[0]
+        super(Source_Test, self).setUp()
+        self.source = Source.objects.all()[0]
 
     def get_credentials(self):
         return self.create_basic('root', 'toto')
 
     def test_get_list(self):
-        """Get list of storages."""
-        url = '/api/storage/'
+        """Get list of sources."""
+        url = '/api/source/'
         r = self.api_client.get(url, authentication=self.get_credentials())
         self.assertValidJSONResponse(r)
 
     def test_get_detail(self):
-        """Get storage's detail."""
-        url = '/api/storage/%i/' % self.storage.pk
+        """Get source's detail."""
+        url = '/api/source/%i/' % self.source.pk
         r = self.api_client.get(url, authentication=self.get_credentials())
         self.assertValidJSONResponse(r)
 
     def test_post(self):
-        """Create a storage."""
-        url = '/api/storage/'
+        """Create a source."""
+        url = '/api/source/'
         data = {
-          'name': 'new storage',
-          'address': 'localhost',
+          'name': 'new source',
+          'plugin': 1,
         }
         r = self.api_client.post(url, data=data, authentication=self.get_credentials())
         self.assertHttpCreated(r)
-        self.assertTrue(Storage.objects.filter(name='new storage').exists(), "Storage hasn't been created")
+        self.assertTrue(Source.objects.filter(name='new source').exists(), "Source hasn't been created")
 
     def test_patch(self):
-        """Update a storage."""
-        url = '/api/storage/%i/' % self.storage.pk
-        data = { 'name': 'roott' }
+        """Update a source."""
+        url = '/api/source/%i/' % self.source.pk
+        data = { 'comment': 'roott' }
         r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
         self.assertHttpAccepted(r)
-        self.assertEqual(Storage.objects.get(pk=1).name, 'roott', "Data are unchanged.")
+        self.assertEqual(Source.objects.get(pk=self.source.pk).name, 'comment', "Data are unchanged.")
 
     def test_delete(self):
-        """Delete a storage."""
-        url = '/api/storage/%i/' % self.storage.pk
+        """Delete a source."""
+        url = '/api/source/%i/' % self.source.pk
         r = self.api_client.delete(url, authentication=self.get_credentials())
         self.assertHttpAccepted(r)
-        self.assertFalse(Storage.objects.filter(pk=self.storage.pk).exists(), "Storage hasn't been deleted.")
+        self.assertFalse(Source.objects.filter(pk=self.source.pk).exists(), "Source hasn't been deleted.")
 
     def test_delete_list(self):
-        """Delete a storage list."""
-        url = '/api/storage/'
+        """Delete a source list."""
+        url = '/api/source/'
         data = {
           'deleted_objects': [
-            '/api/storage/%i/' % self.storage.pk,
+            '/api/source/%i/' % self.source.pk,
           ],
           'objects':[],
         }
         r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
         self.assertHttpAccepted(r)
-        self.assertFalse(Storage.objects.filter(pk=self.storage.pk).exists(), "Storage hasn't been deleted.")
+        self.assertFalse(Source.objects.filter(pk=self.source.pk).exists(), "Source hasn't been deleted.")
 
 
-class Storage_Forbidden_Test(ResourceTestCase):
+class Source_Forbidden_Test(ResourceTestCase):
     """
     Tests for unauthorized access.
     """
     @set_users()
     def setUp(self):
-        super(Storage_Forbidden_Test, self).setUp()
+        super(Source_Forbidden_Test, self).setUp()
 
     def get_credentials(self):
-        return self.create_basic('storage', 'toto')
+        return self.create_basic('Client', 'toto')
 
     def test_anonymous(self):
         """Ban anonymous."""
-        url = '/api/storage/'
+        url = '/api/source/'
         r = self.api_client.get(url)
         self.assertHttpUnauthorized(r)
 
     def test_simple_user(self):
         """Ban non admin."""
-        url = '/api/storage/'
+        url = '/api/source/'
         r = self.api_client.get(url, authentication=self.get_credentials())
         self.assertHttpForbidden(r)
-
