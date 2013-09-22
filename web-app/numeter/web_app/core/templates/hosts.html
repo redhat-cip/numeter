@@ -1,0 +1,24 @@
+{% extends "base/base.html" %}
+
+{% block body %}
+<table class="table table-condensed table-striped">
+ <thead>
+  <tr>
+   <th>Storage</th>
+   <th>Name</th>
+   <th>IP</th>
+   <th></th>
+  </tr>
+ </thead>
+ <tbody>
+  {% for H in hosts %}
+   <tr>
+    <td>{{ H.storage }}</td>
+    <td>{{ H.name }}</td>
+    <td>{{ H.ip }}</td>
+    <td><a href="" class="btn">View</a></td>
+   </tr>
+  {% endfor %}
+ </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% load i18n %}
+<form id="source-form" class="ajax-form" action="{% url "multiviews customize source edit" Source_Form.instance.pk %}" method="POST">
+ {% csrf_token %}
+ <fieldset>
+  {% for field in Source_Form %}
+   {{ field }}
+  {% endfor %}
+  <button class="btn btn-primary">{% trans "Update" %}</button>
+  <hr>
+  <div id="source-preview"></div>
+ </fieldset>
+</form>

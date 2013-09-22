@@ -1,0 +1,26 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by plugin's name or multiview's name" %}" data-into="#list-multiview-content" data-url="{% url 'multiviews customize multiview list' %}?page=1&q={{ q }}">
+
+<div class="row-fluid">
+ <div class="span4">
+  <ul class="unstyled">
+   {% for multiview in Multiviews %}
+    {% if forloop.counter0 == 10 or forloop.counter0 == 20 %}</ul></div><div class="span4"><ul class="unstyled">{% endif %}
+    <li>
+     <a class="edit-multiview" data-url="{{ multiview.get_customize_edit_url }}" data-into="#edit-multiview-content" multiview-id="{{ multiview.id }}" data-name="{{ multiview.name }}">{{ multiview|truncatechars:"50" }}</a>
+    </li>
+   {% endfor %}
+  </ul>
+ </div>
+</div>
+
+<div>
+ <ul class="pager">
+  {% if Multiviews.has_previous %}
+  <li class="previous"><a class="get-page" data-into="#list-multiview-content" data-url="{% url "multiviews customize multiview list" %}?page={{ Multiviews.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+  {% endif %}
+  {% if Multiviews.has_next %}
+  <li class="next"><a class="get-page" data-into="#list-multiview-content" data-url="{% url "multiviews customize multiview list" %}?page={{ Multiviews.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+  {% endif %}
+ </ul>
+</div>

@@ -1,0 +1,29 @@
+{% load i18n %}
+<form id="source-form" class="ajax-form" action="{{ Source_Form.instance.get_update_url }}" method="POST" data-data-url="{{ Source_Form.instance.get_data_url }}">
+ {% csrf_token %}
+ <fieldset>
+  <div class="span6">
+   <div class="control-group condensed">
+    <label for="id_name" class="control-label">{{ Source_Form.name.label }}</label>
+    <div class="controls">{{ Source_Form.name }}</div>
+   </div> 
+
+   <div class="control-group condensed">
+    <div class="controls">{{ Source_Form.comment }}</div>
+   </div> 
+  </div> 
+
+  <div class="span6">
+  {% if Source_Form.instance.id %}
+   <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
+  {% else %}
+   <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
+  {% endif %}
+
+  {% if Source_Form.instance.id %}
+  <hr>
+  <div id="source-preview" class="span11 graph"></div>
+  {% endif %}
+  </div> 
+ </fieldset>
+</form>

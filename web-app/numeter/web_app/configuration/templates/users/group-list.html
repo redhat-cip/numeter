@@ -1,0 +1,42 @@
+{% load i18n %}
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by group name" %}" data-into="#group-list" data-url="{{ Groups.0.get_list_url }}?page=1&q={{ q }}">
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>{% trans "Name" %}</th>
+   </tr>
+  </thead>
+  <tbody>
+   {% for group in Groups %}
+   <tr>
+    <td><input class="group-checkbox"type="checkbox" name="{{ group.id }}"></td>
+    <td><a class="get-group" data-url="{{ group.get_absolute_url }}" data-into="#group-list">{{ group }}</a></td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   {% if Groups.has_previous %}
+   <li class="previous"><a class="get-page" data-into="#group-list" data-url="{{ Groups.0.get_list_url }}?page={{ Groups.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+   {% endif %}
+   {% if Groups.has_next %}
+   <li class="next"><a class="get-page" data-into="#group-list" data-url="{{ Groups.0.get_list_url }}?page={{ Groups.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+   {% endif %}
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>{% trans "Action:" %}</h5>
+ <div class="input-append">
+  <select id="groups-action">
+   <option data-url="{% url "group bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+  </select>
+  <button class="btn bulk-action" type="button" data-action-element="#groups-action" data-checkboxes=".group-checkbox">{% trans "Apply" %}</button>
+ </div>
+</div>

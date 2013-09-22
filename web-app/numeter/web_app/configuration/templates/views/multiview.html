@@ -1,0 +1,31 @@
+{% load i18n %}
+<div class="row-fluid"> <!-- multiview form --!>
+ <form id="multiview-form" class="ajax-form" action="{{ Multiview_Form.instance.get_update_url }}" method="POST">
+  {% csrf_token %}
+  <h4 align="center">{{ multiview }}</h4>
+
+  <div class="span5 fields" style="margin-left: 50px;">
+   <dl>
+    {% for field in Multiview_Form %}
+    <dt>{{ field.label }}:</dt>
+    <dd>{{ field }}</dd>
+    {% endfor %}
+   </dl>
+  </div>
+
+  <div class="span4">
+   <div class="row-fluid">
+    <p>
+     {% if Multiview_Form.instance.id %}
+     <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
+     <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Multiview_Form.instance.get_delete_url }}" data-next-tab="multiview-list-tab">
+     <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
+     {% else %}
+     <input type="submit" name="update" class="btn btn-primary" value="{% trans "Add" %}">
+     {% endif %}
+    </p>
+   </div>
+  </div>
+
+ </form>
+</div>

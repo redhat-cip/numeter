@@ -1,0 +1,56 @@
+{% load i18n %}
+<form class="event-form" class="ajax-form" action="{{ Event_Form.instance.get_update_url }}" method="{{ Event_Form.method }}" data-data-url="{{ Event_Form.instance.get_data_url }}">
+ {% csrf_token %}
+ <fieldset>
+  <div class="span6">
+   <div class="control-group condensed">
+    <label for="id_name" class="control-label">{{ Event_Form.name.label }}</label>
+    <div class="controls">{{ Event_Form.name }}</div>
+   </div> 
+
+   <div class="control-group condensed">
+    <label for="id_short_text" class="control-label">{{ Event_Form.short_text.label }}</label>
+    <div class="controls">{{ Event_Form.short_text }}</div>
+   </div> 
+
+
+   <div class="control-group condensed">
+    <label for="id_date" class="control-label">{{ Event_Form.date.label }}</label>
+    <div class="controls">{{ Event_Form.date }}</div>
+   </div> 
+
+   <div class="control-group condensed">
+    <label for="id_hosts" class="control-label">{{ Event_Form.hosts.label }}</label>
+    <div class="controls">
+     <div class="row-fluid">
+      {% if Event_Form.instance.id %}
+      <div class="span5">{{ Event_Form.available_hosts }}</div>
+      <div class="span2" style="text-align: center;">
+       <button class="btn btn-mini move-option" data-from="#id_available_hosts" data-to=".span5 #id_hosts"><i class="icon-chevron-right"></i></button>
+       <br>
+       <br>
+       <button class="btn btn-mini move-option" data-from=".span5 #id_hosts" data-to="#id_available_hosts"><i class="icon-chevron-left"></i></button>
+      </div>
+      <div class="span5">{{ Event_Form.hosts }}</div>
+      {% else %}
+       {{ Event_Form.hosts }}
+      {% endif %}
+     </div>
+    </div>
+   </div> 
+
+   <div class="control-group condensed">
+    <div class="controls">{{ Event_Form.comment }}</div>
+   </div> 
+  </div> 
+
+  <div class="span6">
+  {% if Event_Form.instance.id %}
+   <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
+   <button id="btn-delete-event" class="btn btn-danger" data-id="{{ Event_Form.instance.id }}" data-into=".messages" data-url="{{ Event_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+  {% else %}
+   <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
+  {% endif %}
+  </div> 
+ </fieldset>
+</form>

@@ -1,0 +1,19 @@
+Listen *:80
+<VirtualHost *:80>
+    ServerAdmin admin@domaine.com
+    ServerName  zulutab
+    ServerAlias www.numeter.com
+
+    DocumentRoot @APP_DIR@
+
+    Alias /static @APP_DIR@/static/
+    Alias /media/ @APP_DIR@/media/ 
+
+    WSGIScriptAlias / @APP_DIR@/numeter.wsgi
+
+    <Directory @APP_DIR@>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+</VirtualHost>

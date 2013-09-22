@@ -1,0 +1,17 @@
+<div class="tabbable tabs-left">
+ <ul id="storage-tabs" class="nav nav-tabs nav-stacked sub-menu-tabs">
+  {% include "storages/tabs.html" %}
+ </ul>
+
+ <div id="storage-tab-content" class="tab-content">
+
+  <div class="tab-pane fade in active" id="storage-list">
+   {% include "storages/storage-list.html" %}
+  </div>
+
+  <div class="tab-pane fade" id="host-list"></div>
+  <div class="tab-pane fade" id="add-storage"></div>
+  <div class="tab-pane fade" id="bad-hosts"></div>
+
+ </div>
+</div> 

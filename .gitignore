@@ -1,8 +1,9 @@
-*.pyc
+*.py[co]
 *.deb
 *.log
-*.swp
+*.sw[po]
 *,cover
 .coverage
 .venv/
 docs/_build
+web-app/src/numeter/media/graphlib/*
