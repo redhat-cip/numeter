@@ -85,11 +85,13 @@ class User_Forbidden_Test(ResourceTestCase):
         return self.create_basic('user', 'toto')
 
     def test_anonymous(self):
+        """Ban anonymous."""
         url = '/api/user/'
         r = self.api_client.get(url)
         self.assertHttpUnauthorized(r)
 
     def test_simple_user(self):
+        """Ban non admin."""
         url = '/api/user/'
         r = self.api_client.get(url, authentication=self.get_credentials())
         self.assertHttpForbidden(r)

@@ -8,7 +8,7 @@ class Perms_TestCase(TestCase):
 
     def setUp(self):
         self.admin = User.objects.get(username='root')
-        self.user = User.objects.get(username='user #1')
+        self.user = User.objects.get(username='Client')
 
 
     def test_superuser_perm(self):
