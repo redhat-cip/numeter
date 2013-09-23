@@ -80,11 +80,11 @@ class my_install(install_data):
         with open('/etc/numeter/secret_key.txt', 'w') as f:
             f.write(NEW_SECRET_KEY)
         # Syncdb
-        from numeter.web_app import numeter
-        NUMETER_DIR = os.path.dirname(os.path.dirname(os.path.abspath(numeter.__file__)))
+        #from numeter.web_app import numeter
+        #NUMETER_DIR = os.path.dirname(os.path.dirname(os.path.abspath(numeter.__file__)))
 
-        sys.path.append(NUMETER_DIR)
-        call_command('syncdb', verbosity=1, interactive=False)
+        #sys.path.append(NUMETER_DIR)
+        #call_command('syncdb', verbosity=1, interactive=False)
         
 
 if __name__ == '__main__':
