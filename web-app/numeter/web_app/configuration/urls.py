@@ -1,3 +1,4 @@
+# TODO: Use REST API
 from django.conf.urls import patterns, url
 
 
@@ -69,7 +70,6 @@ urlpatterns = patterns('',
     url(r'^multiview/(?P<multiview_id>\d+)$', 'configuration.views.multiview.get', name='multiview'),
     url(r'^multiview/(?P<multiview_id>\d+)/update$', 'configuration.views.multiview.update', name='multiview update'),
     url(r'^multiview/(?P<multiview_id>\d+)/delete$', 'configuration.views.multiview.delete', name='multiview delete'),
-
     # Event
     url(r'^event/list$', 'configuration.views.event.list', name='event list'),
     url(r'^event/list/delete$', 'configuration.views.event.bulk_delete', name='event bulk delete'),
@@ -77,5 +77,4 @@ urlpatterns = patterns('',
     url(r'^event/(?P<event_id>\d+)$', 'configuration.views.event.get', name='event'),
     url(r'^event/(?P<event_id>\d+)/update$', 'configuration.views.event.update', name='event update'),
     url(r'^event/(?P<event_id>\d+)/delete$', 'configuration.views.event.delete', name='event delete'),
-
 )
