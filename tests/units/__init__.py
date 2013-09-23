@@ -7,6 +7,9 @@ from poller_Unittest import PollerTestCase
 #from collector_Unittest import CollectorTestCase
 #from mastertest_Unittest import MasterTestCase
 from storage_Unittest import StorageTestCase
+from cachelastvalue_Unittest import CacheLastValueTestCase
+
+from storeandforward_Unittest import StoreAndForwardTestCase
 
 #from connection_pool import ConnectionPoolTestCase
 #from pipeline import PipelineTestCase
@@ -23,10 +26,12 @@ from storage_Unittest import StorageTestCase
 def all_tests():
     suite = unittest.TestSuite()
     ## Redis
-    #suite.addTest(unittest.makeSuite(RedisTestCase))
+    suite.addTest(unittest.makeSuite(RedisTestCase))
     ## Poller
-    #suite.addTest(unittest.makeSuite(PollerMuninModuleTestCase))
+    suite.addTest(unittest.makeSuite(PollerMuninModuleTestCase))
     suite.addTest(unittest.makeSuite(PollerTestCase))
+    suite.addTest(unittest.makeSuite(CacheLastValueTestCase))
+    suite.addTest(unittest.makeSuite(StoreAndForwardTestCase))
     ## Collector
     #suite.addTest(unittest.makeSuite(CollectorTestCase))
     # Storage
