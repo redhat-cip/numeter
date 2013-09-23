@@ -504,6 +504,7 @@ class myStorage:
             return False
 
         data =  self.jsonToPython(data_json)
+        data_timestamp = data.get('TimeStamp')
 
         # TODO dont write data if no infos
 
@@ -511,8 +512,7 @@ class myStorage:
         rrd_path = self._redis_connexion.redis_hget("RRD_PATH", hostID)
         if rrd_path is None:
             return False
-        print data
-        #data['TimeStamp']
+
         wspPath = '%s/%s' % (rrd_path, plugin)
         for ds_name, value in data["Values"].iteritems():
 
@@ -530,7 +530,7 @@ class myStorage:
                     except OSError:
                         self._logger.error("writewsp host : %s can't make directory : %s"
                                             % (hostID, wspPath))
-                        return False
+                        continue
                 try:
                     whisper.create(ds_path, 
                                    [(60, 1440),   # --- Daily (1 Minute Average)
@@ -539,24 +539,19 @@ class myStorage:
                                    (3600, 8784)]) # --- Yearly (1 Hour Average)
                 except Exception as e:
                     self._logger.error("writewsp host : %s Create wsp Error %s"
-                        % (host, str(e)))
-                    return False
-                # Update whisper
-                try:
-                    self._logger.error("writewsp host : " + host
-                            + " Update wsp DEBUG Timestamp "
-                            + str(TS) 
-                            + " For value "
-                            + str(hostAllDatas["Datas"][plugin][TS][DSname])
-                            + " in file "
-                            + str(wspPath+"/"+DSname+".wsp"))
-                    whisper.update(wspPath+"/"+DSname+".wsp", 
-                        str(hostAllDatas["Datas"][plugin][TS][DSname]), str(TS) )
-                except Exception as e:
-                    self._logger.error("writewsp host : " + host
-                        + " Update Error "
-                        + str(e))
+                        % (hostID, str(e)))
                     continue
+            # Update whisper
+            try:
+                self._logger.debug("writewsp host : %s Update wsp "
+                                   "Timestamp %s For value %s in file %s" 
+                                    % (hostID, data_timestamp, value, ds_path))
+                whisper.update(ds_path, str(value), str(data_timestamp) )
+            except Exception as e:
+                self._logger.error("writewsp host : %s Update Error %s - %s"
+                                    % (hostID, ds_path, e))
+                continue
+        return True
         
 
     def writewsp(self, sortedTS, hostAllDatas, host, basewspPath):

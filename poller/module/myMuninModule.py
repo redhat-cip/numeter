@@ -87,7 +87,7 @@ class myMuninModule(ModulesGeneric):
             return None
 
         # Get now timestamp
-        nowTimestamp = "%.0f" % time.time()
+        nowTimestamp = "%s" % int(time.time())
         # Set plugin informations
         data = {  'TimeStamp': nowTimestamp, 
                    'Plugin': plugin, 

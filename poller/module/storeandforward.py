@@ -10,6 +10,13 @@ class StoreAndForward(object):
         self.error = ''
         self._logger = logging.getLogger(logger)
 
+    def __enter__(self):
+        self._load_cache()
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self._dump_cache()
+
     def add_message(self, msgType, plugin, msgContent):
         self._cache.append({
                             'msgType': msgType,
@@ -17,14 +24,14 @@ class StoreAndForward(object):
                             'msgContent': msgContent,
                           })
 
-    def load_cache(self):
+    def _load_cache(self):
         try:
             with open(self._cache_file, 'r') as f:
                 self._cache = json.load(f)
         except IOError, e:
             self._logger.warning('Load cache IOError: %s Use default cache []' %e)
 
-    def dump_cache(self):
+    def _dump_cache(self):
         try:
             with open(self._cache_file, 'w') as f:
                 json.dump(self._cache, f)
@@ -42,8 +49,7 @@ class StoreAndForward(object):
 #logging.getLogger('StoreAndForward').setLevel(logging.INFO)
 #logging.getLogger('StoreAndForward').addHandler(logging.StreamHandler())
 #
-#cache = StoreAndForward(cache_file='./sandbox/cache_storeandforward.json')
-#cache.load_cache()
+# with StoreAndForward(cache_file='./sandbox/cache_storeandforward.json') as cache :
 #
 #from time import time
 #cache.add_message('DATA', 'munin.if_eth0.up', '{%s content}' % time())

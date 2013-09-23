@@ -17,12 +17,6 @@ from storeandforward import StoreAndForward
 
 import pprint # Debug (dumper)
 
-# Debug logger
-mylogger = logging.getLogger("numeterQueue")
-ch = logging.StreamHandler(sys.stdout)
-mylogger.addHandler(ch)
-mylogger.setLevel(logging.INFO)
-
 #
 # Poller
 #
@@ -59,14 +53,6 @@ class myPoller:
         self._configFile = configFile
         self.readConf()
 
-        # Init cache
-        self._cache = CacheLastValue(cache_file='/dev/shm/numeter_poller_cache.json',
-                               logger='numeter')
-        # Init StoreAndForward
-        self._store_and_forward = StoreAndForward(cache_file='/dev/shm/numeter_poller_storeandforward.json',
-                                 logger='numeter')
-
-
     def startPoller(self):
         "Start the poller"
 
@@ -91,20 +77,12 @@ class myPoller:
             # Clear old datas
             self.rediscleanDataExpired()
 
-        # load cache for DERIVE and other
-        self._cache.load_cache()
-
-        # Load store and forward
-        self._store_and_forward.load_cache()
-
-        # Lancement des modules + écriture des data dans redis
-        self.loadModules()
-
-        # Dump store and forward
-        self._store_and_forward.dump_cache()
-
-        # Refresh cache file
-        self._cache.dump_cache()
+        # load cache for DERIVE and store and forward message
+        with CacheLastValue(cache_file='/dev/shm/numeter_poller_cache.json',
+                               logger='numeter') as self._cache, \
+             StoreAndForward(cache_file='/dev/shm/numeter_poller_storeandforward.json',
+                               logger='numeter') as self._store_and_forward:
+            self.loadModules()
 
         # End log time execution
         self._logger.warning("---- End : numeter_poller, "
@@ -413,7 +391,8 @@ class myPoller:
 
     def pollerTimeToGo(self):
         "LAST + poller_time <= NOW calcule aussi le refresh time"
-        nowTimestamp = "%.0f" % time.time()
+        nowTimestamp = "%s" % int(time.time())
+
         # Si c'est le 1er lancement
         if not os.path.isfile(self._poller_time_file):
             self._logger.info("Poller pollerTimeToGo ok now")

@@ -10,7 +10,14 @@ class CacheLastValue(object):
         self.error = ''
         self._logger = logging.getLogger(logger)
 
-    def load_cache(self):
+    def __enter__(self):
+        self._load_cache()
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self._dump_cache()
+
+    def _load_cache(self):
         try:
             with open(self._cache_file, 'r') as f:
                 self._cache = json.load(f)
@@ -18,7 +25,7 @@ class CacheLastValue(object):
             self._logger.warning('%s - Load cache IOError: %s Use default cache {}'
                                     % (__name__, e))
 
-    def dump_cache(self):
+    def _dump_cache(self):
         try:
             with open(self._cache_file, 'w') as f:
                 json.dump(self._cache, f)
