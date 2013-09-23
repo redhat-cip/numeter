@@ -8,8 +8,11 @@ from multiviews.models import View
 class Small_View_Form(View_Form):
     """Small View ModelForm."""
     search_source = forms.CharField(widget=forms.TextInput({
-      'placeholder':_('Search for sources'),
-      'class':'span:q-opt',
+      'placeholder': _('Search for sources'),
+      'class': 'span q-opt',
+      'data-url': '/api/source/',
+      'data-into': '#id_available_sources',
+      'data-chosen': '#id_sources',
     }))
     available_sources = forms.ModelMultipleChoiceField(
       queryset = Data_Source.objects.all(),
@@ -17,7 +20,7 @@ class Small_View_Form(View_Form):
     )
     sources = forms.ModelMultipleChoiceField(
       queryset = Data_Source.objects.all(),
-      widget=forms.SelectMultiple({'class':'span'})
+      widget=forms.SelectMultiple({'class':'span','size':'6'})
     )
 
     class Meta:

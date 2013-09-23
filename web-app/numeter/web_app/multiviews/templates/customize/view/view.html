@@ -13,7 +13,10 @@
     <div class="controls">
      <div class="row-fluid">
       {% if View_Form.instance.id %}
-      <div class="span5">{{ View_Form.available_sources }}</div>
+      <div class="span5">
+       {{ View_Form.search_source }}
+       {{ View_Form.available_sources }}
+      </div>
       <div class="span2" style="text-align: center;">
        <button class="btn btn-mini move-option" data-from="#id_available_sources" data-to=".span5 #id_sources"><i class="icon-chevron-right"></i></button>
        <br>

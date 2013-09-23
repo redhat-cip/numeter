@@ -17,3 +17,8 @@ class Source_Resource(ModelResource):
           'name': ALL,
           'plugin': ALL_WITH_RELATIONS,
         }
+
+    def dehydrate(self, bundle):
+        bundle.data['host'] = bundle.obj.plugin.host
+        bundle.data['fullname'] = bundle.obj.__unicode__()
+        return bundle

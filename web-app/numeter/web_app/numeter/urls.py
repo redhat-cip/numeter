@@ -22,8 +22,8 @@ urlpatterns = patterns('',
     url(r'^configuration/', include('configuration.urls')),
     url(r'^', include('rest.urls')),
     #url(r'^admin/', include(admin.site.urls)),
-) + static(s.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
-    static(s.STATIC_URL, document_root=settings.STATIC_ROOT)
+) + static(s.MEDIA_URL, document_root=s.MEDIA_ROOT) + \
+    static(s.STATIC_URL, document_root=s.STATIC_ROOT)
 
 if 'mock_storage' in s.INSTALLED_APPS:
     urlpatterns = patterns('', url(r'^mock/', include('mock_storage.urls')), *list(urlpatterns))

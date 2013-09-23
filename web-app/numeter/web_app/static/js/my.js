@@ -112,3 +112,24 @@ $(document).on('keypress', '.q', function(e) {
   }
 });
 
+$(document).on('keypress', '.q-opt', function(e) {
+  if (e.which == 13 ) {
+    var url = $(this).attr('data-url');
+    var into = $(this).attr('data-into');
+    var chosen = $(this).attr('data-chosen')
+    var exclude = $.map( $(chosen+' option'), function(e) { return $(e).val(); });
+    var data = { 'name__icontains' : $(this).val() };
+    $.ajax({ url:url, async:true, data:data,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data) {
+        $(into).empty();
+        $(data['objects']).each( function() {
+          if ( $.inArray(this['id'].toString(), exclude) == -1 ) {
+            var opt = '<option value="'+this['id']+'">'+this['fullname']+'</option>';
+            $(into).append(opt);
+          }
+        });
+      },
+    });
+  }
+});
