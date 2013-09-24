@@ -44,14 +44,13 @@ class myStorage:
         self._max_hosts_by_thread             = 2
         self._max_data_by_hosts               = 20
         self._thread_wait_timeout             = 60
-        self._collector_list_type             = "file"
-        self._collector_list_file             = "/dev/shm/numeter_storage_collector_list"
-        self._collector_list_mysql_dbName     = "numeter"
-        self._collector_list_mysql_dbUser     = "numeter"
-        self._collector_list_mysql_dbPassword = ""
-        self._collector_list_mysql_host       = "127.0.0.1"
-        self._collector_list_mysql_port       = 3306
-        self._collector_list_mysql_query      = "SELECT hostname,password FROM hosts"
+        self._host_list_file                  = "/dev/shm/numeter_storage_host_list"
+        self._host_list_mysql_dbName          = "numeter"
+        self._host_list_mysql_dbUser          = "numeter"
+        self._host_list_mysql_dbPassword      = ""
+        self._host_list_mysql_host            = "127.0.0.1"
+        self._host_list_mysql_port            = 3306
+        self._host_list_mysql_query           = "SELECT hostname,password FROM hosts"
         self._redis_storage_port              = 6379
         self._redis_storage_timeout           = 10
         self._redis_storage_password          = None
@@ -63,8 +62,8 @@ class myStorage:
         self._wsp_delete                      = False
         self._redis_collector_port            = 6379
         self._redis_collector_timeout         = 10
-        self._collectorList                   = []
-        self._collectorListNumber             = 0
+        self._host_list                   = []
+        self._host_listNumber             = 0
         self._hostNumber                      = 0
         self._dataNumber                      = 0
         self._pluginNumber                    = 0
@@ -74,29 +73,12 @@ class myStorage:
         # Read de la conf
         self._configFile = configFile
         self.readConf()
-
-        # TODO fix this ...
-        # try rabbitmq
-        mylogger = logging.getLogger("numeterQueue")
-        ch = logging.StreamHandler(sys.stdout)
-        mylogger.addHandler(ch)
-        mylogger.setLevel(logging.INFO)
-        mylogger = logging.getLogger("oslo")
-        ch = logging.StreamHandler(sys.stdout)
-        mylogger.addHandler(ch)
-        mylogger.setLevel(logging.INFO)
-        topics = [ 'foo',
-                   'bar',
-                   'bla',
-                   'myPoller',]
-        self._queue_consumer = NumeterQueueC.get_rpc_server(topics=topics,
-                                                      server='storage1',
-                                                      endpoints=[StorageEndpoint(self)],
-                                                      hosts=['10.66.6.206:5672'])
+        # Init other loggers
+        self._init_others_logger(['oslo'])
 
     def startStorage(self):
         self._startTime = time.time()
-        self._collectorListNumber = 0
+        self._host_listNumber = 0
         self._hostNumber = 0
         self._dataNumber = 0
         self._pluginNumber = 0
@@ -117,8 +99,8 @@ class myStorage:
                     + "Check redis access or password")
                 exit(1)
 
-        if not self.getcollectorList():
-            self._logger.critical("Numeter storage get collector list fail")
+        if not self._get_host_list():
+            self._logger.critical("Numeter storage get host list fail")
             exit(1)
 
         # Time and thread param verification
@@ -127,6 +109,10 @@ class myStorage:
             exit(1)
 
         # start consumer
+        self._queue_consumer = NumeterQueueC.get_rpc_server(topics=self._host_list,
+                                                      server='storage1',
+                                                      endpoints=[StorageEndpoint(self)],
+                                                      hosts=['10.66.6.206:5672'])
         try:
             self._queue_consumer.start()
         except KeyboardInterrupt:
@@ -135,7 +121,7 @@ class myStorage:
 
         # End log time execution
         self._logger.warning("---- End : numeter_storage, "
-            + str(self._collectorListNumber) + " collector, "
+            + str(self._host_listNumber) + " collector, "
             + str(self._hostNumber) + " Hosts, "
             + str(self._pluginNumber) + " Plugins, "
             + str(self._dataNumber) + " Datas in "
@@ -156,6 +142,27 @@ class myStorage:
             exit(1)
         return redis_connection
 
+    def _init_others_logger(self,loggers=[]):
+        "Set others logger in numeter log file"
+        for name in loggers:
+            # set file logger
+            logger = logging.getLogger(name)
+            fh = logging.FileHandler(self._log_path)
+            logger.addHandler(fh)
+            if self._logLevel == "warning":
+                logger.setLevel(logging.WARNING)
+            elif self._logLevel == "error":
+                logger.setLevel(logging.ERROR)
+            elif self._logLevel == "info":
+                logger.setLevel(logging.INFO)
+            elif self._logLevel == "critical":
+                logger.setLevel(logging.CRITICAL)
+            else:
+                logger.setLevel(logging.DEBUG)
+            scriptname = sys.argv[0].split('/')[-1]
+            formatter = logging.Formatter('%(asctime)s (' + scriptname
+                            + ') %(levelname)s -: %(message)s')
+            fh.setFormatter(formatter)
 
     def getgloballog(self):
         "Init du logger (fichier et stdr)"
@@ -274,50 +281,42 @@ class myStorage:
             self._logger.info("Config : thread_wait_timeout = "
                 + str(self._thread_wait_timeout))
 
-        # collector_list_type
-        if self._configParse.has_option('global', 'collector_list_type') \
-        and self._configParse.get('global', 'collector_list_type'):
-            self._collector_list_type = self._configParse.get('global',
-                                            'collector_list_type')
-            self._logger.info("Config : collector_list_type = "
-                + self._collector_list_type)
+        # host_list_file
+        if self._configParse.has_option('global', 'host_list_file') \
+        and self._configParse.get('global', 'host_list_file'):
+            self._host_list_file = self._configParse.get('global', 'host_list_file')
+            self._logger.info("Config : host_list_file = "+self._host_list_file)
 
-        # collector_list_file
-        if self._configParse.has_option('global', 'collector_list_file') \
-        and self._configParse.get('global', 'collector_list_file'):
-            self._collector_list_file = self._configParse.get('global', 'collector_list_file')
-            self._logger.info("Config : collector_list_file = "+self._collector_list_file)
-
-        # collector_list_mysql_dbName
-        if self._configParse.has_option('global', 'collector_list_mysql_dbName') \
-        and self._configParse.get('global', 'collector_list_mysql_dbName'):
-            self._collector_list_mysql_dbName = self._configParse.get('global', 'collector_list_mysql_dbName')
-            self._logger.info("Config : collector_list_mysql_dbName = "+self._collector_list_mysql_dbName)
-        # collector_list_mysql_dbUser
-        if self._configParse.has_option('global', 'collector_list_mysql_dbUser') \
-        and self._configParse.get('global', 'collector_list_mysql_dbUser'):
-            self._collector_list_mysql_dbUser = self._configParse.get('global', 'collector_list_mysql_dbUser')
-            self._logger.info("Config : collector_list_mysql_dbUser = "+self._collector_list_mysql_dbUser)
-        # collector_list_mysql_dbPassword
-        if self._configParse.has_option('global', 'collector_list_mysql_dbPassword') \
-        and self._configParse.get('global', 'collector_list_mysql_dbPassword'):
-            self._collector_list_mysql_dbPassword = self._configParse.get('global', 'collector_list_mysql_dbPassword')
-            self._logger.info("Config : collector_list_mysql_dbPassword = "+self._collector_list_mysql_dbPassword)
-        # collector_list_mysql_host
-        if self._configParse.has_option('global', 'collector_list_mysql_host') \
-        and self._configParse.get('global', 'collector_list_mysql_host'):
-            self._collector_list_mysql_host = self._configParse.get('global', 'collector_list_mysql_host')
-            self._logger.info("Config : collector_list_mysql_host = "+self._collector_list_mysql_host)
-        # collector_list_mysql_query
-        if self._configParse.has_option('global', 'collector_list_mysql_query') \
-        and self._configParse.get('global', 'collector_list_mysql_query'):
-            self._collector_list_mysql_query = self._configParse.get('global', 'collector_list_mysql_query')
-            self._logger.info("Config : collector_list_mysql_query = "+self._collector_list_mysql_query)
-        # collector_list_mysql_port
-        if self._configParse.has_option('global', 'collector_list_mysql_port') \
-        and self._configParse.getint('global', 'collector_list_mysql_port'):
-            self._collector_list_mysql_port = self._configParse.getint('global', 'collector_list_mysql_port')
-            self._logger.info("Config : collector_list_mysql_port = "+str(self._collector_list_mysql_port))
+        # host_list_mysql_dbName
+        if self._configParse.has_option('global', 'host_list_mysql_dbName') \
+        and self._configParse.get('global', 'host_list_mysql_dbName'):
+            self._host_list_mysql_dbName = self._configParse.get('global', 'host_list_mysql_dbName')
+            self._logger.info("Config : host_list_mysql_dbName = "+self._host_list_mysql_dbName)
+        # host_list_mysql_dbUser
+        if self._configParse.has_option('global', 'host_list_mysql_dbUser') \
+        and self._configParse.get('global', 'host_list_mysql_dbUser'):
+            self._host_list_mysql_dbUser = self._configParse.get('global', 'host_list_mysql_dbUser')
+            self._logger.info("Config : host_list_mysql_dbUser = "+self._host_list_mysql_dbUser)
+        # host_list_mysql_dbPassword
+        if self._configParse.has_option('global', 'host_list_mysql_dbPassword') \
+        and self._configParse.get('global', 'host_list_mysql_dbPassword'):
+            self._host_list_mysql_dbPassword = self._configParse.get('global', 'host_list_mysql_dbPassword')
+            self._logger.info("Config : host_list_mysql_dbPassword = "+self._host_list_mysql_dbPassword)
+        # host_list_mysql_host
+        if self._configParse.has_option('global', 'host_list_mysql_host') \
+        and self._configParse.get('global', 'host_list_mysql_host'):
+            self._host_list_mysql_host = self._configParse.get('global', 'host_list_mysql_host')
+            self._logger.info("Config : host_list_mysql_host = "+self._host_list_mysql_host)
+        # host_list_mysql_query
+        if self._configParse.has_option('global', 'host_list_mysql_query') \
+        and self._configParse.get('global', 'host_list_mysql_query'):
+            self._host_list_mysql_query = self._configParse.get('global', 'host_list_mysql_query')
+            self._logger.info("Config : host_list_mysql_query = "+self._host_list_mysql_query)
+        # host_list_mysql_port
+        if self._configParse.has_option('global', 'host_list_mysql_port') \
+        and self._configParse.getint('global', 'host_list_mysql_port'):
+            self._host_list_mysql_port = self._configParse.getint('global', 'host_list_mysql_port')
+            self._logger.info("Config : host_list_mysql_port = "+str(self._host_list_mysql_port))
 
         # redis_storage_port
         if self._configParse.has_option('global', 'redis_storage_port') \
@@ -378,74 +377,28 @@ class myStorage:
 
 
 
-    def getcollectorList(self):
+    def _get_host_list(self):
         "Get collector list"
-        self._collectorList = []
-        # Mode file
-        if self._collector_list_type == "file":
-            try:
-                # Open file
-                collectorfile = open(self._collector_list_file)
-                # Parse result
-                regex = r"^([a-zA-Z0-9\.\-\_]+) *(:([0-9]+) *(:(.+))?)?$"
-                for line in collectorfile.readlines():
-                    if re.match(regex, line):
-                        result = re.match(regex, line)
-                        if result.group(3) != None and result.group(5) != None:
-                            self._collectorList.append({'host':result.group(1),
-                                'db':result.group(3),
-                                'password':result.group(5)})
-                        elif result.group(3) != None:
-                            self._collectorList.append({'host':result.group(1),
-                                'db':result.group(3)})
-                        else:
-                            self._collectorList.append({'host':result.group(1)})
-                        self._collectorListNumber += 1
-                # Close file
-                collectorfile.close()
-            except IOError, e:
-                self._logger.critical("Open collector_list file Error "
-                    + str(e))
-                sys.exit (1)
+        self._host_list = []
+        try:
+            # Open file
+            host_file = open(self._host_list_file)
+            # Parse result
+            host_regex = r"^([^\s#]+)\s*$"
+            regex = re.compile(host_regex)
+            for line in host_file.readlines():
+                result = regex.match(line)
+                if result is not None:
+                    self._host_list.append(result.group(1))
+                    self._host_listNumber += 1
+            # Close file
+            host_file.close()
+        except IOError, e:
+            self._logger.critical("Open host_list file Error %s" % e)
+            return False
 
-            self._logger.info("Read file " + self._collector_list_file + " : OK")
-            self._logger.info("File number of collector : "
-                + str(self._collectorListNumber))
-
-
-        # Mode mysql
-        elif self._collector_list_type == "mysql":
-            try:
-                conn = MySQLdb.connect (host = self._collector_list_mysql_host,
-                                 port = self._collector_list_mysql_port,
-                                 user = self._collector_list_mysql_dbUser,
-                                 passwd = self._collector_list_mysql_dbPassword,
-                                 db = self._collector_list_mysql_dbName)
-            except MySQLdb.Error, e:
-                self._logger.critical("Error %d: %s" % (e.args[0], e.args[1]))
-                sys.exit (1)
-            self._logger.info("Connect to MySQL server on "
-                + self._collector_list_mysql_host + " : OK")
-            # Get all collectors
-            cursor = conn.cursor ()
-            cursor.execute (self._collector_list_mysql_query)
-            collectorList_tmp = cursor.fetchall()
-            self._collectorListNumber = cursor.rowcount;
-            cursor.close ()
-            conn.close ()
-            # Format result
-            for row in collectorList_tmp:
-                if len(row)>1 and row[1] != None and row[1] != '' \
-                and len(row)>2 and row[2] != None and row[2] != '':
-                    self._collectorList.append({'host': row[0], 'db': row[1],
-                                              'password': row[2]})
-                elif len(row)>1 and row[1] != None and row[1] != '':
-                    self._collectorList.append({'host': row[0] , 'db': row[1]})
-                else:
-                    self._collectorList.append({'host': row[0]})
-            self._logger.info("MySQL number of collector : "
-                + str(self._collectorListNumber))
-
+        self._logger.info("Read file %s OK" % self._host_list_file)
+        self._logger.info("Number of hosts : %s" % self._host_listNumber)
         return True
 
 
@@ -460,7 +413,7 @@ class myStorage:
             self._logger.critical("paramsVerification Arg "
                 + "max_collector_by_thread : Error (must be >=1)")
             return False
-        if not self._collectorListNumber > 0:
+        if not self._host_listNumber > 0:
             self._logger.critical("paramsVerification Arg "
                 + "collectorListNumber : Error (must be >0)")
             return False
@@ -1128,7 +1081,7 @@ class myStorage:
         allHosts={}
         writedHosts=[]
         numberOfThreads = 0
-        random.shuffle(self._collectorList)
+        random.shuffle(self._host_list)
 
         # threads configuration
         signal.signal(signal.SIGINT, self.sighandler)
@@ -1137,7 +1090,7 @@ class myStorage:
         threads = []
 
         # For each collector
-        for collectorLine in self._collectorList:
+        for collectorLine in self._host_list:
             needThreads = 0
             collectorHosts = self.getHostList(collectorLine)
 
@@ -1185,7 +1138,7 @@ class myStorage:
         self._logger.debug("Thread - Max concurrency thread : "
             + str(self._storage_thread))
         self._logger.debug("Thread - Number of collector : "
-            + str(self._collectorListNumber))
+            + str(self._host_listNumber))
         self._logger.debug("Thread - Number of threads : "
             + str(numberOfThreads))
 
