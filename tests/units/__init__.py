@@ -3,7 +3,7 @@
 import unittest2 as unittest
 #from redis_Unittest import RedisTestCase
 from poller_Unittest import PollerTestCase
-#from poller_MuninModuleUnittest import PollerMuninModuleTestCase
+from poller_MuninModuleUnittest import PollerMuninModuleTestCase
 #from collector_Unittest import CollectorTestCase
 #from mastertest_Unittest import MasterTestCase
 from storage_Unittest import StorageTestCase
@@ -26,7 +26,7 @@ from storeandforward_Unittest import StoreAndForwardTestCase
 def all_tests():
     suite = unittest.TestSuite()
     ## Redis
-    suite.addTest(unittest.makeSuite(RedisTestCase))
+    #suite.addTest(unittest.makeSuite(RedisTestCase))
     ## Poller
     suite.addTest(unittest.makeSuite(PollerMuninModuleTestCase))
     suite.addTest(unittest.makeSuite(PollerTestCase))

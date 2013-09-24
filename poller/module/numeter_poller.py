@@ -118,12 +118,13 @@ class myPoller:
         else:
             self._logger.info("Write data in redis")
             allTimeStamps = []
+            last_send_status = False
             for data in allDatas:
                 if data.has_key("TimeStamp") \
                 and data.has_key("Plugin") \
                 and re.match("[0-9]+",data["TimeStamp"]):
-                    # Get gap if type is DERIVE, COUNTER, ...
                     for ds_name, ds_value in data['Values'].iteritems():
+                        # Get gap if type is DERIVE, COUNTER, ...
                         key = '%s.%s' % (data["Plugin"], ds_name)
                         lastValue = self._cache.get_value(key)
                         if lastValue is not None:
@@ -251,11 +252,11 @@ class myPoller:
                         continue
                     # Check if ds need to be cached
                     # Write only if value is not in cache
-                    for ds_name, ds_info in info["Infos"].iteritems():
-                        key = '%s.%s' % (info["Plugin"], ds_name)
+                    for ds_name, ds_info in info.get("Infos", {}).iteritems():
                         if 'type' in ds_info \
                         and self._cache.get_value(key) is None \
                         and ds_info['type'] in ('DERIVE', 'COUNTER', 'ABSOLUTE'):
+                            key = '%s.%s' % (info["Plugin"], ds_name)
                             self._cache.save_value(key=key,
                                              timestamp='000000000',
                                              value='U')
