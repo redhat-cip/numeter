@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import socket
 import ConfigParser
 import time
 import os
@@ -33,41 +34,36 @@ class myStorage:
     def __init__(self,configFile="/etc/numeter_storage.cfg"):
 
         # Default configuration
-        self._startTime                       = time.time()
-        self._enable                          = False
-        self._simulate                        = False
-        self._logLevel                        = "debug"
-        self._log_level_stdr                  = "debug"
-        self._log_path                        = "/var/log/cron_numeter.log"
-        self._simulate_file                   = "/tmp/numeter.simulate"
-        self._storage_thread                  = 10
-        self._max_hosts_by_thread             = 2
-        self._max_data_by_hosts               = 20
-        self._thread_wait_timeout             = 60
-        self._host_list_file                  = "/dev/shm/numeter_storage_host_list"
-        self._host_list_mysql_dbName          = "numeter"
-        self._host_list_mysql_dbUser          = "numeter"
-        self._host_list_mysql_dbPassword      = ""
-        self._host_list_mysql_host            = "127.0.0.1"
-        self._host_list_mysql_port            = 3306
-        self._host_list_mysql_query           = "SELECT hostname,password FROM hosts"
-        self._redis_storage_port              = 6379
-        self._redis_storage_timeout           = 10
-        self._redis_storage_password          = None
-        self._redis_storage_host              = "127.0.0.1"
-        self._redis_storage_db                = 0
-        self._wsp_path                        = "/opt/numeter/wsp"
-        self._wsp_path_md5_char               = 2
-        self._wsp_clean_time                  = 48 # 48h
-        self._wsp_delete                      = False
-        self._redis_collector_port            = 6379
-        self._redis_collector_timeout         = 10
-        self._host_list                   = []
-        self._host_listNumber             = 0
-        self._hostNumber                      = 0
-        self._dataNumber                      = 0
-        self._pluginNumber                    = 0
-        self._sigint                          = False
+        self._startTime                 = time.time()
+        self._enable                    = False
+        self._simulate                  = False
+        self._logLevel                  = "debug"
+        self._log_level_stdr            = "debug"
+        self._log_path                  = "/var/log/cron_numeter.log"
+        self._simulate_file             = "/tmp/numeter.simulate"
+        self._storage_thread            = 10
+        self._max_hosts_by_thread       = 2
+        self._max_data_by_hosts         = 20
+        self._thread_wait_timeout       = 60
+        self._host_list_file            = "/dev/shm/numeter_storage_host_list"
+        self._redis_storage_port        = 6379
+        self._redis_storage_timeout     = 10
+        self._redis_storage_password    = None
+        self._redis_storage_host        = "127.0.0.1"
+        self._redis_storage_db          = 0
+        self._wsp_path                  = "/opt/numeter/wsp"
+        self._wsp_path_md5_char         = 2
+        self._wsp_clean_time            = 48 # 48h
+        self._wsp_delete                = False
+        self._redis_collector_port      = 6379
+        self._redis_collector_timeout   = 10
+        self._host_list                 = []
+        self._host_listNumber           = 0
+        self._hostNumber                = 0
+        self._dataNumber                = 0
+        self._pluginNumber              = 0
+        self._sigint                    = False
+        self._storage_name              = socket.gethostname()
 
 
         # Read de la conf
@@ -110,7 +106,7 @@ class myStorage:
 
         # start consumer
         self._queue_consumer = NumeterQueueC.get_rpc_server(topics=self._host_list,
-                                                      server='storage1',
+                                                      server=self._storage_name,
                                                       endpoints=[StorageEndpoint(self)],
                                                       hosts=['10.66.6.206:5672'])
         try:
@@ -287,37 +283,11 @@ class myStorage:
             self._host_list_file = self._configParse.get('global', 'host_list_file')
             self._logger.info("Config : host_list_file = "+self._host_list_file)
 
-        # host_list_mysql_dbName
-        if self._configParse.has_option('global', 'host_list_mysql_dbName') \
-        and self._configParse.get('global', 'host_list_mysql_dbName'):
-            self._host_list_mysql_dbName = self._configParse.get('global', 'host_list_mysql_dbName')
-            self._logger.info("Config : host_list_mysql_dbName = "+self._host_list_mysql_dbName)
-        # host_list_mysql_dbUser
-        if self._configParse.has_option('global', 'host_list_mysql_dbUser') \
-        and self._configParse.get('global', 'host_list_mysql_dbUser'):
-            self._host_list_mysql_dbUser = self._configParse.get('global', 'host_list_mysql_dbUser')
-            self._logger.info("Config : host_list_mysql_dbUser = "+self._host_list_mysql_dbUser)
-        # host_list_mysql_dbPassword
-        if self._configParse.has_option('global', 'host_list_mysql_dbPassword') \
-        and self._configParse.get('global', 'host_list_mysql_dbPassword'):
-            self._host_list_mysql_dbPassword = self._configParse.get('global', 'host_list_mysql_dbPassword')
-            self._logger.info("Config : host_list_mysql_dbPassword = "+self._host_list_mysql_dbPassword)
-        # host_list_mysql_host
-        if self._configParse.has_option('global', 'host_list_mysql_host') \
-        and self._configParse.get('global', 'host_list_mysql_host'):
-            self._host_list_mysql_host = self._configParse.get('global', 'host_list_mysql_host')
-            self._logger.info("Config : host_list_mysql_host = "+self._host_list_mysql_host)
-        # host_list_mysql_query
-        if self._configParse.has_option('global', 'host_list_mysql_query') \
-        and self._configParse.get('global', 'host_list_mysql_query'):
-            self._host_list_mysql_query = self._configParse.get('global', 'host_list_mysql_query')
-            self._logger.info("Config : host_list_mysql_query = "+self._host_list_mysql_query)
-        # host_list_mysql_port
-        if self._configParse.has_option('global', 'host_list_mysql_port') \
-        and self._configParse.getint('global', 'host_list_mysql_port'):
-            self._host_list_mysql_port = self._configParse.getint('global', 'host_list_mysql_port')
-            self._logger.info("Config : host_list_mysql_port = "+str(self._host_list_mysql_port))
-
+        # storage_name
+        if self._configParse.has_option('global', 'storage_name') \
+        and self._configParse.get('global', 'storage_name'):
+            self._storage_name = self._configParse.get('global', 'storage_name')
+            self._logger.info("Config : storage_name = "+self._storage_name)
         # redis_storage_port
         if self._configParse.has_option('global', 'redis_storage_port') \
         and self._configParse.getint('global', 'redis_storage_port'):
