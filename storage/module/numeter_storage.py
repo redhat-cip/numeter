@@ -45,6 +45,7 @@ class myStorage:
         self._max_hosts_by_thread       = 2
         self._max_data_by_hosts         = 20
         self._thread_wait_timeout       = 60
+        self._rpc_hosts                 = ["127.0.0.1"]
         self._host_list_file            = "/dev/shm/numeter_storage_host_list"
         self._redis_storage_port        = 6379
         self._redis_storage_timeout     = 10
@@ -108,7 +109,7 @@ class myStorage:
         self._queue_consumer = NumeterQueueC.get_rpc_server(topics=self._host_list,
                                                       server=self._storage_name,
                                                       endpoints=[StorageEndpoint(self)],
-                                                      hosts=['10.66.6.206:5672'])
+                                                      hosts=self._rpc_hosts)
         try:
             self._queue_consumer.start()
         except KeyboardInterrupt:
@@ -288,6 +289,13 @@ class myStorage:
         and self._configParse.get('global', 'storage_name'):
             self._storage_name = self._configParse.get('global', 'storage_name')
             self._logger.info("Config : storage_name = "+self._storage_name)
+
+        # rpc_hosts
+        if self._configParse.has_option('global', 'rpc_hosts') \
+        and self._configParse.get('global', 'rpc_hosts'):
+            self._rpc_hosts = self._configParse.get('global', 'rpc_hosts').split(',')
+            self._logger.info("Config : rpc_hosts = %s" % self._rpc_hosts)
+
         # redis_storage_port
         if self._configParse.has_option('global', 'redis_storage_port') \
         and self._configParse.getint('global', 'redis_storage_port'):
