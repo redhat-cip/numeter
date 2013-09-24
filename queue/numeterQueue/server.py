@@ -3,7 +3,8 @@ from oslo import messaging
 import eventlet
 import logging
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger('numeter.queue.server')
+#LOG = logging.getLogger(__name__)
 
 class OverrideMessageHandlingServer(messaging.server.MessageHandlingServer):
     "override MessageHandlingServer to bind multiple topics"

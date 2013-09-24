@@ -2,7 +2,8 @@ from oslo import messaging
 from oslo.config import cfg
 import logging
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger('numeter.queue.client')
+#LOG = logging.getLogger(__name__)
 
 class BaseAPIClient(messaging.RPCClient):
     def __init__(self, transport):
