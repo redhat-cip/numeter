@@ -23,23 +23,23 @@ Local database format
     +--------+         +---------------+   |-->  HostID2   : md5sum(HostID2)
 
     +--------+         +-------------+
-    |  HSET  |         |  RRD_PATH   | ----->  HostID1   : /opt/rrd/1
-    +--------+         +-------------+   |-->  HostID2   : /opt/rrd/2
+    |  HSET  |         |  WSP_PATH   | ----->  HostID1   : /opt/wsp/1
+    +--------+         +-------------+   |-->  HostID2   : /opt/wsp/2
 
     +--------+         +------------------+
-    |  HSET  |         |  DELETED_HOSTS   | ----->  HostID3   : RRD_PATH
-    +--------+         +------------------+   |-->  HostID4   : RRD_PATH
+    |  HSET  |         |  DELETED_HOSTS   | ----->  HostID3   : WSP_PATH
+    +--------+         +------------------+   |-->  HostID4   : WSP_PATH
 
     +--------+         +--------------------+
-    |  HSET  |         |  DELETED_PLUGINS   | ----->  HostID1@plugin   : RRD_PATH/plugin
-    +--------+         +--------------------+   |-->  HostID2@plugin   : RRD_PATH/plugin
+    |  HSET  |         |  DELETED_PLUGINS   | ----->  HostID1@plugin   : WSP_PATH/plugin
+    +--------+         +--------------------+   |-->  HostID2@plugin   : WSP_PATH/plugin
 
     +-------+         +------------+
-    |  SET  |         |  OLD_RRD   | ----->  [RRD_PATH/plugin/rrd1, RRD_PATH/plugin/rrd2]
+    |  SET  |         |  OLD_WSP   | ----->  [WSP_PATH/plugin/wsp1, WSP_PATH/plugin/wsp2]
     +-------+         +------------+
 
     +-------+         +-------------------+
-    |  SET  |         |  LAST_RRD_CLEAN   | ----->  TimeStamp
+    |  SET  |         |  LAST_WSP_CLEAN   | ----->  TimeStamp
     +-------+         +-------------------+
 
 
@@ -99,9 +99,9 @@ Get plugin info for a host ::
 
     redis-cli -n 2 hget "INFOS@<hostid>" df
 
-Get the rrd path for a host ::
+Get the wsp path for a host ::
 
-    redis-cli -n 2 hget "RRD_PATH" <hostid>
+    redis-cli -n 2 hget "WSP_PATH" <hostid>
 
 Test the storage
 =================

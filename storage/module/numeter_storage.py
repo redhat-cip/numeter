@@ -18,10 +18,7 @@ import signal
 import math
 import hashlib
 import random
-import subprocess # Clean old rrd
-
-#Python-rrdtool
-#import rrdtool
+import subprocess # Clean old wsp
 
 #Python-whisper
 import whisper
@@ -128,9 +125,6 @@ class myStorage:
         if not self.paramsVerification():
             self._logger.critical("Args verification error")
             exit(1)
-
-#        # Start threads
-#        self.startThreads()
 
         # start consumer
         try:
@@ -510,12 +504,12 @@ class myStorage:
 
         # TODO dont write data if no infos
 
-        # Get rrdpath
-        rrd_path = self._redis_connexion.redis_hget("RRD_PATH", hostID)
-        if rrd_path is None:
+        # Get data_path
+        data_path = self._redis_connexion.redis_hget("WSP_PATH", hostID)
+        if data_path is None:
             return False
 
-        wspPath = '%s/%s' % (rrd_path, plugin)
+        wspPath = '%s/%s' % (data_path, plugin)
         for ds_name, value in data["Values"].iteritems():
 
             ds_path = '%s/%s.wsp' % (wspPath, ds_name)
@@ -673,8 +667,8 @@ class myStorage:
             self._redis_connexion.redis_hset("HOSTS", hostID, info_json)
 
             # Write client infos in redis
-            rrdPath = str('%s/%s/%s' % (self._wsp_path, hostIDHash, HostIDFiltredName))
-            self._redis_connexion.redis_hset("RRD_PATH", hostID, rrdPath)
+            wspPath = str('%s/%s/%s' % (self._wsp_path, hostIDHash, HostIDFiltredName))
+            self._redis_connexion.redis_hset("WSP_PATH", hostID, wspPath)
         else:
             self._redis_connexion.redis_hset("INFOS@%s" % hostID, plugin, info_json)
         return True
@@ -687,7 +681,7 @@ class myStorage:
         hostInfos={}
         # Writed Infos 
         writedInfos = []
-        rrdPath     = None
+        wspPath     = None
         # Get plugin INFOS@host
         allInfos = redisCollector.redis_hgetall("INFOS@"+host)
 
@@ -743,7 +737,7 @@ class myStorage:
                 + " No plugin MyInfo or bad entry : Host ignored")
             return [],{},None
 
-        # Add HostIDMD5 to hostinfo (Used in rrdpath)
+        # Add HostIDMD5 to hostinfo (Used in wsppath)
         hostID = hostInfos["MyInfo"]["ID"]
         hostIDHash = self._redis_connexion.redis_hget("HOST_ID",hostID)
 
@@ -768,17 +762,17 @@ class myStorage:
         hostInfos["MyInfo"]["HostIDFiltredName"] = re.sub("[ \"/.']","",hostID)
 
         # Write client infos in redis
-        rrdPath = str(self._wsp_path + "/" + hostIDHash + "/"
+        wspPath = str(self._wsp_path + "/" + hostIDHash + "/"
                       + hostInfos["MyInfo"]["HostIDFiltredName"])
 
-        self._redis_connexion.redis_hset("RRD_PATH", hostID, rrdPath)
+        self._redis_connexion.redis_hset("WSP_PATH", hostID, wspPath)
         self._redis_connexion.redis_hset("HOSTS", hostID,
                                          self.pythonToJson(hostInfos["MyInfo"]))
-        # MyInfo is not write in redis INFOS@... but it is use by writeRRD* so writedInfos.append
+        # MyInfo is not write in redis INFOS@... but it is use by writeWSP* so writedInfos.append
         writedInfos.append("MyInfo")
         #self._redis_connexion.redis_hset("INFOS@"+host, "MyInfo", self.pythonToJson(hostInfos["MyInfo"]))
 
-        return writedInfos, hostInfos, rrdPath
+        return writedInfos, hostInfos, wspPath
 
 
 
@@ -871,7 +865,7 @@ class myStorage:
 
 
     def cleanInfo(self,writedInfos,hostID):
-        "Clean info in redis and rrd"
+        "Clean info in redis and wsp"
         # Get current plugin list
         currentPlugin = self._redis_connexion.redis_hkeys("INFOS@"+hostID)
         if currentPlugin == []:
@@ -894,19 +888,19 @@ class myStorage:
         else: # Erase some plugin
             self._logger.info("Redis - Clean info -- clean plugins : "
                 + str(toDelete) )
-            rrdPath = self._redis_connexion.redis_hget("RRD_PATH",hostID)
-            if rrdPath == None:
+            wspPath = self._redis_connexion.redis_hget("WSP_PATH",hostID)
+            if wspPath == None:
                 self._logger.error("Redis - Clean info -- "
-                    + "Can't get rrd path for " + hostID + " stop")
+                    + "Can't get wsp path for " + hostID + " stop")
                 return
-            if self._wsp_delete: # Erase rrd
+            if self._wsp_delete: # Erase wsp
                 for plugin in toDelete:
                     self._logger.warning("Redis - Clean info -- delete "
-                        + rrdPath + "/"+plugin)
+                        + wspPath + "/"+plugin)
                     # Delete plugin Infos
                     self._redis_connexion.redis_hdel("INFOS@"+hostID,plugin)
-                    # Delete rrd
-                    os.system("rm -Rf "+rrdPath+"/"+plugin)
+                    # Delete wsp
+                    os.system("rm -Rf "+wspPath+"/"+plugin)
             else: # Notify in redis
                 for plugin in toDelete:
                     self._logger.info("Redis - Clean info -- "
@@ -915,12 +909,12 @@ class myStorage:
                     self._redis_connexion.redis_hdel("INFOS@"+hostID,plugin)
                     # Set notify
                     self._redis_connexion.redis_hset("DELETED_PLUGINS",hostID
-                        + "@" + plugin, rrdPath + "/" + plugin)
+                        + "@" + plugin, wspPath + "/" + plugin)
 
 
 
     def cleanHosts(self,writedHosts):
-        "Clean info in redis and rrd"
+        "Clean info in redis and wsp"
         # Get hostListe
         currentHosts = []
 
@@ -948,39 +942,39 @@ class myStorage:
                 + str(toDelete) )
 
             for hostID in toDelete:
-                rrdPath = self._redis_connexion.redis_hget("RRD_PATH",hostID)
-                if rrdPath == None:
+                wspPath = self._redis_connexion.redis_hget("WSP_PATH",hostID)
+                if wspPath == None:
                     self._logger.error("Redis - Clean hosts -- "
-                        + "Can't get rrd path for " + hostID + " stop")
+                        + "Can't get wsp path for " + hostID + " stop")
                     continue
 
-                if self._wsp_delete: # Erase rrd
-                    self._logger.warning("Redis - Clean hosts -- delete rrd "
-                        + rrdPath)
-                    # Delete rrd
-                    os.system("rm -Rf "+rrdPath)
+                if self._wsp_delete: # Erase wsp
+                    self._logger.warning("Redis - Clean hosts -- delete wsp "
+                        + wspPath)
+                    # Delete wsp
+                    os.system("rm -Rf "+wspPath)
                 else: # Notify in redis
                     self._logger.info("Redis - Clean hosts -- "
                         + "notify DELETED_HOSTS " + hostID )
                     # Set notify
                     self._redis_connexion.redis_hset("DELETED_HOSTS", hostID,
-                                                     rrdPath)
+                                                     wspPath)
 
                 # Delete related infos
                 self._redis_connexion.redis_hdel("HOSTS",hostID)
                 self._redis_connexion.redis_hdel("HOST_ID",hostID)
-                self._redis_connexion.redis_hdel("RRD_PATH",hostID)
+                self._redis_connexion.redis_hdel("WSP_PATH",hostID)
                 # Delete infos
                 for plugin in self._redis_connexion.redis_hkeys("INFOS@"
                                                                 + hostID):
                      self._redis_connexion.redis_hdel("INFOS@" + hostID, plugin)
 
 
-    def cleanOldRRD(self):
-        "Clean old rrds"
+    def cleanOldWSP(self):
+        "Clean old wsps"
 
         # Get last clean time
-        lastFetch = self._redis_connexion.redis_get("LAST_RRD_CLEAN")
+        lastFetch = self._redis_connexion.redis_get("LAST_WSP_CLEAN")
         now = time.strftime("%Y %m %d %H", time.localtime())
         # "%.0f" % supprime le .0 aprés le timestamp
         nowTimestamp = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H'))
@@ -988,28 +982,28 @@ class myStorage:
         if lastFetch == None  \
         or (int(lastFetch)+(self._wsp_clean_time*60*60)) <= int(nowTimestamp) \
         or not re.match("^[0-9]{10}$",lastFetch):
-            rrdDelete = []
+            wspDelete = []
 
             # Set the new time
-            self._redis_connexion.redis_set("LAST_RRD_CLEAN",nowTimestamp)
+            self._redis_connexion.redis_set("LAST_WSP_CLEAN",nowTimestamp)
 
             if not os.path.isdir(self._wsp_path):
-                self._logger.warning("Clean old RRD -- path rrd "
+                self._logger.warning("Clean old WSP -- path wsp "
                     + self._wsp_path + " not found")
                 return []
 
-            if self._wsp_delete: # Erase rrd
+            if self._wsp_delete: # Erase wsp
 
-                # Delete rrd
+                # Delete wsp
                 process = subprocess.Popen("find " + self._wsp_path 
                 + " -mmin +" + str(self._wsp_clean_time*60) 
                 + " -type f" 
                 + " -print" 
                 + " -delete" , shell=True, stdout=subprocess.PIPE)
                 (result, stderr) =  process.communicate()
-                self._logger.warning("Clean old RRD -- delete rrd : "
+                self._logger.warning("Clean old WSP -- delete wsp : "
                     + str(result))
-                rrdDelete = result.split()
+                wspDelete = result.split()
 
                 # Clean empty dirs
                 process = subprocess.Popen("find " + self._wsp_path 
@@ -1018,24 +1012,24 @@ class myStorage:
                 + " -print"
                 + " -delete" , shell=True, stdout=subprocess.PIPE)
                 (result, stderr) =  process.communicate()
-                self._logger.warning("Clean old RRD -- delete empty dirs : "
+                self._logger.warning("Clean old WSP -- delete empty dirs : "
                     + str(result))
-                return rrdDelete
+                return wspDelete
 
             else : # Just notify
                 process = subprocess.Popen("find " + self._wsp_path
                     + " -mmin +" + str(self._wsp_clean_time*60)
                     + " -type f", shell=True, stdout=subprocess.PIPE)
                 (result, stderr) =  process.communicate()
-                self._logger.info("Clean old RRD -- notify OLD_RRD : "
+                self._logger.info("Clean old WSP -- notify OLD_WSP : "
                     + str(lastFetch))
-                rrdDelete = result.split()
-                self._redis_connexion.redis_set("OLD_RRD",
-                                                self.pythonToJson(rrdDelete))
-                return rrdDelete
+                wspDelete = result.split()
+                self._redis_connexion.redis_set("OLD_WSP",
+                                                self.pythonToJson(wspDelete))
+                return wspDelete
 
         else :
-            self._logger.info("Clean old RRD -- not this time. Last clean : "
+            self._logger.info("Clean old WSP -- not this time. Last clean : "
                 + str(lastFetch))
             return []
 
@@ -1084,7 +1078,7 @@ class myStorage:
             hostAllDatas = {}
 
             # Get Infos
-            (writedInfo, hostAllDatas["Infos"], hostRRDPath) = self.getInfos(redisCollector,hostID)
+            (writedInfo, hostAllDatas["Infos"], hostWSPPath) = self.getInfos(redisCollector,hostID)
             self._logger.info( "Worker " + str(threadId) + " host : " + hostID
                 + " getInfos")
             if hostAllDatas["Infos"] == {}:
@@ -1109,7 +1103,7 @@ class myStorage:
                 self._logger.info( "Worker " + str(threadId) + " host : "
                     + hostID + " writewsp")
                 self.writewsp(sortedTS, hostAllDatas,
-                                  hostID, hostRRDPath)
+                                  hostID, hostWSPPath)
                 # Clear data 
                 redisCollector.redis_zremrangebyscore("TS@" + hostID,
                                                       sortedTS[0],sortedTS[-1])
@@ -1197,8 +1191,8 @@ class myStorage:
 
         # Clean hosts
         self.cleanHosts(writedHosts)
-        # Clean old rrd
-        self.cleanOldRRD()
+        # Clean old wsp
+        self.cleanOldWSP()
 
         # Wait des threads avec timeout self._thread_wait_timeout
         i=1

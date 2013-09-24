@@ -63,7 +63,7 @@ if __name__ == '__main__':
                         ('/usr/share/numeter/storage', ['storage/storage-web/numeter_uwsgi.py']) ,
                         ('/var/log/numeter', '') ,
                         ('/etc/init.d', ['storage/numeter-storage.init']),
-                        ('/var/lib/numeter/rrds', ''),
+                        ('/var/lib/numeter/wsps', ''),
                         ],
           classifiers=[
               'Development Status :: 4 - Beta',

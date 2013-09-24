@@ -37,7 +37,7 @@ Manual
   * numeter-common (redis module)
   * python-redis >= 2.4.9
   * redis >= 2:2.4.14
-  * python-rrdtool
+  * python-whisper
   * nginx
   * uwsgi
   * python-flask
@@ -66,12 +66,12 @@ Python flask
 
     apt-get install python-flask
 
-Python-rrdtool
+Python-whisper
 ---------------
 
 **From packages :** ::
 
-    apt-get install python-rrdtool
+    apt-get install python-whisper
 
 Python-redis api 
 -----------------
