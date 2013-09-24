@@ -114,10 +114,12 @@ $(document).on('keypress', '.q', function(e) {
 
 $(document).on('keypress', '.q-opt', function(e) {
   if (e.which == 13 ) {
+    e.preventDefault();
+    var form = $(this).closest('form');
     var url = $(this).attr('data-url');
-    var into = $(this).attr('data-into');
-    var chosen = $(this).attr('data-chosen')
-    var exclude = $.map( $(chosen+' option'), function(e) { return $(e).val(); });
+    var into = $(this).next();
+    var chosen = $(form).find( $(this).attr('data-chosen') );
+    var exclude = $.map( $(chosen).children('option'), function(e) { return $(e).val(); });
     var data = { 'name__icontains' : $(this).val() };
     $.ajax({ url:url, async:true, data:data,
       error: function(data, status, xhr) { error_modal() },

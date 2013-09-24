@@ -38,8 +38,15 @@ class Small_View_Form(View_Form):
         if not self.user:
             raise TypeError('Object must have a User object for initialization')
         if self.instance.id is None:
-            self.fields['sources'].queryset = Data_Source.objects.all()
+            self.fields['sources'].queryset = Data_Source.objects.none()
             self.fields['available_sources'].queryset = Data_Source.objects.user_filter(self.user)
+            self.fields['search_source'].widget.attrs.update({'data-into': '#id_sources'})
         else:
             self.fields['sources'].queryset = self.instance.sources.all()
             self.fields['available_sources'].queryset = Data_Source.objects.user_filter(self.user).exclude(pk__in=self.instance.sources.all())
+
+        def get_submit_url(self):
+            """Get POST or PATCH url."""
+            if self.instance.id:
+                return '/api/source/%i' % self.instance.id
+            return '/api/source'

@@ -16,7 +16,7 @@ class User_Resource(ModelResource):
         #authorization = AdminAuthorization()
         #authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         queryset = User.objects.all()
-        excludes = ['password']
+        excludes = ['password','is_staff','date_joined','is_active']
         resource_name = 'user'
         filtering = {
           'name': ALL,

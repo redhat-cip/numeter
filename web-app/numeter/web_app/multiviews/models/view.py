@@ -40,6 +40,7 @@ class View(models.Model):
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
     warning = models.IntegerField(blank=True, null=True)
     critical = models.IntegerField(blank=True, null=True)
+    # groups = models.ManyToManyField('core.Group', null=True, blank=True)
 
     objects = View_QuerySetManager.as_manager()
     class Meta:

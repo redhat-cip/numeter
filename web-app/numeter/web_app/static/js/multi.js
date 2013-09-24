@@ -188,7 +188,7 @@ $(document).on('click', ".edit-view", function() {
 });
 
 // ADD OR UPDATE VIEW
-$(document).on('submit', "#view-form", function() {
+$(document).on('submit', ".view-form", function() {
   // SET VARS
   var url = $(this).attr('action');
   var data_url = $(this).attr('data-data-url');

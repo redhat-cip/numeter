@@ -50,8 +50,10 @@ class Data_Source_QuerySetManager(QuerySet):
 class Data_Source(models.Model):
     """Plugin's data source, more often called shortly source."""
     name = models.CharField(_('name'), max_length=300)
+    # short_name = models.CharField(_('shortname'), max_length=50)
     plugin = models.ForeignKey('core.Plugin')
     comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)
+    # description = models.TextField(_('Long description'), max_length=1000, null=True, Blank=True)
 
     objects = Data_Source_QuerySetManager.as_manager()
     class Meta:

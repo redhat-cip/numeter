@@ -1,3 +1,4 @@
+# TODO: See what's useless
 from django.db import models
 from django.db.models import Q
 from django.utils.timezone import now
@@ -101,13 +102,18 @@ class User(AbstractBaseUser):
         return True
 
     def has_access(self, obj):
+        from core.models import Plugin, Data_Source
         if self.is_superuser and self.is_active:
             return True
         else:
+            if isinstance(obj, User):
+                return self == obj
             if isinstance(obj, Group):
                 return self.groups.filter(pk=obj.pk).exists()
             elif isinstance(obj, Host):
                 return self.groups.filter(pk=obj.group.pk).exists()
-            elif isinstance(obj, User):
-                return (self.pk == obj.pk) or self.is_superuser
+            elif isinstance(obj, Plugin):
+                return self.groups.filter(pk=obj.host.group.pk).exists()
+            elif isinstance(obj, Data_Source):
+                return self.groups.filter(pk=obj.plugin.host.group.pk).exists()
         return False
