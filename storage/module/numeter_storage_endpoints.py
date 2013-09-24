@@ -42,6 +42,3 @@ class StorageEndpoint(object):
         info = args.get('message', None)
         self.storage._write_info(ctxt['hostid'], info)
 
-            #(writedInfo, hostAllDatas["Infos"], hostRRDPath) = self.getInfos(redisCollector,hostID)
-            #    self.writewsp(sortedTS, hostAllDatas,
-            #                      hostID, hostRRDPath)

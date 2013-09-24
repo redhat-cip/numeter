@@ -46,19 +46,20 @@ class App():
 
     def run(self):
         storage = myStorage(self.storage_configFile)
-        lastCheckTime = None
-        while True:
-            nowTimestamp = "%.0f" % time.time()
-            # +5 give you an accuracy of 5 sec more or less between fetch
-            if lastCheckTime is None \
-            or (int(lastCheckTime)+self._storage_time) <= (int(nowTimestamp)+5):
-                storage.startStorage()
-                lastCheckTime = nowTimestamp
-            time.sleep(1)
+        storage.startStorage()
+        #storage = myStorage(self.storage_configFile)
+        #lastCheckTime = None
+        #while True:
+        #    nowTimestamp = "%.0f" % time.time()
+        #    # +5 give you an accuracy of 5 sec more or less between fetch
+        #    if lastCheckTime is None \
+        #    or (int(lastCheckTime)+self._storage_time) <= (int(nowTimestamp)+5):
+        #        storage.startStorage()
+        #        lastCheckTime = nowTimestamp
+        #    time.sleep(1.1)
 
 app = App()
 daemon_runner = runner.DaemonRunner(app)
-
 try:
     daemon_runner.do_action()
 except (runner.DaemonRunnerStopFailureError, TypeError):

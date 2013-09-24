@@ -78,6 +78,7 @@ class myStorage:
         self._configFile = configFile
         self.readConf()
 
+        # TODO fix this ...
         # try rabbitmq
         mylogger = logging.getLogger("numeterQueue")
         ch = logging.StreamHandler(sys.stdout)
@@ -130,6 +131,7 @@ class myStorage:
 
 #        # Start threads
 #        self.startThreads()
+
         # start consumer
         try:
             self._queue_consumer.start()
