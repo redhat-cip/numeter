@@ -70,8 +70,6 @@ class myStorage:
         # Read de la conf
         self._configFile = configFile
         self.readConf()
-        # Init other loggers
-        self._init_others_logger(['oslo'])
 
     def startStorage(self):
         self._startTime = time.time()
@@ -139,32 +137,10 @@ class myStorage:
             exit(1)
         return redis_connection
 
-    def _init_others_logger(self,loggers=[]):
-        "Set others logger in numeter log file"
-        for name in loggers:
-            # set file logger
-            logger = logging.getLogger(name)
-            fh = logging.FileHandler(self._log_path)
-            logger.addHandler(fh)
-            if self._logLevel == "warning":
-                logger.setLevel(logging.WARNING)
-            elif self._logLevel == "error":
-                logger.setLevel(logging.ERROR)
-            elif self._logLevel == "info":
-                logger.setLevel(logging.INFO)
-            elif self._logLevel == "critical":
-                logger.setLevel(logging.CRITICAL)
-            else:
-                logger.setLevel(logging.DEBUG)
-            scriptname = sys.argv[0].split('/')[-1]
-            formatter = logging.Formatter('%(asctime)s (' + scriptname
-                            + ') %(levelname)s -: %(message)s')
-            fh.setFormatter(formatter)
-
     def getgloballog(self):
         "Init du logger (fichier et stdr)"
         # set file logger
-        logger = logging.getLogger('numeter')
+        logger = logging.getLogger()
         fh = logging.FileHandler(self._log_path)
         logger.addHandler(fh)
         if self._logLevel == "warning":

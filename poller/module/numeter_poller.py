@@ -52,8 +52,6 @@ class myPoller:
         # Read de la conf
         self._configFile = configFile
         self.readConf()
-        # Init other loggers
-        self._init_others_logger(['oslo'])
 
     def startPoller(self):
         "Start the poller"
@@ -352,33 +350,10 @@ class myPoller:
         infos.append(info) # Format info for self.writeInfo
         return infos
 
-    def _init_others_logger(self,loggers=[]):
-        "Set others logger in numeter log file"
-        for name in loggers:
-            # set file logger
-            logger = logging.getLogger(name)
-            fh = logging.FileHandler(self._log_path)
-            logger.addHandler(fh)
-            if self._logLevel == "warning":
-                logger.setLevel(logging.WARNING)
-            elif self._logLevel == "error":
-                logger.setLevel(logging.ERROR)
-            elif self._logLevel == "info":
-                logger.setLevel(logging.INFO)
-            elif self._logLevel == "critical":
-                logger.setLevel(logging.CRITICAL)
-            else:
-                logger.setLevel(logging.DEBUG)
-            scriptname = sys.argv[0].split('/')[-1]
-            formatter = logging.Formatter('%(asctime)s ('
-                                          + scriptname
-                                          + ') %(levelname)s -: %(message)s')
-            fh.setFormatter(formatter)
-
     def getgloballog(self):
         "Init logger (file and stdr)"
         # set file logger
-        logger = logging.getLogger('numeter')
+        logger = logging.getLogger()
         fh = logging.FileHandler(self._log_path)
         logger.addHandler(fh)
         if self._logLevel == "warning":
