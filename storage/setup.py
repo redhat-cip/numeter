@@ -57,7 +57,7 @@ if __name__ == '__main__':
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),
           #              ('share/man/man1/', ['man/numeter.1']) ],
-          data_files = [('/etc/numeter', ['storage/numeter_storage.cfg','storage/collector-list']), 
+          data_files = [('/etc/numeter', ['storage/numeter_storage.cfg','storage/host-list']), 
                         #              ('/etc/nginx/sites-available', ['storage/storage-web/numeter-storage-web']) ,
                         #              ('/etc/uwsgi/apps-available', ['storage/storage-web/numeter-storage-uwsgi.ini']) ,
                         ('/usr/share/numeter/storage', ['storage/storage-web/numeter_uwsgi.py']) ,
