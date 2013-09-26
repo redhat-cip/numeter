@@ -1,0 +1,9 @@
+<ul class="unstyled">
+ {% for host in group %}
+  <li class="hosttree-host-li">
+   <i class="icon-plus"></i>
+   <a class="accordion-host" host-id="{{ host.id }}">{{ host }}</a>
+   <div id="host-{{ host.id }}-content"></div>
+  </li>
+ {% endfor %}
+</ul>

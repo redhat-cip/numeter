@@ -1,0 +1,26 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by event's name or host's name" %}" data-into="#list-event-content" data-url="{% url 'multiviews customize event list' %}?page=1&q={{ q }}">
+
+<div class="row-fluid">
+ <div class="span4">
+  <ul class="unstyled">
+   {% for event in Events %}
+    {% if forloop.counter0 == 10 or forloop.counter0 == 20 %}</ul></div><div class="span4"><ul class="unstyled">{% endif %}
+    <li>
+     <a class="edit-event" data-url="{% url "multiviews customize event edit" event.id %}" data-into="#edit-event-content"  event-id="{{ event.id }}" data-name="{{ event.name }}">{{ event|truncatechars:"50" }}</a>
+    </li>
+   {% endfor %}
+  </ul>
+ </div>
+</div>
+
+<div>
+ <ul class="pager">
+  {% if Events.has_previous %}
+  <li class="previous"><a class="get-page" data-into="#list-event-content" data-url="{% url "multiviews customize event list" %}?page={{ Events.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+  {% endif %}
+  {% if Events.has_next %}
+  <li class="next"><a class="get-page" data-into="#list-event-content" data-url="{% url "multiviews customize event list" %}?page={{ Events.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+  {% endif %}
+ </ul>
+</div>

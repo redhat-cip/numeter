@@ -1,0 +1,44 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block header %}
+<script>var csrf = "{{ csrf_token }}";</script>
+<script src="{{ STATIC_URL }}js/multi.js"></script>
+{% endblock %}
+
+{% block body %}
+ <div class="navbar navbar-static">
+  <div class="navbar-inner">
+   <div style="width: auto;" class="container">
+    <ul id="resolution-pills" class="nav nav-pills nav">
+     <li data-value="Daily" class="active"><a >{% trans "Daily" %}</a></li>
+     <li data-value="Weekly"><a >{% trans "Weekly" %}</a></li>
+     <li data-value="Monthly"><a >{% trans "Monthly" %}</a></li>
+     <li data-value="Yearly"><a >{% trans "Yearly" %}</a></li>
+     <li class="divider-vertical"></li>
+     <form id="main-q" method="GET" action="{% url "multiviews search" %}" data-into="#multiviews-list" class="navbar-search">
+      <input type="text" placeholder="{% trans "Search a multiview or a view" %}" class="search-query span2" style="width: 400px">
+     </form>
+    </ul>
+    <ul class="nav pull-right">
+     <li class="divider-vertical"></li>
+     <li>
+     <a id="toggle-editor" data-url="{% url "multiviews customize index" %}"> <i class="icon-cog"></i> {% trans "Customize" %}</a>
+      </li>
+    </ul>
+   </div>
+  </div>
+ </div>
+
+ <div class="row-fluid">
+  <div id="multiview-index" class="span12 well" style="display: none;"></div>
+ </div>
+
+ <div id="accordion" class="accordion">
+  <div class="accordion-group" id="multiviews-list">
+   {% include "multiviews-list.html" %}
+  </div>
+ </div>
+
+ <div class="messages"></div>
+{% endblock %}

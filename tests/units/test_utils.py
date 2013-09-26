@@ -5,12 +5,18 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 from myRedisConnect import myRedisConnect
-class FakeRedis(myRedisConnect):
 
+class FakeRedis(myRedisConnect):
     def __init__(self, *args, **kwargs):
         self._error=False
-        self.zadd_data = {} if not 'zadd_data' is dir(self) else self.zadd_data
-        self.hset_data = {} if not 'hset_data' in dir(self) else self.hset_data
+        self.hset_data = self.init_hset()
+        self.zadd_data = self.init_zadd()
+
+    def init_hset(self):
+        return {}
+
+    def init_zadd(self):
+        return {}
 
     def redis_zadd(self, key, value, score, *args, **kwargs):
         if not key in self.zadd_data:
@@ -23,6 +29,12 @@ class FakeRedis(myRedisConnect):
         if not name in self.hset_data:
             self.hset_data[name] = {}
         self.hset_data[name][key] = value
+
+    def redis_hget(self, name, key):
+        return self.hset_data.get(name, {}).get(key)
+
+    def redis_hgetall(self,name):
+        return self.hset_data.get(name,{})
 
     def redis_hdel(self, name, key, *args, **kwargs):
         del self.hset_data[name][key]
@@ -39,15 +51,55 @@ class FakeRedis(myRedisConnect):
         else:
             return None
 
+    def redis_zrangebyscore(self, name, min, max, start=None, num=None, withscores=False):
+        if (start is not None and num is None) or \
+                (num is not None and start is None):
+            raise redis.RedisError("``start`` and ``num`` must both "
+                                   "be specified")
+        all_items = self.zadd_data.get(name, {})
+        matches = []
+        for score in all_items.keys():
+            print '%s <= %s <= %s value %s' % (min, score, max, all_items[score])
+            # Float fot -inf and +inf and other mistake
+            matched = False
+            if min.startswith('(') and max.startswith('('):
+                if float(min[1:]) < float(score) < float(max[1:]):
+                    matched = True
+            elif min.startswith('('):
+                if float(min[1:]) < float(score) <= float(max):
+                    matched = True
+            elif max.startswith('('):
+                if float(min) <= float(score) < float(max[1:]):
+                    matched = True
+            else:
+                if float(min) <= float(score) <= float(max):
+                    matched = True
+            if matched:
+                print 'OK...'
+                matches.extend(all_items[score])
+        if start is not None:
+            matches = matches[start:start + num]
+        return matches
+
     def redis_zremrangebyscore(self, name, min, max, *args, **kwargs):
         all_items = self.zadd_data.get(name, {})
         removed = 0
-        if min == '-inf' or min == '+inf':
-            min = float(min)
-        if max == '-inf' or max == '+inf':
-            max = float(max)
         for score in all_items.keys():
-            if min <= score <= max:
+            # Float fot -inf and +inf and other mistake
+            matched = False
+            if min.startswith('(') and max.startswith('('):
+                if float(min[1:]) < float(score) < float(max[1:]):
+                    matched = True
+            elif min.startswith('('):
+                if float(min[1:]) < float(score) <= float(max):
+                    matched = True
+            elif max.startswith('('):
+                if float(min) <= float(score) < float(max[1:]):
+                    matched = True
+            else:
+                if float(min) <= float(score) <= float(max):
+                    matched = True
+            if matched:
                 del all_items[score]
                 removed += 1
         self.zadd_data[name] = all_items

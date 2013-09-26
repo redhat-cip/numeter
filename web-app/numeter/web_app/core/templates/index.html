@@ -1,0 +1,42 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block header %}
+<script>var csrf = "{{ csrf_token }}";</script>
+<script src="{{ STATIC_URL }}js/graph.js"></script>
+{% endblock %}
+
+{% block body %}
+ <div class="span3">
+  <div class="accordion" id="host-accordion">
+   {% for host in hosts %}
+    {% ifchanged host.group %}
+     <div class="accordion-group">
+      <div class="accordion-heading">
+       <a href="#group-{{ host.group.id }}" data-parent="#host-accordion" data-toggle="collapse" class="accordion-toggle" group-id="{{ host.group.id }}">
+        {% if not host.group %}{% trans "No group" %}{% else %}{{ host.group }}{% endif %}
+       </a>
+      </div>
+      <div class="accordion-body collapse" id="group-{{ host.group.id }}" group-id="{{ host.group.id }}" style="height: 0px;">
+       <div class="accordion-inner" id="group-{{ host.group.id }}-content"></div>
+      </div>
+     </div>
+    {% endifchanged %}
+   {% endfor %}
+  </div>
+ </div>
+
+ <div class="span9">
+  <div class="row-fluid">
+
+   <ul id="resolution-pills" class="nav nav-pills">
+    <li data-value="Daily" class="active"><a href="#">{% trans "Daily" %}</a></li>
+    <li data-value="Weekly"><a href="#">{% trans "Weekly" %}</a></li>
+    <li data-value="Monthly"><a href="#">{% trans "Monthly" %}</a></li>
+    <li data-value="Yearly"><a href="#">{% trans "Yearly" %}</a></li>
+   </ul>
+
+   <div id="graphs"></div>
+  </div>
+ </div>
+{% endblock %}

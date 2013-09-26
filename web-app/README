@@ -7,16 +7,9 @@ Informations
 
   * http://twitter.github.com/bootstrap/
 
-Small customize in bootstrap twitter theme : ::
-
-    --- Links
-    @btnPrimaryBackground = #666
-
 External Links
 ================
   * http://twitter.github.com/bootstrap/components.html#alerts
-  * http://devheart.org/examples/jquery-customizable-layout-using-drag-and-drop/1-getting-started-with-sortable-lists/index.html
-
 
 Troubleshooting
 ================

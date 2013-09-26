@@ -1,0 +1,28 @@
+{% load i18n %}
+<div class="row-fluid"> <!-- source form --!>
+ <form id="source-form" class="ajax-form" action="{{ Source_Form.instance.get_update_url }}" method="POST">
+  {% csrf_token %}
+  <h4 align="center">{{ source }}</h4>
+
+  <div class="span5 fields" style="margin-left: 50px;">
+   <dl>
+    {% for field in Source_Form %}
+    <dt>{{ field.label }}:</dt>
+    <dd>{{ field }}</dd>
+    {% endfor %}
+   </dl>
+  </div>
+
+  <div class="span4">
+   <div class="row-fluid">
+    <p>
+     <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
+     <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Source_Form.instance.get_delete_url }}" data-next-tab="#source-list-tab">
+     <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
+     <input type="button" name="add-to-view" class="btn btn-primary" value="{% trans "Add to a view" %}" data-url="{{ Source_Form.instance.get_add_to_view_url }}">
+    </p>
+   </div>
+  </div>
+
+ </form>
+</div>

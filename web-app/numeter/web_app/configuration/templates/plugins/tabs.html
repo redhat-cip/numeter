@@ -1,0 +1,3 @@
+{% load i18n %}
+<li class="active"><a id="plugin-list-tab" data-target="#plugin-list" data-url="{% url "plugin list" %}" data-toggle="tab">{{ Plugins_count }} plugin(s)</a></li>
+<li><a id="source-list-tab" data-target="#source-list" data-url="{% url "source list" %}" data-toggle="tab">{{ Sources_count }} {% trans "source(s)" %}</a></li>

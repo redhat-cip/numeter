@@ -122,6 +122,7 @@ class myStorage:
             exit(1)
         return redis_connection
 
+
     def getgloballog(self):
         "Init du logger (fichier et stdr)"
         # set file logger

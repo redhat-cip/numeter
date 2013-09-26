@@ -1,0 +1,89 @@
+body {
+  padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+
+div[id="body"] {
+  min-height: 200px;
+}
+
+.center {
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.editor {
+  font-family:Menlo,Monaco,Consolas,"Courier New",monospace
+}
+
+.hosttree-host-li, .hosttree-category-li, hosttree-plugin-li {
+  margin-left: 10px;
+}
+
+.popover {
+  height: 200px;
+  width: 400px;
+  max-width: 1000px;
+}
+
+.accordion-group .accordion-heading {
+  text-align: center;
+}
+
+.accordion-group .accordion-body.in {
+  margin-bottom: 15px;
+}
+
+.messages {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  width: 300px;
+  z-index: 9999;
+}
+
+.to-add {
+  color: #4BBB39;
+}
+.to-add:hover {
+  color: #6BBB39;
+}
+
+.to-remove {
+  color: #BB4B39;
+}
+.to-remove:hover {
+  color: #BB6B39;
+}
+
+.messages .alert-block {
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+.messages .alert-block.alert-error {
+  border: 1px solid #9D261D;
+}
+
+.messages .alert-block.alert-success {
+  border: 1px solid #46A546;
+}
+
+.input-li,
+.input-li * * {
+  vertical-align: middle;
+  margin-bottom: 0px;
+}
+
+.graph {
+  margin-left: 0px;
+}
+
+.condensed {
+  margin-bottom: 0px;
+}
+
+.condensed *,
+.condensed * *,
+.condensed * * *, {
+  margin-bottom: 2px;
+}

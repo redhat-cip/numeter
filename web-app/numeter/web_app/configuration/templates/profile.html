@@ -1,0 +1,66 @@
+{% load i18n %}
+<div class="row-fluid">
+ <div id="profile-update-info" class="span3">
+  <h4 class="center">{% trans "General" %}</h4>
+ </div>
+ <div class="span6">
+  <form id="profile-update-form" method="POST" action="{% url 'update profile' EditForm.instance.id %}">
+   {% csrf_token %}
+   <fieldset>
+  
+    <div class="control-group">
+     <div class="controls">{{ EditForm.username }}</div>
+    </div>
+  
+    <div class="control-group">
+     <div class="controls">{{ EditForm.email }}</div>
+    </div>
+  
+    <div class="control-group">
+     <div class="controls">{{ EditForm.graph_lib }}</div>
+    </div>
+  
+    <div class="control-group">
+     <div class="controls">
+     <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
+     </div>
+    </div>
+  
+   </fieldset>
+  </form>
+ </div>
+</div>
+
+<hr>
+
+<div class="row-fluid">
+ <div id="profile-update-password-info" class="span3">
+  <h4 class="center">{% trans "Password" %}</h4>
+ </div>
+ <div class="span6">
+  <form id="profile-update-password-form" method="POST" action="{% url 'update password' EditForm.instance.id %}">
+   {% csrf_token %}
+   <fieldset>
+  
+    <div class="control-group">
+     <div class="controls">{{ PasswordForm.old }}</div>
+    </div>
+   
+    <div class="control-group">
+     <div class="controls">{{ PasswordForm.new_1 }}</div>
+    </div>
+   
+    <div class="control-group">
+     <div class="controls">{{ PasswordForm.new_2 }}</div>
+    </div>
+  
+    <div class="control-group">
+     <div class="controls">
+      <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
+     </div>
+    </div>
+  
+   </fieldset>
+  </form>
+ </div>
+</div>

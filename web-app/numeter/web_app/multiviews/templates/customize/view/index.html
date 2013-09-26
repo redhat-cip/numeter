@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="row-fluid">
+ <ul id="view-mode-pills" class="nav nav-pills sub-menu-tabs">
+  <li id="list-view-tab" class="active"><a data-target="#list-view-content" data-view-mode="list" data-url="{% url "multiviews customize view list" %}">{% trans "List" %}</a></li>
+  <li id="add-view-tab"><a data-target="#add-view-content" data-view-mode="add" data-url="{% url "multiviews customize view add" %}">{% trans "Add" %}</a></li>
+  <li id="edit-view-tab"><a data-target="#edit-view-content" data-view-mode="edit" style="display: none;"></a></li>
+ </ul>
+</div>
+
+<div class="tab-content">
+ <div class="tab-pane active" id="list-view-content">{% include "customize/view/list.html" %}</div>
+ <div class="tab-pane" id="add-view-content">{# include "customize/view/view.html" #}</div>
+ <div class="tab-pane" id="edit-view-content"></div>
+</div>

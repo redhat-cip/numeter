@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+# Shortcut to manage.py
+
+from os import environ
+from os.path import dirname, abspath
+import sys
+from django.core.management import execute_from_command_line 
+from numeter.web_app import numeter
+
+
+if __name__ == "__main__":
+    NUMETER_DIR = dirname(dirname(abspath(numeter.__file__)))
+    sys.path.append(NUMETER_DIR)
+
+    environ['DJANGO_SETTINGS_MODULE'] = 'numeter.web_app.numeter.settings'
+    execute_from_command_line()

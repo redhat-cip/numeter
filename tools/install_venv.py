@@ -12,9 +12,9 @@ def print_help():
     """This prints Help."""
 
     help = """
-    Tempest development environment setup is complete.
+    Numeter development environment setup is complete.
 
-    Tempest development uses virtualenv to track and manage Python dependencies
+    Numeter development uses virtualenv to track and manage Python dependencies
     while in development and testing.
 
     To activate the Tempest virtualenv for the extent of your current shell
@@ -30,6 +30,7 @@ def print_help():
     Also, make test will automatically use the virtualenv.
     """
     print help
+
 
 def main(argv):
     root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -50,4 +51,3 @@ def main(argv):
 
 if __name__ == '__main__':
     main(sys.argv)
-

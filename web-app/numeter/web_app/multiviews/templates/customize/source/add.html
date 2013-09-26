@@ -1,0 +1,27 @@
+{% load i18n %}
+<div class="row-fluid">
+
+ <div class="span3">
+  <h4>{% trans "Choose an host:" %}</h4>
+  <select id="chosen-host" class="span" size="10" data-url="{% url "wild_storage_list" %}">
+  {% for host in Hosts %}
+   <option value="{{ host.hostid }}">{{ host }}</option>
+  {% endfor %}
+  </select>
+ </div>
+
+ <div class="span3" style="display: none;">
+  <h4>{% trans "Choose a plugin:" %}</h4>
+  <select id="chosen-plugin" class="span" size="10" data-url="{% url "wild_storage_info" %}"></select>
+ </div>
+
+ <div class="span3" style="display: none;">
+  <h4>{% trans "Choose one or several sources:" %}</h4>
+  <select id="chosen-sources" class="span" size="10" multiple></select>
+ </div>
+
+ <div class="span3" style="display: none;">
+  <button id="btn-add-sources" class="btn btn-primary" data-url="{% url "multiviews customize source add" %}">{% trans "Add sources" %}</button>
+ </div>
+
+</div>

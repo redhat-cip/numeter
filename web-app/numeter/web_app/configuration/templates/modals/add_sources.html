@@ -1,0 +1,37 @@
+{% load i18n %}
+
+<div class="modal-header">
+ <button type="button" class="close" data-dismiss="modal">×</button>
+ <h4>{% trans "Adding sources in a view:" %}</h4>
+</div>
+
+<div class="modal-body">
+ <h5>{% trans "Add source(s) to:" %}</h5>
+ <select class="span" id="chosen-view" size="6">
+  {% for v in views %}<option value="{{ v.id }}">{{ v }}</option>{% endfor %}
+ <select>
+
+ <h5>{% trans "Source(s) to add:" %}</h5>
+ <ul class="unstyled">
+  <table class="table table-condensed table-striped">
+   <thead>
+    <tr>
+     <th></th>
+     <th>{% trans "Name" %}</th>
+    </tr>
+   </thead>
+  <tbody>
+   {% for s in sources %}
+   <tr>
+    <td><input class="source-to-add-checkbox" type="checkbox" checked="checked" name="{{ s.id }}"></td>
+    <td><a class="get-source" data-url="{{ s.get_absolute_url }}" data-into="#source-list" data-original-title="{% blocktrans %}Preview of {{ s }}{% endblocktrans %}" data-data-url="{% url "source data" s.id %}">{{ s }}</a></td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+</div>
+
+<div class="modal-footer">
+    <button id="btn-add-sources-to-view" class="btn btn-primary" data-dismiss="modal" data-url="{% url "view add sources" %}">{% trans 'Add' %}</button>
+ <button class="btn" data-dismiss="modal">{% trans 'Cancel' %}</button>
+</div>
