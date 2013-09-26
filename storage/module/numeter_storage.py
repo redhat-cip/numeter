@@ -14,11 +14,8 @@ import re
 import logging
 import sys
 #import MySQLdb
-import threading
-import signal
 import math
 import hashlib
-import random
 import subprocess # Clean old wsp
 
 #Python-whisper
