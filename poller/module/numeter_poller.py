@@ -9,7 +9,6 @@ import socket
 import re
 import logging
 import sys
-#from numeterQueue import NumeterQueueP
 from numeterQueue import client as NumeterQueueP
 from cachelastvalue import CacheLastValue
 from storeandforward import StoreAndForward
