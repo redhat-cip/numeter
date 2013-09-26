@@ -184,21 +184,6 @@ class StorageTestCase(test_base.TestCase):
 #        self.assertEqual(result, ['{"Plugin":"foo","TimeStamp":"1000000001","Values":{"curr": "0"}}',
 #                                  '{"Plugin":"foo","TimeStamp":"1000000002","Values":{"new": "0"}}'])
 #
-#
-    def test_storage_getHostList(self):
-        # Empty HOSTS in redis
-        with mock.patch('numeter_storage.myRedisConnect', FakeRedis) as redis:
-            redis.hset_data = {}
-            collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
-            hostList = self.storage.getHostList(collectorLine)
-            self.assertEqual(hostList, [])
-        # 2 hosts
-        with mock.patch('numeter_storage.myRedisConnect', FakeRedis) as redis:
-            redis.hset_data = {'HOSTS': {'host1': 'bar', 'host2':'foo'}}
-            collectorLine = {'host': '127.0.0.1', 'password': 'password', 'db': '1'}
-            hostList = self.storage.getHostList(collectorLine)
-            self.assertEqual(hostList, ['foo', 'bar'])
-
 
 #    def test_storage_getInfos(self):
 #        # Start connexion storage (db2)
