@@ -37,10 +37,6 @@ class myStorage:
         self._log_level_stdr            = "debug"
         self._log_path                  = "/var/log/cron_numeter.log"
         self._simulate_file             = "/tmp/numeter.simulate"
-        self._storage_thread            = 10
-        self._max_hosts_by_thread       = 2
-        self._max_data_by_hosts         = 20
-        self._thread_wait_timeout       = 60
         self._rpc_hosts                 = ["127.0.0.1"]
         self._host_list_file            = "/dev/shm/numeter_storage_host_list"
         self._redis_storage_port        = 6379
@@ -563,35 +559,6 @@ class myStorage:
         and self._configParse.get('global', 'simulate_file'):
             self._simulate_file = self._configParse.get('global', 'simulate_file')
             self._logger.info("Config : simulate_file = "+self._simulate_file)
-
-        # storage_thread
-        if self._configParse.has_option('global', 'storage_thread') \
-        and self._configParse.getint('global', 'storage_thread'):
-            self._storage_thread = self._configParse.getint('global',
-                                       'storage_thread')
-            self._logger.info("Config : storage_thread = "
-                + str(self._storage_thread))
-        # max_hosts_by_thread
-        if self._configParse.has_option('global', 'max_hosts_by_thread') \
-        and self._configParse.getint('global', 'max_hosts_by_thread'):
-            self._max_hosts_by_thread = self._configParse.getint('global',
-                                            'max_hosts_by_thread')
-            self._logger.info("Config : max_hosts_by_thread = "
-                + str(self._max_hosts_by_thread))
-        # max_data_by_hosts
-        if self._configParse.has_option('global', 'max_data_by_hosts') \
-        and self._configParse.getint('global', 'max_data_by_hosts'):
-            self._max_data_by_hosts = self._configParse.getint('global',
-                                          'max_data_by_hosts')
-            self._logger.info("Config : max_data_by_hosts = "
-                + str(self._max_data_by_hosts))
-        # thread_wait_timeout
-        if self._configParse.has_option('global', 'thread_wait_timeout') \
-        and self._configParse.getint('global', 'thread_wait_timeout'):
-            self._thread_wait_timeout = self._configParse.getint('global',
-                                            'thread_wait_timeout')
-            self._logger.info("Config : thread_wait_timeout = "
-                + str(self._thread_wait_timeout))
 
         # host_list_file
         if self._configParse.has_option('global', 'host_list_file') \
