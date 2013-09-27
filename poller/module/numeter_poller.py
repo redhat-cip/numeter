@@ -238,7 +238,10 @@ class myPoller:
                 del(modObj)
 
             except (AttributeError, TypeError), e:
-                self._logger.error("Module : " + module + " error :" + str(e))
+                self._logger.error("Module : %s error : %s" % (module, e))
+                continue 
+            except Exception as e:
+                self._logger.error("Module : %s Exception : %s" % (module, e))
                 continue 
         # Exec fixe module
         # loadModules getMyInfo
