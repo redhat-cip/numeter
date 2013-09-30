@@ -48,8 +48,6 @@ class myStorage:
         self._wsp_path_md5_char         = 2
         self._wsp_clean_time            = 48 # 48h
         self._wsp_delete                = False
-        self._redis_collector_port      = 6379
-        self._redis_collector_timeout   = 10
         self._host_list                 = []
         self._host_listNumber           = 0
         self._dataNumber                = 0
@@ -163,7 +161,7 @@ class myStorage:
 
 
     def _get_host_list(self):
-        "Get collector list"
+        "Get host list"
         self._host_list = []
         try:
             # Open file
@@ -191,7 +189,7 @@ class myStorage:
         "Args verification"
         if not self._host_listNumber > 0:
             self._logger.critical("paramsVerification Arg "
-                "collectorListNumber : Error (must be >0)")
+                "hostListNumber : Error (must be >0)")
             return False
         self._logger.debug("Threads paramsVerification : OK")
         return True
@@ -624,16 +622,5 @@ class myStorage:
         and self._configParse.getint('global', 'wsp_clean_time'):
             self._wsp_clean_time = self._configParse.getint('global', 'wsp_clean_time')
             self._logger.info("Config : wsp_clean_time = "+str(self._wsp_clean_time))
-
-        # redis_collector_port
-        if self._configParse.has_option('collector', 'redis_collector_port') \
-        and self._configParse.getint('collector', 'redis_collector_port'):
-            self._redis_collector_port = self._configParse.getint('collector', 'redis_collector_port')
-            self._logger.info("Config : redis_collector_port = "+str(self._redis_collector_port))
-        # redis_collector_timeout
-        if self._configParse.has_option('collector', 'redis_collector_timeout') \
-        and self._configParse.getint('collector', 'redis_collector_timeout'):
-            self._redis_collector_timeout = self._configParse.getint('collector', 'redis_collector_timeout')
-            self._logger.info("Config : redis_collector_timeout = "+str(self._redis_collector_timeout))
 
 
