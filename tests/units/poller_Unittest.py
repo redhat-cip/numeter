@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'
 
 import numeter_poller
 from test_utils import FakeRedis
-from myRedisConnect import myRedisConnect
+from numeter.redis import myRedisConnect
 
 import base as test_base
 

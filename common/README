@@ -3,14 +3,3 @@
 #############################################
 
 
-# ===== Redis configuration for numeter
-
-# If you want you can bind a single interface, if the bind option is not
-bind 0.0.0.0
-
-# Set server verbosity
-loglevel notice
-
-# Set password on your redis
-requirepass mypassword
-

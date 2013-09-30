@@ -6,9 +6,9 @@ import ConfigParser
 import time
 import os
 import json
-from myRedisConnect import myRedisConnect
+from numeter.redis import myRedisConnect
 from numeter_storage_endpoints import StorageEndpoint
-from numeterQueue import server as NumeterQueueC
+from numeter.queue import server as NumeterQueueC
 #import socket
 import re
 import logging

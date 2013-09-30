@@ -16,7 +16,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module
 
 #from numeter_storage import myStorage
 import numeter_storage
-#from myRedisConnect import myRedisConnect
+#from numeter.redis import myRedisConnect
 #import myRedisConnect
 
 import base as test_base
