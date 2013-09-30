@@ -12,8 +12,6 @@ override_dh_auto_install:
 	#python collector/setup.py sdist --dist-dir debian/numeter-collector --prune 
 	python common/setup.py install --root=debian/numeter-common --install-layout=deb
 	rm -rf build
-	python collector/setup.py install --root=debian/numeter-collector --install-layout=deb
-	rm -rf build
 	python poller/setup.py install --root=debian/numeter-poller --install-layout=deb
 	rm -rf build
 	python storage/setup.py install --root=debian/numeter-storage --install-layout=deb
