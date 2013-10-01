@@ -43,50 +43,14 @@ Local database format
     +-------+         +-------------------+
 
 
-Example of collector-list file
+Example of host-list file
 ===============================
 
-Example of host without password : ::
+Example of host list : ::
 
-    10.0.0.1
-
-Exemple de host avec un password sur redis :
-
-Example of host with redis password : ::
-
-    10.0.0.1:mypassword
-
-Use collector list in sql
-==========================
-
-Configure your query in **numeter_storage.cfg** : ::
-
-    host_list_mysql_query = select name,password from mytable;
-
-Example of sql table : ::
-
-    +----+-------------+----------+
-    | id | name        | password |
-    +----+-------------+----------+
-    |  3 | 10.0.0.1    | password |    <- valid
-    |  4 | 10.0.0.2    |          |    <- not valid
-    |  5 | 10.0.0.3    | NULL     |    <- not valid
-    +----+-------------+----------+
-
-You can also use a list without any password, in this case don't create a column for password : ::
-
-    +----+-------------+
-    | id | name        |   
-    +----+-------------+
-    |  3 | 10.0.0.1    |
-    |  4 | 10.0.0.2    |
-    |  5 | 10.0.0.3    |
-    +----+-------------+
-
-If you want to use a single password for every hosts, you can setup directly like in the configuration file: ::
-
-    host_list_mysql_query = select name,(@password:='password') from hosts;
-
+    #Poller <hostID>
+    myhost-123456
+    myhost-789456
 
 Troubleshooting
 ================
