@@ -6,12 +6,12 @@ DM-Upload-Allowed: yes
 Build-Depends: debhelper, python, quilt
 X-Python-Version: >=2.5, <=2.7
 Standards-Version: 3.9.3
-Homepage: https://github.com/numeter
+Homepage: https://github.com/enovance/numeter
 
 Package: numeter-poller
 Architecture: all
-Homepage: https://github.com/numeter/poller
-Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, python-daemon, munin-node, redis-server (>= 2:2.4.14)
+Homepage: https://github.com/enovance/numeter
+Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, munin-node
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
  Poller is an agent installed on the servers for which graphs are desired. It
@@ -19,15 +19,15 @@ Description: Numeter is a new and dynamic graphing solution.
 
 Package: numeter-common
 Architecture: all
-Homepage: https://github.com/numeter
-Depends: ${misc:Depends}, ${python:Depends}, python, python-redis (>= 2.4.9)
+Homepage: https://github.com/enovance/numeter
+Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-kombu
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
  Common tools for Numeter components.
 
 Package: munin-plugins-numeter
 Architecture: all
-Homepage: https://github.com/numeter
+Homepage: https://github.com/enovance/numeter
 Depends: ${misc:Depends}, ${python:Depends}, python, munin-node
 XB-Python-Version: ${python:Versions}
 Description: Munin plugins for Numeter.
