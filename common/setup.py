@@ -40,7 +40,7 @@ if __name__ == '__main__':
           license='GNU Affero General Public License v3',
           #scripts = ['bin/numeter'],
           packages = ['numeter', 'numeter.queue'],
-          #package_dir = {'':'queue/numeterQueue'},
+          package_dir = {'numeter':'common/numeter'},
           #data_files = [('/etc', ['etc/numeter.conf']),
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),
