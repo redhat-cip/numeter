@@ -55,8 +55,6 @@ class myFakeSocket():
     def close(self):
         pass
 
-        
-
 class PollerMuninModuleTestCase(test_base.TestCase):
 
     def setUp(self):
@@ -81,8 +79,7 @@ class PollerMuninModuleTestCase(test_base.TestCase):
         self._pollerMuninModule.munin_connect = fakemunin_connect
 
     def tearDown(self):
-        super(PollerMuninModuleTestCase, self).setDown()
-        return
+        super(PollerMuninModuleTestCase, self).tearDown()
 
 
     def test_muninModule_munin_nodes(self):

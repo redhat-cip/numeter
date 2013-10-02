@@ -14,21 +14,32 @@ Manual
 ========
 
 **Depends:**
-  * python-redis >= 2.4.9
+  * python-oslo.messaging
+  * python-kombu
 
-Python-redis api
+Python-kombu api
 -----------------
 
-Quick exemple of python-redis installation
+Quick exemple of python-kombu installation
 
 **From packages :** ::
 
-  apt-get install -t squeeze-backports python-redis
+  apt-get install python-kombu
+
+
+Python-oslo.messaging
+----------------------
+
+Quick exemple of python-oslo.messaging installation
+
+**From packages :** ::
+
+  apt-get install python-oslo.messaging
 
 **From sources :** ::
 
-  git clone https://github.com/andymccurdy/redis-py
-  cd redis-py
+  git clone https://github.com/openstack/oslo.messaging
+  cd oslo.messaging
   python setup.py install
 
 

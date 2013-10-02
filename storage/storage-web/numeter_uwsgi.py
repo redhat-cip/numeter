@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from myRedisConnect import myRedisConnect
+from numeter.redis import myRedisConnect
 import ConfigParser
 from flask import Flask, request
 import json
-import rrdtool
+import whisper
 import os
+import time
 
 baseURL="/numeter-storage"
 
@@ -74,7 +75,6 @@ def jsonToPython(data):
 configFile = "/etc/numeter/numeter_storage.cfg"
 readConf(configFile)
 
-
 app = Flask(__name__)
 
 @app.route(baseURL + '/')
@@ -86,10 +86,13 @@ def hosts():
     myConnect = redisStartConnexion()
     response={}
     allhosts = myConnect.redis_hgetall("HOSTS")
-    for addr,value in allhosts.iteritems():
-        value = jsonToPython(value)
-        value['address'] = addr
-        response[addr] = value
+
+    # Convert key: json to key:dict
+    for hostID, value_json in allhosts.iteritems():
+        value = jsonToPython(value_json)
+        # TODO FIXEME : delete Address (backward compatibility)
+        value['Address'] = hostID
+        response[hostID] = value
     return pythonToJson(response)
 
 # test url http://127.0.0.1:3031/hinfo?host=1350646673-fe526c202a1812c0640877cebe801cc3
@@ -159,45 +162,44 @@ def data():
             resolution  = request.args["res"]
 
             myConnect = redisStartConnexion()
-            path = myConnect.redis_hget("RRD_PATH", host)
+            path = myConnect.redis_hget("WSP_PATH", host)
 
             # Set startpoint for resolution
             if resolution == "Daily":
-                startPoint = '-24h'
+                startPoint = 86400
             elif resolution == "Weekly":
-                startPoint = '-7day'
+                startPoint = 604800
             elif resolution == "Monthly":
-                startPoint = '-31day'
+                startPoint = 18748800
             elif resolution == "Yearly":
-                startPoint = '-1y'
+                startPoint = 224985600
 
             # Fetch all ds :
             VALUES_JSON=[]
             for ds in allDS.split(','):
 
-                # Fetch rrd
+                # Fetch wsp
                 # ((1335530280, 1335530640, 60), ('_dev_shm',), [(None,), (None,), (None,), (None,)])
-                if os.path.isfile(str(path+'/'+plugin+'/'+ds+'.rrd')):
-                    result_rrd = rrdtool.fetch( str(path+'/'+plugin+'/'+ds+'.rrd'),
-                                            'AVERAGE', '-s '+startPoint, '-e N')
+                if os.path.isfile(str(path+'/'+plugin+'/'+ds+'.wsp')):
+                   result_wsp = whisper.fetch(str(path+'/'+plugin+'/'+ds+'.wsp'), time.time() - startPoint, time.time()) 
                 else:
                     return "{}"
 
                 # Get info
-                TS_START = result_rrd[0][0]
-                TS_END = result_rrd[0][1]
-                TS_STEP = result_rrd[0][2]
+                TS_START = result_wsp[0][0]
+                TS_END = result_wsp[0][1]
+                TS_STEP = result_wsp[0][2]
                 # Fixe ERROR: Invalid DS name for long ds name
                 DS = ds
-                #DS = result_rrd[1][0]
+                #DS = result_wsp[1][0]
 
                 # Format the list of value in [0,1,2,null]
                 tmp_data=[]
-                for value in result_rrd[2]:
-                    if value[0] == None:
+                for value in result_wsp[1]:
+                    if value == None:
                         tmp_data.append("null")
                     else:
-                        tmp_data.append(value[0])
+                        tmp_data.append(value)
                 # Trick for join null string and int
                 joined_values = ', '.join(["%s" % el for el in tmp_data]) 
                 # stock values

@@ -24,9 +24,9 @@ from distutils.core import setup
 
 if __name__ == '__main__':
 
-    setup(name='numeter-common',
-          version='0.2.3.11',
-          description='Numeter Common',
+    setup(name='numeter-queue',
+          version='0.2.3.10',
+          description='Numeter Queue',
           long_description="""Numeter is a new graphing solution (like Cacti for \
           example) made by some guys working at eNovance. Poller and collector are \
           written in Python and datas are stored in a Redis DB. The webapp is written in PHP.\
@@ -39,8 +39,8 @@ if __name__ == '__main__':
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
           #scripts = ['bin/numeter'],
-          packages = ['myRedisConnect'],
-          package_dir = {'myRedisConnect':'common/myRedisConnect'},
+          packages = ['numeter', 'numeter.queue'],
+          package_dir = {'numeter':'common/numeter'},
           #data_files = [('/etc', ['etc/numeter.conf']),
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),

@@ -7,7 +7,6 @@ import time
 from daemon import runner
 from lockfile import LockTimeout
 import logging
-import time
 
 from numeter_storage import myStorage
 import ConfigParser
@@ -15,9 +14,8 @@ import ConfigParser
 class App():
     def __init__(self):
         self.stdin_path = '/dev/null'
-        self.stdout_path = '/dev/null'
-        #self.stderr_path = '/dev/tty'
-        self.stderr_path = '/dev/null'
+        self.stdout_path = '/dev/tty'
+        self.stderr_path = '/dev/tty'
         self.pidfile_path =  '/var/run/numeter_storage.pid'
         self.pidfile_timeout = 0.1
         self._storage_time = 60
@@ -46,25 +44,17 @@ class App():
 
     def run(self):
         storage = myStorage(self.storage_configFile)
-        lastCheckTime = None
-        while True:
-            nowTimestamp = "%.0f" % time.time()
-            # +5 give you an accuracy of 5 sec more or less between fetch
-            if lastCheckTime is None \
-            or (int(lastCheckTime)+self._storage_time) <= (int(nowTimestamp)+5):
-                storage.startStorage()
-                lastCheckTime = nowTimestamp
-            time.sleep(1)
+        storage.startStorage()
 
 app = App()
 daemon_runner = runner.DaemonRunner(app)
 
 try:
     daemon_runner.do_action()
-except (runner.DaemonRunnerStopFailureError, TypeError):
-    print 'PID not found, Already stop.'
+except (runner.DaemonRunnerStopFailureError, TypeError) as e:
+    print 'PID not found, Already stop. %s' % e
 except LockTimeout:
-    print 'Lock file found, Already start.'
+    print 'Lock file found, Already start. %s.lock' % app.pidfile_path
 except Exception as e:
     print "Error : %s %s" % (e, str(sys.exc_info()))
 

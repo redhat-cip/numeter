@@ -10,9 +10,6 @@ import time
 import munin_connect
 
 
-#print c.munin_nodes()
-#print c.munin_list()
-
 #
 # Munin module
 #
@@ -25,6 +22,8 @@ class myMuninModule(ModulesGeneric):
         self._munin_host = "127.0.0.1"
         self._munin_port = 4949
         self._plugins_enable = ".*"
+        self.munin_connection = None
+        self.watchdog = 1000 # watchdog for munin socket error
 
         if configParser: self.getParserConfig()
         self._logger.info("section myMuninModule : plugins_enable = "
@@ -83,7 +82,7 @@ class myMuninModule(ModulesGeneric):
             return None
 
         # Get now timestamp
-        nowTimestamp = "%.0f" % time.time()
+        nowTimestamp = "%s" % int(time.time())
         # Set plugin informations
         data = {  'TimeStamp': nowTimestamp, 
                    'Plugin': plugin, 

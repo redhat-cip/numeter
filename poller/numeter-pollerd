@@ -14,11 +14,10 @@ import ConfigParser
 class App():
     def __init__(self):
         self.stdin_path = '/dev/null'
-        self.stdout_path = '/dev/null'
-        #self.stderr_path = '/dev/tty'
-        self.stderr_path = '/dev/null'
+        self.stdout_path = '/dev/tty'
+        self.stderr_path = '/dev/tty'
         self.pidfile_path =  '/var/run/numeter_poller.pid'
-        self.pidfile_timeout = 0.1
+        self.pidfile_timeout = 1.1
         self._poller_time = 60
         # Read poller conf time
         self.poller_configFile = "/etc/numeter/numeter_poller.cfg"
@@ -62,10 +61,10 @@ daemon_runner = runner.DaemonRunner(app)
 
 try:
     daemon_runner.do_action()
-except (runner.DaemonRunnerStopFailureError, TypeError):
-    print 'PID not found, Already stop.'
+except (runner.DaemonRunnerStopFailureError, TypeError) as e:
+    print 'PID not found, Already stop. %s' % e
 except LockTimeout:
-    print 'Lock file found, Already start.'
+    print 'Lock file found, Already start. %s.lock' % app.pidfile_path
 except Exception as e:
     print "Error : %s %s" % (e, str(sys.exc_info()))
 

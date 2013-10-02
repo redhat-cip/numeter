@@ -2,7 +2,7 @@
 Installation
 **************
 .. warning::
-   This documentation is based on Debian wheezy to install uswgi and nginx fastcgi from package.
+   This documentation is based on Debian stable wheezy to install uswgi and nginx fastcgi from package.
 
 .. note::
 
@@ -34,16 +34,17 @@ Manual
 ========
 
 **Depends:**
-  * numeter-common (redis module)
+  * python-kombu
+  * python-oslo.messaging
+  * numeter-common (rpc module)
   * python-redis >= 2.4.9
   * redis >= 2:2.4.14
-  * python-rrdtool
+  * python-whisper
   * nginx
   * uwsgi
   * python-flask
-
-**Optional requirements:**
-  * python-mysql if you want to use MySQL to store collector list.
+  * python-daemon
+  * (rabbitmq-server)
 
 Nginx
 ---------------
@@ -66,21 +67,21 @@ Python flask
 
     apt-get install python-flask
 
-Python-rrdtool
+Python-whisper
 ---------------
 
 **From packages :** ::
 
-    apt-get install python-rrdtool
+    apt-get install python-whisper
 
-Python-redis api 
------------------
+Python-redis
+-------------
 
 Quick exemple of python-redis installation
 
 **From packages :** ::
 
-  apt-get install -t squeeze-backports python-redis
+  apt-get install python-redis
 
 **From sources :** ::
 
@@ -93,7 +94,47 @@ Redis server
 
 **From packages :** ::
 
-    apt-get install -t squeeze-backports redis-server
+    apt-get install redis-server
+
+Python-daemon
+-----------------
+
+Quick exemple of python-daemon installation
+
+**From packages :** ::
+
+  apt-get install python-daemon
+
+Python-kombu
+-----------------
+
+Quick exemple of python-kombu installation
+
+**From packages :** ::
+
+  apt-get install python-kombu
+
+Python-oslo.messaging
+-----------------
+
+Quick exemple of python-oslo.messaging installation
+
+**From packages :** ::
+
+  apt-get install python-oslo.messaging
+
+**From sources :** ::
+
+Depends ::
+
+  apt-get install python-dev python-setuptools
+  easy_install pip
+
+Setup::
+
+  git clone https://github.com/openstack/oslo.messaging
+  cd oslo.messaging
+  python setup.py install
 
 Numeter storage
 ------------------
@@ -140,9 +181,9 @@ Enable numeter storage: ::
 
 Add a collector in collector-list file: ::
 
-    vim /etc/numeter/collector-list
-    #Poller address[:db num:password]
-    127.0.0.1:1
+    vim /etc/numeter/host-list
+    #Poller <hostID>
+    myhost-123456
 
 Try to launch numeter-collector : ::
 

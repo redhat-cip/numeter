@@ -16,10 +16,12 @@ Manual
 ========
 
 **Depends:**
-  * numeter-common (redis module)
-  * python-redis >= 2.4.9
-  * redis >= 2:2.4.14
+  * python-kombu
+  * python-oslo.messaging
+  * numeter-common (rpc module)
   * python-daemon
+  * (rabbitmq-server)
+  * (munin-node)
 
 Python-daemon
 -----------------
@@ -30,29 +32,36 @@ Quick exemple of python-daemon installation
 
   apt-get install python-daemon
 
-Python-redis
+Python-kombu
 -----------------
 
-Quick exemple of python-redis installation
+Quick exemple of python-kombu installation
 
 **From packages :** ::
 
-  apt-get install -t squeeze-backports python-redis
+  apt-get install python-kombu
+
+Python-oslo.messaging
+-----------------
+
+Quick exemple of python-oslo.messaging installation
+
+**From packages :** ::
+
+  apt-get install python-oslo.messaging
 
 **From sources :** ::
 
-  git clone https://github.com/andymccurdy/redis-py
-  cd redis-py
+Depends ::
+
+  apt-get install python-dev python-setuptools
+  easy_install pip
+
+Setup::
+
+  git clone https://github.com/openstack/oslo.messaging
+  cd oslo.messaging
   python setup.py install
-
-Redis server
--------------
-
-**From packages :** ::
-
-    apt-get install -t squeeze-backports redis-server
-
-Numeter poller launch a redis-server on port **5959**.
 
 Numeter poller
 ---------------
@@ -88,10 +97,6 @@ Enable numeter poller: ::
 Also add a uniq id in host_id : ::
 
     host_id = 123456789
-
-Start redis numeter-poller : ::
-
-    /etc/init.d/numeter-redis-poller start
 
 Try to launch numeter-poller one time : ::
 

@@ -23,70 +23,34 @@ Local database format
     +--------+         +---------------+   |-->  HostID2   : md5sum(HostID2)
 
     +--------+         +-------------+
-    |  HSET  |         |  RRD_PATH   | ----->  HostID1   : /opt/rrd/1
-    +--------+         +-------------+   |-->  HostID2   : /opt/rrd/2
+    |  HSET  |         |  WSP_PATH   | ----->  HostID1   : /opt/wsp/1
+    +--------+         +-------------+   |-->  HostID2   : /opt/wsp/2
 
     +--------+         +------------------+
-    |  HSET  |         |  DELETED_HOSTS   | ----->  HostID3   : RRD_PATH
-    +--------+         +------------------+   |-->  HostID4   : RRD_PATH
+    |  HSET  |         |  DELETED_HOSTS   | ----->  HostID3   : WSP_PATH
+    +--------+         +------------------+   |-->  HostID4   : WSP_PATH
 
     +--------+         +--------------------+
-    |  HSET  |         |  DELETED_PLUGINS   | ----->  HostID1@plugin   : RRD_PATH/plugin
-    +--------+         +--------------------+   |-->  HostID2@plugin   : RRD_PATH/plugin
+    |  HSET  |         |  DELETED_PLUGINS   | ----->  HostID1@plugin   : WSP_PATH/plugin
+    +--------+         +--------------------+   |-->  HostID2@plugin   : WSP_PATH/plugin
 
     +-------+         +------------+
-    |  SET  |         |  OLD_RRD   | ----->  [RRD_PATH/plugin/rrd1, RRD_PATH/plugin/rrd2]
+    |  SET  |         |  OLD_WSP   | ----->  [WSP_PATH/plugin/wsp1, WSP_PATH/plugin/wsp2]
     +-------+         +------------+
 
     +-------+         +-------------------+
-    |  SET  |         |  LAST_RRD_CLEAN   | ----->  TimeStamp
+    |  SET  |         |  LAST_WSP_CLEAN   | ----->  TimeStamp
     +-------+         +-------------------+
 
 
-Example of collector-list file
+Example of host-list file
 ===============================
 
-Example of host without password : ::
+Example of host list : ::
 
-    10.0.0.1
-
-Exemple de host avec un password sur redis :
-
-Example of host with redis password : ::
-
-    10.0.0.1:mypassword
-
-Use collector list in sql
-==========================
-
-Configure your query in **numeter_storage.cfg** : ::
-
-    host_list_mysql_query = select name,password from mytable;
-
-Example of sql table : ::
-
-    +----+-------------+----------+
-    | id | name        | password |
-    +----+-------------+----------+
-    |  3 | 10.0.0.1    | password |    <- valid
-    |  4 | 10.0.0.2    |          |    <- not valid
-    |  5 | 10.0.0.3    | NULL     |    <- not valid
-    +----+-------------+----------+
-
-You can also use a list without any password, in this case don't create a column for password : ::
-
-    +----+-------------+
-    | id | name        |   
-    +----+-------------+
-    |  3 | 10.0.0.1    |
-    |  4 | 10.0.0.2    |
-    |  5 | 10.0.0.3    |
-    +----+-------------+
-
-If you want to use a single password for every hosts, you can setup directly like in the configuration file: ::
-
-    host_list_mysql_query = select name,(@password:='password') from hosts;
-
+    #Poller <hostID>
+    myhost-123456
+    myhost-789456
 
 Troubleshooting
 ================
@@ -99,9 +63,9 @@ Get plugin info for a host ::
 
     redis-cli -n 2 hget "INFOS@<hostid>" df
 
-Get the rrd path for a host ::
+Get the wsp path for a host ::
 
-    redis-cli -n 2 hget "RRD_PATH" <hostid>
+    redis-cli -n 2 hget "WSP_PATH" <hostid>
 
 Test the storage
 =================

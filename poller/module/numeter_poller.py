@@ -5,15 +5,13 @@ import ConfigParser
 import time
 import os
 import json
-from myRedisConnect import myRedisConnect
 import socket
 import re
 import logging
 import sys
-
-
-import pprint # Debug (dumper)
-
+from numeter.queue import client as NumeterQueueP
+from cachelastvalue import CacheLastValue
+from storeandforward import StoreAndForward
 
 #
 # Poller
@@ -32,13 +30,10 @@ class myPoller:
         self._poller_time            = 60
         self._plugins_refresh_time   = 300
         self._need_refresh           = False # Passe a True suivant le refresh_time
-        self._redis_password         = None
-        self._redis_db               = 0
-        self._redis_data_expire_time = 120
-        self._redis_port             = 6379
-        self._redis_host             = "127.0.0.1"
+        self._rpc_hosts            = ['127.0.0.1:5672']
         self._plugin_number          = 0
         self.disable_pollerTimeToGo  = False
+        self._cache = None
 
         # myInfo default value
         self._myInfo_name = socket.gethostname()
@@ -48,7 +43,6 @@ class myPoller:
         # Read de la conf
         self._configFile = configFile
         self.readConf()
-
 
     def startPoller(self):
         "Start the poller"
@@ -68,126 +62,146 @@ class myPoller:
             self._logger.warning("Poller disable, configuration host_id = None")
             exit(2)
 
-        if not self._simulate:
-            # Open redis connexion
-            self._redis_connexion = self.redisStartConnexion()
-            # Clear old datas
-            self.rediscleanDataExpired()
-
-        # Lancement des modules + écriture des data dans redis
-        self.loadModules()
+        # load cache for DERIVE and store and forward message
+        with CacheLastValue(cache_file='/dev/shm/numeter_poller_cache.json',
+                               logger='numeter') as self._cache, \
+             StoreAndForward(cache_file='/dev/shm/numeter_poller_storeandforward.json',
+                               logger='numeter') as self._store_and_forward:
+            self.loadModules()
 
         # End log time execution
         self._logger.warning("---- End : numeter_poller, "
             + str(self._plugin_number) + " Plugins in "
             + str(time.time() - self._startTime) + ", seconds.")
 
-
-    def redisStartConnexion(self):
-        "start redis connection"
-        redis_connexion = myRedisConnect(host=self._redis_host,
-                                         port=self._redis_port,
-                                         password=self._redis_password,
-                                         db=self._redis_db)
-        if redis_connexion._error:
-            self._logger.critical("Redis connexion ERROR - Check server access or the password")
-            exit(1)
-        return redis_connexion
-
-
     def convertToJson(self, data):
         "Convert data to json"
         return json.dumps(data)
 
 
-
-    def writeData(self, allDatas):
-        "Write data in redis or file"
+    def _sendData(self, allDatas):
+        "Send data in rpc"
         if self._simulate:
             self._logger.info("Write data in file : " + self._simulate_file)
             self.writeInSimulateFile("===== Write DATAS =====")
             allDatasJson = self.convertToJson(allDatas)
             self.writeInSimulateFile(str(allDatasJson))
         else:
-            self._logger.info("Write data in redis")
+            self._logger.info("Send data in rpc")
             allTimeStamps = []
+            last_send_status = False
             for data in allDatas:
                 if data.has_key("TimeStamp") \
                 and data.has_key("Plugin") \
                 and re.match("[0-9]+",data["TimeStamp"]):
+                    for ds_name, ds_value in data['Values'].iteritems():
+                        # Get gap if type is DERIVE, COUNTER, ...
+                        key = '%s.%s' % (data["Plugin"], ds_name)
+                        lastValue = self._cache.get_value(key)
+                        if lastValue is not None:
+                            if lastValue['value'] == 'U' \
+                            or data['Values'][ds_name] == 'U':
+                                gap = 'U'
+                            else:
+                                gap_value = float(data['Values'][ds_name]) - float(lastValue['value'])
+                                timestamp_gap = int(data["TimeStamp"]) - int(lastValue['timestamp'])
+                                gap = gap_value / timestamp_gap
+                            # Update last value
+                            self._cache.save_value( key=key,
+                                    timestamp=data["TimeStamp"],
+                                    value=data['Values'][ds_name])
+                            # Replace value by gap for try
+                            data['Values'][ds_name] = gap
+
                     dataJson = self.convertToJson(data)
-                    self._logger.info("Write TimeStamp " + data["TimeStamp"]
-                                      + " -- plugin : "+data["Plugin"] )
-                    self._logger.debug("Write TimeStamp " + data["TimeStamp"]
+                    self._logger.info("Send TimeStamp " + data["TimeStamp"]
+                                      + " -- plugin : " + data["Plugin"] )
+                    self._logger.debug("Send TimeStamp " + data["TimeStamp"]
                                        + " -- plugin : " + data["Plugin"]
-                                       + " -- value :"+str(dataJson))
-                    self._redis_connexion.redis_zadd("DATAS",
-                                                     dataJson,
-                                                     int(data["TimeStamp"]))
+                                       + " -- value :" + str(dataJson))
+
+                    # send data in queue (if fail store)
+                    last_send_status = self._store_and_forward_sendMsg(msgType='data',
+                                                    plugin=data["Plugin"],
+                                                    msgContent=dataJson)
                     allTimeStamps.append(data["TimeStamp"])
                     self._plugin_number = self._plugin_number + 1
-            # Write all timeStamps
-            seen = []
-            for timeStamp in allTimeStamps:
-                if timeStamp not in seen:
-                    self._redis_connexion.redis_zadd("TimeStamp",
-                                                     timeStamp,
-                                                     int(timeStamp))
-                    seen.append(timeStamp)
+            # Send stored datas
+            if last_send_status:
+                for msg in self._store_and_forward.consume():
+                    if not self._store_and_forward_sendMsg(msgType=msg['msgType'],
+                                 plugin=msg['plugin'],
+                                 msgContent=msg['msgContent']):
+                        break
+
+    def _store_and_forward_sendMsg(self, msgType, plugin, msgContent):
+        send_success = self._sendMsg(msgType, plugin, msgContent)
+        if not send_success:
+            self._store_and_forward.add_message(msgType,
+                                                plugin,
+                                                msgContent)
+            self._logger.info("Adding message to store and forward file %s"
+                                 % (plugin))
+            return False
+        return True
 
 
+    def _sendMsg(self, msgType, plugin, msgContent):
+        queue = NumeterQueueP.get_rpc_client(hosts=self._rpc_hosts)
+        try:
+            routing_key = '%s' % (self._myInfo_hostID)
+            context = dict(topic=routing_key,
+                           plugin=plugin,
+                           type=msgType,
+                           hostid=self._myInfo_hostID)
+            args = {'message': msgContent}
+            queue.poller_msg(context, topic=routing_key, args=args)
+            return True
+        except:
+            self._logger.warning("Send message %s error : %s"
+                                 % (routing_key, str(sys.exc_info())))
+            return False
 
 
-    def writeInfo(self, allInfos):
-        "Write infos in redis or file"
+    def _sendInfo(self, allInfos):
+        "Send info in rpc"
         if self._simulate:
-            self._logger.info("Write Infos in file : " + self._simulate_file)
-            self.writeInSimulateFile("===== Write INFOS =====")
+            self._logger.info("Send Infos in file : " + self._simulate_file)
+            self.writeInSimulateFile("===== SEND INFOS =====")
             allInfosJson = self.convertToJson(allInfos)
             self.writeInSimulateFile(str(allInfosJson))
             return []
         else:
-            self._logger.info("Write Infos in redis")
+            self._logger.info("Send info in rpc")
             writedInfos = []
             for info in allInfos:
                 if info.has_key("Plugin"):
                     infoJson = self.convertToJson(info)
-                    self._logger.info("Write info -- plugin : "
+                    self._logger.info("Send info -- plugin : "
                                       + info["Plugin"] )
-                    self._logger.debug("Write info -- plugin : "
+                    self._logger.debug("Send info -- plugin : "
                                        + info["Plugin"]
                                        + " -- value :" + str(info))
-                    self._redis_connexion.redis_hset("INFOS",
-                                                     info["Plugin"],
-                                                     infoJson)
+                    # send info in queue (if fail store)
+                    last_send_status = self._sendMsg(msgType='info',
+                                                    plugin=info["Plugin"],
+                                                    msgContent=infoJson)
                     writedInfos.append(info["Plugin"])
+                    # Say keep cache for DERIVE and other
+                    # Do not try to cache MyInfo
+                    if info["Plugin"] is 'MyInfo':
+                        continue
+                    # Check if ds need to be cached
+                    # Send only if value is not in cache
+                    for ds_name, ds_info in info.get("Infos", {}).iteritems():
+                        key = '%s.%s' % (info["Plugin"], ds_name)
+                        if 'type' in ds_info \
+                        and self._cache.get_value(key) is None \
+                        and ds_info['type'] in ('DERIVE', 'COUNTER', 'ABSOLUTE'):
+                            self._cache.save_value(key=key,
+                                             timestamp='000000000',
+                                             value='U')
             return writedInfos
-
-
-
-    def cleanInfo(self, writedInfos):
-        "Clean infos in redis"
-
-        # Get current plugin list
-        currentPlugin = self._redis_connexion.redis_hkeys("INFOS")
-        if currentPlugin == []:
-            self._logger.info("Clean info -- nothing to do")
-            return
-        # Get the gap
-        toDelete = list(set(currentPlugin) - set(writedInfos))
-        # Same list do nothing
-        if toDelete == []:
-            self._logger.info("Clean info -- nothing to do : same Infos")
-            return
-        else: # Erase some plugin
-            self._logger.info("Clean info -- clean plugins : " + str(toDelete))
-            if self._simulate:
-                self.writeInSimulateFile("===== Clean INFOS =====")
-                self.writeInSimulateFile(str(toDelete))
-            else:
-                for plugin in toDelete:
-                    self._redis_connexion.redis_hdel("INFOS", plugin)
-
 
 
     def writeInSimulateFile(self, message): 
@@ -212,19 +226,22 @@ class myPoller:
                 # Get DATAS
                 self._logger.info("Call plugin get data")
                 allDatas = modObj.getData()
-                self.writeData(allDatas)
+                self._sendData(allDatas)
                 # Refresh config
                 if self._need_refresh: 
                     self._logger.info("Call plugin info refresh")
                     # Get all infos
                     allInfos = modObj.pluginsRefresh()
                     # Write all infos
-                    writedInfos.extend(self.writeInfo(allInfos))
+                    writedInfos.extend(self._sendInfo(allInfos))
                 self._logger.info("Module : " + module + " Success")
                 del(modObj)
 
             except (AttributeError, TypeError), e:
-                self._logger.error("Module : " + module + " error :" + str(e))
+                self._logger.error("Module : %s error : %s" % (module, e))
+                continue 
+            except Exception as e:
+                self._logger.error("Module : %s Exception : %s" % (module, e))
                 continue 
         # Exec fixe module
         # loadModules getMyInfo
@@ -232,10 +249,8 @@ class myPoller:
             allInfos = []
             self._logger.info("Call plugin getMyInfo")
             allInfos = self.getMyInfo()
-            self.writeInfo(allInfos)
+            self._sendInfo(allInfos)
             writedInfos.append('MyInfo')
-            # Clean suppress plugins
-            self.cleanInfo(writedInfos)
 
 
 
@@ -247,16 +262,12 @@ class myPoller:
         info['ID']          = self._myInfo_hostID
         info['Description'] = self._myInfo_description
 #        info['Step']        = str(self._poller_time)
-        infos = []
-        infos.append(info) # Format info for self.writeInfo
-        return infos
-
-
+        return [info]
 
     def getgloballog(self):
         "Init logger (file and stdr)"
         # set file logger
-        logger = logging.getLogger('numeter')
+        logger = logging.getLogger()
         fh = logging.FileHandler(self._log_path)
         logger.addHandler(fh)
         if self._logLevel == "warning":
@@ -293,7 +304,8 @@ class myPoller:
 
     def pollerTimeToGo(self):
         "LAST + poller_time <= NOW calcule aussi le refresh time"
-        nowTimestamp = "%.0f" % time.time()
+        nowTimestamp = "%s" % int(time.time())
+
         # Si c'est le 1er lancement
         if not os.path.isfile(self._poller_time_file):
             self._logger.info("Poller pollerTimeToGo ok now")
@@ -402,31 +414,11 @@ class myPoller:
         and self._configParse.getint('global', 'plugins_refresh_time'):
             self._plugins_refresh_time = self._configParse.getint('global', 'plugins_refresh_time')
             self._logger.info("Config : plugins_refresh_time = " + str(self._plugins_refresh_time))
-        # redis_host
-        if self._configParse.has_option('global', 'redis_host') \
-        and self._configParse.get('global', 'redis_host'):
-            self._redis_host = self._configParse.get('global', 'redis_host')
-            self._logger.info("Config : redis_host = " + self._redis_host)
-        # redis_password
-        if self._configParse.has_option('global', 'redis_password') \
-        and self._configParse.get('global', 'redis_password'):
-            self._redis_password = self._configParse.get('global', 'redis_password')
-            self._logger.info("Config : redis_password = " + self._redis_password)
-        # redis_port
-        if self._configParse.has_option('global', 'redis_port') \
-        and self._configParse.getint('global', 'redis_port'):
-            self._redis_port = self._configParse.getint('global', 'redis_port')
-            self._logger.info("Config : redis_port = " + str(self._redis_port))
-        # redis_db
-        if self._configParse.has_option('global', 'redis_db') \
-        and self._configParse.getint('global', 'redis_db'):
-            self._redis_db = self._configParse.getint('global', 'redis_db')
-            self._logger.info("Config : redis_db = " + str(self._redis_db))
-        # redis_data_expire_time
-        if self._configParse.has_option('global', 'redis_data_expire_time') \
-        and self._configParse.getint('global', 'redis_data_expire_time'):
-            self._redis_data_expire_time = self._configParse.getint('global', 'redis_data_expire_time')
-            self._logger.info("Config : redis_data_expire_time = " + str(self._redis_data_expire_time))
+        # rpc_hosts
+        if self._configParse.has_option('global', 'rpc_hosts') \
+        and self._configParse.get('global', 'rpc_hosts'):
+            self._rpc_hosts = self._configParse.get('global', 'rpc_hosts').split(',')
+            self._logger.info("Config : rpc_hosts = " + ','.join(self._rpc_hosts))
         # getMyInfo - Name
         if self._configParse.has_option('MyInfo', 'name') \
         and self._configParse.get('MyInfo', 'name'):
@@ -442,22 +434,3 @@ class myPoller:
         and self._configParse.get('MyInfo', 'description'):
             self._myInfo_description = self._configParse.get('MyInfo', 'description')
             self._logger.info("Config : myInfo_description = " + self._myInfo_description)
-
-
-    def rediscleanDataExpired(self):
-        "Suppression des data dans redis > à redis_data_expire_time"
-        now              = time.strftime("%Y %m %d %H:%M", time.localtime())
-        nowTimestamp     = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M')) # "%.0f" % supprime le .0 aprés le
-        expireInSeconde  = self._redis_data_expire_time * 60
-        dateMax          = str(int(nowTimestamp) - expireInSeconde)
-
-        deleted = str(self._redis_connexion.redis_zremrangebyscore('DATAS', '-inf', dateMax))
-        self._logger.info("Clear des data <= " + dateMax
-                          + " Data deleted : " + deleted)
-        
-        deleted = str(self._redis_connexion.redis_zremrangebyscore('TimeStamp', '-inf', dateMax))
-        self._logger.info("Clear des timestamp <= à " + dateMax
-                          + " Data deleted : " + deleted)
-
-
-

@@ -34,7 +34,7 @@ else:
     IMPORT_STORAGE = True
 
 try: 
-    from myRedisConnect import myRedisConnect
+    from numeter.redis import myRedisConnect
 except ImportError:
     IMPORT_REDIS = False
 else:
