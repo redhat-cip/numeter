@@ -14,7 +14,7 @@
    height="85.499733"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="logo.svg">
   <defs
      id="defs4">
@@ -4680,16 +4680,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.90509671"
-     inkscape:cx="420.51084"
-     inkscape:cy="-141.16985"
+     inkscape:zoom="1.8101934"
+     inkscape:cx="-59.20463"
+     inkscape:cy="-105.60443"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1054"
+     inkscape:window-width="1362"
+     inkscape:window-height="745"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="19"
      inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true">
@@ -4706,7 +4706,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -4986,5 +4986,247 @@
          x="-201.62018"
          y="233.71097"
          style="fill:#117799;fill-opacity:1;stroke:#117799;stroke-width:1.3655057;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">Numeter</tspan></text>
+    <path
+       style="fill:none;stroke:#117799;stroke-width:4.30000019;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -263.49346,494.99248 25.41165,-0.55243 22.09708,-22.64951 2.76214,25.41165 12.70582,-7.73398 3.86699,19.33495 20.4398,-132.58252 8.83883,175.11941 m 0,0 8.83884,-71.81553 7.73398,12.70582 14.91553,-20.99223 17.67767,26.51651 19.887377,-13.81068 9.39126,6.62912 40.87962,-1.10485 23.20194,-22.64952 -1.10486,24.3068"
+       id="path4546-2"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#2e2e2e;fill-opacity:1;stroke:none"
+       d="m -427.13634,278.41308 c 40.73207,7.11833 13.52883,62.75832 -24.94873,39.78884 -117.99562,4.56233 -13.62943,-151.0751 24.94873,-39.78884 z"
+       id="rect7023-9-6-6-8"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.25;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9012-4-6-2-1"
+       sodipodi:cx="-2028.0983"
+       sodipodi:cy="1132.8784"
+       sodipodi:rx="26.654612"
+       sodipodi:ry="26.654612"
+       d="m -2001.4437,1132.8784 a 26.654612,26.654612 0 1 1 -53.3092,0 26.654612,26.654612 0 1 1 53.3092,0 z"
+       transform="matrix(1.1077886,0,0,1.1077886,1778.4724,-976.93414)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.57986109;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9038-3-2"
+       sodipodi:cx="-2121.4929"
+       sodipodi:cy="1178.3501"
+       sodipodi:rx="15.433434"
+       sodipodi:ry="15.433434"
+       d="m -2106.0595,1178.3501 a 15.433434,15.433434 0 1 1 -30.8669,0 15.433434,15.433434 0 1 1 30.8669,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,963.11671,-469.48939)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.44750001;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9073-7-8"
+       sodipodi:cx="-2116.0156"
+       sodipodi:cy="1181.6591"
+       sodipodi:rx="7.421875"
+       sodipodi:ry="7.421875"
+       d="m -2108.5938,1181.6591 a 7.421875,7.421875 0 1 1 -14.8437,0 7.421875,7.421875 0 1 1 14.8437,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,950.54791,-467.33379)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.44750001;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9073-9-8-8"
+       sodipodi:cx="-2116.0156"
+       sodipodi:cy="1181.6591"
+       sodipodi:rx="7.421875"
+       sodipodi:ry="7.421875"
+       d="m -2108.5938,1181.6591 a 7.421875,7.421875 0 1 1 -14.8437,0 7.421875,7.421875 0 1 1 14.8437,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,963.10111,-470.84534)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       style="fill:none;stroke:#117799;stroke-width:2.04900002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -495.50647,286.29469 7.75687,0.11084 5.90445,-6.05206 0.73806,6.79011 3.39505,-2.06655 1.03328,5.16639 5.46162,-35.42669 2.36177,46.79276 m 0,0 2.36179,-19.18946 2.06656,3.39505 3.9855,-5.60922 4.72356,7.08533 5.31401,-3.69027 2.50939,1.77133 7.38391,-0.456"
+       id="path4546-2-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccccc" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.44750001;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path7019-1-7-8"
+       sodipodi:cx="-2045.6378"
+       sodipodi:cy="1118.6534"
+       sodipodi:rx="6.9053397"
+       sodipodi:ry="6.9053397"
+       d="m -2038.7325,1118.6534 a 6.9053397,6.9053397 0 1 1 -13.8107,0 6.9053397,6.9053397 0 1 1 13.8107,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,856.65551,-468.97632)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#2e2e2e;fill-opacity:1;stroke:none"
+       d="m -431.92955,395.29718 c 40.73207,7.11833 13.52883,62.75832 -24.94873,39.78884 -117.99562,4.56233 -13.62943,-151.0751 24.94873,-39.78884 z"
+       id="rect7023-9-6-6-8-9"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/tmp/numeter_logo.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.25;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9012-4-6-2-1-2"
+       sodipodi:cx="-2028.0983"
+       sodipodi:cy="1132.8784"
+       sodipodi:rx="26.654612"
+       sodipodi:ry="26.654612"
+       d="m -2001.4437,1132.8784 a 26.654612,26.654612 0 1 1 -53.3092,0 26.654612,26.654612 0 1 1 53.3092,0 z"
+       transform="matrix(1.1077886,0,0,1.1077886,1773.6791,-860.05014)"
+       inkscape:export-filename="/tmp/numeter_logo.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.57986109;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9038-3-2-6"
+       sodipodi:cx="-2121.4929"
+       sodipodi:cy="1178.3501"
+       sodipodi:rx="15.433434"
+       sodipodi:ry="15.433434"
+       d="m -2106.0595,1178.3501 a 15.433434,15.433434 0 1 1 -30.8669,0 15.433434,15.433434 0 1 1 30.8669,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,958.32345,-352.60529)"
+       inkscape:export-filename="/tmp/numeter_logo.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.44750001;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9073-7-8-7"
+       sodipodi:cx="-2116.0156"
+       sodipodi:cy="1181.6591"
+       sodipodi:rx="7.421875"
+       sodipodi:ry="7.421875"
+       d="m -2108.5938,1181.6591 a 7.421875,7.421875 0 1 1 -14.8437,0 7.421875,7.421875 0 1 1 14.8437,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,945.75465,-350.44969)"
+       inkscape:export-filename="/tmp/numeter_logo.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.44750001;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9073-9-8-8-8"
+       sodipodi:cx="-2116.0156"
+       sodipodi:cy="1181.6591"
+       sodipodi:rx="7.421875"
+       sodipodi:ry="7.421875"
+       d="m -2108.5938,1181.6591 a 7.421875,7.421875 0 1 1 -14.8437,0 7.421875,7.421875 0 1 1 14.8437,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,958.30785,-353.96124)"
+       inkscape:export-filename="/tmp/numeter_logo.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       style="fill:none;stroke:#117799;stroke-width:2.04900002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -500.29968,403.17879 7.75687,0.11084 5.90445,-6.05206 0.73806,6.79011 3.39505,-2.06655 1.03328,5.16639 5.46162,-35.42669 2.36177,46.79276 m 0,0 2.36179,-19.18946 2.06656,3.39505 3.9855,-5.60922 4.72356,7.08533 5.31401,-3.69027 2.50939,1.77133 7.38391,-0.456"
+       id="path4546-2-5-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccccc"
+       inkscape:export-filename="/tmp/numeter_logo.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#2e2e2e;fill-opacity:1;stroke:none"
+       d="m -421.77329,160.92219 c 40.73207,7.11833 13.52883,62.75832 -24.94873,39.78884 -117.99562,4.56233 -13.62943,-151.075106 24.94873,-39.78884 z"
+       id="rect7023-9-6-6-0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.25;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9012-4-6-2-2"
+       sodipodi:cx="-2028.0983"
+       sodipodi:cy="1132.8784"
+       sodipodi:rx="26.654612"
+       sodipodi:ry="26.654612"
+       d="m -2001.4437,1132.8784 a 26.654612,26.654612 0 1 1 -53.3092,0 26.654612,26.654612 0 1 1 53.3092,0 z"
+       transform="matrix(1.1077886,0,0,1.1077886,1783.8354,-1094.425)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.38541667;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9012-8-8-4"
+       sodipodi:cx="-2028.0983"
+       sodipodi:cy="1132.8784"
+       sodipodi:rx="26.654612"
+       sodipodi:ry="26.654612"
+       d="m -2001.4437,1132.8784 a 26.654612,26.654612 0 1 1 -53.3092,0 26.654612,26.654612 0 1 1 53.3092,0 z"
+       transform="matrix(0.71360613,0,0,0.71360613,976.36041,-651.6875)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.57986109;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9038-3-8"
+       sodipodi:cx="-2121.4929"
+       sodipodi:cy="1178.3501"
+       sodipodi:rx="15.433434"
+       sodipodi:ry="15.433434"
+       d="m -2106.0595,1178.3501 a 15.433434,15.433434 0 1 1 -30.8669,0 15.433434,15.433434 0 1 1 30.8669,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,968.47971,-586.98028)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.44750001;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path7019-1-7-2"
+       sodipodi:cx="-2045.6378"
+       sodipodi:cy="1118.6534"
+       sodipodi:rx="6.9053397"
+       sodipodi:ry="6.9053397"
+       d="m -2038.7325,1118.6534 a 6.9053397,6.9053397 0 1 1 -13.8107,0 6.9053397,6.9053397 0 1 1 13.8107,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,858.97321,-581.40323)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.44750001;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9073-7-2"
+       sodipodi:cx="-2116.0156"
+       sodipodi:cy="1181.6591"
+       sodipodi:rx="7.421875"
+       sodipodi:ry="7.421875"
+       d="m -2108.5938,1181.6591 a 7.421875,7.421875 0 1 1 -14.8437,0 7.421875,7.421875 0 1 1 14.8437,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,955.91091,-584.82468)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.44750001;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="path9073-9-8-3"
+       sodipodi:cx="-2116.0156"
+       sodipodi:cy="1181.6591"
+       sodipodi:rx="7.421875"
+       sodipodi:ry="7.421875"
+       d="m -2108.5938,1181.6591 a 7.421875,7.421875 0 1 1 -14.8437,0 7.421875,7.421875 0 1 1 14.8437,0 z"
+       transform="matrix(0.65583802,0,0,0.65583802,968.46411,-588.33623)"
+       inkscape:export-filename="/home/gael/Bureau/git/numeter/numeter-master/docs/img/text3533.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
   </g>
 </svg>
