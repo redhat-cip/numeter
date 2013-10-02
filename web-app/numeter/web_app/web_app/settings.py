@@ -54,10 +54,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'numeter.urls'
+ROOT_URLCONF = 'web_app.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'numeter.wsgi.application'
+WSGI_APPLICATION = 'web_app.wsgi.application'
 
 TEMPLATE_DIRS = ()
 

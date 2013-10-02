@@ -22,55 +22,35 @@
 
 from distutils.core import setup
 from distutils.command.install_data import install_data
-from pkgutil import walk_packages
-from django.core.management import call_command
 import os
 import sys
 from random import choice
 
-import numeter
-os.environ['DJANGO_SETTINGS_MODULE'] = 'numeter.web_app.numeter.settings'
 
+# Compile the list of packages available, because distutils doesn't have
+# an easy way to do this.
+packages, data_files = [], []
+root_dir = os.path.dirname(__file__)
+if root_dir != '':
+    os.chdir(root_dir)
+django_dir = 'numeter'
 
-def find_packages(path='.', prefix=""):
-    yield prefix
-    prefix = prefix + "."
-    for _, name, ispkg in walk_packages(path, prefix):
-        if ispkg:
-            yield name
-
-
-def fullsplit(path, result=None):
-        """
-        Split a pathname into components (the opposite of os.path.join)
-        in a platform-neutral way.
-        """
-        if result is None:
-            result = []
-        head, tail = os.path.split(path)
-        if head == '':
-            return [tail] + result
-        if head == path:
-            return result
-        return fullsplit(head, [tail] + result)
-
-packages, package_data = [], {}
-for dirpath, dirnames, filenames in os.walk('numeter'):
-    # Ignore PEP 3147 cache dirs and those whose names start with '.'
-    dirnames[:] = [d for d in dirnames if not d.startswith('.') and d != '__pycache__']
-    parts = fullsplit(dirpath)
-    package_name = '.'.join(parts)
+for dirpath, dirnames, filenames in os.walk(django_dir):
+    for i, dirname in enumerate(dirnames):
+        if dirname.startswith('.'): del dirnames[i]
     if '__init__.py' in filenames:
-        packages.append(package_name)
+        pkg = dirpath.replace(os.path.sep, '.')
+        if os.path.altsep:
+            pkg = pkg.replace(os.path.altsep, '.')
+        packages.append(pkg)
     elif filenames:
-        relative_path = []
-        while '.'.join(parts) not in packages:
-            relative_path.append(parts.pop())
-            relative_path.reverse()
-            path = os.path.join(*relative_path)
-            package_files = package_data.setdefault('.'.join(parts), [])
-            package_files.extend([os.path.join(path, f) for f in filenames])
-
+        prefix = dirpath[len('numeter')+1:]
+        for f in filenames:
+            data_files.append(os.path.join(prefix, f))
+# Add non-python files which are in a module
+data_files.extend([
+    'web_app/LICENSE',
+])
 
 class my_install(install_data):
     def run(self):
@@ -79,22 +59,16 @@ class my_install(install_data):
         NEW_SECRET_KEY = ''.join([choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)])
         with open('/etc/numeter/secret_key.txt', 'w') as f:
             f.write(NEW_SECRET_KEY)
-        # Syncdb
-        #from numeter.web_app import numeter
-        #NUMETER_DIR = os.path.dirname(os.path.dirname(os.path.abspath(numeter.__file__)))
-
-        #sys.path.append(NUMETER_DIR)
-        #call_command('syncdb', verbosity=1, interactive=False)
         
 
 if __name__ == '__main__':
 
     setup(
-          name='numeter-webapp',
-          cmdclass={"install_data": my_install},
-          version='0.2.3.10',
-          description='Numeter Webapp',
-          long_description="""Numeter is a new graphing solution (like Cacti for \
+          name = 'numeter-webapp',
+          cmdclass = {"install_data": my_install},
+          version = '0.2.3.10',
+          description = 'Numeter Webapp',
+          long_description = """Numeter is a new graphing solution (like Cacti for \
           example) made by some guys working at eNovance. Poller and collector are \
           written in Python and datas are stored in a Redis DB.
           Documentation is available here: https://numeter.readthedocs.org""",
@@ -105,15 +79,15 @@ if __name__ == '__main__':
           keywords=['numeter','webapp','django'],
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
-          include_package_data=True,
-          # package_dir = {'numeter': 'src'},
-          package_data = package_data,
+          include_package_data = True,
           packages = packages,
+          package_dir = {'numeter': 'numeter'},
+          package_data = {'numeter': data_files},
           scripts = ['extras/numeter-webapp'],
           data_files = [
-            ('/etc/numeter', ['numeter_webapp.cfg']),
-            ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-combined.js']),
-            ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-numeter.js']),
+              ('/etc/numeter', ['numeter_webapp.cfg']),
+              ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-combined.js']),
+              ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-numeter.js']),
           ],
           classifiers=[
               'Development Status :: 4 - Beta',
