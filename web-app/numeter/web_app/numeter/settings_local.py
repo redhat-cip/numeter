@@ -75,7 +75,8 @@ if config.getboolean_d('debug', 'use_mock_storage', False):
 
 ## Custom configuration
 # Debug Tool Bar
-if config.getboolean_d('debug', 'use_debug_toolbar', False):
+if config.getboolean_d('debug', 'use_debug_toolbar', False) and 
+    config.getboolean_d('debug', 'debug', False) :
     INSTALLED_APPS = INSTALLED_APPS+('debug_toolbar',)
     INTERNAL_IPS = ('127.0.0.1','192.168.100.1')
     MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES+('debug_toolbar.middleware.DebugToolbarMiddleware',)
