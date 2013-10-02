@@ -1,125 +1,104 @@
-**************
-Installation
-**************
+*******************
+Manual installation
+*******************
 
-**Depends:**
-  * Nginx | Apache
-  * PHP
-  * Mysql server
+Install requirement
+===================
 
-Debian packages
-=================
 
-Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com (coming soon)
 ::
 
-    apt-get install numeter-web-app
-
-Import the default datas in your database : ::
-
-    mysqladmin create numeter_db
-    mysql numeter_db < /usr/share/doc/numeter-web-app/web-app.sql
-
-After that you need to configure **nginx** : ::
-
-    cp /usr/share/doc/numeter-web-app/numeter-web-app.nginx.example /etc/nginx/sites-available/numeter-web-app
-    ln -s /etc/nginx/sites-available/numeter-web-app /etc/nginx/sites-enabled/
-    /etc/init.d/nginx reload
-
-.. seealso:: :ref:`quick_config_webapp`
+    pip install django
+    pip install django-tastypie
+    pip install mimeparse
 
 
-Manual with nginx and php-fpm
+Configure database
+==================
+
+MySQL
+-----
+Install python requirements:  ::
+
+    aptitude install mysql-server mysql-client
+    aptitude install python-mysqldb
+
+Create valid user and database: ::
+
+    CREATE TABLE numeter;
+    GRANT ALL ON numeter.* TO numeter@'localhost' IDENTIFIED BY 'yourpass';
+
+
+PostgreSQL
+----------
+(Available but not describe)
+
+
+Sqlite3
+-------
+::
+
+    aptitude install sqlite3
+
+
+Install Numeter Webapp package
 ==============================
 
+
+::
+
+    python setup.py install
+
+Edit Webapp configuration file, follow comments inside for help ::
+
+    vim /etc/numeter/numeter_webapp.cfg
+
+If you are sure to have a good database configuration ::
+
+    numeter-webapp syncdb
+
+Use a web front
+===============
+
+You must choose your web frontend.
+
+Django embebbed webserver
+-------------------------
+.. warning::
+    Not recommended in production environment.
+
+::
+
+    numeter-webapp runserver 0.0.0.0:8000
+
+Apache
+------
+Copy the site template in your apache configuration: ::
+
+    cp extras/numeter-wsgi /etc/apache2/site-available/
+    ln -s /etc/apache2/site-available/numeter-wsgi /etc/apache2/site-enabled/numeter-wsgi
+
+Edit it for replace *@APP_DIR@* by Numeter webapp directory.
+
+.. note::
+    You can customize it for match with your security requirements.
+
+
 Nginx
----------------
+-----
+(Available but not describe)
 
-**From packages :** ::
+Use memcached backend
+=====================
+.. note::
+    Cache is not mandatory
+Install Memcached ::
 
-    apt-get install nginx
+    apt-get install memcached
+    pip install python-memcached
 
-Php fpm
-----------
+Set 'use_cache' to True in numeter_webapp.cfg:  ::
 
-**From packages :** ::
+    sed -i /etc/numeter_webapp.cfg 's/use_cache.*=.*/use_cache = True/'
 
-    apt-get install php5-fpm
-
-Mysql server
--------------
-
-**From packages :** ::
-
-    apt-get install mysql-server php5-mysql
-
-Numeter webapp
-------------------
-
-Get Numeter sources : ::
-
-    git clone https://github.com/enovance/numeter
-    cd numeter
-
-**Numeter webapp :** ::
-
-    make -f web-app/Makefile
-
-Import the default datas in your database : ::
-
-    mysqladmin create numeter_db
-    mysql numeter_db < web-app/docs/web-app.sql
-
-After that you need to configure **nginx** : ::
-
-    cp web-app/docs/numeter-web-app.nginx.example /etc/nginx/sites-available/numeter-web-app
-    ln -s /etc/nginx/sites-available/numeter-web-app /etc/nginx/sites-enabled/
-    /etc/init.d/nginx reload
-
-.. seealso:: :ref:`quick_config_webapp`
-
-.. _quick_config_webapp:
-
-Quick config
-=============
-
-Make sure your timezone is ok in your **php.ini** example : ::
-
-    date.timezone = "Europe/Paris"
-
-Configure user and database in numeter webapp : ::
-
-    vim /usr/share/numeter/web-app/app/Config/database.php
-
-        'login' => 'numeter',
-        'password' => 'password',
-        'database' => 'numeter_db',
-
-Add the list of your numeter storages example with storage in the same host : ::
-
-    vim /usr/share/numeter/web-app/app/Config/storage.php
-
-    $config['Storage']['address'] = array(
-        '127.0.0.1:8080'
-    );
-
-The default webapp perms is www-data but if this group don't exist you must to chown
-with your group like httpd, ... ::
-
-    chown -R root:www-data /usr/share/numeter/web-app/app/tmp/cache/;\
-    chmod -R g+w /usr/share/numeter/web-app/app/tmp/cache/;\
-
-Example of all things you will do :
-
-.. sourcecode:: bash
-
-    sed -i 's@;date.timezone =@date.timezone = "Europe/Paris"@g' /etc/php5/fpm/php.ini
-    /etc/init.d/php5-fpm restart
-    mysqladmin create numeter_db
-    cat <<EOF | mysql
-    CREATE USER 'numeter'@'localhost' IDENTIFIED BY 'password';
-    GRANT ALL ON numeter_db.* TO 'numeter'@'%';
-    FLUSH privileges;
-    EOF
-    mysql numeter_db < /usr/share/doc/numeter-web-app/web-app.sql
-    sed -i "s/'password' => 'password',/'password' => 'password',/g" /usr/share/numeter/web-app/app/Config/database.php
+Set using settings in the same file.

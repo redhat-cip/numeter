@@ -28,16 +28,17 @@ DATABASES = {
     }
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': config.get('cache', 'location'),
-        'TIMEOUT': config.getint_d('cache', 'timeout', 300),
-        'OPTIONS': {
-            'MAX_ENTRIES': config.getint_d('cache', 'max_entries', 1000),
+if config.getboolean_d('cache', 'use_cache', False):
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': config.get('cache', 'location'),
+            'TIMEOUT': config.getint_d('cache', 'timeout', 300),
+            'OPTIONS': {
+                'MAX_ENTRIES': config.getint_d('cache', 'max_entries', 1000),
+            }
         }
     }
-}
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts

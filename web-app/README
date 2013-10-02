@@ -1,30 +1,12 @@
-**************
+*************
 Documentation
-**************
+*************
 
 Informations
 =============
 
-  * http://twitter.github.com/bootstrap/
-
-Small customize in bootstrap twitter theme : ::
-
-    --- Links
-    @btnPrimaryBackground = #666
-
 External Links
 ================
-  * http://twitter.github.com/bootstrap/components.html#alerts
-  * http://devheart.org/examples/jquery-customizable-layout-using-drag-and-drop/1-getting-started-with-sortable-lists/index.html
-
 
 Troubleshooting
 ================
-
-Use storage api to get informations.
-
-    * http://demo.numeter.com/storageapi/get/hosts
-    * http://demo.numeter.com/storageapi/get/list/0/127.0.0.1
-    * http://demo.numeter.com/storageapi/get/info/0/127.0.0.1/cpu
-    * http://demo.numeter.com/storageapi/get/data/0/127.0.0.1/cpu/idle,user/Daily
-
