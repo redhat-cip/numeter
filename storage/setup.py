@@ -34,7 +34,7 @@ class my_install(install_data):
 
 if __name__ == '__main__':
 
-    setup(name='redmon-storage',
+    setup(name='numeter-storage',
           cmdclass={"install_data": my_install},
           version='0.2.3.11',
           description='Numeter Storage',
