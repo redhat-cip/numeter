@@ -10,7 +10,6 @@ from numeter_webapp import web_app
 
 if __name__ == "__main__":
     NUMETER_DIR = dirname(dirname(abspath(web_app.__file__)))
-    print NUMETER_DIR
     sys.path.append(NUMETER_DIR)
 
     environ['DJANGO_SETTINGS_MODULE'] = 'web_app.settings'

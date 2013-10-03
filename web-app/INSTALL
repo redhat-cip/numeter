@@ -40,6 +40,9 @@ Sqlite3
 
     aptitude install sqlite3
 
+.. note::
+    With Sqlite you do not need to create database. Only choose a file which writable by django user.
+
 
 Install Numeter Webapp package
 ==============================
@@ -52,13 +55,15 @@ Install Numeter Webapp package
 Edit Webapp configuration file, follow comments inside for help ::
 
     vim /etc/numeter/numeter_webapp.cfg
-=======
     numeter-webapp syncdb
->>>>>>> d9a32625aef273054f96f6ce90b51b276b229cd3
 
 If you are sure to have a good database configuration ::
 
     numeter-webapp syncdb
+
+.. note::
+    It will ask you to create a first superuser. If you choose 'no', it will be possible to make it with ``numeter-webapp add-user -S``.
+
 
 Use a web front
 ===============
