@@ -33,7 +33,7 @@ packages, data_files = [], []
 root_dir = os.path.dirname(__file__)
 if root_dir != '':
     os.chdir(root_dir)
-django_dir = 'numeter'
+django_dir = 'numeter_webapp'
 
 for dirpath, dirnames, filenames in os.walk(django_dir):
     for i, dirname in enumerate(dirnames):
@@ -44,12 +44,12 @@ for dirpath, dirnames, filenames in os.walk(django_dir):
             pkg = pkg.replace(os.path.altsep, '.')
         packages.append(pkg)
     elif filenames:
-        prefix = dirpath[len('numeter')+1:]
+        prefix = dirpath[len('numeter_webapp')+1:]
         for f in filenames:
             data_files.append(os.path.join(prefix, f))
 # Add non-python files which are in a module
 data_files.extend([
-    'web_app/LICENSE',
+    'LICENSE',
 ])
 
 class my_install(install_data):
@@ -81,8 +81,8 @@ if __name__ == '__main__':
           license='GNU Affero General Public License v3',
           include_package_data = True,
           packages = packages,
-          package_dir = {'numeter': 'numeter'},
-          package_data = {'numeter': data_files},
+          package_dir = {'numeter_webapp': 'numeter_webapp'},
+          package_data = {'numeter_webapp': data_files},
           scripts = ['extras/numeter-webapp'],
           data_files = [
               ('/etc/numeter', ['numeter_webapp.cfg']),

@@ -5,11 +5,12 @@ from os import environ, chdir
 from os.path import dirname, abspath
 import sys
 from django.core.management import execute_from_command_line 
-from numeter.web_app import web_app
+from numeter_webapp import web_app
 
 
 if __name__ == "__main__":
     NUMETER_DIR = dirname(dirname(abspath(web_app.__file__)))
+    print NUMETER_DIR
     sys.path.append(NUMETER_DIR)
 
     environ['DJANGO_SETTINGS_MODULE'] = 'web_app.settings'
