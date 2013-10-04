@@ -2,15 +2,36 @@
 Manual installation
 *******************
 
-Install requirement
-===================
+Debian packages
+================
 
-
+Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com (coming soon)
 ::
 
-    pip install django
-    pip install django-tastypie
-    pip install mimeparse
+    apt-get install numeter-webapp
+
+Manual
+========
+
+**Depends:**
+    * django
+    * django-tastypie
+    * mimeparse
+
+Django
+-------
+
+**From packages :** ::
+
+  apt-get install django python-tastypie
+
+Python-mimeparse
+-----------------
+
+**From packages :** ::
+
+  apt-get install python-mimeparse
+
 
 
 Configure database

@@ -10,6 +10,9 @@ Build your own Debian packages with git-buildpackage or pbuilder for exemple or 
 
     apt-get install numeter-common
 
+.. note::
+    The package depends of python-oslo.messaging. Oslo.messaging is actually packaged only in debian jessie
+
 Manual
 ========
 

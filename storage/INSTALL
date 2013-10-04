@@ -2,7 +2,7 @@
 Installation
 **************
 .. warning::
-   This documentation is based on Debian stable wheezy to install uswgi and nginx fastcgi from package.
+   Do not forget to install a RPC like rabbitmq-server `<overview.html#components>`_
 
 .. note::
 
@@ -15,6 +15,14 @@ Build your own Debian packages with git-buildpackage or pbuilder for exemple or 
 ::
 
     apt-get install numeter-storage
+
+.. note::
+    numeter-common depends of python-oslo.messaging. Oslo.messaging is actually packaged only in
+    jessie.
+    If you build your own package for wheezy, actually you can find the others depends (oslo.config, stevedore) in this repository ::
+
+        deb http://cloud.pkgs.enovance.com/wheezy-grizzly grizzly main
+        apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E52660B15D964F0B
 
 After that you need to configure **nginx** : ::
 
@@ -115,7 +123,7 @@ Quick exemple of python-kombu installation
   apt-get install python-kombu
 
 Python-oslo.messaging
------------------
+----------------------
 
 Quick exemple of python-oslo.messaging installation
 
