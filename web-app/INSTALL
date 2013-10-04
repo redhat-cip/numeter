@@ -1,5 +1,5 @@
 *******************
-Manual installation
+Installation
 *******************
 
 Debian packages
@@ -18,27 +18,36 @@ Manual
     * django-tastypie
     * mimeparse
 
-Django
--------
+Django and tastypie setup
+--------------------------
+
+
+You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources.
 
 **From packages :** ::
 
-  apt-get install django python-tastypie
+  apt-get install -t wheezy-backports python-django python-tastypie python-mimeparse
 
-Python-mimeparse
+Numeter Webapp setup
+-----------------------
+
+Get sources ::
+
+    https://github.com/enovance/numeter
+
+Launch the setup ::
+
+    cd numeter/web-app
+    python setup.py install
+
+Configure
+==========
+
+Backend database
 -----------------
 
-**From packages :** ::
+**MySQL**
 
-  apt-get install python-mimeparse
-
-
-
-Configure database
-==================
-
-MySQL
------
 Install python requirements:  ::
 
     aptitude install mysql-server mysql-client
@@ -50,33 +59,24 @@ Create valid user and database: ::
     GRANT ALL ON numeter.* TO numeter@'localhost' IDENTIFIED BY 'yourpass';
 
 
-PostgreSQL
-----------
+**PostgreSQL**
+
 (Available but not describe)
 
 
-Sqlite3
--------
-::
+**Sqlite3** ::
 
     aptitude install sqlite3
 
 .. note::
     With Sqlite you do not need to create database. Only choose a file which writable by django user.
 
-
-Install Numeter Webapp package
-==============================
-
-
-::
-
-    python setup.py install
+Numeter webapp configuration
+-----------------------------
 
 Edit Webapp configuration file, follow comments inside for help ::
 
     vim /etc/numeter/numeter_webapp.cfg
-    numeter-webapp syncdb
 
 If you are sure to have a good database configuration ::
 
@@ -87,24 +87,23 @@ If you are sure to have a good database configuration ::
 
 
 Use a web front
-===============
+---------------
 
 You must choose your web frontend.
 
-Django embebbed webserver
--------------------------
-.. warning::
-    Not recommended in production environment.
-
-::
+**Django embebbed webserver** ::
 
     numeter-webapp runserver 0.0.0.0:8000
 
-Apache
-------
+.. warning::
+    Not recommended in production environment.
+
+**Apache**
+
 Copy the site template in your apache configuration: ::
 
     cp extras/numeter-wsgi /etc/apache2/site-available/
+    # For packaged setup /usr/share/doc/numeter/webapp/numeter-wsgi
     ln -s /etc/apache2/site-available/numeter-wsgi /etc/apache2/site-enabled/numeter-wsgi
 
 Edit it for replace *@APP_DIR@* by Numeter webapp directory.
@@ -112,21 +111,22 @@ Edit it for replace *@APP_DIR@* by Numeter webapp directory.
 .. note::
     You can customize it for match with your security requirements.
 
+**Nginx**
 
-Nginx
------
 (Available but not describe)
 
 Use memcached backend
-=====================
+----------------------
+
 .. note::
     Cache is not mandatory
+
 Install Memcached ::
 
     apt-get install memcached
     pip install python-memcached
 
-Set 'use_cache' to True in numeter_webapp.cfg:  ::
+Set 'use_cache' to True in numeter_webapp.cfg: ::
 
     sed -i /etc/numeter_webapp.cfg 's/use_cache.*=.*/use_cache = True/'
 
