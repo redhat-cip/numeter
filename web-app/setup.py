@@ -57,7 +57,7 @@ class my_install(install_data):
         install_data.run(self)
         # Add secret key
         NEW_SECRET_KEY = ''.join([choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)])
-        with open('/etc/numeter/secret_key.txt', 'w') as f:
+        with open('%s/etc/numeter/secret_key.txt' % self.root, 'w') as f:
             f.write(NEW_SECRET_KEY)
         
 
