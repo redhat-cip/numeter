@@ -1,9 +1,9 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from core.models import Storage, Host, Plugin, Data_Source
 from core.tests.utils import False_HttpRequest_dict, storage_enabled, set_storage
 
 
-class Data_Source_Manager_TestCase(TestCase):
+class Source_Manager_Test(LiveServerTestCase):
 
     @set_storage(extras=['host','plugin'])
     def setUp(self):
@@ -55,7 +55,7 @@ class Data_Source_Manager_TestCase(TestCase):
         else: assert("Can store false plugin in db.")
 
 
-class Data_Source_TestCase(TestCase):
+class Source_Test(LiveServerTestCase):
 
     @set_storage(extras=['host','plugin','source'])
     def setUp(self):

@@ -1,10 +1,14 @@
-from django.test import TestCase
+"""
+Tests for management commands.
+"""
+
+from django.test import LiveServerTestCase
 from django.core import management
 from core.models import User, Storage, Host
 from core.tests.utils import storage_enabled, set_storage
 
 
-class Manage_User_TestCase(TestCase):
+class Manage_User_Test(LiveServerTestCase):
 
     def test_add_user(self):
         """Launch 'manage.py add-user --username=test --email=email --password=test --superuser'."""
@@ -18,7 +22,7 @@ class Manage_User_TestCase(TestCase):
         self.assertFalse(User.objects.all().exists(), 'User exists ever.')
 
 
-class Manage_Storage_TestCase(TestCase):
+class Manage_Storage_Test(LiveServerTestCase):
 
     def test_add_storage(self):
         """Launch 'manage.py add-storage --alias=test --address=127.0.0.1'."""
@@ -33,7 +37,7 @@ class Manage_Storage_TestCase(TestCase):
         self.assertFalse(User.objects.all().exists(), 'Storage exists ever.')
 
 
-class Manage_Repair_TestCase(TestCase):
+class Manage_Repair_Test(LiveServerTestCase):
 
     @set_storage(extras=['host'])
     def setUp(self):

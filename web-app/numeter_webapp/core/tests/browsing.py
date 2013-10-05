@@ -3,7 +3,7 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 
 
-class Index_TestCase(TestCase):
+class Index_Test(TestCase):
     fixtures = ['test_users.json']
 
     def setUp(self):

@@ -1,12 +1,15 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
+
 from core.models import Storage
+from core.tests.utils import storage_enabled, set_storage
 
 
-class Storage_TestCase(TestCase):
-    fixtures = ['test_users.json','test_storage.json']
+class Storage_Test(LiveServerTestCase):
+    fixtures = ['test_users.json']
 
+    @set_storage()
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')

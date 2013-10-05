@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 
@@ -6,7 +6,7 @@ from core.models import Host, Plugin, Data_Source
 from core.tests.utils import storage_enabled, set_storage
 
 
-class Customize_Source_TestCase(TestCase):
+class Customize_Source_Test(LiveServerTestCase):
     fixtures = ['test_users.json']
 
     @set_storage(extras=['host','plugin','source'])

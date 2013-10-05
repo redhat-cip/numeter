@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from core.models import User
 
 
-class User_TestCase(TestCase):
+class User_Test(TestCase):
     fixtures = ['test_users.json']
 
     def setUp(self):

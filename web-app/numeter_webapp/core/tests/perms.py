@@ -3,7 +3,7 @@ from core.models import User, Group, Host
 from core.utils.perms import has_perm
 
 
-class Perms_TestCase(TestCase):
+class Perms_Test(TestCase):
     fixtures = ['test_users.json','test_groups.json','test_hosts.json']
 
     def setUp(self):

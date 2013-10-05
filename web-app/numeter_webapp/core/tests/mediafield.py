@@ -10,10 +10,10 @@ from os import path, mkdir
 from shutil import rmtree
 
 
-class MediaField_TestCase(TestCase):
+class MediaField_Test(TestCase):
 
     def __init__(self, *args, **kwargs):
-        super(MediaField_TestCase, self).__init__(*args, **kwargs)
+        super(MediaField_Test, self).__init__(*args, **kwargs)
         self.TEST_DIR = settings.MEDIA_ROOT + 'graphlib/'
         self.FILE1 = self.TEST_DIR + '/file1.js'
         self.TEST_SUBDIR = self.TEST_DIR + '/subdir'

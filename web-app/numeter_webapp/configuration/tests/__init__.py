@@ -1,13 +1,13 @@
-from profile import Profile_TestCase
-from user import User_TestCase
-from group import Group_TestCase
-from storage import Storage_TestCase
-from host import Host_TestCase
-from plugin import Plugin_TestCase
-from source import Source_TestCase
-from view import View_TestCase
-from multiview import Multiview_TestCase
-from event import Event_TestCase
+from profile import Profile_Test
+from user import User_Test
+from group import Group_Test
+from storage import Storage_Test
+from host import Host_Test
+from plugin import Plugin_Test
+from source import Source_Test
+from view import View_Test
+from multiview import Multiview_Test
+from event import Event_Test
 
 
 def suite():

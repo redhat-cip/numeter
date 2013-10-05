@@ -2,7 +2,7 @@ from django.test import TestCase
 from core.models import User, Group, Host
 
 
-class Access_TestCase(TestCase):
+class Access_Test(TestCase):
     fixtures = ['test_users.json','test_groups','test_hosts.json']
 
     def test_superuser_can_all(self):

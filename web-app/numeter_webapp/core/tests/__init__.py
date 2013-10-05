@@ -1,14 +1,14 @@
-from login import Login_TestCase
-from perms import Perms_TestCase
-from storage import Storage_TestCase, Storage_Manager_TestCase
-from host import Host_TestCase
-from plugin import Plugin_Manager_TestCase, Plugin_TestCase
-from source import Data_Source_Manager_TestCase, Data_Source_TestCase
-from browsing import Index_TestCase
-from management import Manage_User_TestCase, Manage_Storage_TestCase, Manage_Repair_TestCase
-from hosttree import Hosttree_TestCase
-from group_restriction import Access_TestCase
-from mediafield import MediaField_TestCase
+from login import Login_Test
+from perms import Perms_Test
+from storage import Storage_Test, Storage_Manager_Test
+from host import Host_Test
+from plugin import Plugin_Manager_Test, Plugin_Test
+from source import Source_Manager_Test, Source_Test
+from browsing import Index_Test
+from management import Manage_User_Test, Manage_Storage_Test, Manage_Repair_Test
+from hosttree import Hosttree_Test
+from group_restriction import Access_Test
+from mediafield import MediaField_Test
 
 def suite():
     import unittest

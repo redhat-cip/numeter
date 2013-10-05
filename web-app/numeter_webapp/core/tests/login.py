@@ -3,7 +3,7 @@ from django.test.client import Client
 from core.models import User
 
 
-class Login_TestCase(TestCase):
+class Login_Test(TestCase):
     fixtures = ['test_users.json']
 
     def test_forbidden_access(self):

@@ -1,9 +1,9 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from core.models import Host, Plugin
 from core.tests.utils import storage_enabled, set_storage
 
 
-class Host_TestCase(TestCase):
+class Host_Test(LiveServerTestCase):
 
     @set_storage(extras=['host'])
     def setUp(self):

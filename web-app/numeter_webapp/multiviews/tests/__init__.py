@@ -1,9 +1,9 @@
-from view import View_TestCase
-from event import Event_TestCase
-from customize.source import Customize_Source_TestCase
-from customize.view import Customize_View_TestCase
-from customize.multiview import Customize_Multiview_TestCase
-from customize.event import Customize_Event_TestCase
+from view import View_Test
+from event import Event_Test
+from customize.source import Customize_Source_Test
+from customize.view import Customize_View_Test
+from customize.multiview import Customize_Multiview_Test
+from customize.event import Customize_Event_Test
 
 def suite():
     import unittest

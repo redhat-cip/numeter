@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.core import management
@@ -9,7 +9,7 @@ from multiviews.models import View
 from multiviews.tests.utils import create_view
 
 
-class Customize_View_TestCase(TestCase):
+class Customize_View_Test(LiveServerTestCase):
     fixtures = ['test_users.json']
 
     @set_storage(extras=['host','plugin','source'])

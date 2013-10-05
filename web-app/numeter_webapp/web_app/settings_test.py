@@ -29,6 +29,10 @@ logger.setLevel(10)
 # DO NOT SET AS PRODUCTION MEDIA_ROOT
 MEDIA_ROOT = '/tmp/numeter-media/'
 
+# Set Liveserver, usefull for mock storage
+import os
+os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8081'
+
 ### VALIDATION
 from os import mkdir
 from shutil import rmtree

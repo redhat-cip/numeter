@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.core.urlresolvers import reverse
 
 from core.models import Host
@@ -7,7 +7,7 @@ from multiviews.models import Event
 from multiviews.tests.utils import create_event
 
 
-class Event_TestCase(TestCase):
+class Event_Test(LiveServerTestCase):
 
     @set_storage(extras=['host'])
     def setUp(self):

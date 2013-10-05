@@ -1,8 +1,0 @@
-recursive-include numeter/web_app/*/fixtures *
-recursive-include numeter/web_app/*/templates *
-recursive-include numeter/web_app/core/locale *
-include numeter/web_app/numeter.wsgi extras/numeter-webapp
-
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
-recursive-exclude * *.sw[po]

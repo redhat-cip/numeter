@@ -1,9 +1,10 @@
-from django.core import management
+from django.core.management import call_command
 from django.conf import settings
 from django.utils.decorators import available_attrs
 from core.models import Storage, Host
 from core.models import User, Group
 from functools import wraps
+import os
 
 
 class False_HttpRequest_dict(dict):
@@ -30,16 +31,17 @@ def set_storage(extras=[]):
     """
     Set storage within Mock and settings_local.py
     Set it in self.storage. Skip test if there's no storage configurated.
+    extras are host, plugin or source.
     """
     def decorator(func):
         @wraps(func, assigned=available_attrs(func))
         def inner(self, *args, **kwargs):
             # Use mock if installed
             if 'mock_storage' in settings.INSTALLED_APPS:
-                management.call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
+                call_command('loaddata', 'mock_storage.json', database='default', verbosity=0)
                 self.storage = Storage.objects.get(pk=1)
                 for model in extras:
-                    management.call_command('loaddata', ('mock_%s.json' % model), database='default', verbosity=0)
+                    call_command('loaddata', ('mock_%s.json' % model), database='default', verbosity=0)
             # Use settings_local
             elif settings.TEST_STORAGE['address']:
                 self.storage = Storage.objects.create(**settings.TEST_STORAGE)
@@ -77,8 +79,8 @@ def set_users():
     def decorator(func):
         @wraps(func, assigned=available_attrs(func))
         def inner(self, *args, **kwargs):
-            management.call_command('loaddata', 'test_groups.json', database='default', verbosity=0)
-            management.call_command('loaddata', 'test_users.json', database='default', verbosity=0)
+            call_command('loaddata', 'test_groups.json', database='default', verbosity=0)
+            call_command('loaddata', 'test_users.json', database='default', verbosity=0)
             self.admin = User.objects.get(pk=1)
             self.user = User.objects.get(pk=2)
             self.user2 = User.objects.get(pk=3)

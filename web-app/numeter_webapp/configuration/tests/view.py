@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 
@@ -7,7 +7,7 @@ from core.tests.utils import storage_enabled, set_storage
 from multiviews.models import View
 
 
-class View_TestCase(TestCase):
+class View_Test(LiveServerTestCase):
     fixtures = ['test_users.json','test_storage.json']
 
     @set_storage(extras=['host','plugin','source'])

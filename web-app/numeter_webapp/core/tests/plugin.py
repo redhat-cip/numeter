@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.core import management
 from django.conf import settings
 
@@ -6,7 +6,7 @@ from core.models import Storage, Host, Plugin, Data_Source
 from core.tests.utils import storage_enabled, set_storage
 
 
-class Plugin_Manager_TestCase(TestCase):
+class Plugin_Manager_Test(LiveServerTestCase):
 
     @set_storage()
     def setUp(self):
@@ -19,7 +19,7 @@ class Plugin_Manager_TestCase(TestCase):
         Host.objects.all().delete()
 
 
-class Plugin_TestCase(TestCase):
+class Plugin_Test(LiveServerTestCase):
 
     @set_storage(extras=['host','plugin'])
     def setUp(self):

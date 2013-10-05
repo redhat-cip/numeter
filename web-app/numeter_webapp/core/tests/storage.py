@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.core import management
 from django.conf import settings
 
@@ -6,7 +6,7 @@ from core.models import Storage, Host
 from core.tests.utils import storage_enabled, set_storage
 
 
-class Storage_TestCase(TestCase):
+class Storage_Test(LiveServerTestCase):
 
     @set_storage()
     def setUp(self):
@@ -109,7 +109,7 @@ class Storage_TestCase(TestCase):
         self.assertEqual(len(unfoundable_hosts), 1, "Supposed to have 1 unfoundable host (%i)" % len(unfoundable_hosts))
 
 
-class Storage_Manager_TestCase(TestCase):
+class Storage_Manager_Test(LiveServerTestCase):
 
     @set_storage()
     def setUp(self):

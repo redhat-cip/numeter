@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 
@@ -6,7 +6,7 @@ from core.models import User, Storage, Host
 from core.tests.utils import storage_enabled, set_storage
 
 
-class Hosttree_TestCase(TestCase):
+class Hosttree_Test(LiveServerTestCase):
     fixtures = ['test_users.json','test_groups.json']
 
     @set_storage()
