@@ -3,10 +3,20 @@ Documentation
 *************
 
 Informations
-=============
+============
+
+This module is a Web server created for visualize data from Storage(s). In few lines Webapp purposes followings stuff:
+  * Authentication and authorization made by user and group management
+  * Multiple storga management
+  * REST API interface
+  * Storages' API centralization
+
+Unlike other web graph system, Numeter doesn't only purpose a graph tree. It allow users to organize Data Sources in custom level of displaying.
+
+WebApp is completly independant from other Numeter modules. The only connection point is Storage's REST API.
 
 External Links
-================
+==============
 
 Troubleshooting
-================
+===============

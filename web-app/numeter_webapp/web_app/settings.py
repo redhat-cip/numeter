@@ -83,13 +83,13 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    # Django required extensions
-    'tastypie',
     # Numeter Apps
     'core',
     'multiviews',
     'configuration',
     'rest',
+    # Django required extensions
+    'tastypie',
 )
 
 # A sample logging configuration. The only tangible logging
