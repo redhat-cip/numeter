@@ -1,44 +1,46 @@
-*******************
-Manual installation
-*******************
+Installation
+============
+
+From package
+------------
 
 Debian packages
-================
+^^^^^^^^^^^^^^^
 
 Build your own Debian packages with git-buildpackage or pbuilder for exemple or use numeter repo : http://repo.numeter.com (coming soon)
 ::
 
     apt-get install numeter-webapp
 
-Manual
-========
+Manual installation
+^^^^^^^^^^^^^^^^^^^
 
 **Depends:**
-    * django
+    * python-django
     * django-tastypie
     * mimeparse
 
-Django
--------
-
 **From packages :** ::
 
-  apt-get install django python-tastypie
-
-Python-mimeparse
------------------
-
-**From packages :** ::
-
-  apt-get install python-mimeparse
+  apt-get install python-django python-tastypie python-mimeparse
+  python setup.py install
 
 
+Configuration
+=============
 
-Configure database
-==================
+Webapp's settings are by default in ``/etc/numeter/numeter_webapp.cfg``.
+You have to define following stuff:
+    * A database backend
+    * A web frontend
+    * Optionnaly a cache backend
+
+Database backend
+----------------
+All Django's database engine are supported, feel free to test third engine.
 
 MySQL
------
+^^^^^
 Install python requirements:  ::
 
     aptitude install mysql-server mysql-client
@@ -49,85 +51,91 @@ Create valid user and database: ::
     CREATE TABLE numeter;
     GRANT ALL ON numeter.* TO numeter@'localhost' IDENTIFIED BY 'yourpass';
 
+Edit Webaap configuration file, ```/etc/numeter/numeter_webapp.cfg`` ::
 
-PostgreSQL
-----------
-(Available but not describe)
-
+    sed -i /etc/numeter/numeter_webapp.cfg '
+      s/engine.*/engine = django.db.backends.mysql/ ;
+      s/name.*/name = numeter/ ;
+      s/user.*/user = numeter/ ;
+      s/password.*/password = yourpass/ ;
+      s/host.*/host = localhost/ ;
+      s/port.*/port = 3306/
+    '
 
 Sqlite3
--------
-::
-
-    aptitude install sqlite3
-
-.. note::
-    With Sqlite you do not need to create database. Only choose a file which writable by django user.
-
-
-Install Numeter Webapp package
-==============================
-
-
-::
-
-    python setup.py install
-
-Edit Webapp configuration file, follow comments inside for help ::
-
-    vim /etc/numeter/numeter_webapp.cfg
-    numeter-webapp syncdb
-
-If you are sure to have a good database configuration ::
-
-    numeter-webapp syncdb
-
-.. note::
-    It will ask you to create a first superuser. If you choose 'no', it will be possible to make it with ``numeter-webapp add-user -S``.
-
-
-Use a web front
-===============
-
-You must choose your web frontend.
-
-Django embebbed webserver
--------------------------
+^^^^^^^
 .. warning::
     Not recommended in production environment.
 
 ::
 
+    aptitude install sqlite3
+
+.. note::
+    You do not need to create database. Only choose a file which writable by django user.
+
+
+Edit Webapp configuration file for database section. You can follow comments inside it for help. ::
+
+    vim /etc/numeter/numeter_webapp.cfg
+
+
+Web frontend
+------------
+We advise to use Apache + mod_wsgi or Nginx + uWSGI. The Django embebbed webserver is usefull for a fast launch witout configuration.
+
+Django embebbed webserver
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. warning::
+    Not recommended in production environment.
+
+Type following command for launch it: ::
+
     numeter-webapp runserver 0.0.0.0:8000
 
 Apache
-------
-Copy the site template in your apache configuration: ::
+^^^^^^
+Copy the site template in your apache configuration and edit it:  ::
 
     cp extras/numeter-wsgi /etc/apache2/site-available/
+    NUMETER_DIR=$(dirname $(python -c 'import numeter_webapp;print numeter_webapp.__file__'))
+    sed -i /etc/apache2/site-available/numeter-wsgi "s#@APP_DIR@#$NUMETER_DIR# ; s/ServerName.*/ServerName YoursServer/"
     ln -s /etc/apache2/site-available/numeter-wsgi /etc/apache2/site-enabled/numeter-wsgi
 
-Edit it for replace *@APP_DIR@* by Numeter webapp directory.
-
 .. note::
-    You can customize it for match with your security requirements.
-
+    Do not hesitate to customize the given file.
 
 Nginx
------
+^^^^^
 (Available but not describe)
 
-Use memcached backend
-=====================
+
+Memcached backend
+-----------------
 .. note::
     Cache is not mandatory
+
 Install Memcached ::
 
-    apt-get install memcached
+    aptitude install memcached
     pip install python-memcached
 
-Set 'use_cache' to True in numeter_webapp.cfg:  ::
+Set ``use_cache`` to ``True`` in ``numeter_webapp.cfg``:  ::
 
     sed -i /etc/numeter_webapp.cfg 's/use_cache.*=.*/use_cache = True/'
 
-Set using settings in the same file.
+.. note::
+    By default Webapp will connect to Memcached with a Unix socket at ``/var/run/memcached.sock```.
+
+First launch
+============
+::
+
+    numeter-webapp syncdb
+    numeter-webapp add-storage --alias=NAME --port=80 --urlprefix=/numeter-storage/
+
+.. note::
+    ``syncdb`` will ask you to create a first superuser. If you choose 'no', it will be possible to make it with ``numeter-webapp add-user -S``.
+
+
+Launch your Web frontend or simply ``numeter-webapp runserver 0.0.0.0:80``.
