@@ -19,12 +19,6 @@ USE_TZ = True
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
-
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
@@ -92,57 +86,6 @@ INSTALLED_APPS = (
     'tastypie',
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-        'storage': {
-            'format': '[%(asctime)s] "STORAGE-GET %(message)s"',
-            'datefmt' : '%d/%b/%Y %H:%M:%S'
-        },
-    },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        },
-        'storage': {
-            'storage': 'storage',
-        }
-    },
-    'handlers': {
-        'console':{
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'storage',
-            'filters': ['storage']
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'storage': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'filters': ['storage']
-        }
-    }
-}
 
 LOGIN_URL = '/login'
 AUTH_USER_MODEL = 'core.User'
@@ -153,13 +96,6 @@ from settings_tastypie import *
 
 import os
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
-# Additional locations of static files
-STATICFILES_DIRS = ( 
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(BASEDIR, '../static'),
-)
 
 from sys import argv
 if len(argv) > 1:

@@ -88,6 +88,7 @@ if __name__ == '__main__':
               ('/etc/numeter', ['numeter_webapp.cfg']),
               ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-combined.js']),
               ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-numeter.js']),
+              ('/var/log/numeter/webapp', ''),
           ],
           classifiers=[
               'Development Status :: 4 - Beta',

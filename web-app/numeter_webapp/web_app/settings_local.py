@@ -40,6 +40,78 @@ if config.getboolean_d('cache', 'use_cache', False):
         }
     }
 
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'storage': {
+            'format': '[%(asctime)s] "STORAGE-GET %(message)s"',
+            'datefmt' : '%d/%b/%Y %H:%M:%S'
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'storage': {
+            'storage': 'storage',
+        }
+    },
+    'handlers': {
+        'console':{
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'storage',
+            'filters': ['storage']
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'storage': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'filters': ['storage']
+        }
+    }
+}
+
+if config.getboolean_d('logging', 'use_logging', False): 
+    LOGGING['handlers']['info_file'] = {
+        'level': 'INFO',
+        'class': 'logging.handlers.RotatingFileHandler',
+        'filename': config.get_d('logging', 'info_file', '/var/log/numeter/webapp/info.log'), 
+        'maxBytes': config.getint_d('logging', 'file_size', 1000000),  
+        'formatter': 'verbose',
+        'filters': ['storage']
+    }
+    LOGGING['handlers']['error_file'] = {
+        'level': 'INFO',
+        'class': 'logging.handlers.RotatingFileHandler',
+        'filename': config.get_d('logging', 'error_file', '/var/log/numeter/webapp/error.log'), 
+        'maxBytes': config.getint_d('logging', 'file_size', 1000000),  
+        'formatter': 'verbose',
+        'filters': ['storage']
+    }
+    LOGGING['loggers']['storage']['handlers'].append('info_file')
+    LOGGING['loggers']['django.request']['handlers'].append('error_file')
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = config.getobj_d('global', 'allowed_hosts') 
@@ -66,6 +138,15 @@ MEDIA_URL = '/media/'
 # Set timeout for connection to storages
 STORAGE_TIMEOUT = config.getint_d('global', 'timeout', 5)
 
+# Set STATIC ROOT
+if DEBUG:
+    STATICFILES_DIRS = ( os.path.join(BASEDIR, '../static'), )
+    STATIC_ROOT = ''
+else:
+    STATIC_ROOT = os.path.join(BASEDIR, '../static')
+
+
+
 from django.conf import settings
 INSTALLED_APPS = settings.INSTALLED_APPS
 
@@ -75,8 +156,7 @@ if config.getboolean_d('debug', 'use_mock_storage', False):
 
 ## Custom configuration
 # Debug Tool Bar
-if config.getboolean_d('debug', 'use_debug_toolbar', False) and \
-    config.getboolean_d('debug', 'debug', False) :
+if config.getboolean_d('debug', 'use_debug_toolbar', False) and DEBUG:
     INSTALLED_APPS = INSTALLED_APPS+('debug_toolbar',)
     INTERNAL_IPS = ('127.0.0.1','192.168.100.1')
     MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES+('debug_toolbar.middleware.DebugToolbarMiddleware',)
