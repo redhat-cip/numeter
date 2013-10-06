@@ -30,7 +30,8 @@ Webapp configuration is located in ``/etc/numeter/numeter_webapp.cfg```.
 --------------------
 ``engine``
 ^^^^^^^^^^
-**Required**
+.. warning::
+    Required
 
 This setting defines which database backend will be used. Choose among Django engine or a custom. Default Django's engines are:
     * ``django.db.backends.mysql``
@@ -46,7 +47,8 @@ Example::
 
 ``name``
 ^^^^^^^^
-**Required**
+.. warning::
+    Required
 
 This setting defines name of the database to use. For SQLite, it's the full path to the database file.
 
@@ -57,7 +59,8 @@ Examples::
 
 ``user``
 ^^^^^^^^
-**Optionnal with Sqlite**
+.. note::
+    Not required with Sqlite
 
 This setting defines username to use when connecting to the database.
 
@@ -67,7 +70,8 @@ Example::
 
 ``password``
 ^^^^^^^^^^^^
-**Optionnal with Sqlite**
+.. note::
+    Not required with Sqlite
 
 This setting defines password to use when connecting to the database.
 
@@ -77,7 +81,8 @@ Example::
 
 ``host``
 ^^^^^^^^
-**Optionnal with Sqlite**
+.. note::
+    Optionnal
 
 This setting defines host to use when connecting to the database. An empty string means localhost.
 
@@ -87,10 +92,75 @@ Example::
 
 ``port``
 ^^^^^^^^
-**Optionnal with Sqlite**
+.. note::
+    Optionnal
 
 This setting defines port to use when connecting to the database. An empty string means the default port.
 
 Example::
 
     port = 3306
+
+``cache`` section
+-----------------
+``use_cache``
+^^^^^^^^^^^^^
+
+.. note::
+    Optionnal, defaults to ``False``.
+
+This setting defines if a cache backend will be used.
+
+Example::
+
+    use_cache = True
+
+``location``
+^^^^^^^^^^^^
+.. warning::
+    Required if ``use_cache = True``
+
+This setting defines location of the cache to use. This might be the directory for a file system cache, a host and port for a memcache server, or simply an identifying name for a local memory cache.
+
+Example::
+
+    location = unix:/var/run/memcached.sock
+
+``timeout``
+^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``300``.
+
+This setting defines number of seconds before a cache entry is considered stale.
+
+Example::
+
+    timeout = 3000
+
+
+``max_entries``
+^^^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``300``.
+
+This setting defines maximum number of entries allowed in the cache before old values are deleted.
+
+Example::
+
+    max_entries = 3000
+
+
+
+``storage`` section
+-----------------
+``timeout``
+^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``5``.
+
+This setting defines timeout for connection to storages.
+
+Example::
+
+    timeout = 10
+
