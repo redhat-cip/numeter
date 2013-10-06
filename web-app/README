@@ -20,3 +20,77 @@ External Links
 
 Troubleshooting
 ===============
+
+Configuration
+=============
+
+Webapp configuration is located in ``/etc/numeter/numeter_webapp.cfg```. 
+
+``database`` section
+--------------------
+``engine``
+^^^^^^^^^^
+**Required**
+
+This setting defines which database backend will be used. Choose among Django engine or a custom. Default Django's engines are:
+    * ``django.db.backends.mysql``
+    * ``django.db.backends.postgresql_psycopg2``
+    * ``django.db.backends.sqlite3``
+    * ``django.db.backends.oracle``
+
+You can use a database backend that doesn't ship with Django by setting ENGINE to a fully-qualified path (i.e. ``mypackage.backends.whatever``).
+
+Example::
+
+    engine = django.db.backends.sqlite3
+
+``name``
+^^^^^^^^
+**Required**
+
+This setting defines name of the database to use. For SQLite, it's the full path to the database file.
+
+Examples::
+
+    name = numeter
+    name = /var/db/numeter.db # with Sqlite
+
+``user``
+^^^^^^^^
+**Optionnal with Sqlite**
+
+This setting defines username to use when connecting to the database.
+
+Example::
+
+    user = numeter
+
+``password``
+^^^^^^^^^^^^
+**Optionnal with Sqlite**
+
+This setting defines password to use when connecting to the database.
+
+Example::
+
+    password = yourpass
+
+``host``
+^^^^^^^^
+**Optionnal with Sqlite**
+
+This setting defines host to use when connecting to the database. An empty string means localhost.
+
+Example::
+
+    host = db.my.lan
+
+``port``
+^^^^^^^^
+**Optionnal with Sqlite**
+
+This setting defines port to use when connecting to the database. An empty string means the default port.
+
+Example::
+
+    port = 3306
