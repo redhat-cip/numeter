@@ -131,7 +131,7 @@ Quick exemple of python-oslo.messaging installation
 
   apt-get install python-oslo.messaging
 
-**From sources :** ::
+**From sources :**
 
 Depends ::
 
