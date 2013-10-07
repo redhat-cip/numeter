@@ -218,10 +218,15 @@ class myPoller:
         writedInfos = []
         for module in self._modules.split("|"):
             allDatas = allInfos = []
-            self._logger.info("Try to launch module : " + module)
-            modImport = __import__(module)
+            self._logger.info("Try to launch module : %s" % module)
             try:
-                modClass = getattr(modImport, module)
+                (import_name, class_name) = module.split(':')
+            except ValueError as e:
+                self._logger.critical("Syntax error in module %s - %s" % (module,e))
+                continue
+            modImport = __import__(import_name, fromlist=[class_name])
+            try:
+                modClass = getattr(modImport, class_name)
                 modObj = modClass(self._logger, self._configParse)
                 # Get DATAS
                 self._logger.info("Call plugin get data")
