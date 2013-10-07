@@ -285,7 +285,6 @@ Example::
 
 ``file_size``
 ^^^^^^^^^^^^^
-
 .. note::
     Optionnal, defaults to ``1000000``.
 
@@ -294,3 +293,53 @@ This setting defines size of log file before rotate. Size is in byte.
 Example::
 
     file_size = 2000000
+
+
+``debug`` section
+-----------------
+``debug``
+^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``False``.
+.. warning::
+    Never set as True in prodiction environment, it could be a real leak of informations.
+
+This setting defines if debuging is enabled.
+
+Example::
+
+    debug = True
+
+``use_mock_storage``
+^^^^^^^^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``False``.
+
+This setting defines if Mock Storage is enabled. Useful for test numeter without other modules. Two mocks are available over ``/mock/X/``, where ``X`` is ``1`` or ``2``.
+
+Example::
+
+    use_mock_storage = True
+
+``use_debug_toolbar``
+^^^^^^^^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``False``, set as ``False`` if ``debug = False``.
+
+This setting defines if Django Debug Toolbar is enabled.
+
+Example::
+
+    use_debug_toolbar = True
+
+``debug_internal_ips``
+^^^^^^^^^^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``['127.0.0.1']``.
+
+This setting is a list of IPs which use Debug Toolbar.
+
+Example::
+
+    debug_internal_ips = ['192.168.0.2','192.168.0.3']
+
