@@ -7,7 +7,7 @@ import time
 import os
 import json
 from numeter.redis import myRedisConnect
-from numeter.storage import StorageEndpoint
+from numeter.storage.numeter_storage_endpoints import StorageEndpoint
 from numeter.queue import server as NumeterQueueC
 #import socket
 import re
