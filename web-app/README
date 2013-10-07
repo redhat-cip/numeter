@@ -201,8 +201,8 @@ Example::
     timezone = Europe/Paris
 
 
-``timezone``
-^^^^^^^^^^^^
+``language_code``
+^^^^^^^^^^^^^^^^^
 .. note::
     Optionnal, defaults to ``en-us``.
 
@@ -245,3 +245,52 @@ This setting defines location of secret key file.
 Example::
 
     media_root = /etc/key.txt
+
+``logging`` section
+-------------------
+``use_logging``
+^^^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``False``.
+
+This setting defines if logging will be used. Be sure to have correct logging locations with writing rigth, else webapp won't launch.
+
+Example::
+
+    use_logging = False
+
+``info_file``
+^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``/var/log/numeter/webapp/info.log``.
+
+This setting defines location of info log file.
+
+Example::
+
+    info_file = /tmp/info.log
+
+``error_file``
+^^^^^^^^^^^^^^
+
+.. note::
+    Optionnal, defaults to ``/var/log/numeter/webapp/error.log``.
+
+This setting defines location of error log file.
+
+Example::
+
+    error_file = /tmp/error.log
+
+
+``file_size``
+^^^^^^^^^^^^^
+
+.. note::
+    Optionnal, defaults to ``1000000``.
+
+This setting defines size of log file before rotate. Size is in byte.
+
+Example::
+
+    file_size = 2000000
