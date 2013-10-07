@@ -51,4 +51,4 @@ Numeter common
 
 **Numeter common :** ::
 
-    python common/setup.py install
+    cd common && python setup.py install

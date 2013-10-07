@@ -84,11 +84,11 @@ Get Numeter sources : ::
 
 **Numeter common :** ::
 
-    python common/setup.py install
+    cd common && python setup.py install
 
 **Numeter poller :** ::
 
-    python poller/setup.py install
+    cd poller && python setup.py install
 
 .. seealso:: :ref:`quick_config_poller`
 

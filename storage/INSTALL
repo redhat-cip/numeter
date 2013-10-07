@@ -154,11 +154,11 @@ Get Numeter sources : ::
 
 **Numeter common :** ::
 
-    python common/setup.py install
+    cd common && python setup.py install
 
 **Numeter storage :** ::
 
-    python storage/setup.py install
+    cd storage && python setup.py install
 
 After that you need to configure **nginx** : ::
 
