@@ -114,13 +114,13 @@ if config.getboolean_d('logging', 'use_logging', False):
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = config.getobj_d('global', 'allowed_hosts') 
+ALLOWED_HOSTS = config.getobj_d('global', 'allowed_hosts', ['*']) 
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = config.get('global', 'timezone')
+TIME_ZONE = config.get_d('global', 'timezone', None)
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html

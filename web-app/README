@@ -152,7 +152,7 @@ Example::
 
 
 ``storage`` section
------------------
+-------------------
 ``timeout``
 ^^^^^^^^^^^
 .. note::
@@ -164,3 +164,84 @@ Example::
 
     timeout = 10
 
+
+``global`` section
+-------------------
+``admins``
+^^^^^^^^^^^
+.. warning::
+    Required
+
+This setting is a tuple that lists people who get code error notifications.
+
+Example::
+
+    admins = [ ('admin', 'admin@locahost') ]
+
+``allowed_hosts``
+^^^^^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``['*']``.
+
+This setting is a list of strings representing the host/domain names that this site can serve. `String ``'*'`` representing all.
+
+Example::
+
+    admins = ['numeter.my.lan','numeter.lan']
+
+``timezone``
+^^^^^^^^^^^^
+.. warning::
+    Required
+
+This setting defines time zone for this installation.
+
+Example::
+
+    timezone = Europe/Paris
+
+
+``timezone``
+^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``en-us``.
+
+This setting defines default language of website.
+
+Example::
+
+    language_code = en-us
+
+
+``media_root``
+^^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``/var/www/numeter/media/``.
+
+This setting defines location of media files. In facts, a folder named graphlib will be created in. And each folder inside will be a graphic JavaScript library which user will choose.
+
+By default ``media_root``'s tree is the following: ::
+
+    media_root
+    |- graphlib
+       |- dygraph
+          |- dygraph-combined.js
+          |- dygraph-numeter.js
+
+The default JavaScript library is Dygraph.
+
+Example::
+
+    media_root = /var/www/numeter/media/
+
+
+``secret_key_file``
+^^^^^^^^^^^^^^^^^^^
+.. note::
+    Optionnal, defaults to ``/etc/numeter/secret_key.txt``.
+
+This setting defines location of secret key file.
+
+Example::
+
+    media_root = /etc/key.txt
