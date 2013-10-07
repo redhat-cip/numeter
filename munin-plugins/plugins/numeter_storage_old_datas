@@ -20,14 +20,14 @@ import sys
 import os
 import json
 
-try: 
-    from numeter_storage import myStorage
+try:
+    from numeter.storage import myStorage
 except ImportError:
     IMPORT_STORAGE = False
 else:
     IMPORT_STORAGE = True
 
-try: 
+try:
     from numeter.redis import myRedisConnect
 except ImportError:
     IMPORT_REDIS = False

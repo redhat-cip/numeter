@@ -11,13 +11,9 @@ import mock
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module'))
-
-#from numeter_storage import myStorage
-import numeter_storage
+#from numeter.storage import myStorage
+import numeter.storage
 #from numeter.redis import myRedisConnect
-#import myRedisConnect
 
 import base as test_base
 from test_utils import FakeRedis
@@ -26,14 +22,14 @@ class StorageTestCase(test_base.TestCase):
 
     def setUp(self):
         super(StorageTestCase, self).setUp()
-        self.getgloballog_orig = numeter_storage.myStorage.getgloballog
-        numeter_storage.myStorage.getgloballog = mock.MagicMock()
-        self.storage = numeter_storage.myStorage(myPath+"/storage_unittest.cfg")
+        self.getgloballog_orig = numeter.storage.myStorage.getgloballog
+        numeter.storage.myStorage.getgloballog = mock.MagicMock()
+        self.storage = numeter.storage.myStorage(myPath+"/storage_unittest.cfg")
         self.storage._logger = myFakeLogger()
 
     def tearDown(self):
         super(StorageTestCase, self).tearDown()
-        numeter_storage.myStorage.getgloballog = numeter_storage.myStorage.getgloballog
+        numeter.storage.myStorage.getgloballog = numeter.storage.myStorage.getgloballog
 
 #    def test_storage_getData(self):
 #        # Start connexion storage (db2)
@@ -604,13 +600,13 @@ class StorageTestCase(test_base.TestCase):
 #        hostAllDatas = {
 #                'Infos': {
 #                    'MyInfo' : {"Plugin": "MyInfo"},
-#                    'load': {'Describ': '', 'Plugin': 'load', 'Title': 'Load average', 'Vlabel': 'load', 'Base': '1000', 
+#                    'load': {'Describ': '', 'Plugin': 'load', 'Title': 'Load average', 'Vlabel': 'load', 'Base': '1000',
 #                        'Infos': {
 #                            'load': {'info': '5 minute load average', 'id': 'load', 'label': 'load'}
 #                        },
 #                        'Order': ''
 #                    },
-#                    'df_inode': {'Describ': '', 'Plugin': 'df_inode', 'Title': 'Inode usage in percent', 'Vlabel': '%', 'Base': '1000', 
+#                    'df_inode': {'Describ': '', 'Plugin': 'df_inode', 'Title': 'Inode usage in percent', 'Vlabel': '%', 'Base': '1000',
 #                        'Infos': {
 #                            '_dev_simfs': {'id': '_dev_simfs', 'label': '/'},
 #                            '_lib_init_rw': {'id': '_lib_init_rw', 'label': '/lib/init/rw'},
@@ -618,7 +614,7 @@ class StorageTestCase(test_base.TestCase):
 #                        },
 #                        'Order': ''
 #                    }
-#                }, 
+#                },
 #                'Datas': {
 #                    'load': {
 #                        '1329131160': {'load': '2.00'},
@@ -802,7 +798,7 @@ class StorageTestCase(test_base.TestCase):
 #        self.assertEquals(result, plugDf)
 #        result = storageRedis.redis_hget("HOSTS","hostBar")
 #        self.assertEquals(result, S_INFO_myinfo['hostBar'])
-#        # Test rrd write 
+#        # Test rrd write
 #        result = os.path.isfile("/tmp/numeter_rrds/d2/hostFoo/df/root.rrd")
 #        self.assertTrue(result)
 #        result = os.path.isfile("/tmp/numeter_rrds/d2/hostFoo/df/home.rrd")
@@ -866,7 +862,7 @@ class StorageTestCase(test_base.TestCase):
 #        # RRD DELETE FALSE
 #        # Set old ts. do run but no file to delete
 #        self.storage._rrd_delete = False
-#        os.system("rm -rf "+rrdPath) 
+#        os.system("rm -rf "+rrdPath)
 #        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
 #        result = storageRedis.redis_set("LAST_RRD_CLEAN",'0000000000')
 #        os.system("mkdir -p "+rrdPath+'/foo/') ; os.system("touch "+rrdPath+'/foo/ds.rrd')
@@ -876,7 +872,7 @@ class StorageTestCase(test_base.TestCase):
 #        self.assertEquals(result, '[]')
 #        # same with data to delete
 #        self.storage._rrd_clean_time = 0 # 0h
-#        os.system("rm -rf "+rrdPath) 
+#        os.system("rm -rf "+rrdPath)
 #        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
 #        result = storageRedis.redis_set("LAST_RRD_CLEAN",'0000000000')
 #        os.system("mkdir -p "+rrdPath+'/foo/') ; os.system("touch "+rrdPath+'/foo/ds.rrd')
@@ -889,7 +885,7 @@ class StorageTestCase(test_base.TestCase):
 #        # Set old ts. do run but no file to delete unless an empty dir
 #        self.storage._rrd_delete = True
 #        self.storage._rrd_clean_time = 1 # 0h
-#        os.system("rm -rf "+rrdPath) 
+#        os.system("rm -rf "+rrdPath)
 #        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
 #        result = storageRedis.redis_set("LAST_RRD_CLEAN",'0000000000')
 #        os.system("mkdir -p "+rrdPath+'/foo/') ; os.system("touch "+rrdPath+'/foo/ds.rrd')
@@ -903,7 +899,7 @@ class StorageTestCase(test_base.TestCase):
 #        # same with data to delete and empty dir
 #        self.storage._rrd_delete = True
 #        self.storage._rrd_clean_time = 0 # 0h
-#        os.system("rm -rf "+rrdPath) 
+#        os.system("rm -rf "+rrdPath)
 #        os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
 #        result = storageRedis.redis_set("LAST_RRD_CLEAN",'0000000000')
 #        os.system("mkdir -p "+rrdPath+'/foo/') ; os.system("touch "+rrdPath+'/foo/ds.rrd')
@@ -926,7 +922,7 @@ class myFakeLogger():
         return
     def error(self,string):
         return
-    def warning(self,string):   
+    def warning(self,string):
         return
     def info(self,string):
         return

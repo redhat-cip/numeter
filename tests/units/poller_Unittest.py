@@ -10,10 +10,7 @@ from mock import call
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'))
-
-import numeter_poller
+import numeter.poller
 from test_utils import FakeRedis
 from numeter.redis import myRedisConnect
 
@@ -23,14 +20,14 @@ class PollerTestCase(test_base.TestCase):
 
     def setUp(self):
         super(PollerTestCase, self).setUp()
-        self.getgloballog_orig = numeter_poller.myPoller.getgloballog
-        numeter_poller.myPoller.getgloballog = mock.MagicMock()
-        self.poller = numeter_poller.myPoller(myPath+"/poller_unittest.cfg")
+        self.getgloballog_orig = numeter.poller.myPoller.getgloballog
+        numeter.poller.myPoller.getgloballog = mock.MagicMock()
+        self.poller = numeter.poller.myPoller(myPath+"/poller_unittest.cfg")
         self.poller._logger = myFakeLogger()
 
     def tearDown(self):
         super(PollerTestCase, self).tearDown()
-        numeter_poller.myPoller.getgloballog = numeter_poller.myPoller.getgloballog
+        numeter.poller.myPoller.getgloballog = numeter.poller.myPoller.getgloballog
 
     def test_poller_pollerTimeToGo(self):
         self.poller._poller_time            = 60
@@ -186,7 +183,7 @@ class myFakeLogger():
         return
     def error(self,string):
         return
-    def warning(self,string):   
+    def warning(self,string):
         return
     def info(self,string):
         return

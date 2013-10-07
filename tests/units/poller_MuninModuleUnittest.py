@@ -10,10 +10,7 @@ import ConfigParser
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller'))
-
-from myMuninModule import myMuninModule
+from numeter.poller import myMuninModule
 
 import base as test_base
 
@@ -97,19 +94,19 @@ class PollerMuninModuleTestCase(test_base.TestCase):
         result = self._pollerMuninModule.munin_nodes()
         self.assertEqual(result, None)
         # Send good + space fetch
-        self._pollerMuninModule._s.set_return(['foo',' ','.']) 
+        self._pollerMuninModule._s.set_return(['foo',' ','.'])
         result = self._pollerMuninModule.munin_nodes()
         self.assertEqual(result, 'foo')
         # Send empty line
-        self._pollerMuninModule._s.set_return(['','','']) 
+        self._pollerMuninModule._s.set_return(['','',''])
         result = self._pollerMuninModule.munin_nodes()
         self.assertEqual(result, None)
         # Send good with all chars
-        self._pollerMuninModule._s.set_return(['f.o-o_A9','.']) 
+        self._pollerMuninModule._s.set_return(['f.o-o_A9','.'])
         result = self._pollerMuninModule.munin_nodes()
         self.assertEqual(result, 'f.o-o_A9')
         # Send good fetch with comment
-        self._pollerMuninModule._s.set_return(['# bar','foo','.']) 
+        self._pollerMuninModule._s.set_return(['# bar','foo','.'])
         result = self._pollerMuninModule.munin_nodes()
         self.assertEqual(result, 'foo')
 
@@ -238,8 +235,8 @@ class PollerMuninModuleTestCase(test_base.TestCase):
         # Send valid with 2 infos + no info for DS bar + base + graph describ
         self._fakeSocket._fakeReturnConfig = ['graph_info unit test','graph_args --base 1024','foo.min 0','foo.max 10','bar.bar gnu','.']
         result = self._pollerMuninModule.formatFetchInfo("foo")
-        self.assertEqual(result, 
-                {'Describ': 'unit test', 'Title': 'foo', 'Plugin': 'foo', 'Vlabel': '', 'Base': '1024', 'Infos': 
+        self.assertEqual(result,
+                {'Describ': 'unit test', 'Title': 'foo', 'Plugin': 'foo', 'Vlabel': '', 'Base': '1024', 'Infos':
                     {'foo': {'max': '10', 'id': 'foo', 'min': '0'},
                     'bar': {'bar': 'gnu','id': 'bar'}}
                 , 'Order': ''})
@@ -314,8 +311,8 @@ class PollerMuninModuleTestCase(test_base.TestCase):
         self._fakeSocket._fakeReturnPlugin = ['foo']
         self._fakeSocket._fakeReturnConfig  = ['foo.min 0','.']
         result = self._pollerMuninModule.pluginsRefresh()
-        self.assertEqual(result, 
-                [{'Describ': '', 'Title': 'foo', 'Plugin': 'foo', 'Vlabel': '', 'Base': '1000', 
+        self.assertEqual(result,
+                [{'Describ': '', 'Title': 'foo', 'Plugin': 'foo', 'Vlabel': '', 'Base': '1000',
                     'Infos': {'foo': {'id': 'foo', 'min': '0'}}, 'Order': ''}
                 ])
         # Test regex plugin match

@@ -19,8 +19,8 @@ import os
 import subprocess
 import re
 
-try: 
-    from numeter_storage import myStorage
+try:
+    from numeter.storage import myStorage
 except ImportError:
     IMPORT_STORAGE = False
 else:
@@ -62,7 +62,7 @@ def load_params():
                                  + '([0-9\.]+) Datas in '
                                  + '([0-9\.]+), seconds')
     GREP_PATTERN     = os.getenv('grepPattern',
-                                 ' End : numeter_') # For performance 
+                                 ' End : numeter_') # For performance
 
 def get_file_line():
     "Return the last matching line in log file"
@@ -97,13 +97,13 @@ if __name__ == '__main__':
         if ARGV[1] == 'config':
             print_config(CHECK_TYPE)
         elif ARGV[1] == 'autoconf':
-            if not IMPORT_STORAGE:  
+            if not IMPORT_STORAGE:
                 print 'no (failed import storage module)'
                 sys.exit(0)
             print 'yes'
     elif IMPORT_STORAGE:
         load_params()
         FILELINE = get_file_line()
-        for NAME in CHECK_TYPE: 
+        for NAME in CHECK_TYPE:
             VALUE = get_value_in_line(NAME, FILELINE)
             print_value_storage(NAME, VALUE)

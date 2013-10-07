@@ -22,7 +22,7 @@
 
 """ calls numeter function """
 
-from numeter_poller import myPoller
+from numeter.poller import myPoller
 
 if __name__ == '__main__':
     poller = myPoller("/etc/numeter/numeter_poller.cfg")

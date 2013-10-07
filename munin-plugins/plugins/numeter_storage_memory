@@ -26,15 +26,15 @@ import sys
 import subprocess
 import re
 
-try: 
-    from numeter_storage import myStorage
+try:
+    from numeter.storage import myStorage
 except ImportError:
     IMPORT_STORAGE = False
 else:
     IMPORT_STORAGE = True
 
 try:
-    FPID = open('/var/run/numeter_storage.pid', 'r')
+    FPID = open('/var/run/numeter.storage.pid', 'r')
     PIDOK = True
 except IOError:
     print 'storage not running or pid file missing'
@@ -44,7 +44,7 @@ def get_pid():
     pid = FPID.readline()
     pid = pid.rstrip()
     return pid
-    
+
 def print_config(data_list):
     print 'graph_title Numeter storage mem usage'
     print 'graph_info This graph shows the memory usage of the Numeter storage daemon'

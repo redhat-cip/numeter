@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 import unittest
-import os, sys 
+import os, sys
 import mock
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'))
-
 import base as test_base
 
-from storeandforward import StoreAndForward
+from numeter.poller.storeandforward import StoreAndForward
 
 class StoreAndForwardTestCase(test_base.TestCase):
 

@@ -204,7 +204,7 @@ class myPoller:
             return writedInfos
 
 
-    def writeInSimulateFile(self, message): 
+    def writeInSimulateFile(self, message):
         "Write in simulate file"
         logfile = open(self._simulate_file, 'a')
         logfile.write(message+"\n")
@@ -228,7 +228,7 @@ class myPoller:
                 allDatas = modObj.getData()
                 self._sendData(allDatas)
                 # Refresh config
-                if self._need_refresh: 
+                if self._need_refresh:
                     self._logger.info("Call plugin info refresh")
                     # Get all infos
                     allInfos = modObj.pluginsRefresh()
@@ -239,13 +239,13 @@ class myPoller:
 
             except (AttributeError, TypeError), e:
                 self._logger.error("Module : %s error : %s" % (module, e))
-                continue 
+                continue
             except Exception as e:
                 self._logger.error("Module : %s Exception : %s" % (module, e))
-                continue 
+                continue
         # Exec fixe module
         # loadModules getMyInfo
-        if self._need_refresh: 
+        if self._need_refresh:
             allInfos = []
             self._logger.info("Call plugin getMyInfo")
             allInfos = self.getMyInfo()
@@ -339,7 +339,7 @@ class myPoller:
                 return True
             # Si c'est pas bon
             else:
-                self._logger.warning("Poller to soon. pollerTimeToGo poller_time : " 
+                self._logger.warning("Poller to soon. pollerTimeToGo poller_time : "
                                      + str(self._poller_time)
                                      + " sec and refresh time : "
                                      + str(self._plugins_refresh_time)

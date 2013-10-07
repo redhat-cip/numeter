@@ -7,7 +7,7 @@ import time
 import os
 import json
 from numeter.redis import myRedisConnect
-from numeter_storage_endpoints import StorageEndpoint
+from numeter.storage import StorageEndpoint
 from numeter.queue import server as NumeterQueueC
 #import socket
 import re
@@ -156,7 +156,7 @@ class myStorage:
         else:
             logsterr.setLevel(logging.DEBUG)
         return logger
-  
+
 
 
 
@@ -248,7 +248,7 @@ class myStorage:
                                             % (hostID, wspPath))
                         continue
                 try:
-                    whisper.create(ds_path, 
+                    whisper.create(ds_path,
                                    [(60, 1440),   # --- Daily (1 Minute Average)
                                    (300, 2016),   # --- Weekly (5 Minute Average)
                                    (600, 4608),   # --- Monthly (10 Min Average)
@@ -260,7 +260,7 @@ class myStorage:
             # Update whisper
             try:
                 self._logger.debug("writewsp host : %s Update wsp "
-                                   "Timestamp %s For value %s in file %s" 
+                                   "Timestamp %s For value %s in file %s"
                                     % (hostID, data_timestamp, value, ds_path))
                 whisper.update(ds_path, str(value), str(data_timestamp) )
             except Exception as e:
@@ -277,7 +277,7 @@ class myStorage:
         if hostIDHash == None:
             hostIDHash = hashlib.md5()
             hostIDHash.update(hostID)
-            # Get X first char in md5 sum X=_wsp_path_md5_char 
+            # Get X first char in md5 sum X=_wsp_path_md5_char
             hostIDHash = hostIDHash.hexdigest()[0:self._wsp_path_md5_char]
             # Update redis cache
             self._redis_connexion.redis_hset("HOST_ID",hostID,hostIDHash)
@@ -288,13 +288,13 @@ class myStorage:
 
 
     def _write_info(self, hostID, info_json):
-        """info = {    'Plugin': plugin, 
-                       'Base': '1000', 
+        """info = {    'Plugin': plugin,
+                       'Base': '1000',
                        'ClientHash': 'md5(client)', <---- add by this function (in MyInfo)
-                       'Describ': '', 
-                       'Title': plugin, 
-                       'Vlabel': '', 
-                       'Order': '', 
+                       'Describ': '',
+                       'Title': plugin,
+                       'Vlabel': '',
+                       'Order': '',
                        'Infos': {
                             "down" : {"type": "COUNTER", "id": "down", "label": "received"},
                              "up" : {"type": "COUNTER", "id": "up", "label": "upload"},
@@ -303,21 +303,21 @@ class myStorage:
         info =  self.jsonToPython(info_json)
         plugin = info.get('Plugin', None)
 
-        self._logger.debug("_write_infos  hostID : %s -- plugin : %s" 
+        self._logger.debug("_write_infos  hostID : %s -- plugin : %s"
                                 % (hostID, plugin))
 
         # Get infos
         if info == {} \
         or ( plugin != "MyInfo" \
         and ( not info.has_key("Infos") or info["Infos"] == {} )):
-            self._logger.warning("_write_infos  hostID : error, no Infos %s -- plugin : %s" 
+            self._logger.warning("_write_infos  hostID : error, no Infos %s -- plugin : %s"
                                     % (hostID, plugin))
             return False
 
         if plugin == "MyInfo":
             # Add hash + filtered and other (see in comments)
             if not "ID" in info or not "Name" in info:
-                self._logger.error("_write_infos  hostID : error, no Infos %s -- plugin : %s" 
+                self._logger.error("_write_infos  hostID : error, no Infos %s -- plugin : %s"
                                     % (hostID, plugin))
                 return False
             # Get hash from cache for data path
@@ -349,8 +349,8 @@ class myStorage:
         toDelete=list(set(currentPlugin)-set(writedInfos))
 
         # Clean notify
-        if not self._wsp_delete: 
-            # Clean reappeared plugin 
+        if not self._wsp_delete:
+            # Clean reappeared plugin
             for plugin in writedInfos:
                 self._redis_connexion.redis_hdel("DELETED_PLUGINS",hostID
                                                  + "@" + plugin)
@@ -402,8 +402,8 @@ class myStorage:
         toDelete=list(set(currentHosts)-set(writedHosts))
 
         # Clean notify
-        if not self._wsp_delete: 
-            # Clean reappeared hosts 
+        if not self._wsp_delete:
+            # Clean reappeared hosts
             for hostID in writedHosts:
                 self._redis_connexion.redis_hdel("DELETED_HOSTS",hostID)
 
@@ -470,10 +470,10 @@ class myStorage:
             if self._wsp_delete: # Erase wsp
 
                 # Delete wsp
-                process = subprocess.Popen("find " + self._wsp_path 
-                + " -mmin +" + str(self._wsp_clean_time*60) 
-                + " -type f" 
-                + " -print" 
+                process = subprocess.Popen("find " + self._wsp_path
+                + " -mmin +" + str(self._wsp_clean_time*60)
+                + " -type f"
+                + " -print"
                 + " -delete" , shell=True, stdout=subprocess.PIPE)
                 (result, stderr) =  process.communicate()
                 self._logger.warning("Clean old WSP -- delete wsp : "
@@ -481,9 +481,9 @@ class myStorage:
                 wspDelete = result.split()
 
                 # Clean empty dirs
-                process = subprocess.Popen("find " + self._wsp_path 
+                process = subprocess.Popen("find " + self._wsp_path
                 + " -type d"
-                + " -empty" 
+                + " -empty"
                 + " -print"
                 + " -delete" , shell=True, stdout=subprocess.PIPE)
                 (result, stderr) =  process.communicate()

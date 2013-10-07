@@ -27,7 +27,7 @@ def readConf(configFile):
     global redis_port
     global redis_db
     global redis_password
-    # Default values : 
+    # Default values :
     redis_host="127.0.0.1"
     redis_db = 0
     redis_password=None
@@ -181,7 +181,7 @@ def data():
                 # Fetch wsp
                 # ((1335530280, 1335530640, 60), ('_dev_shm',), [(None,), (None,), (None,), (None,)])
                 if os.path.isfile(str(path+'/'+plugin+'/'+ds+'.wsp')):
-                   result_wsp = whisper.fetch(str(path+'/'+plugin+'/'+ds+'.wsp'), time.time() - startPoint, time.time()) 
+                   result_wsp = whisper.fetch(str(path+'/'+plugin+'/'+ds+'.wsp'), time.time() - startPoint, time.time())
                 else:
                     return "{}"
 
@@ -201,7 +201,7 @@ def data():
                     else:
                         tmp_data.append(value)
                 # Trick for join null string and int
-                joined_values = ', '.join(["%s" % el for el in tmp_data]) 
+                joined_values = ', '.join(["%s" % el for el in tmp_data])
                 # stock values
                 VALUES_JSON.append('"' + DS + '" : [' + joined_values + ']')
 

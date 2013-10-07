@@ -1,1 +1,4 @@
 redis
+oslo.config
+whisper
+-e git+https://github.com/openstack/oslo.messaging.git#egg=oslo.messaging

@@ -24,7 +24,7 @@ import subprocess
 import re
 
 try: 
-    from numeter_poller import myPoller
+    from numeter.poller import myPoller
 except ImportError:
     IMPORT_POLLER = False
 else:
@@ -38,7 +38,7 @@ else:
     IMPORT_COLLECTOR = True
 
 try: 
-    from numeter_storage import myStorage
+    from numeter.storage import myStorage
 except ImportError:
     IMPORT_STORAGE = False
 else:

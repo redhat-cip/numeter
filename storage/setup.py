@@ -11,12 +11,12 @@
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
@@ -49,20 +49,21 @@ if __name__ == '__main__':
           keywords=['numeter','graphing','poller','collector', 'storage'],
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
-          scripts = ['storage/numeter-storage', 'storage/numeter-storaged'],
-          packages = ['', 'numeter', 'numeter.redis'],
-          package_dir = {'':'storage/module', 'numeter':'storage/numeter'},
-          #package_data={'': ['storage/numeter_storage.py']},
+          scripts = ['numeter-storage', 'numeter-storaged'],
+          packages = ['numeter', 'numeter.redis' , 'numeter.storage'],
+          package_dir = {'numeter.storage':'module/'},
+          namespace_packages = ['numeter'],
+          #package_data={'': ['storage/numeter.storage.py']},
           #data_files = [('/etc', ['etc/numeter.conf']),
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),
           #              ('share/man/man1/', ['man/numeter.1']) ],
-          data_files = [('/etc/numeter', ['storage/numeter_storage.cfg','storage/host-list']), 
+          data_files = [('/etc/numeter', ['numeter_storage.cfg','host-list']),
                         #              ('/etc/nginx/sites-available', ['storage/storage-web/numeter-storage-web']) ,
                         #              ('/etc/uwsgi/apps-available', ['storage/storage-web/numeter-storage-uwsgi.ini']) ,
-                        ('/usr/share/numeter/storage', ['storage/storage-web/numeter_uwsgi.py']) ,
+                        ('/usr/share/numeter/storage', ['storage-web/numeter_uwsgi.py']) ,
                         ('/var/log/numeter', '') ,
-                        ('/etc/init.d', ['storage/numeter-storage.init']),
+                        ('/etc/init.d', ['numeter-storage.init']),
                         ('/var/lib/numeter/wsps', ''),
                         ],
           classifiers=[

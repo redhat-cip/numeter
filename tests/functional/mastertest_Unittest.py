@@ -15,14 +15,8 @@ import rrdtool
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../poller/module'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../storage/module'))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../collector/module'))
-
-from numeter_poller import myPoller
-from numeter_collector import myCollector
-from numeter_storage import myStorage
+from numeter.poller import myPoller
+from numeter.storage import myStorage
 
 #foo_unittest|bar_unittest
 class MasterTestCase(unittest.TestCase):
@@ -92,7 +86,7 @@ class MasterTestCase(unittest.TestCase):
         result = pollerRedis.redis_zrangebyscore("DATAS",'-inf','+inf')
         P_DATAS = ['{"TimeStamp": "'+P_TS+'", "Values": {"bar": "-4.2", "gnu": "4.2"}, "Plugin": "bar_unittest"}', '{"TimeStamp": "'+P_TS+'", "Values": {"foo": "42"}, "Plugin": "foo_unittest"}']
         self.assertEquals(result,P_DATAS)
-        
+
         #
         # Collector
         #
@@ -141,7 +135,7 @@ class MasterTestCase(unittest.TestCase):
         result = storageRedis.redis_hgetall("HOST_ID")
         self.assertEquals(result, S_HOST_ID)
         # Check RRD_PATH
-        S_RRD_PATH = {hostID: '/tmp/numeter_rrds/e1/'+hostID} 
+        S_RRD_PATH = {hostID: '/tmp/numeter_rrds/e1/'+hostID}
         result = storageRedis.redis_hgetall("RRD_PATH")
         self.assertEquals(result, S_RRD_PATH)
         # Check INFOS@host
@@ -155,7 +149,7 @@ class MasterTestCase(unittest.TestCase):
         self.assertEquals(result, P_INFO_foo)
         result = storageRedis.redis_hget("HOSTS",hostID)
         self.assertEquals(result, S_INFO_myinfo[hostID])
-        # Test rrd write 
+        # Test rrd write
         result = os.path.isfile(S_RRD_PATH[hostID]+"/foo_unittest/foo.rrd")
         self.assertTrue(result)
         result = rrdtool.info(S_RRD_PATH[hostID]+"/foo_unittest/foo.rrd")

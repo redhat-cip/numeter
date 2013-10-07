@@ -8,7 +8,7 @@ from daemon import runner
 from lockfile import LockTimeout
 import logging
 
-from numeter_storage import myStorage
+from numeter.storage import myStorage
 import ConfigParser
 
 class App():

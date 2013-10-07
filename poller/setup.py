@@ -11,12 +11,12 @@
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
@@ -51,13 +51,14 @@ if __name__ == '__main__':
           keywords=['numeter','graphing','poller','collector','storage'],
           url='https://github.com/enovance/numeter',
           license='GNU Affero General Public License v3',
-          scripts = ['poller/numeter-poller', 'poller/numeter-pollerd'],
-          packages = [''],
-          package_dir = {'':'poller/module'},
-          data_files = [('/etc/numeter', ['poller/numeter_poller.cfg', 'poller/redis-poller.conf']), 
+          scripts = ['numeter-poller', 'numeter-pollerd'],
+          packages = ['numeter', 'numeter.poller'],
+          package_dir = {'numeter.poller': 'module/'},
+          namespace_packages = ['numeter'],
+          data_files = [('/etc/numeter', ['numeter_poller.cfg', 'redis-poller.conf']),
                         ('/var/log/numeter', ''),
-                        ('/etc/init.d', ['poller/numeter-poller.init']),
-                        ('/etc/init.d', ['poller/numeter-redis-poller.init']),
+                        ('/etc/init.d', ['numeter-poller.init']),
+                        ('/etc/init.d', ['numeter-redis-poller.init']),
                         ],
           classifiers=[
               'Development Status :: 4 - Beta',

@@ -7,7 +7,6 @@ import sys
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+'/../../common'))
 from numeter.redis import myRedisConnect
 
 class RedisTestCase(unittest.TestCase):
@@ -42,7 +41,7 @@ class RedisTestCase(unittest.TestCase):
         self.assertEqual(redis_db0.redis_get("foo"), "bar0")
         # Set value in 1 with same key
         redis_db1.redis_set("foo","bar1")
-        # Get value in 0 and default 
+        # Get value in 0 and default
         self.assertEqual(redis_db0.redis_get("foo"), "bar0")
         self.assertEqual(redis_dbDefault.redis_get("foo"), "bar0")
         # Get value in 1
@@ -60,7 +59,7 @@ class RedisTestCase(unittest.TestCase):
         self._redis_connexion.redis_zadd("ZFOO","bar1",1)
         self._redis_connexion.redis_zadd("ZFOO","bar2",2)
         self._redis_connexion.redis_zadd("ZFOO","bar3",3)
-        # zrange 
+        # zrange
         result = self._redis_connexion.redis_zrangebyscore("ZFOO",'-inf','+inf',start=None, num=None)
         self.assertEqual(result, ['bar1', 'bar2', 'bar3'])
         result = self._redis_connexion.redis_zrangebyscore("ZFOO",'1','2',start=None, num=None)
