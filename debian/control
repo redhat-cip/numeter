@@ -23,7 +23,7 @@ Homepage: https://github.com/enovance/numeter
 Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-kombu, python-oslo.messaging
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
- Common tools for numeter components.
+ Common tools for Numeter components.
 
 Package: munin-plugins-numeter
 Architecture: all
