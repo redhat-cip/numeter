@@ -22,11 +22,12 @@ Django and tastypie setup
 --------------------------
 
 
-You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources.
+You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. You also need ``Tastypie >= 0.10`` from Pypy.
 
 **From packages :** ::
 
-  apt-get install -t wheezy-backports python-django python-tastypie python-mimeparse
+    apt-get install -t wheezy-backports python-django python-mimeparse
+    easy_install django-tastypie
 
 Numeter Webapp setup
 -----------------------
@@ -149,10 +150,10 @@ First launch
 ::
 
     numeter-webapp syncdb
-    numeter-webapp add-storage --alias=NAME --port=80 --urlprefix=/numeter-storage/
+    numeter-webapp add-storage --alias=local_storage --port=8080 --urlprefix=/numeter-storage/ --address=127.0.0.1
 
 .. note::
     ``syncdb`` will ask you to create a first superuser. If you choose 'no', it will be possible to make it with ``numeter-webapp add-user -S``.
 
 
-Launch your Web frontend or simply ``numeter-webapp runserver 0.0.0.0:80``.
+Launch your Web frontend or simply ``numeter-webapp runserver 0.0.0.0:80``. You must add hosts in database for use it, go to 'Configuration/Storage/YourStorage/' and click on button Create hosts.

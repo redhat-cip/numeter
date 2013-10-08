@@ -83,7 +83,7 @@ INSTALLED_APPS = (
     'configuration',
     'rest',
     # Django required extensions
-    'tastypie',
+    # 'tastypie',
 )
 
 
