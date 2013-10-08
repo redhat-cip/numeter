@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Gaël Lambert <gael.lambert@enovance.com>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper, python, quilt
+Build-Depends: debhelper, python, quilt, python-setuptools
 X-Python-Version: >=2.5, <=2.7
 Standards-Version: 3.9.3
 Homepage: https://github.com/enovance/numeter
@@ -29,19 +29,19 @@ Description: Numeter is a new and dynamic graphing solution.
 Package: numeter-common
 Architecture: all
 Homepage: https://github.com/enovance/numeter
-Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-kombu
+Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-kombu, python-oslo.messaging
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
  Common tools for numeter components.
 
-Package: numeter-web-app
+Package: numeter-webapp
 Architecture: all
 Homepage: https://github.com/enovance/numeter
-Depends: ${misc:Depends}, mysql-server, php5-fpm | libapache2-mod-php5, php5-mysql
-Recommends: apache2 | lighttpd | httpd
+Depends: ${misc:Depends}, python-django (>= 1.5), python-tastypie, python-mimeparse
+Recommends: apache2 | httpd | nginx
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
- Webapp : A PHP webapp displays data using the dygraphs library
+ Webapp : A Django webapp displays data using the dygraphs library
 
 Package: munin-plugins-numeter
 Architecture: all
