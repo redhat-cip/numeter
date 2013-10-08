@@ -3,31 +3,49 @@ Section: net
 Priority: optional
 Maintainer: Gaël Lambert <gael.lambert@enovance.com>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper, python, quilt
+Build-Depends: debhelper, python, quilt, python-setuptools
 X-Python-Version: >=2.5, <=2.7
 Standards-Version: 3.9.3
-Homepage: https://github.com/numeter
+Homepage: https://github.com/enovance/numeter
 
 Package: numeter-poller
 Architecture: all
-Homepage: https://github.com/numeter/poller
-Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, python-daemon, munin-node, redis-server (>= 2:2.4.14)
+Homepage: https://github.com/enovance/numeter
+Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, munin-node
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
- Poller is an agent installed on the servers for which graphs are desired. It
- gathers data and keeps it to allow asynchronous collection.
+ Poller is an agent installed on the servers for which graphs are desired.
+ It gathers data and keeps it to allow asynchronous collection.
+
+Package: numeter-storage
+Architecture: all
+Homepage: https://github.com/enovance/numeter
+Depends: ${misc:Depends}, ${python:Depends}, numeter-common, python, python-whisper, uwsgi, nginx, python-flask, uwsgi-plugin-python, redis-server (>= 2:2.4.14), python-redis (>= 2.4.9)
+XB-Python-Version: ${python:Versions}
+Description: Numeter is a new and dynamic graphing solution.
+ Storage : Data is fetched from the collectors and then stored in WSP files.
+ An HTTP API allows access to the data.
 
 Package: numeter-common
 Architecture: all
-Homepage: https://github.com/numeter
-Depends: ${misc:Depends}, ${python:Depends}, python, python-redis (>= 2.4.9)
+Homepage: https://github.com/enovance/numeter
+Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-kombu, python-oslo.messaging
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
- Common tools for Numeter components.
+ Common tools for numeter components.
+
+Package: numeter-webapp
+Architecture: all
+Homepage: https://github.com/enovance/numeter
+Depends: ${misc:Depends}, python-django (>= 1.5), python-tastypie, python-mimeparse
+Recommends: apache2 | httpd | nginx
+XB-Python-Version: ${python:Versions}
+Description: Numeter is a new and dynamic graphing solution.
+ Webapp : A Django webapp displays data using the dygraphs library
 
 Package: munin-plugins-numeter
 Architecture: all
-Homepage: https://github.com/numeter
+Homepage: https://github.com/enovance/numeter
 Depends: ${misc:Depends}, ${python:Depends}, python, munin-node
 XB-Python-Version: ${python:Versions}
 Description: Munin plugins for Numeter.

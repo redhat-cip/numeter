@@ -7,10 +7,13 @@ export DH_ALWAYS_EXCLUDE=COPYING:CHANGES
 	dh $@ --with quilt
 
 override_dh_auto_install:
-	python common/setup.py install --root=debian/numeter-common --install-layout=deb
+	# common
+	cd common && python setup.py install --root=../debian/numeter-common --install-layout=deb
 	rm -rf build
-	python poller/setup.py install --root=debian/numeter-poller --install-layout=deb
+	# poller
+	cd poller && python setup.py install --root=../debian/numeter-poller --install-layout=deb
 	rm -rf build
+	# munin
 	$(MAKE) -f munin-plugins/Makefile install DESTDIR=$(CURDIR)/debian/munin-plugins-numeter
 
 #override_dh_installchangelogs:
