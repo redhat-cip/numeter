@@ -98,7 +98,7 @@ class myMuninModule(ModulesGeneric):
         pluginInfo = self.munin_connection.munin_config(plugin)
 
         # If empty
-        if pluginInfo == []:
+        if not pluginInfo:
             return None
 
         # Set plugin informations (defaul values)
