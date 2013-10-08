@@ -26,13 +26,16 @@ import shutil
 
 class my_install(install_data):
     def run(self):
+        install_cmd = self.get_finalized_command('install')
+        if install_cmd.root:
+            self.install_dir = install_cmd.root
+        else:
+            self.install_dir = install_cmd.install_data
         install_data.run(self)
         for script in self.get_outputs():
             # Rename name.init in name
             if script.endswith(".init"):
                 shutil.move(script, script[:-5])
-            if script.endswith(".default"):
-                shutil.move(script, script[:-8])
 
 if __name__ == '__main__':
 
@@ -55,10 +58,9 @@ if __name__ == '__main__':
           packages = ['numeter', 'numeter.poller'],
           package_dir = {'numeter.poller': 'module/'},
           namespace_packages = ['numeter'],
-          data_files = [('/etc/numeter', ['numeter_poller.cfg', 'redis-poller.conf']),
-                        ('/var/log/numeter', ''),
-                        ('/etc/init.d', ['numeter-poller.init']),
-                        ('/etc/init.d', ['numeter-redis-poller.init']),
+          data_files = [('etc/numeter', ['numeter_poller.cfg']),
+                        ('var/log/numeter', ''),
+                        ('etc/init.d', ['numeter-poller.init']),
                         ],
           classifiers=[
               'Development Status :: 4 - Beta',

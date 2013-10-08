@@ -26,6 +26,11 @@ import shutil
 
 class my_install(install_data):
     def run(self):
+        install_cmd = self.get_finalized_command('install')
+        if install_cmd.root:
+            self.install_dir = install_cmd.root
+        else:
+            self.install_dir = install_cmd.install_data
         install_data.run(self)
         for script in self.get_outputs():
             # Rename name.init in name
@@ -58,13 +63,11 @@ if __name__ == '__main__':
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),
           #              ('share/man/man1/', ['man/numeter.1']) ],
-          data_files = [('/etc/numeter', ['numeter_storage.cfg','host-list']),
-                        #              ('/etc/nginx/sites-available', ['storage/storage-web/numeter-storage-web']) ,
-                        #              ('/etc/uwsgi/apps-available', ['storage/storage-web/numeter-storage-uwsgi.ini']) ,
-                        ('/usr/share/numeter/storage', ['storage-web/numeter_uwsgi.py']) ,
-                        ('/var/log/numeter', '') ,
-                        ('/etc/init.d', ['numeter-storage.init']),
-                        ('/var/lib/numeter/wsps', ''),
+          data_files = [('etc/numeter', ['numeter_storage.cfg','host-list']),
+                        ('usr/share/numeter/storage', ['storage-web/numeter_uwsgi.py']) ,
+                        ('var/log/numeter', '') ,
+                        ('etc/init.d', ['numeter-storage.init']),
+                        ('var/lib/numeter/wsps', ''),
                         ],
           classifiers=[
               'Development Status :: 4 - Beta',
