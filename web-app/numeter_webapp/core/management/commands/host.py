@@ -30,7 +30,6 @@ class Command(CommandDispatcher):
     def _subcommand(self, *args, **opts):
         if not args or args[0] not in self.actions:
             self.stdout.write(self.usage('host'))
-            sys.exit(0)
         elif args[0] == 'list':
             return List_Command()
         elif args[0] == 'add':
@@ -54,7 +53,7 @@ class List_Command(BaseCommand):
 
 class Add_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Search host by ID"),
+        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
         make_option('-a', '--all', action='store_true', default=False, help="Add all host."),
     )
 
@@ -92,7 +91,7 @@ class Add_Command(BaseCommand):
 
 class Delete_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Search host by ID"),
+        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
     )
 
     def handle(self, *args, **opts):
@@ -105,20 +104,30 @@ class Delete_Command(BaseCommand):
 
 class Modify_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Search host by ID"),
-        make_option('-s', '--storage', action='store', default=None, help="Set storage by id"),
-        make_option('-g', '--group', action='store', default=None, help="Set group by id"),
+        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
+        make_option('-s', '--storage', action='store', help="Set storage by id"),
+        make_option('-g', '--group', action='store', help="Set group by id"),
     )
 
     def handle(self, *args, **opts):
         # Stop if doesn't exist
         if not Host.objects.filter(hostid=opts['id']):
              self.stdout.write("Host doesn't exist")
+             sys.exit(0)
         host = Host.objects.get(hostid=opts['id'])
-        F = Host_Form(data=opts, instance=host)
+        # Make validation
+        if not opts['storage']:
+            opts['storage'] = host.storage.id
+        if host.group and not opts['group']:
+            opts['group'] = host.group.id
+        # Create new data computing instance and options
+        data = dict( [ (key.replace('_id', ''),val) for key,val in host.__dict__.items() ] )
+        data.update(opts)
+        # Use Form to valid
+        F = Host_Form(data=data, instance=host)
         if F.is_valid():
             host = F.save()
-            self.stdout.write('Host update.')
+            self.stdout.write('Host updated.')
         else:
             for field,errors in F.errors.items():
                 self.stdout.write(field)
