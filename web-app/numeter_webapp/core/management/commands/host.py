@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from core.models import Storage, Host
+from configuration.forms.host import Host_Form
 from core.management.commands._utils import CommandDispatcher
 
 from optparse import make_option
@@ -37,7 +38,7 @@ class Command(CommandDispatcher):
         elif args[0] in ('delete','del'):
             return Delete_Command()
         elif args[0] in ('modify','mod'):
-            pass
+            return Modify_Command()
 
 
 ROW_FORMAT = '{id:5} | {name:40} | {hostid:50} | {storage_id:10} | {group_id:9}'
@@ -54,9 +55,17 @@ class List_Command(BaseCommand):
 class Add_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-i', '--id', action='store', default=None, help="Search host by ID"),
+        make_option('-a', '--all', action='store_true', default=False, help="Add all host."),
     )
 
     def handle(self, *args, **opts):
+        # Create all if enabled
+        if opts['all']:
+            for s in Storage.objects.all():
+                s.create_hosts()
+                self.stdout.write('All host from %s create.' % s)
+            sys.exit(1)
+
         storage = Storage.objects.which_storage(opts['id'])
         # Stop if not found
         if not storage:
@@ -93,3 +102,25 @@ class Delete_Command(BaseCommand):
         host = Host.objects.get(hostid=opts['id'])
         host.delete()
         self.stdout.write('Host delete.')
+
+class Modify_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-i', '--id', action='store', default=None, help="Search host by ID"),
+        make_option('-s', '--storage', action='store', default=None, help="Set storage by id"),
+        make_option('-g', '--group', action='store', default=None, help="Set group by id"),
+    )
+
+    def handle(self, *args, **opts):
+        # Stop if doesn't exist
+        if not Host.objects.filter(hostid=opts['id']):
+             self.stdout.write("Host doesn't exist")
+        host = Host.objects.get(hostid=opts['id'])
+        F = Host_Form(data=opts, instance=host)
+        if F.is_valid():
+            host = F.save()
+            self.stdout.write('Host update.')
+        else:
+            for field,errors in F.errors.items():
+                self.stdout.write(field)
+                for err in errors:
+                    self.stdout.write('\t'+err)
