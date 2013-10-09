@@ -65,7 +65,7 @@ class MuninConnection:
             self._s = sock.makefile()
             sock.sendall("list %s\n" % node)
             return_list = self._readline().split(' ')
-        return return_list if return_list != [''] else []
+        return [ plugin for plugin in return_list if plugin != '' ]
 
     def munin_nodes(self):
         with MuninSock(self.munin_host, self.munin_port) as sock:
