@@ -4,12 +4,10 @@ import unittest2 as unittest
 #from redis_Unittest import RedisTestCase
 from poller_Unittest import PollerTestCase
 from poller_MuninModuleUnittest import PollerMuninModuleTestCase
-#from collector_Unittest import CollectorTestCase
-#from mastertest_Unittest import MasterTestCase
 from storage_Unittest import StorageTestCase
 from cachelastvalue_Unittest import CacheLastValueTestCase
-
 from storeandforward_Unittest import StoreAndForwardTestCase
+from poller_munin_connectUnittest import PollerMuninConnectTestCase
 
 #from connection_pool import ConnectionPoolTestCase
 #from pipeline import PipelineTestCase
@@ -32,12 +30,9 @@ def all_tests():
     suite.addTest(unittest.makeSuite(PollerTestCase))
     suite.addTest(unittest.makeSuite(CacheLastValueTestCase))
     suite.addTest(unittest.makeSuite(StoreAndForwardTestCase))
-    ## Collector
-    #suite.addTest(unittest.makeSuite(CollectorTestCase))
+    suite.addTest(unittest.makeSuite(PollerMuninConnectTestCase))
     # Storage
     suite.addTest(unittest.makeSuite(StorageTestCase))
-    ## Master test with all /!\ Need munin-node and redis
-    #suite.addTest(unittest.makeSuite(MasterTestCase))
     return suite
 
 #self.assertRaises(TypeError, adder, 33, 'a string')
