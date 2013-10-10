@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-class ModulesGeneric: 
+class ModulesGeneric(object):
     "Module generic"
 
-    def  __init__(self, logger, configParser=None):
-        "Load configuration and start connexion"
-        raise NotImplementedError
-    
     def getInfo(self):
         "Return plugins info for refresh"
         raise NotImplementedError
