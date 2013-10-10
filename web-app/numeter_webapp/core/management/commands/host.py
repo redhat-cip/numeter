@@ -44,6 +44,7 @@ class Add_Command(BaseCommand):
         make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
         make_option('-a', '--all', action='store_true', default=False, help="Add all host."),
         make_option('-g', '--group', action='store', default=None, help="Set group by ID."),
+        make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
     )
 
     def handle(self, *args, **opts):
@@ -51,20 +52,20 @@ class Add_Command(BaseCommand):
         if opts['all']:
             for s in Storage.objects.all():
                 s.create_hosts()
-                self.stdout.write('All host from %s create.' % s)
+                if not opts['quiet']: self.stdout.write('All host from %s create.' % s)
             sys.exit(1)
 
         storage = Storage.objects.which_storage(opts['id'])
         # Stop if not found
         if not storage:
-            self.stdout.write('No host found with ID: %s' % opts['id'])
+            if not opts['quiet']: self.stdout.write('No host found with ID: %s' % opts['id'])
             sys.exit(1)
         # Repair and stop if already exists
         if Host.objects.filter(hostid=opts['id']).exists():
-            self.stdout.write('Host with ID %s, already exists in db.' % opts['id'])
+            if not opts['quiet']: self.stdout.write('Host with ID %s, already exists in db.' % opts['id'])
             host = Host.objects.get(hostid=opts['id'])
             if host.storage != storage:
-                self.stdout.write("Host wasn't linked to good storage, now linked to %s" % storage)
+                if not opts['quiet']: self.stdout.write("Host wasn't linked to good storage, now linked to %s" % storage)
                 host.storage = storage
                 host.save()
             sys.exit(1)
@@ -80,10 +81,11 @@ class Add_Command(BaseCommand):
         F = Host_Form(data=data)
         if F.is_valid():
             h= F.save()
-            self.stdout.write('Host create: %s' % h)
-            self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
-            self.stdout.write(ROW_FORMAT.format(**h.__dict__))
-        else:
+            if not opts['quiet']:
+                self.stdout.write('Host create: %s' % h)
+                self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
+                self.stdout.write(ROW_FORMAT.format(**h.__dict__))
+        elif not opts['quiet']:
             for field,errors in F.errors.items():
                 self.stdout.write(field)
                 for err in errors:
@@ -93,15 +95,17 @@ class Add_Command(BaseCommand):
 class Delete_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
+        make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
     )
 
     def handle(self, *args, **opts):
         # Stop if doesn't exist
         if not Host.objects.filter(hostid=opts['id']):
-             self.stdout.write("Host doesn't exist")
+             if not opts['quiet']: self.stdout.write("Host doesn't exist")
+             sys.exit(1)
         host = Host.objects.get(hostid=opts['id'])
         host.delete()
-        self.stdout.write('Host deleted.')
+        if not opts['quiet']: self.stdout.write('Host deleted.')
 
 
 class Modify_Command(BaseCommand):
@@ -109,13 +113,14 @@ class Modify_Command(BaseCommand):
         make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
         make_option('-s', '--storage', action='store', help="Set storage by id"),
         make_option('-g', '--group', action='store', help="Set group by id"),
+        make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
     )
 
     def handle(self, *args, **opts):
         # Stop if doesn't exist
         if not Host.objects.filter(hostid=opts['id']):
-             self.stdout.write("Host doesn't exist")
-             sys.exit(0)
+            if not opts['quiet']: self.stdout.write("Host doesn't exist")
+            sys.exit(1)
         host = Host.objects.get(hostid=opts['id'])
         # Make validation
         if not opts['storage']:
@@ -129,10 +134,11 @@ class Modify_Command(BaseCommand):
         F = Host_Form(data=data, instance=host)
         if F.is_valid():
             host = F.save()
-            self.stdout.write('Host updated.')
-            self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
-            self.stdout.write(ROW_FORMAT.format(**host.__dict__))
-        else:
+            if not opts['quiet']:
+                self.stdout.write('Host updated.')
+                self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
+                self.stdout.write(ROW_FORMAT.format(**host.__dict__))
+        elif not opts['quiet']:
             for field,errors in F.errors.items():
                 self.stdout.write(field)
                 for err in errors:
