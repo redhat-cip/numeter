@@ -54,6 +54,9 @@ def edit(request, source_id):
 @login_required()
 def add(request):
     """Add sources and create plugin if doesn't exist."""
-    Data_Source.objects.full_create(request.POST)
-    messages.success(request, _("Source(s) added with success."))
-    return render(request, 'base/messages.html', {})
+    if request.method == 'GET':
+        return render(request, 'customize/source/add.html', {'Hosts':Host.objects.user_filter(request.user)})
+    else:
+        Data_Source.objects.full_create(request.POST)
+        messages.success(request, _("Source(s) added with success."))
+        return render(request, 'base/messages.html', {})
