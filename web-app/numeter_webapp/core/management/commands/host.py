@@ -58,7 +58,7 @@ class Add_Command(BaseCommand):
                 self.stdout.write('All host from %s create.' % s)
             sys.exit(1)
 
-        # Select host by id or idss
+        # Select host by id or ids
         if opts['ids']:
             ids = [ i.strip() for i in opts['ids'].split(',') ]
         elif opts['id']:
@@ -129,7 +129,7 @@ class Delete_Command(BaseCommand):
 
     def handle(self, *args, **opts):
         if opts['quiet']: self.stdout = open(devnull, 'w')
-        # Select host by id or idss
+        # Select host by id or ids
         if opts['ids']:
             ids = [ i.strip() for i in opts['ids'].split(',') ]
             hosts = Host.objects.filter(hostid__in=ids)
@@ -151,6 +151,7 @@ class Delete_Command(BaseCommand):
 class Modify_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
+        make_option('-I', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
         make_option('-s', '--storage', action='store', help="Set storage by id"),
         make_option('-g', '--group', action='store', help="Set group by id"),
         make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
@@ -158,28 +159,57 @@ class Modify_Command(BaseCommand):
 
     def handle(self, *args, **opts):
         if opts['quiet']: self.stdout = open(devnull, 'w')
-        # Stop if doesn't exist
-        if not Host.objects.filter(hostid=opts['id']):
-            self.stdout.write("Host doesn't exist")
-            sys.exit(1)
-        host = Host.objects.get(hostid=opts['id'])
-        # Make validation
-        if not opts['storage']:
-            opts['storage'] = host.storage.id
-        if host.group and not opts['group']:
-            opts['group'] = host.group.id
-        # Create new data computing instance and options
-        data = dict( [ (key.replace('_id', ''),val) for key,val in host.__dict__.items() ] )
-        data.update(opts)
-        # Use Form to valid
-        F = Host_Form(data=data, instance=host)
-        if F.is_valid():
-            host = F.save()
-            self.stdout.write('Host updated.')
-            self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
-            self.stdout.write(ROW_FORMAT.format(**host.__dict__))
+        # Select host by id or ids
+        if opts['ids']:
+            ids = [ i.strip() for i in opts['ids'].split(',') ]
+            hosts = Host.objects.filter(hostid__in=ids)
+        elif opts['id']:
+            hosts = Host.objects.filter(hostid=opts['id'])
         else:
-            for field,errors in F.errors.items():
+            self.stdout.write("You must give one or more ID.")
+            self.print_help('host', 'help')
+            sys.exit(1)
+        # Stop if no given id
+        if not hosts.exists():
+            self.stdout.write("There's no Host with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            sys.exit(1)
+
+        existing_ids = [ h.hostid for h in hosts ]
+        non_existing_ids = [ id for id in ids if id not in existing_ids ]
+        modified_hosts = []
+        form_error = None
+        # Walk on host for valid or fail
+        for h in hosts:
+            # Make validation
+            if not opts['storage']:
+                opts['storage'] = h.storage.id
+            if h.group and not opts['group']:
+                opts['group'] = h.group.id
+            # Create new data computing instance and options
+            data = dict( [ (key.replace('_id', ''),val) for key,val in h.__dict__.items() ] )
+            data.update(opts)
+            # Use Form to valid
+            F = Host_Form(data=data, instance=h)
+            if F.is_valid():
+                h = F.save()
+                modified_hosts.append(h)
+            else:
+                form_error = F.errors
+
+        if modified_hosts:
+            self.stdout.write('* Host updated:')
+            self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
+            for h in modified_hosts:
+                self.stdout.write(ROW_FORMAT.format(**h.__dict__))
+
+        if non_existing_ids:
+            self.stdout.write('* No host with following IDs:') 
+            for id in non_existing_ids:
+                self.stdout.write(id)
+
+        if form_error:
+            self.stdout.write('* Error:')
+            for field,errors in form_error.items():
                 self.stdout.write(field)
                 for err in errors:
                     self.stdout.write('\t'+err)
