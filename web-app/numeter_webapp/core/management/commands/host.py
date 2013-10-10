@@ -24,10 +24,11 @@ class Command(CommandDispatcher):
             return usage
 
 
-    def _subcommand_names(self, name):
+    def _subcommand_names(self):
         return ('list','add','delete','del','modify','mod')
 
     def _subcommand(self, *args, **opts):
+        """Dispatch in a Command by reading first argv."""
         if not args or args[0] not in self.actions:
             self.stdout.write(self.usage('host'))
         elif args[0] == 'list':
