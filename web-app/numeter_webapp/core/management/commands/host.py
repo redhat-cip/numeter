@@ -11,10 +11,10 @@ import sys
 
 class Command(CommandDispatcher):
     """Host management base command."""
-    actions = ('list','add','delete','del','modify','mod')
+    actions = ('list','add','delete','del','modify','mod','repair')
 
     def _subcommand_names(self):
-        return ('list','add','delete','del','modify','mod')
+        return ('list','add','delete','del','modify','mod','repair')
 
     def _subcommand(self, *args, **opts):
         """Dispatch in a Command by reading first argv."""
@@ -28,6 +28,8 @@ class Command(CommandDispatcher):
             return Delete_Command()
         elif args[0] in ('modify','mod'):
             return Modify_Command()
+        elif args[0] == 'repair':
+            return Repair_Command()
 
 
 ROW_FORMAT = '{id:5} | {name:40} | {hostid:50} | {storage_id:10} | {group_id:9}'
@@ -195,7 +197,7 @@ class Modify_Command(BaseCommand):
                 modified_hosts.append(h)
             else:
                 form_error = F.errors
-
+        # Walk on all list to print it
         if modified_hosts:
             self.stdout.write('* Host updated:')
             self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
@@ -206,10 +208,20 @@ class Modify_Command(BaseCommand):
             self.stdout.write('* No host with following IDs:') 
             for id in non_existing_ids:
                 self.stdout.write(id)
-
         if form_error:
             self.stdout.write('* Error:')
             for field,errors in form_error.items():
                 self.stdout.write(field)
                 for err in errors:
                     self.stdout.write('\t'+err)
+
+
+class Repair_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
+    )
+
+    def handle(self, *args, **opts):
+        if opts['quiet']: self.stdout = open(devnull, 'w')
+        self.stdout.write('Repairing broken hosts.')
+        Storage.objects.repair_hosts()
