@@ -95,17 +95,27 @@ class Add_Command(BaseCommand):
 class Delete_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
+        make_option('-I', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
         make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
     )
 
     def handle(self, *args, **opts):
-        # Stop if doesn't exist
-        if not Host.objects.filter(hostid=opts['id']):
-             if not opts['quiet']: self.stdout.write("Host doesn't exist")
-             sys.exit(1)
-        host = Host.objects.get(hostid=opts['id'])
-        host.delete()
-        if not opts['quiet']: self.stdout.write('Host deleted.')
+        # Select hosts
+        if opts['ids']:
+            ids = [ i.strip() for i in opts['ids'].split(',') ]
+            hosts = Host.objects.filter(hostid__in=ids)
+        elif opts['id']:
+            hosts = Host.objects.filter(hostid=opts['id'])
+        else:
+            if not opts['quiet']: self.stdout.write("You must give one or more ID: '%s'" % (opts['ids'] or opts['id']) )
+            sys.exit(1)
+        # Stop if no given id
+        if not hosts.exists():
+            if not opts['quiet']: self.stdout.write("There's no Host with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            sys.exit(1)
+        for h in hosts:
+            h.delete()
+            if not opts['quiet']: self.stdout.write('Delete host: %s' % h)
 
 
 class Modify_Command(BaseCommand):
