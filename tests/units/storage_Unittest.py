@@ -6,7 +6,7 @@ import os
 import sys
 import time
 import socket
-import rrdtool
+import whisper
 import mock
 
 myPath = os.path.abspath(os.path.dirname(__file__))

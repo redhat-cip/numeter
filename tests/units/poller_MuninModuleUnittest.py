@@ -28,23 +28,25 @@ class myFakeMunin():
     def munin_list(self, plugin=None):
         return self.list_return_value
 
+_logger = logging.getLogger()
+fh = logging.FileHandler("/dev/null")
+fh.setLevel(logging.CRITICAL)
+_logger.addHandler(fh)
+
 class PollerMuninModuleTestCase(test_base.TestCase):
 #self.munin_connection = munin_connect.MuninConnection
 # import munin_connect
     def setUp(self):
         super(PollerMuninModuleTestCase, self).setUp()
         # Set logger None
-        self._logger = logging.getLogger()
-        fh = logging.FileHandler("/dev/null")
-        fh.setLevel(logging.CRITICAL)
-        self._logger.addHandler(fh)
+        self._logger = _logger
         # Set parser
         self._configParse = ConfigParser.RawConfigParser()
         self._configParse.read(myPath+"/poller_unittest.cfg")
         # Fake socker
         self._fakeMunin = myFakeMunin()
         # Start
-        self._pollerMuninModule = myMuninModule(self._logger,self._configParse)
+        self._pollerMuninModule = myMuninModule(self._configParse)
         self._pollerMuninModule.munin_connection = self._fakeMunin
         # Make a shot name
         self._munin = self._pollerMuninModule.munin_connection

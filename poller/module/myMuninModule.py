@@ -5,7 +5,7 @@ import socket
 from modulesGeneric import ModulesGeneric
 import re
 import time
-#import pprint  # Debug
+from logging import getLogger
 
 import munin_connect
 
@@ -15,8 +15,8 @@ import munin_connect
 #
 class myMuninModule(ModulesGeneric):
 
-    def __init__(self, logger, configParser=None):
-        self._logger = logger
+    def __init__(self, configParser=None):
+        self._logger = getLogger(__name__)
         self._logger.info("Plugin Munin start")
         self._configParser = configParser
         self._munin_host = "127.0.0.1"
@@ -32,9 +32,8 @@ class myMuninModule(ModulesGeneric):
                         + self._munin_host)
         self._logger.info("section myMuninModule : munin_port = "
                         + str(self._munin_port))
-        self.munin_connection = munin_connect.MuninConnection(self._logger,
-                                                          self._munin_host,
-                                                          self._munin_port)
+        self.munin_connection = munin_connect.MuninConnection(self._munin_host,
+                                                              self._munin_port)
 
     def getData(self):
         "get and return all data collected"

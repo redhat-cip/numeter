@@ -4,6 +4,10 @@
 class ModulesGeneric(object):
     "Module generic"
 
+    def  __init__(self, configParser=None):
+        "Load configuration and start connexion"
+        raise NotImplementedError
+
     def getInfo(self):
         "Return plugins info for refresh"
         raise NotImplementedError

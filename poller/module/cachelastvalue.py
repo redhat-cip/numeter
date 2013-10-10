@@ -4,7 +4,7 @@ import json
 import logging
 
 class CacheLastValue(object):
-    def __init__(self, cache_file='/dev/shm/cache_last_value.json', logger='CacheLastValue'):
+    def __init__(self, cache_file='/dev/shm/cache_last_value.json', logger=__name__):
         self._cache_file = cache_file
         self._cache = {}
         self.error = ''

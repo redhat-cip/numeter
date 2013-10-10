@@ -1,5 +1,5 @@
 import logging
-LOG = logging.getLogger('numeter.storage.%s' % __name__)
+LOG = logging.getLogger(__name__)
 
 class StorageEndpoint(object):
 

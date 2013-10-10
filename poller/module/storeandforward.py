@@ -4,7 +4,7 @@ import json
 import logging
 
 class StoreAndForward(object):
-    def __init__(self, cache_file='/dev/shm/store_and_forward.json', logger='StoreAndForward'):
+    def __init__(self, cache_file='/dev/shm/store_and_forward.json', logger=__name__):
         self._cache_file = cache_file
         self._cache = []
         self.error = ''

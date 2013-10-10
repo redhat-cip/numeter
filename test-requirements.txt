@@ -4,5 +4,4 @@ pyflakes
 mock
 mox
 unittest2
-python-rrdtool
 nose

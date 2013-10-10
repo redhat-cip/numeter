@@ -227,7 +227,7 @@ class myPoller:
             modImport = __import__(import_name, fromlist=[class_name])
             try:
                 modClass = getattr(modImport, class_name)
-                modObj = modClass(self._logger, self._configParse)
+                modObj = modClass(self._configParse)
                 # Get DATAS
                 self._logger.info("Call plugin get data")
                 allDatas = modObj.getData()
