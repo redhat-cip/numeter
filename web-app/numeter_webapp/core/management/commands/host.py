@@ -5,24 +5,12 @@ from configuration.forms.host import Host_Form
 from core.management.commands._utils import CommandDispatcher
 
 from optparse import make_option
-from argparse import ArgumentParser
 import sys
 
 
 class Command(CommandDispatcher):
+    """Host management base command."""
     actions = ('list','add','delete','del','modify','mod')
-
-    def usage(self, subcommand):
-        """
-        Return a brief description of how to use this command, by
-        default from the attribute ``self.help``.
-        """
-        usage = '%%prog %s [action] [options] %s' % (subcommand, self.args)
-        if self.help:
-            return '%s\n\n%s' % (usage, self.help)
-        else:
-            return usage
-
 
     def _subcommand_names(self):
         return ('list','add','delete','del','modify','mod')
@@ -42,8 +30,6 @@ class Command(CommandDispatcher):
 
 
 ROW_FORMAT = '{id:5} | {name:40} | {hostid:50} | {storage_id:10} | {group_id:9}'
-
-
 class List_Command(BaseCommand):
     def handle(self, *args, **opts):
         hosts = Host.objects.values()
@@ -52,10 +38,12 @@ class List_Command(BaseCommand):
             self.stdout.write(ROW_FORMAT.format(**h))
         self.stdout.write('Count: %i' % len(hosts))
 
+
 class Add_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
         make_option('-a', '--all', action='store_true', default=False, help="Add all host."),
+        make_option('-g', '--group', action='store', default=None, help="Set group by ID."),
     )
 
     def handle(self, *args, **opts):
@@ -82,13 +70,25 @@ class Add_Command(BaseCommand):
             sys.exit(1)
         # Create host
         host_info = storage.get_info(opts['id'])
-        h = Host.objects.create(
-            name=host_info['Name'],
-            hostid=opts['id'],
-            storage=storage,
-            group=None
-        )
-        self.stdout.write('Host create: %s' % h)
+        data = {
+            'name': host_info['Name'],
+            'hostid': opts['id'],
+            'storage': storage.id,
+            'group': opts['group']
+        }
+        # Use Form to valid
+        F = Host_Form(data=data)
+        if F.is_valid():
+            h= F.save()
+            self.stdout.write('Host create: %s' % h)
+            self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
+            self.stdout.write(ROW_FORMAT.format(**h.__dict__))
+        else:
+            for field,errors in F.errors.items():
+                self.stdout.write(field)
+                for err in errors:
+                    self.stdout.write('\t'+err)
+
 
 class Delete_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -101,7 +101,8 @@ class Delete_Command(BaseCommand):
              self.stdout.write("Host doesn't exist")
         host = Host.objects.get(hostid=opts['id'])
         host.delete()
-        self.stdout.write('Host delete.')
+        self.stdout.write('Host deleted.')
+
 
 class Modify_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -129,6 +130,8 @@ class Modify_Command(BaseCommand):
         if F.is_valid():
             host = F.save()
             self.stdout.write('Host updated.')
+            self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
+            self.stdout.write(ROW_FORMAT.format(**host.__dict__))
         else:
             for field,errors in F.errors.items():
                 self.stdout.write(field)
