@@ -236,7 +236,7 @@ class myPoller:
                 if self._need_refresh:
                     self._logger.info("Call plugin info refresh")
                     # Get all infos
-                    allInfos = modObj.pluginsRefresh()
+                    allInfos = modObj.getInfo()
                     # Write all infos
                     writedInfos.extend(self._sendInfo(allInfos))
                 self._logger.info("Module : " + module + " Success")

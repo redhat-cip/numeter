@@ -8,7 +8,7 @@ class ModulesGeneric:
         "Load configuration and start connexion"
         raise NotImplementedError
     
-    def pluginsRefresh(self):
+    def getInfo(self):
         "Return plugins info for refresh"
         raise NotImplementedError
 #        infos=   [{    'Plugin': plugin, 

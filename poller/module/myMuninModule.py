@@ -53,7 +53,7 @@ class myMuninModule(ModulesGeneric):
         return datas
 
 
-    def pluginsRefresh(self):
+    def getInfo(self):
         "Return plugins info for refresh"
 
         pluginList = self.munin_connection.munin_list()

@@ -147,12 +147,12 @@ class PollerMuninModuleTestCase(test_base.TestCase):
         self._pollerMuninModule._plugins_enable="^.*$"
 
 
-    def test_muninModule_pluginsRefresh(self):
+    def test_muninModule_getInfo(self):
         # Send config with no DS
         self._munin.config_return_value = {'Title':'test'}
         self._munin.list_return_value = ['foo']
         self._munin.fetch_return_value = {}
-        result = self._pollerMuninModule.pluginsRefresh()
+        result = self._pollerMuninModule.getInfo()
         self.assertEqual(result, [])
         # Send config with no DS
         self._munin.list_return_value = ['foo']
@@ -161,7 +161,7 @@ class PollerMuninModuleTestCase(test_base.TestCase):
                                             'graph_title':'foo',
                                             'bar': {'min':'0'},
                                           }
-        result = self._pollerMuninModule.pluginsRefresh()
+        result = self._pollerMuninModule.getInfo()
         self.assertEqual(result,
                 [{'Describ': '', 'Title': 'foo', 'Plugin': 'foo', 'Vlabel': '', 'Base': '1000',
                     'Infos': {'bar': {'id': 'bar', 'min': '0'}}, 'Order': ''}
@@ -171,13 +171,13 @@ class PollerMuninModuleTestCase(test_base.TestCase):
         self._munin.config_return_value = {'graph_title':'foo'}
         self._munin.list_return_value = ['foo']
         self._munin.fetch_return_value = { 'bar':'4.2' }
-        result = self._pollerMuninModule.pluginsRefresh()
+        result = self._pollerMuninModule.getInfo()
         self.assertEqual(result, [])
         # Regex suite
         self._munin.list_return_value = ['foo_bar']
         self._munin.config_return_value = {'graph_title':'foo'}
         self._munin.fetch_return_value = { 'bar':'4.2' }
-        result = self._pollerMuninModule.pluginsRefresh()
+        result = self._pollerMuninModule.getInfo()
         self.assertEqual(result[0]['Plugin'], 'foo_bar')
 
 
