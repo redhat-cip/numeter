@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from core.models import Group
+from core.models import Group, Host, User
 from configuration.forms.group import Group_Form
 from core.management.commands._utils import CommandDispatcher
 
@@ -11,9 +11,9 @@ import sys
 
 class Command(CommandDispatcher):
     """Group management base command."""
-    actions = ('list','add','delete','del','modify','mod')
+    actions = ('list','add','delete','del','modify','mod','hosts','users')
     def _subcommand_names(self):
-        return ('list','add','delete','del','modify','mod')
+        return ('list','add','delete','del','modify','mod','hosts','users')
 
     def _subcommand(self, *args, **opts):
         """Dispatch in a Command by reading first argv."""
@@ -27,6 +27,8 @@ class Command(CommandDispatcher):
             return Delete_Command()
         elif args[0] in ('modify','mod'):
             return Modify_Command()
+        elif args[0] == 'hosts':
+            return Hosts_Command()
 
 
 ROW_FORMAT = '{id:5} | {name:40}'
@@ -129,3 +131,27 @@ class Modify_Command(BaseCommand):
                 self.stdout.write(field)
                 for err in errors:
                     self.stdout.write('\t'+err)
+
+
+HOST_ROW_FORMAT = '{id:5} | {name:40} | {hostid:50} | {storage_id:10} | {group_id:9}'
+class Hosts_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+    )
+
+    def handle(self, *args, **opts):
+        # Select group by id or ids
+        if opts['ids']:
+            ids = [ i.strip() for i in opts['ids'].split(',') ]
+            groups = Group.objects.filter(id__in=ids)
+        else:
+            groups = Group.objects.all()
+        # Stop if no given id
+        if not groups.exists():
+            self.stdout.write("There's no group with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            sys.exit(1)
+        # Walk on groups and list hosts
+        self.stdout.write(HOST_ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
+        for g in groups:
+            for h in Host.objects.filter(group=g):
+                self.stdout.write(HOST_ROW_FORMAT.format(**h.__dict__))
