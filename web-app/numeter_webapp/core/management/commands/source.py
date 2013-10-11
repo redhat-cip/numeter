@@ -62,31 +62,31 @@ class List_Command(BaseCommand):
             #self.stdout.write('Saved cound: %i' % sources
 
 
-# class Delete_Command(BaseCommand):
-#     option_list = BaseCommand.option_list + (
-#         make_option('-i', '--ids', action='store', default=None, help="Select plugin by ID separated by comma"),
-#         make_option('-q', '--quiet', action='store_true', help="Don't print info"),
-#     )
-# 
-#     def handle(self, *args, **opts):
-#         if opts['quiet']: self.stdout = open(devnull, 'w')
-#         # Select group by ids
-#         if opts['ids']:
-#             ids = [ i.strip() for i in opts['ids'].split(',') ]
-#             plugins = Plugin.objects.filter(id__in=ids)
-#         else:
-#             self.stdout.write("You must give one or more ID.")
-#             self.print_help('plugin', 'help')
-#             sys.exit(1)
-#         # Stop if no given id
-#         if not plugins.exists():
-#             self.stdout.write("There's no plugin with given ID: '%s'" % opts['ids'] )
-#             sys.exit(1)
-#         for p in plugins:
-#             p.delete()
-#             self.stdout.write('Delete plugin: %s' % p)
-#  
-#  
+class Delete_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-i', '--ids', action='store', default=None, help="Select source by ID separated by comma"),
+        make_option('-q', '--quiet', action='store_true', help="Don't print info"),
+    )
+
+    def handle(self, *args, **opts):
+        if opts['quiet']: self.stdout = open(devnull, 'w')
+        # Select group by ids
+        if opts['ids']:
+            ids = [ i.strip() for i in opts['ids'].split(',') ]
+            sources = Source.objects.filter(id__in=ids)
+        else:
+            self.stdout.write("You must give one or more ID.")
+            self.print_help('source', 'help')
+            sys.exit(1)
+        # Stop if no given id
+        if not sources.exists():
+            self.stdout.write("There's no source with given ID: '%s'" % opts['ids'] )
+            sys.exit(1)
+        for s in sources:
+            s.delete()
+            self.stdout.write('Delete source: %s' % s)
+ 
+ 
 class Add_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-i', '--ids', action='store', help="Select plugins by ID separated by comma"),
