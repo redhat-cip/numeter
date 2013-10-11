@@ -37,85 +37,27 @@ class List_Command(BaseCommand):
             self.stdout.write(ROW_FORMAT.format(**g))
         self.stdout.write('Count: %i' % len(groups))
 
-class Add_Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
-        make_option('-a', '--all', action='store_true', default=False, help="Add all host."),
-    )
-
-    def handle(self, *args, **opts):
-        # Create all if enabled
-        if opts['all']:
-            for s in Storage.objects.all():
-                s.create_hosts()
-                self.stdout.write('All host from %s create.' % s)
-            sys.exit(1)
-
-        storage = Storage.objects.which_storage(opts['id'])
-        # Stop if not found
-        if not storage:
-            self.stdout.write('No host found with ID: %s' % opts['id'])
-            sys.exit(1)
-        # Repair and stop if already exists
-        if Host.objects.filter(hostid=opts['id']).exists():
-            self.stdout.write('Host with ID %s, already exists in db.' % opts['id'])
-            host = Host.objects.get(hostid=opts['id'])
-            if host.storage != storage:
-                self.stdout.write("Host wasn't linked to good storage, now linked to %s" % storage)
-                host.storage = storage
-                host.save()
-            sys.exit(1)
-        # Create host
-        host_info = storage.get_info(opts['id'])
-        h = Host.objects.create(
-            name=host_info['Name'],
-            hostid=opts['id'],
-            storage=storage,
-            group=None
-        )
-        self.stdout.write('Host create: %s' % h)
 
 class Delete_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
+        make_option('-i', '--ids', action='store', default=None, help="Select group by ID separated by comma"),
+        make_option('-q', '--quiet', action='store_true', help="Don't print info"),
     )
 
     def handle(self, *args, **opts):
-        # Stop if doesn't exist
-        if not Host.objects.filter(hostid=opts['id']):
-             self.stdout.write("Host doesn't exist")
-        host = Host.objects.get(hostid=opts['id'])
-        host.delete()
-        self.stdout.write('Host delete.')
-
-class Modify_Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
-        make_option('-s', '--storage', action='store', help="Set storage by id"),
-        make_option('-g', '--group', action='store', help="Set group by id"),
-    )
-
-    def handle(self, *args, **opts):
-        # Stop if doesn't exist
-        if not Host.objects.filter(hostid=opts['id']):
-             self.stdout.write("Host doesn't exist")
-             sys.exit(0)
-        host = Host.objects.get(hostid=opts['id'])
-        # Make validation
-        if not opts['storage']:
-            opts['storage'] = host.storage.id
-        if host.group and not opts['group']:
-            opts['group'] = host.group.id
-        # Create new data computing instance and options
-        data = dict( [ (key.replace('_id', ''),val) for key,val in host.__dict__.items() ] )
-        data.update(opts)
-        # Use Form to valid
-        F = Host_Form(data=data, instance=host)
-        if F.is_valid():
-            host = F.save()
-            self.stdout.write('Host updated.')
+        if opts['quiet']: self.stdout = open(devnull, 'w')
+        # Select group by ids
+        if opts['ids']:
+            ids = [ i.strip() for i in opts['ids'].split(',') ]
+            groups = Group.objects.filter(id__in=ids)
         else:
-            for field,errors in F.errors.items():
-                self.stdout.write(field)
-                for err in errors:
-                    self.stdout.write('\t'+err)
+            self.stdout.write("You must give one or more ID.")
+            self.print_help('group', 'help')
+            sys.exit(1)
+        # Stop if no given id
+        if not groups.exists():
+            self.stdout.write("There's no group with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            sys.exit(1)
+        for g in groups:
+            g.delete()
+            self.stdout.write('Delete group: %s' % g)

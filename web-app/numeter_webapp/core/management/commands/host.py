@@ -58,11 +58,10 @@ class List_Command(BaseCommand):
 
 class Add_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
-        make_option('-I', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
         make_option('-a', '--all', action='store_true', default=False, help="Add all host."),
         make_option('-g', '--group', action='store', default=None, help="Set group by ID."),
-        make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
+        make_option('-q', '--quiet', action='store_true', help="Don't print info."),
     )
 
     def handle(self, *args, **opts):
@@ -77,8 +76,6 @@ class Add_Command(BaseCommand):
         # Select host by id or ids
         if opts['ids']:
             ids = [ i.strip() for i in opts['ids'].split(',') ]
-        elif opts['id']:
-            ids = [ opts['id'] ]
         else:
             self.stdout.write("You must give one or more ID.")
             self.print_help('host', 'help')
@@ -138,9 +135,8 @@ class Add_Command(BaseCommand):
 
 class Delete_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
-        make_option('-I', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
-        make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
+        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+        make_option('-q', '--quiet', action='store_true', help="Don't print info"),
     )
 
     def handle(self, *args, **opts):
@@ -149,15 +145,13 @@ class Delete_Command(BaseCommand):
         if opts['ids']:
             ids = [ i.strip() for i in opts['ids'].split(',') ]
             hosts = Host.objects.filter(hostid__in=ids)
-        elif opts['id']:
-            hosts = Host.objects.filter(hostid=opts['id'])
         else:
             self.stdout.write("You must give one or more ID.")
             self.print_help('host', 'help')
             sys.exit(1)
         # Stop if no given id
         if not hosts.exists():
-            self.stdout.write("There's no Host with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            self.stdout.write("There's no host with given ID: '%s'" % (opts['ids'] or opts['id']) )
             sys.exit(1)
         for h in hosts:
             h.delete()
@@ -166,11 +160,10 @@ class Delete_Command(BaseCommand):
 
 class Modify_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
-        make_option('-I', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
         make_option('-s', '--storage', action='store', help="Set storage by id"),
         make_option('-g', '--group', action='store', help="Set group by id"),
-        make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
+        make_option('-q', '--quiet', action='store_true', help="Don't print info"),
     )
 
     def handle(self, *args, **opts):
@@ -179,15 +172,13 @@ class Modify_Command(BaseCommand):
         if opts['ids']:
             ids = [ i.strip() for i in opts['ids'].split(',') ]
             hosts = Host.objects.filter(hostid__in=ids)
-        elif opts['id']:
-            hosts = Host.objects.filter(hostid=opts['id'])
         else:
             self.stdout.write("You must give one or more ID.")
             self.print_help('host', 'help')
             sys.exit(1)
         # Stop if no given id
         if not hosts.exists():
-            self.stdout.write("There's no Host with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            self.stdout.write("There's no host with given ID: '%s'" % (opts['ids'] or opts['id']) )
             sys.exit(1)
 
         existing_ids = [ h.hostid for h in hosts ]
@@ -232,7 +223,7 @@ class Modify_Command(BaseCommand):
 
 class Repair_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-q', '--quiet', action='store_true', help="Set group by ID."),
+        make_option('-q', '--quiet', action='store_true', help="Don't print info"),
     )
 
     def handle(self, *args, **opts):
@@ -244,8 +235,7 @@ class Repair_Command(BaseCommand):
 PLUGIN_ROW_FORMAT = '{id:5} | {name:40}'
 class Plugins_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
-        make_option('-I', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
         make_option('-s', '--saved', action='store_true', default=False, help="Only list plugins saved in db"),
     )
 
@@ -254,15 +244,13 @@ class Plugins_Command(BaseCommand):
         if opts['ids']:
             ids = [ i.strip() for i in opts['ids'].split(',') ]
             hosts = Host.objects.filter(hostid__in=ids)
-        elif opts['id']:
-            hosts = Host.objects.filter(hostid=opts['id'])
         else:
             self.stdout.write("You must give one or more ID.")
             self.print_help('host', 'help')
             sys.exit(1)
         # Stop if no given id
         if not hosts.exists():
-            self.stdout.write("There's no Host with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            self.stdout.write("There's no host with given ID: '%s'" % (opts['ids'] or opts['id']) )
             sys.exit(1)
         # Walk on host and list plugins
         for h in hosts:
