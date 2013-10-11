@@ -36,12 +36,24 @@ class Command(CommandDispatcher):
 
 ROW_FORMAT = '{id:5} | {name:40} | {hostid:50} | {storage_id:10} | {group_id:9}'
 class List_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-s', '--saved', action='store_true', default=False, help="Only list host saved in db"),
+    )
     def handle(self, *args, **opts):
-        hosts = Host.objects.values()
         self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
-        for h in hosts:
-            self.stdout.write(ROW_FORMAT.format(**h))
-        self.stdout.write('Count: %i' % len(hosts))
+        hosts = Storage.objects.get_all_host_info()
+        for id,hinfo in Storage.objects.get_all_host_info().items():
+            if Host.objects.filter(hostid=id).exists():
+                h = Host.objects.get(hostid=id)
+                self.stdout.write(ROW_FORMAT.format(**h.__dict__))
+            elif not opts['saved']:
+                s = Storage.objects.which_storage(id)
+                h = {'id':'None', 'group_id':'None', 'hostid': id, 'name': hinfo['Name'], 'storage_id': s.id}
+                self.stdout.write(ROW_FORMAT.format(**h))
+        # Print count
+        if not opts['saved']:
+            self.stdout.write('Total count: %i' % len(hosts))
+        self.stdout.write('Saved count: %i' % Host.objects.count())
 
 
 class Add_Command(BaseCommand):

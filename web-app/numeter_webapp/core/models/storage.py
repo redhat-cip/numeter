@@ -33,10 +33,10 @@ class Storage_Manager(models.Manager):
 
     def get_all_host_info(self):
         """Return a list of all hosts' infos."""
-        host_list = []
+        host_dict = {}
         for S in Storage.objects.all():
-            host_list.extend(S.get_hosts())
-        return host_list
+            host_dict.update(S.get_hosts())
+        return host_dict
 
     def get_all_hostids(self):
         """Return a list of ids of all hosts from storage."""
