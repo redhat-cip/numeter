@@ -29,6 +29,8 @@ class Command(CommandDispatcher):
             return Modify_Command()
         elif args[0] == 'hosts':
             return Hosts_Command()
+        elif args[0] == 'users':
+            return Users_Command()
 
 
 ROW_FORMAT = '{id:5} | {name:40}'
@@ -155,3 +157,30 @@ class Hosts_Command(BaseCommand):
         for g in groups:
             for h in Host.objects.filter(group=g):
                 self.stdout.write(HOST_ROW_FORMAT.format(**h.__dict__))
+
+
+USER_ROW_FORMAT = '{id:5} | {username:30} | {is_superuser:10} | {graph_lib:15} | {groups:20}'
+class Users_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+    )
+
+    def handle(self, *args, **opts):
+        # Select group by id or ids
+        if opts['ids']:
+            ids = [ i.strip() for i in opts['ids'].split(',') ]
+            groups = Group.objects.filter(id__in=ids)
+        else:
+            groups = Group.objects.all()
+        # Stop if no given id
+        if not groups.exists():
+            self.stdout.write("There's no group with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            sys.exit(1)
+        # Walk on groups and list hosts
+        self.stdout.write(USER_ROW_FORMAT.format(**{u'id': 'ID', 'groups': 'Groups ID', 'is_superuser': 'Superuser', 'username': u'Userame', 'graph_lib': 'Graph lib'}))
+        for g in groups:
+            for u in User.objects.filter(groups=g):
+                u_data = u.__dict__
+                u_data['groups'] = ','.join([ str(_g.id) for _g in u.groups.all() ])
+                u_data['graph_lib'] = ','.join(u_data['graph_lib'])
+                self.stdout.write(USER_ROW_FORMAT.format(**u_data))
