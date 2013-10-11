@@ -7,3 +7,11 @@
 .venv/
 docs/_build
 web-app/src/numeter/media/graphlib/*
+.tox
+common/build/
+poller/build/
+storage/build/
+common/dist/
+poller/dist/
+storage/dist/
+*.egg-info
