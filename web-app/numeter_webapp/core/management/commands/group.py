@@ -61,7 +61,7 @@ class Delete_Command(BaseCommand):
             sys.exit(1)
         # Stop if no given id
         if not groups.exists():
-            self.stdout.write("There's no group with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            self.stdout.write("There's no group with given ID: '%s'" % opts['ids'] )
             sys.exit(1)
         for g in groups:
             g.delete()
@@ -150,7 +150,7 @@ class Hosts_Command(BaseCommand):
             groups = Group.objects.all()
         # Stop if no given id
         if not groups.exists():
-            self.stdout.write("There's no group with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            self.stdout.write("There's no group with given ID: '%s'" % opts['ids'] )
             sys.exit(1)
         # Walk on groups and list hosts
         self.stdout.write(HOST_ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
@@ -174,7 +174,7 @@ class Users_Command(BaseCommand):
             groups = Group.objects.all()
         # Stop if no given id
         if not groups.exists():
-            self.stdout.write("There's no group with given ID: '%s'" % (opts['ids'] or opts['id']) )
+            self.stdout.write("There's no group with given ID: '%s'" % opts['ids'] )
             sys.exit(1)
         # Walk on groups and list hosts
         self.stdout.write(USER_ROW_FORMAT.format(**{u'id': 'ID', 'groups': 'Groups ID', 'is_superuser': 'Superuser', 'username': u'Userame', 'graph_lib': 'Graph lib'}))

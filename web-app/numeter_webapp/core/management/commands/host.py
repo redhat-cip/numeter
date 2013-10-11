@@ -160,7 +160,7 @@ class Delete_Command(BaseCommand):
 
 class Modify_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+        make_option('-i', '--ids', action='store', help="Select hosts by ID separated by comma"),
         make_option('-s', '--storage', action='store', help="Set storage by id"),
         make_option('-g', '--group', action='store', help="Set group by id"),
         make_option('-q', '--quiet', action='store_true', help="Don't print info"),
@@ -169,13 +169,8 @@ class Modify_Command(BaseCommand):
     def handle(self, *args, **opts):
         if opts['quiet']: self.stdout = open(devnull, 'w')
         # Select host by id or ids
-        if opts['ids']:
-            ids = [ i.strip() for i in opts['ids'].split(',') ]
-            hosts = Host.objects.filter(hostid__in=ids)
-        else:
-            self.stdout.write("You must give one or more ID.")
-            self.print_help('host', 'help')
-            sys.exit(1)
+        ids = [ i.strip() for i in opts['ids'].split(',') ]
+        hosts = Host.objects.filter(hostid__in=ids)
         # Stop if no given id
         if not hosts.exists():
             self.stdout.write("There's no host with given ID: '%s'" % (opts['ids'] or opts['id']) )
