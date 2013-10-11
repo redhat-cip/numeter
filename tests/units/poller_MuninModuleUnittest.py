@@ -10,7 +10,7 @@ import ConfigParser
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-from numeter.poller import myMuninModule
+from numeter.poller import MuninModule
 
 import base as test_base
 
@@ -46,7 +46,7 @@ class PollerMuninModuleTestCase(test_base.TestCase):
         # Fake socker
         self._fakeMunin = myFakeMunin()
         # Start
-        self._pollerMuninModule = myMuninModule(self._configParse)
+        self._pollerMuninModule = MuninModule(self._configParse)
         self._pollerMuninModule.munin_connection = self._fakeMunin
         # Make a shot name
         self._munin = self._pollerMuninModule.munin_connection

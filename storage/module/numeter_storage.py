@@ -6,7 +6,7 @@ import ConfigParser
 import time
 import os
 import json
-from numeter.redis import myRedisConnect
+from numeter.redis import RedisConnect
 from numeter.storage.numeter_storage_endpoints import StorageEndpoint
 from numeter.queue import server as NumeterQueueC
 #import socket
@@ -25,9 +25,9 @@ import whisper
 import pprint # Debug (dumper)
 
 #
-# myStorage
+# Storage
 #
-class myStorage(object):
+class Storage(object):
     def __init__(self,configFile="/etc/numeter_storage.cfg"):
 
         # Default configuration
@@ -109,7 +109,7 @@ class myStorage(object):
 
     def redisStartConnexion(self):
         # Open redis connexion
-        redis_connection = myRedisConnect(host=self._redis_storage_host,
+        redis_connection = RedisConnect(host=self._redis_storage_host,
                                   port=self._redis_storage_port,
                                   socket_timeout=self._redis_storage_timeout,
                                   db=self._redis_storage_db,

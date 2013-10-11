@@ -7,13 +7,13 @@ import sys
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-from numeter.redis import myRedisConnect
+from numeter.redis import RedisConnect
 
 class RedisTestCase(unittest.TestCase):
 
     def get_init(self):
         # Redis connexion with no error
-        self._redis_connexion = myRedisConnect(host="127.0.0.1", port=8888, password="password",db=0)
+        self._redis_connexion = RedisConnect(host="127.0.0.1", port=8888, password="password",db=0)
         self.assertFalse(self._redis_connexion._error)
 
     def setUp(self):
@@ -33,9 +33,9 @@ class RedisTestCase(unittest.TestCase):
 
     def test_redis_db(self):
         # Test connect db 0, 1 and default
-        redis_dbDefault = myRedisConnect(host="127.0.0.1", port=8888, password="password",db=None)
-        redis_db0 = myRedisConnect(host="127.0.0.1", port=8888, password="password",db=0)
-        redis_db1 = myRedisConnect(host="127.0.0.1", port=8888, password="password",db=1)
+        redis_dbDefault = RedisConnect(host="127.0.0.1", port=8888, password="password",db=None)
+        redis_db0 = RedisConnect(host="127.0.0.1", port=8888, password="password",db=0)
+        redis_db1 = RedisConnect(host="127.0.0.1", port=8888, password="password",db=1)
         # Set and get value in 0
         redis_db0.redis_set("foo","bar0")
         self.assertEqual(redis_db0.redis_get("foo"), "bar0")

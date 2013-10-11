@@ -9,7 +9,7 @@ import socket
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-from numeter.poller import myPoller
+from numeter.poller import Poller
 
 class PollerTestCase(unittest.TestCase):
 
@@ -21,7 +21,7 @@ class PollerTestCase(unittest.TestCase):
         os.system("while ! netstat -laputn | grep 8888 > /dev/null; do true; done ")
         os.system("redis-cli -a password -p 8888 ping >/dev/null")
         os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-        self.poller = myPoller(myPath+"/poller_unittest.cfg")
+        self.poller = Poller(myPath+"/poller_unittest.cfg")
 
     def tearDown(self):
         os.system("kill -9 $(cat /tmp/redis-unittest.pid)")

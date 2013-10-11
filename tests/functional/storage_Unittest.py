@@ -11,7 +11,7 @@ import re
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-from numeter.storage import myStorage
+from numeter.storage import Storage
 
 class StorageTestCase(unittest.TestCase):
 
@@ -25,7 +25,7 @@ class StorageTestCase(unittest.TestCase):
         os.system("while ! netstat -laputn | grep 8888 > /dev/null; do true; done ")
         os.system("redis-cli -a password -p 8888 ping >/dev/null")
         os.system("redis-cli -a password -p 8888 FLUSHALL >/dev/null")
-        self.storage = myStorage(myPath+"/storage_unittest.cfg")
+        self.storage = Storage(myPath+"/storage_unittest.cfg")
         self.storage._logger = myFakeLogger()
 
     def tearDown(self):

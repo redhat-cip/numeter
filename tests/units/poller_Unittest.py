@@ -12,7 +12,7 @@ myPath = os.path.abspath(os.path.dirname(__file__))
 
 import numeter.poller
 from test_utils import FakeRedis
-from numeter.redis import myRedisConnect
+from numeter.redis import RedisConnect
 
 import base as test_base
 
@@ -20,14 +20,14 @@ class PollerTestCase(test_base.TestCase):
 
     def setUp(self):
         super(PollerTestCase, self).setUp()
-        self.getgloballog_orig = numeter.poller.myPoller.getgloballog
-        numeter.poller.myPoller.getgloballog = mock.MagicMock()
-        self.poller = numeter.poller.myPoller(myPath+"/poller_unittest.cfg")
+        self.getgloballog_orig = numeter.poller.Poller.getgloballog
+        numeter.poller.Poller.getgloballog = mock.MagicMock()
+        self.poller = numeter.poller.Poller(myPath+"/poller_unittest.cfg")
         self.poller._logger = myFakeLogger()
 
     def tearDown(self):
         super(PollerTestCase, self).tearDown()
-        numeter.poller.myPoller.getgloballog = numeter.poller.myPoller.getgloballog
+        numeter.poller.Poller.getgloballog = numeter.poller.Poller.getgloballog
 
     def test_poller_pollerTimeToGo(self):
         self.poller._poller_time            = 60

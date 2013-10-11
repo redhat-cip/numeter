@@ -9,7 +9,7 @@ import redis
 #
 # Redis
 #
-class myRedisConnect(object):
+class RedisConnect(object):
     """Frontend redis avec try sur les get"""
     def __init__(self,host="127.0.0.1",port=6379,socket_timeout=2,password=None,db=0):
 #        print "-INIT"

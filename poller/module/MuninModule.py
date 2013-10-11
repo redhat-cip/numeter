@@ -13,7 +13,7 @@ import munin_connect
 #
 # Munin module
 #
-class myMuninModule(ModulesGeneric):
+class MuninModule(ModulesGeneric):
 
     def __init__(self, configParser=None):
         self._logger = getLogger(__name__)
@@ -26,11 +26,11 @@ class myMuninModule(ModulesGeneric):
         self.watchdog = 1000 # watchdog for munin socket error
 
         if configParser: self.getParserConfig()
-        self._logger.info("section myMuninModule : plugins_enable = "
+        self._logger.info("section MuninModule : plugins_enable = "
                         + self._plugins_enable)
-        self._logger.info("section myMuninModule : munin_host = "
+        self._logger.info("section MuninModule : munin_host = "
                         + self._munin_host)
-        self._logger.info("section myMuninModule : munin_port = "
+        self._logger.info("section MuninModule : munin_port = "
                         + str(self._munin_port))
         self.munin_connection = munin_connect.MuninConnection(self._munin_host,
                                                               self._munin_port)
@@ -44,10 +44,10 @@ class myMuninModule(ModulesGeneric):
         datas = []
         for plugin in pluginList:
             if re.match(self._plugins_enable, plugin):  
-                self._logger.info("myMuninModule : get data for " + plugin)
+                self._logger.info("MuninModule : get data for " + plugin)
                 fetchResult = self.formatFetchData(plugin)
                 if fetchResult == None: continue
-                self._logger.debug("myMuninModule : Value : " + str(fetchResult))
+                self._logger.debug("MuninModule : Value : " + str(fetchResult))
                 datas.append(fetchResult)
         return datas
 
@@ -60,10 +60,10 @@ class myMuninModule(ModulesGeneric):
         infos = []
         for plugin in pluginList:
             if re.match(self._plugins_enable, plugin):  
-                self._logger.info("myMuninModule : get Infos for " + plugin)
+                self._logger.info("MuninModule : get Infos for " + plugin)
                 fetchResult = self.formatFetchInfo(plugin)
                 if fetchResult == None: continue
-                self._logger.debug("myMuninModule : infos : " 
+                self._logger.debug("MuninModule : infos : " 
                             + str(fetchResult))
                 infos.append(fetchResult)
         return infos
@@ -163,18 +163,18 @@ class myMuninModule(ModulesGeneric):
     def getParserConfig(self):
         "Read configuration file"
         # plugins_enable
-        if self._configParser.has_option('myMuninModule', 'plugins_enable') \
-        and self._configParser.get('myMuninModule', 'plugins_enable'):
-            self._plugins_enable = self._configParser.get('myMuninModule'
+        if self._configParser.has_option('MuninModule', 'plugins_enable') \
+        and self._configParser.get('MuninModule', 'plugins_enable'):
+            self._plugins_enable = self._configParser.get('MuninModule'
                                         , 'plugins_enable')
         # munin_host
-        if self._configParser.has_option('myMuninModule', 'munin_host') \
-        and self._configParser.get('myMuninModule', 'munin_host'):
-            self._munin_host = self._configParser.get('myMuninModule'
+        if self._configParser.has_option('MuninModule', 'munin_host') \
+        and self._configParser.get('MuninModule', 'munin_host'):
+            self._munin_host = self._configParser.get('MuninModule'
                                         , 'munin_host')
         # munin_port
-        if self._configParser.has_option('myMuninModule', 'munin_port') \
-        and self._configParser.getint('myMuninModule', 'munin_port'):
-            self._munin_port = self._configParser.getint('myMuninModule'
+        if self._configParser.has_option('MuninModule', 'munin_port') \
+        and self._configParser.getint('MuninModule', 'munin_port'):
+            self._munin_port = self._configParser.getint('MuninModule'
                                         , 'munin_port')
 

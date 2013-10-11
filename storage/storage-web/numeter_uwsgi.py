@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from numeter.redis import myRedisConnect
+from numeter.redis import RedisConnect
 import ConfigParser
 from flask import Flask, request
 import json
@@ -56,7 +56,7 @@ def readConf(configFile):
 
 def redisStartConnexion():
     "Open redis connexion"
-    redis_connexion = myRedisConnect(host=redis_host, \
+    redis_connexion = RedisConnect(host=redis_host, \
                                      port=redis_port, \
                                      db=redis_db, \
                                      password=redis_password)

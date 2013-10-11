@@ -3,9 +3,9 @@
 import os
 import sys
 
-from numeter.redis import myRedisConnect
+from numeter.redis import RedisConnect
 
-class FakeRedis(myRedisConnect):
+class FakeRedis(RedisConnect):
     def __init__(self, *args, **kwargs):
         self._error=False
         self.hset_data = self.init_hset()

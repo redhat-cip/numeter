@@ -11,9 +11,9 @@ import mock
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-#from numeter.storage import myStorage
+#from numeter.storage import Storage
 import numeter.storage
-#from numeter.redis import myRedisConnect
+#from numeter.redis import RedisConnect
 
 import base as test_base
 from test_utils import FakeRedis
@@ -22,14 +22,14 @@ class StorageTestCase(test_base.TestCase):
 
     def setUp(self):
         super(StorageTestCase, self).setUp()
-        self.getgloballog_orig = numeter.storage.myStorage.getgloballog
-        numeter.storage.myStorage.getgloballog = mock.MagicMock()
-        self.storage = numeter.storage.myStorage(myPath+"/storage_unittest.cfg")
+        self.getgloballog_orig = numeter.storage.Storage.getgloballog
+        numeter.storage.Storage.getgloballog = mock.MagicMock()
+        self.storage = numeter.storage.Storage(myPath+"/storage_unittest.cfg")
         self.storage._logger = myFakeLogger()
 
     def tearDown(self):
         super(StorageTestCase, self).tearDown()
-        numeter.storage.myStorage.getgloballog = numeter.storage.myStorage.getgloballog
+        numeter.storage.Storage.getgloballog = numeter.storage.Storage.getgloballog
 
 #    def test_storage_getData(self):
 #        # Start connexion storage (db2)

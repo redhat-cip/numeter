@@ -86,7 +86,7 @@ class MuninConnection(object):
                         key, value = line.split(' ', 1)
                         ret[key] = value
                     except ValueError:
-                        self._logger.info("myMuninModule : skipped key %s" % key)
+                        self._logger.info("MuninModule : skipped key %s" % key)
                 else:
                     # less sure but faster
                     #key, rest = line.split('.', 1)

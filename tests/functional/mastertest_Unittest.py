@@ -15,8 +15,8 @@ import rrdtool
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-from numeter.poller import myPoller
-from numeter.storage import myStorage
+from numeter.poller import Poller
+from numeter.storage import Storage
 
 #foo_unittest|bar_unittest
 class MasterTestCase(unittest.TestCase):
@@ -48,9 +48,9 @@ class MasterTestCase(unittest.TestCase):
 
     def test_mastertest_collect(self):
         # Init
-        self.poller = myPoller(myPath+"/poller_unittest.cfg")
+        self.poller = Poller(myPath+"/poller_unittest.cfg")
         self.collector = myCollector(myPath+"/collector_unittest.cfg")
-        self.storage = myStorage(myPath+"/storage_unittest.cfg")
+        self.storage = Storage(myPath+"/storage_unittest.cfg")
         self.collector._logger = myFakeLogger()
         self.poller._logger = myFakeLogger()
         #
