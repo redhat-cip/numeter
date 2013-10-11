@@ -71,8 +71,8 @@ class Add_Command(BaseCommand):
         if opts['all']:
             for s in Storage.objects.all():
                 s.create_hosts()
-                self.stdout.write('All host from %s create.' % s)
-            sys.exit(1)
+                self.stdout.write('All host from %s created.' % s)
+            return
 
         # Select host by id or ids
         if opts['ids']:
@@ -162,8 +162,8 @@ class Delete_Command(BaseCommand):
 class Modify_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-i', '--ids', action='store', help="Select hosts by ID separated by comma"),
-        make_option('-s', '--storage', action='store', help="Set storage by id"),
-        make_option('-g', '--group', action='store', help="Set group by id"),
+        make_option('-s', '--storage', action='store', default=None, help="Set storage by id"),
+        make_option('-g', '--group', action='store', default=None, help="Set group by id"),
         make_option('-q', '--quiet', action='store_true', help="Don't print info"),
     )
 
@@ -189,7 +189,7 @@ class Modify_Command(BaseCommand):
             if h.group and not opts['group']:
                 opts['group'] = h.group.id
             # Create new data computing instance and options
-            data = dict( [ (key.replace('_id', ''),val) for key,val in h.__dict__.items() ] )
+            data = dict( [ (key.replace('_id', ''),val) for key,val in h.__dict__.items() if val is not None ] )
             data.update(opts)
             # Use Form to valid
             F = Host_Form(data=data, instance=h)
@@ -226,5 +226,3 @@ class Repair_Command(BaseCommand):
         if opts['quiet']: self.stdout = open(devnull, 'w')
         self.stdout.write('Repairing broken hosts.')
         Storage.objects.repair_hosts()
-
-

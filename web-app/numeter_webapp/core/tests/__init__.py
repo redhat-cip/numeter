@@ -5,8 +5,8 @@ from host import Host_Test
 from plugin import Plugin_Manager_Test, Plugin_Test
 from source import Source_Manager_Test, Source_Test
 from browsing import Index_Test
-from management import Manage_User_Test, Manage_Storage_Test, Manage_Repair_Test
-from commands.storage import Cmd_Storage_List_Test
+from commands.storage import Cmd_Storage_List_Test, Cmd_Storage_Add_Test, Cmd_Storage_Del_Test, Cmd_Storage_Mod_Test
+from commands.host import Cmd_Host_List_Test, Cmd_Host_Add_Test, Cmd_Host_Del_Test, Cmd_Host_Mod_Test
 from hosttree import Hosttree_Test
 from group_restriction import Access_Test
 from mediafield import MediaField_Test
@@ -14,7 +14,8 @@ from mediafield import MediaField_Test
 def suite():
     import unittest
     TEST_CASES = (
-        'core.tests.management',
+        'core.tests.commands.storage',
+        'core.tests.commands.host',
         'core.tests.perms',
         'core.tests.mediafield',
         'core.tests.login',

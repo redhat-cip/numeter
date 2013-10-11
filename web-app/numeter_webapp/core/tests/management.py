@@ -22,21 +22,6 @@ class Manage_User_Test(LiveServerTestCase):
         self.assertFalse(User.objects.all().exists(), 'User exists ever.')
 
 
-class Manage_Storage_Test(LiveServerTestCase):
-
-    def test_add_storage(self):
-        """Launch 'manage.py add-storage --alias=test --address=127.0.0.1'."""
-        call_command('add-storage', alias='test', address='127.0.0.1', database='default', verbosity=0)
-        self.assertTrue(Storage.objects.all().exists(), 'No storage created.')
-
-    def test_delete_storage(self):
-        """Launch 'manage.py del-storage --alias=test -f'."""
-        call_command('add-storage', alias='test', address='127.0.0.1', database='default', verbosity=0)
-        self.assertTrue(Storage.objects.all().exists(), 'No storage created.')
-        call_command('del-storage', alias='test', force=True, database='default', verbosity=0)
-        self.assertFalse(User.objects.all().exists(), 'Storage exists ever.')
-
-
 class Manage_Repair_Test(LiveServerTestCase):
 
     @set_storage(extras=['host'])
@@ -57,20 +42,3 @@ class Manage_Repair_Test(LiveServerTestCase):
         call_command('repair_hosts', force=True, database='default', verbosity=0)
         self.host = Host.objects.get(pk=self.host.pk)
         self.assertEqual(self.host.storage, good_storage, "Broken host does not have been configurated.")
-
-
-class Cmd_Host_Test(LiveServerTestCase):
-
-    @set_storage()
-    def setUp(self):
-        pass
-
-    def test_list(self):
-        call_command('host', 'list')
-        self.skipTest('USELESS')
-        self.assertTrue(Host.objects.all().exists(), 'No host created.')
-
-    def test_add(self):
-        call_command('host', 'add')
-        self.skipTest('USELESS')
-        self.assertTrue(Host.objects.all().exists(), 'No host created.')
