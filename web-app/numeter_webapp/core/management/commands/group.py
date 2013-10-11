@@ -5,6 +5,7 @@ from configuration.forms.group import Group_Form
 from core.management.commands._utils import CommandDispatcher
 
 from optparse import make_option
+from os import devnull
 import sys
 
 
@@ -61,3 +62,42 @@ class Delete_Command(BaseCommand):
         for g in groups:
             g.delete()
             self.stdout.write('Delete group: %s' % g)
+
+
+class Add_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-n', '--names', action='store', default='', help="Set multiple group name by ID separated by comma"),
+        make_option('-q', '--quiet', action='store_true', help="Don't print info"),
+    )
+
+    def handle(self, *args, **opts):
+        if opts['quiet']: self.stdout = open(devnull, 'w')
+        # Select group by ids
+        if opts['names']:
+            names = [ n.strip() for n in opts['names'].split(',') ]
+        else:
+            self.stdout.write("You must give one or more name.")
+            self.print_help('group', 'help')
+            sys.exit(1)
+
+        self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'name': 'Name'}))
+        # Walk on names and valid with form.
+        form_errors = []
+        for n in names:
+            F = Group_Form(data={'name':n})
+            if F.is_valid():
+                g = F.save()
+                self.stdout.write(ROW_FORMAT.format(**g.__dict__))
+            else:
+                form_errors.append((n,F.errors))
+        self.stdout.write('Created count: %i' % (len(names) - len(form_errors)))
+        # Print errors
+        if form_errors and not opts['quiet']:
+            self.stdout.write('* Error(s)')
+            for n, errs in form_errors:
+                self.stdout.write('* %s:' % n)
+                for field,errors in errs.items():
+                    self.stdout.write(field)
+                    for err in errors:
+                        self.stdout.write('\t'+err)
+
