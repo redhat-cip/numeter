@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+raise Exception("Rewrite in progress")
+
 import unittest2 as unittest
 from redis_Unittest import RedisTestCase
 from poller_Unittest import PollerTestCase
