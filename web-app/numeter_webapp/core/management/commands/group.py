@@ -72,7 +72,7 @@ class Add_Command(BaseCommand):
 
     def handle(self, *args, **opts):
         if opts['quiet']: self.stdout = open(devnull, 'w')
-        # Select group by ids
+        # Format names
         if opts['names']:
             names = [ n.strip() for n in opts['names'].split(',') ]
         else:
@@ -101,3 +101,31 @@ class Add_Command(BaseCommand):
                     for err in errors:
                         self.stdout.write('\t'+err)
 
+
+class Modify_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-i', '--id', action='store', type='int', help="Select a group by ID"),
+        make_option('-n', '--name', action='store', help="Set name"),
+        make_option('-q', '--quiet', action='store_true', help="Don't print info"),
+    )
+
+    def handle(self, *args, **opts):
+        if opts['quiet']: self.stdout = open(devnull, 'w')
+        # Select group by id
+        if not Group.objects.filter(id=opts['id']).exists():
+            self.stdout.write("No group with id '%s' exists." % opts['id'])
+            sys.exit(1)
+        # Valid and save
+        g = Group.objects.get(id=opts['id'])
+        F = Group_Form(data=opts, instance=g)
+        if F.is_valid():
+            g = F.save()
+            self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'name': 'Name'}))
+            self.stdout.write(ROW_FORMAT.format(**g.__dict__))
+
+        elif not opts['quiet']:
+            self.stdout.write('* Error(s)')
+            for field,errors in F.errors.items():
+                self.stdout.write(field)
+                for err in errors:
+                    self.stdout.write('\t'+err)
