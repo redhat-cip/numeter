@@ -1018,7 +1018,7 @@ class StorageTestCase(unittest.TestCase):
 
 
 # Fake log
-class myFakeLogger():
+class myFakeLogger(object):
     def __init__(self):
         return
     def critical(self,string):
@@ -1032,7 +1032,7 @@ class myFakeLogger():
     def debug(self,string):
         return
 # Fake sema
-class myFakeSema():
+class myFakeSema(object):
     def __init__(self):
         return
     def release(self):

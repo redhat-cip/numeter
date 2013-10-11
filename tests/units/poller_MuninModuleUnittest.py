@@ -15,7 +15,7 @@ from numeter.poller import myMuninModule
 import base as test_base
 
 # Class fake socket
-class myFakeMunin():
+class myFakeMunin(object):
     fetch_return_value = None
     config_return_value = None
     list_return_value = None

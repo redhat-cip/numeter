@@ -182,7 +182,7 @@ class MasterTestCase(unittest.TestCase):
 # Delete rrd storage self._rrd_delete
 
 # Fake log
-class myFakeLogger():
+class myFakeLogger(object):
     def __init__(self):
         return
     def critical(self,string):

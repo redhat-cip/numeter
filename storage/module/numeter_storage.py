@@ -27,7 +27,7 @@ import pprint # Debug (dumper)
 #
 # myStorage
 #
-class myStorage:
+class myStorage(object):
     def __init__(self,configFile="/etc/numeter_storage.cfg"):
 
         # Default configuration

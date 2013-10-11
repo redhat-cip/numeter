@@ -16,7 +16,7 @@ from storeandforward import StoreAndForward
 #
 # Poller
 #
-class myPoller:
+class myPoller(object):
     def __init__(self, configFile="/etc/numeter_poller.cfg"):
 
         self._startTime              = None

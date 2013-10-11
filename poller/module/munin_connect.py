@@ -4,7 +4,7 @@ import socket
 import re
 from logging import getLogger
 
-class MuninSock:
+class MuninSock(object):
 
     def __init__(self, host, port):
         self.host = host
@@ -20,7 +20,7 @@ class MuninSock:
         self.munin_sock.close()
 
 
-class MuninConnection:
+class MuninConnection(object):
     
     def __init__(self, munin_host="127.0.0.1", munin_port=4949):
         self.watchdog = 1000 # watchdog for munin socket error

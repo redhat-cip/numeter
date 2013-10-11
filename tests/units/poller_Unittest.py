@@ -136,7 +136,7 @@ class PollerTestCase(test_base.TestCase):
     # TODO add test for DERIVE, COUNTER values (lastValue = self._cache.get_value(key))
     def test_poller_sendData(self):
 
-        class fake_message:
+        class fake_message(object):
             def __init__(self, poller):
                 self.poller = poller
             def __enter__(self):
@@ -176,7 +176,7 @@ class PollerTestCase(test_base.TestCase):
             faker.poller._store_and_forward_sendMsg.assert_has_calls(calls)
 
 # Fake log
-class myFakeLogger():
+class myFakeLogger(object):
     def __init__(self):
         return
     def critical(self,string):

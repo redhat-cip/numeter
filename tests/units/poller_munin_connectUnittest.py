@@ -14,7 +14,7 @@ import  numeter.poller.munin_connect
 
 import base as test_base
 
-class fakereadline():
+class fakereadline(object):
     def __init__(self):
         self.read_return = None
         self.count = -1
