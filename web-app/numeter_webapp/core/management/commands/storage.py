@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from core.models import Storage, Host
+from core.models import Storage
 from configuration.forms.storage import Storage_Form
 from core.management.commands._utils import CommandDispatcher
 from core.management.commands.host import List_Command as Hosts_Command

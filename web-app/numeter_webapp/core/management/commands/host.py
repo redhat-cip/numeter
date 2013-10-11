@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from core.models import Storage, Host, Plugin
 from configuration.forms.host import Host_Form
 from core.management.commands._utils import CommandDispatcher
+from core.management.commands.plugin import List_Command as Plugins_Command
 
 from optparse import make_option
 from os import devnull
@@ -227,35 +228,3 @@ class Repair_Command(BaseCommand):
         Storage.objects.repair_hosts()
 
 
-PLUGIN_ROW_FORMAT = '{id:5} | {name:40}'
-class Plugins_Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
-        make_option('-s', '--saved', action='store_true', default=False, help="Only list plugins saved in db"),
-    )
-
-    def handle(self, *args, **opts):
-        # Select host by id or ids
-        if opts['ids']:
-            ids = [ i.strip() for i in opts['ids'].split(',') ]
-            hosts = Host.objects.filter(hostid__in=ids)
-        else:
-            self.stdout.write("You must give one or more ID.")
-            self.print_help('host', 'help')
-            sys.exit(1)
-        # Stop if no given id
-        if not hosts.exists():
-            self.stdout.write("There's no host with given ID: '%s'" % (opts['ids'] or opts['id']) )
-            sys.exit(1)
-        # Walk on host and list plugins
-        for h in hosts:
-            self.stdout.write("* %s plugins:" % h)
-            self.stdout.write(PLUGIN_ROW_FORMAT.format(**{u'id': 'ID', 'name': 'Name'}))
-            # List plugins
-            for p in h.get_plugins():
-                if Plugin.objects.filter(host=h, name=p['Plugin']).exists():
-                    p = Plugin.objects.get(host=h, name=p['Plugin'])
-                    self.stdout.write(PLUGIN_ROW_FORMAT.format(**p.__dict__))
-                elif not opts['saved']:
-                    p = {'id': 'None', 'name': p['Plugin']}
-                    self.stdout.write(PLUGIN_ROW_FORMAT.format(**p))
