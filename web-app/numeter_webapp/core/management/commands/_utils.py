@@ -22,8 +22,6 @@ class CommandDispatcher(BaseCommand):
     integration with the ``./manage.py`` command.
     """
 
-    # Override these:
-
     def _subcommand(self, name):
         """
         Return the management command instance to run.

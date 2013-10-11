@@ -1,13 +1,31 @@
+from django.test import LiveServerTestCase
 from django.core.management import call_command
 from django.conf import settings
 from django.utils.decorators import available_attrs
+
 from core.models import Storage, Host
 from core.models import User, Group
-from functools import wraps
-import os
 
+from functools import wraps
+from cStringIO import StringIO
+import os
+import sys
+
+
+DEFAULT_STDOUT = sys.stdout
+class CmdTestCase(LiveServerTestCase):
+    """Custom TestCase which capture stdout in self.stdout."""
+    def setUp(self):
+        super(CmdTestCase, self).setUp()
+        self.stdout = StringIO()
+        sys.stdout = self.stdout
+
+    def tearDown(self):
+        sys.stdout = DEFAULT_STDOUT
+        super(CmdTestCase, self).tearDown()
 
 class False_HttpRequest_dict(dict):
+    """Used for test POST request."""
     def getlist(self, x):
         return self.get(x, [])
 
