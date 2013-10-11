@@ -242,8 +242,6 @@ class Repair_Command(BaseCommand):
 
 
 PLUGIN_ROW_FORMAT = '{id:5} | {name:40}'
-
-
 class Plugins_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-i', '--id', action='store', default=None, help="Select host by ID"),
