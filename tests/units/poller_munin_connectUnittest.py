@@ -6,9 +6,6 @@ import sys
 import re
 import socket
 import logging
-import ConfigParser
-
-myPath = os.path.abspath(os.path.dirname(__file__))
 
 import  numeter.poller.munin_connect
 
@@ -45,15 +42,17 @@ class FakeMuninSock(numeter.poller.munin_connect.MuninSock):
     def sendall(self,string):
         return self
 
+_logger = logging.getLogger()
+fh = logging.FileHandler("/dev/null")
+fh.setLevel(logging.CRITICAL)
+_logger.addHandler(fh)
+
 class PollerMuninConnectTestCase(test_base.TestCase):
 
     def setUp(self):
         super(PollerMuninConnectTestCase, self).setUp()
         # Set logger None
-        self._logger = logging.getLogger()
-        fh = logging.FileHandler("/dev/null")
-        fh.setLevel(logging.CRITICAL)
-        self._logger.addHandler(fh)
+        self._logger = _logger
         # Fake munin sock
         self._back_MuninSock = numeter.poller.munin_connect.MuninSock
         numeter.poller.munin_connect.MuninSock = FakeMuninSock

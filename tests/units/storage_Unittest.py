@@ -18,6 +18,11 @@ import numeter.storage
 import base as test_base
 from test_utils import FakeRedis
 
+_logger = logging.getLogger()
+fh = logging.FileHandler("/dev/null")
+fh.setLevel(logging.CRITICAL)
+_logger.addHandler(fh)
+
 class StorageTestCase(test_base.TestCase):
 
     def setUp(self):
@@ -25,7 +30,7 @@ class StorageTestCase(test_base.TestCase):
         self.getgloballog_orig = numeter.storage.Storage.getgloballog
         numeter.storage.Storage.getgloballog = mock.MagicMock()
         self.storage = numeter.storage.Storage(myPath+"/storage_unittest.cfg")
-        self.storage._logger = myFakeLogger()
+        self.storage._logger = _logger
 
     def tearDown(self):
         super(StorageTestCase, self).tearDown()
@@ -914,20 +919,6 @@ class StorageTestCase(test_base.TestCase):
 #        self.assertFalse(result)
 #
 #
-# Fake log
-class myFakeLogger(object):
-    def __init__(self):
-        return
-    def critical(self,string):
-        return
-    def error(self,string):
-        return
-    def warning(self,string):
-        return
-    def info(self,string):
-        return
-    def debug(self,string):
-        return
 ## Fake sema
 #class myFakeSema(object):
 #    def __init__(self):

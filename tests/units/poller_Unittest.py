@@ -16,6 +16,11 @@ from numeter.redis import RedisConnect
 
 import base as test_base
 
+_logger = logging.getLogger()
+fh = logging.FileHandler("/dev/null")
+fh.setLevel(logging.CRITICAL)
+_logger.addHandler(fh)
+
 class PollerTestCase(test_base.TestCase):
 
     def setUp(self):
@@ -23,7 +28,7 @@ class PollerTestCase(test_base.TestCase):
         self.getgloballog_orig = numeter.poller.Poller.getgloballog
         numeter.poller.Poller.getgloballog = mock.MagicMock()
         self.poller = numeter.poller.Poller(myPath+"/poller_unittest.cfg")
-        self.poller._logger = myFakeLogger()
+        self.poller._logger = _logger
 
     def tearDown(self):
         super(PollerTestCase, self).tearDown()
@@ -174,18 +179,3 @@ class PollerTestCase(test_base.TestCase):
             faker.poller._sendData([{"TimeStamp": "1328624580", "Values": {"entropy": "146"}}])
             calls = []
             faker.poller._store_and_forward_sendMsg.assert_has_calls(calls)
-
-# Fake log
-class myFakeLogger(object):
-    def __init__(self):
-        return
-    def critical(self,string):
-        return
-    def error(self,string):
-        return
-    def warning(self,string):
-        return
-    def info(self,string):
-        return
-    def debug(self,string):
-        return
