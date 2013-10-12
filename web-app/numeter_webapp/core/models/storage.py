@@ -33,10 +33,10 @@ class Storage_Manager(models.Manager):
 
     def get_all_host_info(self):
         """Return a list of all hosts' infos."""
-        host_list = []
+        host_dict = {}
         for S in Storage.objects.all():
-            host_list.extend(S.get_hosts())
-        return host_list
+            host_dict.update(S.get_hosts())
+        return host_dict
 
     def get_all_hostids(self):
         """Return a list of ids of all hosts from storage."""
@@ -233,6 +233,18 @@ class Storage(models.Model):
             hostid=h['ID'],
             storage=self,
         )
+        return h
+    def create_hosts(self):
+        """Create alls hosts in DB."""
+        hosts = self.get_hosts()
+        created_hosts = []
+        for hostid in hosts:
+            h = hosts[hostid]
+            created_hosts.append(Host.objects.create(
+                name=h['Name'],
+                hostid=h['ID'],
+                storage=self,
+            ))
         return h
 
     def get_hosts(self):
