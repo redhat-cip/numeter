@@ -45,7 +45,7 @@ class List_Command(BaseCommand):
 
 class Delete_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--ids', action='store', default=None, help="Select group by ID separated by comma"),
+        make_option('-i', '--ids', action='store', default=None, help="Select groups by ID separated by comma"),
         make_option('-q', '--quiet', action='store_true', help="Don't print info"),
     )
 

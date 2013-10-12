@@ -5,6 +5,7 @@ from host import Host_Test
 from plugin import Plugin_Manager_Test, Plugin_Test
 from source import Source_Manager_Test, Source_Test
 from browsing import Index_Test
+from commands.group import Cmd_Group_List_Test, Cmd_Group_Add_Test, Cmd_Group_Del_Test, Cmd_Group_Mod_Test
 from commands.storage import Cmd_Storage_List_Test, Cmd_Storage_Add_Test, Cmd_Storage_Del_Test, Cmd_Storage_Mod_Test
 from commands.host import Cmd_Host_List_Test, Cmd_Host_Add_Test, Cmd_Host_Del_Test, Cmd_Host_Mod_Test, Cmd_Host_Repair_Test
 from commands.plugin import Cmd_Plugin_List_Test, Cmd_Plugin_Add_Test, Cmd_Plugin_Del_Test
@@ -16,6 +17,7 @@ from mediafield import MediaField_Test
 def suite():
     import unittest
     TEST_CASES = (
+        'core.tests.commands.group',
         'core.tests.commands.storage',
         'core.tests.commands.host',
         'core.tests.commands.plugin',
