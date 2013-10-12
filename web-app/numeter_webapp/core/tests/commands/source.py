@@ -17,28 +17,25 @@ class Cmd_Source_List_Test(CmdTestCase):
     def test_empty_list(self):
         """Get empty listing."""
         Source.objects.all().delete()
-        cmd = Command()
         argv = ['', 'source', 'list']
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
         self.assertTrue(out, "No output.")
 
     def test_list(self):
         """Get listing."""
-        cmd = Command()
         argv = ['', 'source', 'list']
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
         self.assertTrue(out, "No output.")
 
     def test_filtered_list(self):
         """Get listing of a plugin."""
-        cmd = Command()
         PLUGIN_ID = str(Plugin.objects.all()[0].id)
         argv = ['', 'source', 'list', '-i', PLUGIN_ID]
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
         self.assertTrue(out, "No output.")
@@ -54,9 +51,8 @@ class Cmd_Source_Add_Test(CmdTestCase):
         """Add a source."""
         DEFAULT_ID = str(Plugin.objects.all()[0].id)
         PLUGIN_SOURCES = Plugin.objects.all()[0].get_data_sources()
-        cmd = Command()
         argv = ['', 'source', 'add', '-i', DEFAULT_ID, '-p', PLUGIN_SOURCES[0]]
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test creation
         new_count = Source.objects.count()
         self.assertGreater(new_count, 0, "Sources wasn't created.")
@@ -65,9 +61,8 @@ class Cmd_Source_Add_Test(CmdTestCase):
         """Add a source without print."""
         DEFAULT_ID = str(Plugin.objects.all()[0].id)
         PLUGIN_SOURCES = Plugin.objects.all()[0].get_data_sources()
-        cmd = Command()
         argv = ['', 'source', 'add', '-i', DEFAULT_ID, '-p', PLUGIN_SOURCES[0], '-q']
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
         self.assertFalse(out, "Output is printed:\n" + out)
@@ -77,9 +72,8 @@ class Cmd_Source_Add_Test(CmdTestCase):
         DEFAULT_ID = str(Plugin.objects.all()[0].id)
         Plugin.objects.all()[0].create_data_sources()
         DEFAULT_COUNT = Source.objects.count()
-        cmd = Command()
         argv = ['', 'source', 'add', '-i', DEFAULT_ID]
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test creation
         new_count = Source.objects.count()
         self.assertEqual(new_count, DEFAULT_COUNT, "Sources was created again.")
@@ -88,9 +82,8 @@ class Cmd_Source_Add_Test(CmdTestCase):
         """Add an host's all plugin."""
         DEFAULT_ID = str(Plugin.objects.all()[0].id)
         PLUGIN_SOURCES = Plugin.objects.all()[0].get_data_sources()
-        cmd = Command()
         argv = ['', 'plugin', 'add', '-i', DEFAULT_ID]
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test creation
         new_count = Source.objects.count()
         self.assertGreater(new_count, 0, "Sources wasn't created.")
@@ -108,9 +101,8 @@ class Cmd_Source_Del_Test(CmdTestCase):
         Plugin.objects.all()[0].create_data_sources()
         DEFAULT_COUNT = Source.objects.count()
         SOURCE_ID = str(Source.objects.all()[0].id)
-        cmd = Command()
         argv = ['', 'source', 'del', '-i', SOURCE_ID]
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test deletion
         new_count = Source.objects.count()
         self.assertEqual(new_count, DEFAULT_COUNT-1, "Source wasn't deleted.")
@@ -119,9 +111,8 @@ class Cmd_Source_Del_Test(CmdTestCase):
         """Delete a source without print."""
         Plugin.objects.all()[0].create_data_sources()
         SOURCE_ID = str(Source.objects.all()[0].id)
-        cmd = Command()
         argv = ['', 'source', 'del', '-i', SOURCE_ID, '-q']
-        cmd.run_from_argv(argv)
+        Command().run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
         self.assertFalse(out, "Output is printed:\n"+out)
