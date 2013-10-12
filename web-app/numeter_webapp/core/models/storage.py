@@ -234,6 +234,18 @@ class Storage(models.Model):
             storage=self,
         )
         return h
+    def create_hosts(self):
+        """Create alls hosts in DB."""
+        hosts = self.get_hosts()
+        created_hosts = []
+        for hostid in hosts:
+            h = hosts[hostid]
+            created_hosts.append(Host.objects.create(
+                name=h['Name'],
+                hostid=h['ID'],
+                storage=self,
+            ))
+        return h
 
     def get_hosts(self):
         """

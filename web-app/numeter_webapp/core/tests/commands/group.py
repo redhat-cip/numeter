@@ -3,8 +3,9 @@ Tests for group CLI management.
 """
 
 from core.tests.utils import CmdTestCase
-from core.models import Group
+from core.models import Group, Storage, Host
 from core.management.commands.group import Command
+from core.tests.utils import set_storage
 
 
 class Cmd_Group_List_Test(CmdTestCase):
@@ -115,3 +116,29 @@ class Cmd_Group_Mod_Test(CmdTestCase):
         # Test stdout
         out = self.stdout.getvalue()
         self.assertFalse(out, "Output is printed:\n"+out)
+
+
+class Cmd_Group_Hosts_Test(CmdTestCase):
+    """Test ``manage.py group hosts``."""
+    @set_storage(extras=['host'])
+    def setUp(self):
+        super(Cmd_Group_Hosts_Test, self).setUp()
+
+    def test_empty_list(self):
+        """Get empty listing."""
+        Host.objects.all().delete()
+        argv = ['', 'group', 'hosts']
+        Command().run_from_argv(argv)
+        # Test stdout
+        out = self.stdout.getvalue()
+        self.assertTrue(out, "No output.")
+        #self.assertIn("Count: 0", out, "Output isn't showing total count.")
+
+    def test_list(self):
+        """Get listing."""
+        argv = ['', 'group', 'hosts']
+        Command().run_from_argv(argv)
+        # Test stdout
+        out = self.stdout.getvalue()
+        self.assertTrue(out, "No output.")
+        #self.assertIn("Count: 1", out, "Output isn't showing total count.")

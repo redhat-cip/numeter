@@ -18,7 +18,7 @@ class Command(CommandDispatcher):
     def _subcommand(self, *args, **opts):
         """Dispatch in a Command by reading first argv."""
         if not args or args[0] not in self.actions:
-            self.stdout.write(self.usage('host'))
+            return self
         elif args[0] == 'list':
             return List_Command()
         elif args[0] == 'add':
@@ -137,30 +137,30 @@ class Modify_Command(BaseCommand):
 
 HOST_ROW_FORMAT = '{id:5} | {name:40} | {hostid:50} | {storage_id:10} | {group_id:9}'
 class Hosts_Command(BaseCommand):
+    """
+    Custom host listing by group.
+    Dealing only with hosts saved in database.
+    """
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+        make_option('-i', '--ids', action='store', default='', help="Select groups by ID separated by comma"),
     )
 
     def handle(self, *args, **opts):
         # Select group by id or ids
-        if opts['ids']:
-            ids = [ i.strip() for i in opts['ids'].split(',') ]
-            groups = Group.objects.filter(id__in=ids)
-        else:
-            groups = Group.objects.all()
-        # Stop if no given id
-        if not groups.exists():
-            self.stdout.write("There's no group with given ID: '%s'" % opts['ids'] )
-            sys.exit(1)
+        ids = [ i.strip() for i in opts['ids'].split(',') if i ]
+        groups = Group.objects.filter(id__in=ids) or Group.objects.all()
         # Walk on groups and list hosts
         self.stdout.write(HOST_ROW_FORMAT.format(**{u'id': 'ID', 'group_id': 'Group ID', 'hostid': 'Host ID', 'name': u'Name', 'storage_id': 'Storage ID'}))
         for g in groups:
             for h in Host.objects.filter(group=g):
                 self.stdout.write(HOST_ROW_FORMAT.format(**h.__dict__))
+        for h in Host.objects.filter(group=None):
+            self.stdout.write(HOST_ROW_FORMAT.format(**h.__dict__))
 
 
 USER_ROW_FORMAT = '{id:5} | {username:30} | {is_superuser:10} | {graph_lib:15} | {groups:20}'
 class Users_Command(BaseCommand):
+    """Custom user listing by group."""
     option_list = BaseCommand.option_list + (
         make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
     )

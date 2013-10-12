@@ -1,11 +1,12 @@
 """
 Tests for commands.
+
+USELESS: TO DELETE
 """
 
 from django.test import LiveServerTestCase
 from django.core.management import call_command
-from core.models import User, Storage, Host
-from core.tests.utils import storage_enabled, set_storage
+from core.models import User
 
 
 class Manage_User_Test(LiveServerTestCase):
