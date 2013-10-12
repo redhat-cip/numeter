@@ -25,7 +25,7 @@ class UserManager(UserManager):
         user = self.model(username=username, email=email,
             is_staff=is_staff, is_active=True,
             is_superuser=is_superuser, last_login=now(),
-            date_joined=now(), graphlib='dygraph',
+            date_joined=now(), graph_lib='dygraph',
             **extra_fields
         )
         user.set_password(password)
