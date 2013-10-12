@@ -57,7 +57,7 @@ class Cmd_Storage_Add_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
-        self.assertFalse(out, "Output is printed.")
+        self.assertFalse(out, "Output is printed:\n"+out)
 
 
 class Cmd_Storage_Del_Test(CmdTestCase):
@@ -92,7 +92,7 @@ class Cmd_Storage_Del_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
-        self.assertFalse(out, "Output is printed.")
+        self.assertFalse(out, "Output is printed:\n"+out)
 
 
 class Cmd_Storage_Mod_Test(CmdTestCase):
@@ -128,4 +128,4 @@ class Cmd_Storage_Mod_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
-        self.assertFalse(out, "Output is printed.")
+        self.assertFalse(out, "Output is printed:\n"+out)

@@ -61,7 +61,7 @@ class Cmd_Host_Add_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
-        self.assertFalse(out, "Output is printed.")
+        self.assertFalse(out, "Output is printed:\n"+out)
 
     def test_add_already_existing(self):
         """Try to add an existing host."""
@@ -122,7 +122,7 @@ class Cmd_Host_Del_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
-        self.assertFalse(out, "Output is printed.")
+        self.assertFalse(out, "Output is printed:\n"+out)
 
 
 class Cmd_Host_Mod_Test(CmdTestCase):
@@ -165,7 +165,7 @@ class Cmd_Host_Mod_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
-        self.assertFalse(out, "Output is printed.")
+        self.assertFalse(out, "Output is printed:\n"+out)
 
 
 class Cmd_Host_Repair_Test(CmdTestCase):

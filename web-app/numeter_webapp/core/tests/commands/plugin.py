@@ -60,7 +60,7 @@ class Cmd_Plugin_Add_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
-        self.assertFalse(out, "Output is printed.")
+        self.assertFalse(out, "Output is printed:\n"+out)
 
     def test_add_already_existing(self):
         """Try to add an existing plugin."""
@@ -103,7 +103,7 @@ class Cmd_Plugin_Del_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test deletion
         new_count = Plugin.objects.count()
-        self.assertEqual(new_count, DEFAULT_COUNT-1, "Host wasn't deleted.")
+        self.assertEqual(new_count, DEFAULT_COUNT-1, "Plugin wasn't deleted.")
 
     def test_quiet_delete(self):
         """Delete a plugin without print."""
@@ -114,4 +114,4 @@ class Cmd_Plugin_Del_Test(CmdTestCase):
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
-        self.assertFalse(out, "Output is printed.")
+        self.assertFalse(out, "Output is printed:\n"+out)

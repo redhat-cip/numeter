@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from core.models import Host, Plugin, Data_Source as Source
-from configuration.forms.plugin import Plugin_Form
 from core.management.commands._utils import CommandDispatcher
 
 from optparse import make_option
@@ -31,21 +30,15 @@ class Command(CommandDispatcher):
 ROW_FORMAT = '{id:5} | {name:35} | {plugin:25} | {host:30}'
 class List_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--ids', action='store', help="Select plugins by ID separated by comma"),
+        make_option('-i', '--ids', action='store', default='', help="Select plugins by ID separated by comma"),
         make_option('-s', '--saved', action='store_true', default=False, help="Only list plugins saved in db"),
     )
 
     def handle(self, *args, **opts):
+        # TODO: use this snippets for other
         # Select plugin by id or ids
-        if opts['ids']:
-            ids = [ i.strip() for i in opts['ids'].split(',') ]
-            plugins = Plugin.objects.filter(id__in=ids)
-        else:
-            plugins = Plugin.objects.all()
-        # Stop if no given id
-        if not plugins.exists():
-            self.stdout.write("There's no plugin with given ID: '%s'" % opts['ids'] )
-            sys.exit(1)
+        ids = [ i.strip() for i in opts['ids'].split(',') if i ]
+        plugins = Plugin.objects.filter(id__in=ids) or Plugin.objects.all()
         # Walk on host and list plugins
         for p in plugins:
             self.stdout.write("* %s sources:" % p)
