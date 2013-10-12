@@ -10,7 +10,7 @@ from core.tests.utils import storage_enabled, set_storage
 
 class Cmd_Host_List_Test(CmdTestCase):
     """Test ``manage.py host list``."""
-    @set_storage()
+    @set_storage(extras=['host'])
     def setUp(self):
         super(Cmd_Host_List_Test, self).setUp()
 
@@ -54,10 +54,10 @@ class Cmd_Host_Add_Test(CmdTestCase):
 
     def test_quiet_add(self):
         """Add a host without print."""
-        DEFAULT_COUNT = Host.objects.count()
         DEFAULT_ID = Host.objects.all()[0].hostid
+        Host.objects.all()[0].delete()
         cmd = Command()
-        argv = ['', 'host', 'add', '-i', DEFAULT_ID]
+        argv = ['', 'host', 'add', '-i', DEFAULT_ID, '-q']
         cmd.run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
@@ -166,3 +166,27 @@ class Cmd_Host_Mod_Test(CmdTestCase):
         # Test stdout
         out = self.stdout.getvalue()
         self.assertFalse(out, "Output is printed.")
+
+
+class Cmd_Host_Repair_Test(CmdTestCase):
+    """Test ``manage.py host repair``."""
+    @set_storage(extras=['host'])
+    def setUp(self):
+        super(Cmd_Host_Repair_Test, self).setUp()
+        if Storage.objects.count() < 2:
+            self.skipTest("Cannot do this test with less than 2 storages.")
+        self.host = Host.objects.all()[0]
+
+    def test_repair(self):
+        """Repair host/storage link."""
+        HOST_ID = self.host.hostid
+        INITIAL_STORAGE = Host.objects.all()[0].storage
+        BAD_STORAGE = Storage.objects.exclude(pk=INITIAL_STORAGE.pk)[0]
+        cmd = Command()
+        argv = ['', 'host', 'repair']
+        # Test modification
+        self.host.storage = BAD_STORAGE
+        self.host.save()
+        cmd.run_from_argv(argv)
+        self.host = Host.objects.get(pk=self.host.pk)
+        self.assertEqual(self.host.storage, INITIAL_STORAGE, "Host hasn't been repaired.")

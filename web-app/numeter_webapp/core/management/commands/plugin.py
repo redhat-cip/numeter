@@ -12,7 +12,7 @@ import re
 
 
 class Command(CommandDispatcher):
-    """Storage management base command."""
+    """Plugin management base command."""
     actions = ('list','add','delete','del','sources')
     def _subcommand_names(self):
         return ('list','add','delete','del','sources')
@@ -20,7 +20,7 @@ class Command(CommandDispatcher):
     def _subcommand(self, *args, **opts):
         """Dispatch in a Command by reading first argv."""
         if not args or args[0] not in self.actions:
-            self.stdout.write(self.usage('host'))
+            return self
         elif args[0] == 'list':
             return List_Command()
         elif args[0] == 'add':
@@ -101,8 +101,7 @@ class Add_Command(BaseCommand):
         hosts = Host.objects.filter(hostid=opts['ids'])
         # Skip if hosts don't exists
         if not hosts.exists():
-            self.stdout.write("There's no host with given ID: '%s'" % opts['ids'] )
-            sys.exit(1)
+            raise CommandError("There's no host with given ID: '%s'" % opts['ids'] )
 
         # Walk on host and save matching plugins
         REG_PLUGIN = re.compile(opts['pattern'])
