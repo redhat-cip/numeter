@@ -153,7 +153,7 @@ First launch
     numeter-webapp add-storage --alias=local_storage --port=8080 --urlprefix=/numeter-storage/ --address=127.0.0.1
 
 .. note::
-    ``syncdb`` will ask you to create a first superuser. If you choose 'no', it will be possible to make it with ``numeter-webapp add-user -S``.
+    ``syncdb`` will ask you to create a first superuser. If you choose 'no', it will be possible to make it with ``numeter-webapp user add -S``.
 
 
 Launch your Web frontend or simply ``numeter-webapp runserver 0.0.0.0:80``. You must add hosts in database for use it, go to 'Configuration/Storage/YourStorage/' and click on button Create hosts.

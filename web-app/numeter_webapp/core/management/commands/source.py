@@ -38,7 +38,8 @@ class List_Command(BaseCommand):
         # TODO: use this snippets for other
         # Select plugin by id or ids
         ids = [ i.strip() for i in opts['ids'].split(',') if i ]
-        plugins = Plugin.objects.filter(id__in=ids) or Plugin.objects.all()
+        plugins = Plugin.objects.filter(id__in=ids)
+        plugins = plugins if plugins.exists() else Plugin.objects.all()
         # Walk on host and list plugins
         for p in plugins:
             self.stdout.write("* %s sources:" % p)
