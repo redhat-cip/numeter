@@ -7,6 +7,7 @@ import time
 import socket
 import mock
 from mock import call
+import logging
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 

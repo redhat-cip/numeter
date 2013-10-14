@@ -8,6 +8,7 @@ import time
 import socket
 import whisper
 import mock
+import logging
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
