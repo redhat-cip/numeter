@@ -1,5 +1,6 @@
-# Django settings for numeter project.
-
+"""
+Webapp static settings.
+"""
 
 SITE_ID = 1
 

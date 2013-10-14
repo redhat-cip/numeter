@@ -121,6 +121,12 @@ class Host(models.Model):
         data['hostid'] = self.hostid
         return self.storage.get_data(**data)
 
+    def get_plugin_info(self, plugin):
+        """Get sources infos."""
+        for p in  self.get_plugins():
+            if p['Plugin'] == plugin:
+                return p['Infos']
+        
     def get_extended_data(self, **data):
         data['hostid'] = self.hostid
         # Get data sources name

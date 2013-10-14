@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from core.models import Storage, Host
+from core.models import Storage, Host, Plugin, Data_Source as Source
 
 from optparse import make_option
 import logging
@@ -11,8 +11,9 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        Storage.objects.create_hosts()
+        for s in Storage.objects.all():
+            s.create_hosts()
         for h in Host.objects.all():
             h.create_plugins()
-        for p in Plugin.objects.all()
+        for p in Plugin.objects.all():
             p.create_data_sources()

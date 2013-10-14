@@ -1,3 +1,7 @@
+"""
+Settings used in testing.
+"""
+
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.sqlite3',
@@ -36,6 +40,8 @@ os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8081'
 ### VALIDATION
 from os import mkdir
 from shutil import rmtree
+import socket
+
 try :
     rmtree(MEDIA_ROOT, True)
     mkdir(MEDIA_ROOT)

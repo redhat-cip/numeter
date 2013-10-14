@@ -79,9 +79,16 @@ class Plugin(models.Model):
     def get_data_sources(self):
         """
         Hard coding of self.host.get_plugin_data_sources.
-        Return a list of data sources.
+        Return a list of sources' name.
         """
         return self.host.get_plugin_data_sources(self.name)
+
+    def get_info(self):
+        """
+        Hard coding of self.host.get_plugin_info..
+        Return info for the instancied plugin.
+        """
+        return self.host.get_plugin_info(self.name)
 
     def get_data(self, **data):
         """

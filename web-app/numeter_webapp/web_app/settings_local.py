@@ -1,4 +1,7 @@
-# Django local settings for admin customization
+"""
+Dynamic settings file for site customization.
+"""
+
 from core.utils.configparser import Custom_ConfigParser
 config = Custom_ConfigParser()
 config.read('/etc/numeter/numeter_webapp.cfg')
@@ -14,7 +17,7 @@ with open(SECRET_KEY_FILE, 'r') as f:
 DEBUG = config.getboolean_d('debug', 'debug', False)
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = config.getobj_d('global', 'admins') 
+ADMINS = config.getobj_d('global', 'admins')
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -92,20 +95,20 @@ LOGGING = {
     }
 }
 
-if config.getboolean_d('logging', 'use_logging', False): 
+if config.getboolean_d('logging', 'use_logging', False):
     LOGGING['handlers']['info_file'] = {
         'level': 'INFO',
         'class': 'logging.handlers.RotatingFileHandler',
-        'filename': config.get_d('logging', 'info_file', '/var/log/numeter/webapp/info.log'), 
-        'maxBytes': config.getint_d('logging', 'file_size', 1000000),  
+        'filename': config.get_d('logging', 'info_file', '/var/log/numeter/webapp/info.log'),
+        'maxBytes': config.getint_d('logging', 'file_size', 1000000),
         'formatter': 'verbose',
         'filters': ['storage']
     }
     LOGGING['handlers']['error_file'] = {
         'level': 'INFO',
         'class': 'logging.handlers.RotatingFileHandler',
-        'filename': config.get_d('logging', 'error_file', '/var/log/numeter/webapp/error.log'), 
-        'maxBytes': config.getint_d('logging', 'file_size', 1000000),  
+        'filename': config.get_d('logging', 'error_file', '/var/log/numeter/webapp/error.log'),
+        'maxBytes': config.getint_d('logging', 'file_size', 1000000),
         'formatter': 'verbose',
         'filters': ['storage']
     }
@@ -114,7 +117,7 @@ if config.getboolean_d('logging', 'use_logging', False):
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = config.getobj_d('global', 'allowed_hosts', ['*']) 
+ALLOWED_HOSTS = config.getobj_d('global', 'allowed_hosts', ['*'])
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

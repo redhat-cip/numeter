@@ -34,21 +34,15 @@ class Command(CommandDispatcher):
 ROW_FORMAT = '{id:5} | {name:40} | {hostid:50}'
 class List_Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('-i', '--ids', action='store', default=None, help="Select hosts by ID separated by comma"),
+        make_option('-i', '--ids', action='store', default='', help="Select hosts by ID separated by comma"),
         make_option('-s', '--saved', action='store_true', default=False, help="Only list plugins saved in db"),
     )
 
     def handle(self, *args, **opts):
         # Select host by id or ids
-        if opts['ids']:
-            ids = [ i.strip() for i in opts['ids'].split(',') ]
-            hosts = Host.objects.filter(hostid__in=ids)
-        else:
-            hosts = Host.objects.all()
-        # Stop if no given id
-        if not hosts.exists():
-            self.stdout.write("There's no host with given ID: '%s'" % opts['ids'] )
-            sys.exit(1)
+        ids = [ i.strip() for i in opts['ids'].split(',') ]
+        hosts = Host.objects.filter(hostid__in=ids)
+        hosts = hosts if hosts.exists() else Host.objects.all()
         # Walk on host and list plugins
         for h in hosts:
             self.stdout.write("* %s plugins:" % h)

@@ -77,6 +77,14 @@ class Data_Source(models.Model):
     def get_list_url(self):
         return reverse('source list')
 
+    def get_info(self):
+        """
+        Return info for the instancied source.
+        """
+        for k,v in self.plugin.get_info().items():
+            if k == self.name:
+                return v
+
     def get_data(self, **data):
         """
         Hard coding of self.host.get_data.
@@ -99,7 +107,8 @@ class Data_Source(models.Model):
             'labels':['Date'],
             'colors':[],
             'name':self.name,
-            'datas':[]
+            'datas':[],
+            'infos':{}
         }
         # Get all data
         r = self.get_data(**data)
