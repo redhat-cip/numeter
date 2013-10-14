@@ -9,6 +9,7 @@ import socket
 import whisper
 import mock
 import logging
+import json
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
@@ -32,6 +33,7 @@ class StorageTestCase(test_base.TestCase):
         numeter.storage.Storage.getgloballog = mock.MagicMock()
         self.storage = numeter.storage.Storage(myPath+"/storage_unittest.cfg")
         self.storage._logger = _logger
+        self.storage._redis_connexion = FakeRedis()
 
     def tearDown(self):
         super(StorageTestCase, self).tearDown()
@@ -60,6 +62,41 @@ class StorageTestCase(test_base.TestCase):
             self.storage._get_host_list()
             self.assertEqual(self.storage._host_list, ['foo'])
 
+    def test_storage_paramsVerification(self):
+        # 0 host in list must return false
+        self.storage._host_listNumber = 0
+        self.assertFalse(self.storage.paramsVerification())
+        # 1 host in list must return true
+        self.storage._host_listNumber = 1
+        self.assertTrue(self.storage.paramsVerification())
+
+    def test_storage_get_hostIDHash(self):
+        # No cache in redis, generate new hash and write it in redis
+        result = self.storage._redis_connexion.get_and_flush_hset()
+        self.assertEqual(result, {})
+        self.storage._wsp_path_md5_char = 3
+        result = self.storage._get_hostIDHash('foo')
+        self.assertEqual(result, 'acb')
+        result = self.storage._redis_connexion.get_and_flush_hset()
+        self.assertEqual(result, {'HOST_ID': {'foo': 'acb'}})
+        # Try char = 2
+        self.storage._wsp_path_md5_char = 2
+        result = self.storage._get_hostIDHash('foo')
+        self.assertEqual(result, 'ac')
+        result = self.storage._redis_connexion.get_and_flush_hset()
+        self.assertEqual(result, {'HOST_ID': {'foo': 'ac'}})
+        # Get hash already in redis
+        self.storage._redis_connexion.redis_hset("HOST_ID", 'foo', 'bla')
+        result = self.storage._get_hostIDHash('foo')
+        self.assertEqual(result, 'bla')
+
+    def test_storage_write_info(self):
+        #result = self.storage._redis_connexion.get_and_flush_hset()
+        #result = self.storage._write_info( hostID, info_json)
+        pass
+
+    def test_storage_write_data(self):
+        pass
 
 #    def test_storage_getData(self):
 #        # Start connexion storage (db2)

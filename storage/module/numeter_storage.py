@@ -44,6 +44,7 @@ class Storage(object):
         self._redis_storage_password    = None
         self._redis_storage_host        = "127.0.0.1"
         self._redis_storage_db          = 0
+        self._redis_connexion           = None
         self._wsp_path                  = "/opt/numeter/wsp"
         self._wsp_path_md5_char         = 2
         self._wsp_clean_time            = 48 # 48h

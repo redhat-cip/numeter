@@ -2,6 +2,9 @@
 
 #./run_tests -- -c nose.cfg
 
+echo "This script will be remove, use : tox -epy27 tests/units"
+exit 1
+
 function usage {
   echo "Usage: $0 [OPTION]..."
   echo "Run Tempest test suite"
