@@ -1,5 +1,7 @@
 <ul class="unstyled">
  {% for plugin in plugins %}
-  <li><a class="get-plugin" plugin-name="{{ plugin.Title }}">{{ plugin.Title }}</a></li>
+  <li>
+    <a class="get-plugin" plugin-name="{{ plugin.Title }}">{{ plugin.Title }}</a>
+  </li>
  {% endfor %}
 </ul>

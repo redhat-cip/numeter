@@ -16,8 +16,9 @@ div[id="body"] {
   font-family:Menlo,Monaco,Consolas,"Courier New",monospace
 }
 
-.hosttree-host-li, .hosttree-category-li, hosttree-plugin-li {
+.accordion li {
   margin-left: 10px;
+  cursor: pointer;  
 }
 
 .popover {
@@ -28,10 +29,6 @@ div[id="body"] {
 
 .accordion-group .accordion-heading {
   text-align: center;
-}
-
-.accordion-group .accordion-body.in {
-  margin-bottom: 15px;
 }
 
 .messages {
@@ -60,30 +57,15 @@ div[id="body"] {
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 }
 
-.messages .alert-block.alert-error {
+.alert-error {
   border: 1px solid #9D261D;
 }
 
-.messages .alert-block.alert-success {
+.alert-success {
   border: 1px solid #46A546;
 }
 
-.input-li,
-.input-li * * {
-  vertical-align: middle;
-  margin-bottom: 0px;
-}
-
-.graph {
-  margin-left: 0px;
-}
-
-.condensed {
-  margin-bottom: 0px;
-}
-
-.condensed *,
-.condensed * *,
-.condensed * * *, {
-  margin-bottom: 2px;
+.graph {  
+  width: 100%; 
+  height: 320px;
 }

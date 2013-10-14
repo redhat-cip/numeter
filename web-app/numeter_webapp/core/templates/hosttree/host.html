@@ -1,9 +1,10 @@
 <ul class="unstyled">
  {% for category in host %}
- <li class="hosttree-category-li" category-name="{{ category }}">
-   <i class="icon-plus"></i>
-   <a class="accordion-category">{{ category }}</a>
-   <div class="category-content"></div>
-  </li>
- {% endfor %}
+ <li data-category-name="{{ category }}">
+  <span class="hosttree-category-li">
+    <i class="icon-plus"></i><a>{{ category }}</a>
+  </span>
+  <div class="content"></div>
+ </li>
+{% endfor %}
 </ul>

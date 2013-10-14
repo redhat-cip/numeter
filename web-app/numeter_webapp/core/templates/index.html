@@ -3,7 +3,6 @@
 
 {% block header %}
 <script>var csrf = "{{ csrf_token }}";</script>
-<script src="{{ STATIC_URL }}js/graph.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -39,4 +38,8 @@
    <div id="graphs"></div>
   </div>
  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ STATIC_URL }}js/graph.js"></script>
 {% endblock %}

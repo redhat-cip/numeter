@@ -1,27 +1,27 @@
 // MESSAGES
 // BASIC FUNC
-var print_message = function(msg,tag,into) {
-  var html = '<div id="msg-'+tag+'" class="alert alert-block alert-'+tag+'"><a href="#" data-dismiss="alert" class="close">×</a><div>'+msg+'</div></div>';
-  $(into).append(html);
-}
+// var print_message = function(msg,tag,into) {
+//   var html = '<div id="msg-'+tag+'" class="alert alert-block alert-'+tag+'"><a href="#" data-dismiss="alert" class="close">×</a><div>'+msg+'</div></div>';
+//   $(into).append(html);
+// }
 
-var error_modal = function(err) {
-  $('#myModal').modal('show');
-  $('#myModal').html('<center><h4>Connection error !</h4></center>');
-  //if ( err ) {
-    $('#myModal').append('<div class="span"><pre>'+err+'</pre></div>');
-  //}
-}
+// var error_modal = function(err) {
+//   $('#myModal').modal('show');
+//   $('#myModal').html('<center><h4>Connection error !</h4></center>');
+//   //if ( err ) {
+//     $('#myModal').append('<div class="span"><pre>'+err+'</pre></div>');
+//   //}
+// }
 
-// ADD LOADING GIF
-var print_loading_gif = function(into, heigth, width) {
-  if(typeof(heigth)==='undefined') heigth = '100%';
-  if(typeof(width)==='undefined') width = '100%';
-  $(into).append('<div class="loader" style="text-align:center;"><img src="/static/img/ajax-loader.gif" height="'+heigth+'" width="'+width+'">' );
-}
-var remove_loading_gif = function(from) {
-  $(from+ ' .loader').remove();
-}
+// // ADD LOADING GIF
+// var numeter.print_loading_gif = function(into, heigth, width) {
+//   if(typeof(heigth)==='undefined') heigth = '100%';
+//   if(typeof(width)==='undefined') width = '100%';
+//   $(into).append('<div class="loader" style="text-align:center;"><img src="/static/img/ajax-loader.gif" height="'+heigth+'" width="'+width+'">' );
+// }
+// var remove_loading_gif = function(from) {
+//   $(from+ ' .loader').remove();
+// }
 
 
 // MISC
@@ -79,13 +79,13 @@ $(document).on('mouseover', "a:regex(class, preview-(source|view))", function() 
   })
 
   $(pop).popover('show');
-  print_loading_gif('#preview-graph', 150, 150);
-  Get_Simple_Graph(url, 'preview-graph');
+  numeter.print_loading_gif('#preview-graph', 150, 150);
+  numeter.get_simple_graph(url, 'preview-graph');
 });
 $(document).on('mouseout', "a:regex(class, preview-(source|view))", function() {
   $(this).popover('hide');
   $(this).popover('destroy');
-  preview_request.abort()
+  // preview_request.abort()
 });
 
 // MOVE OPTIONS BETWEEN SELECT INPUT

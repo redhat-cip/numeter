@@ -1,111 +1,153 @@
-graph_request = [];
-res = 'Daily';
-// ABORT GRAPH REQUEST
-var stop_request = function() {
-  $.each( graph_request, function(i,xhr) {
-    if ( xhr.state() == 'rejected' ) { console; }
-    else {
-      xhr.abort();
-      $(xhr).trigger('abort');
+/*global jQuery, console, window, document*/
+(function ($, window, document) {
+  'use strict';
+  var stop_request, insert_graph,
+    graph_request = [],
+    numeter;
+    // res = 'Daily';
+
+  numeter = window.numeter = window.numeter || {};
+  // ABORT GRAPH REQUEST  
+  stop_request = function () {
+    var i, xhr, length = graph_request.length;
+    for (i = 0; i < length; i = i + 1) {
+      xhr = graph_request[i];
+      if (xhr.state() === 'rejected') {
+        console.log('xhr request was rejected');
+      } else {
+        xhr.abort();
+        $(xhr).trigger('abort');
+      }
     }
-  });
-}
+  };
 
 
-// HOST TREE
-// GET HOSTS FROM GROUP
-$('.accordion-body').on('shown', function() {
-  var id = $(this).attr('group-id');
-  $.ajax({type:'GET', url:'/hosttree/group/'+id, async:true,
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-       $('#group-'+id).html(data);
-    }
-  });
-});
-
-// GET CATEGORIES FROM HOST
-$(document).on('click', '.accordion-host', function() {
-  var id = $(this).attr('host-id');
-
-  if ( $('#host-'+id+'-content').html() == "" ) {
-    $.ajax({type:'GET', url:'/hosttree/host/'+id, async:true,
-      error: function(data, status, xhr) { error_modal() },
-      success: function(data, status, xhr) {
-        $('#host-'+id+'-content').html(data);
-        $('#host-'+id+'-content').show(250);
-        $('#host-'+id+'-content').parent().children('i').attr('class', 'icon-minus');
+  // HOST TREE
+  // GET HOSTS FROM GROUP
+  $('.accordion-body').on('shown', function () {
+    var id = $(this).attr('group-id');
+    $.ajax({
+      type: 'GET',
+      url: '/hosttree/group/' + id,
+      async: true,
+      error: function () { numeter.error_modal(); },
+      success: function (data) {
+        $('#group-' + id).html(data);
       }
     });
-  } else {
-    $('#host-'+id+'-content').html('')
-    $('#host-'+id+'-content').hide(250);
-    $('#host-'+id+'-content').parent().children('i').attr('class', 'icon-plus');
-  }
-});
+  });
 
-// AJAX AND MAKE GRAPH
-var get_graph = function(host, plugin, into) {
-  var graph_div = '<div id="graph-'+plugin+'-container" class="well"><div id="graph-'+plugin+'" class="" style="text-align: left; width: 100%; height: 320px; position: relative;"></div><div id="graphleg-'+plugin+'"></div></div>';
-  res = $('#resolution-pills li.active').attr('data-value');
+  // GET CATEGORIES FROM HOST
+  $(document).on('click', '.hosttree-host-li', function () {
+    var element = $(this),
+      id = element.parent().data('host-id'),
+      host_content = element.siblings('.content');
 
-  $(into).append(graph_div);
-  var url = '/get/graph/'+host+'/'+plugin;
-  Get_Graph(url, 'graph-'+plugin);
-}
+    if (!host_content.text().length) {
+      $.ajax({
+        type: 'GET',
+        url: '/hosttree/host/' + id,
+        async: true,
+        error: function () { numeter.error_modal(); },
+        success: function (data) {
+          host_content.html(data);
+          host_content.show(250);
+        }
+      });
+    } else {
+      host_content.hide(250);
+      host_content.empty();
+    }
+    element.children('i').toggleClass('icon-minus icon-plus');
+  });
 
-// GET PLUGIN LIST FROM CATEGORY
-$(document).on('click', '.accordion-category', function() {
-  var a = $(this)
-  var category = $(this).parent().attr('category-name');
-  var id = $(this).parentsUntil('.hosttree-host-li').parent().children('[host-id]').attr('host-id')
-  var content = $(this).parent().children('div.category-content');
+  // AJAX AND MAKE GRAPH
+  insert_graph = function (host, plugin, into) {
+    var url = '/get/graph/' + host + '/' + plugin,
+      resolution = $('#resolution-pills li.active').attr('data-value'),
+      graph_div =
+        $(document.createElement('div')).attr({
+          'id': 'graph-' + plugin + '-container',
+          'class': 'well'
+        });
 
-  stop_request();
-  if (! $(this).hasClass('active') ) {
-    $.ajax({type:'GET', url:'/hosttree/category/'+id, async:true,
-      data: {category: category },
-      error: function(data, status, xhr) { error_modal() },
-      success: function(data, status, xhr) {
-        $(content).html(data);
-        $(content).show(250);
-        $(content).parent().children('i').attr('class', 'icon-minus');
+    $(into).append(graph_div);
 
-        $('#graphs').html('');
-        a.toggleClass('active');
-        graphs = [];
-        $('.get-plugin').each( function(index,value) {
-          var plugin = $(this).attr('plugin-name');
-          var host = $(this).parentsUntil('.hosttree-host-li').parent().children('a').attr('host-id');
-          get_graph(host, plugin, '#graphs');
+    graph_div.append([
+      $(document.createElement('div'))
+        .attr({
+          id: 'graph-' + plugin,
+          // class: 'graph',
+          style: 'width: 100%; height: 320px;'
+        }),
+
+      $(document.createElement('div'))
+        .attr({
+          id: 'graphleg-' + plugin
         })
-      }
-    });
-  } else {
-    $(content).html('')
-    $(content).hide(250);
-    $(content).parent().children('i').attr('class', 'icon-plus');
-    a.toggleClass('active');
-  }
-});
+    ]);
+    numeter.get_graph(url, 'graph-' + plugin, resolution);
+  };
 
-// GET PLUGIN
-$(document).on('click', '.get-plugin', function() {
-  var plugin = $(this).attr('plugin-name');
-  var host = $(this).parent().parent().parent().parent().parent().parent().parent().children('.accordion-host').attr('host-id');
-  $('#graphs').html('');
-  stop_request();
-  graphs = [];
-  get_graph(host, plugin, '#graphs');
-});
+  // GET PLUGIN LIST FROM CATEGORY
+  $(document).on('click', '.hosttree-category-li', function () {
+    var element = $(this),
+      category = element.parent().data('category-name'),
+      id = element.closest('li[data-host-id]').data('hostId'),
+      content = element.siblings('.content');
 
-// SET RESOLUTION
-$(document).on('click', '#resolution-pills li a', function() {
-  $('#resolution-pills li').removeClass('active');
-  $(this).parent().addClass('active');
-  res = $(this).parent().attr('data-value');
-  // Walk on graphs for update
-  $.each(graphs, function(i,g) {
-    Update_Graph(g);
+    stop_request();
+    if (!element.hasClass('active')) {
+      $.ajax({
+        type: 'GET',
+        url: '/hosttree/category/' + id,
+        async: true,
+        data: {category: category },
+        error: function () { numeter.error_modal(); },
+        success: function (data) {
+          content.html(data);
+          content.show(250);
+
+          $('#graphs').empty();
+          numeter.graphs = [];
+
+          content.find('li').each(function () {
+            var plugin = $(this).data('plugin-name');
+            insert_graph(id, plugin, '#graphs');
+          });
+        }
+      });
+    } else {
+      $(content).hide(250);
+      $(content).empty();
+    }
+    element.children('i').toggleClass('icon-minus icon-plus');
+    element.toggleClass('active');
   });
-});
+
+  // GET PLUGIN
+  $(document).on('click', 'li[data-plugin-name]', function () {
+    var plugin = $(this).data('plugin-name'),
+      host = $(this).closest('li[data-host-id]').data('hostId');
+
+    $('#graphs').html('');
+    stop_request();
+    numeter.graphs = [];
+    insert_graph(host, plugin, '#graphs');
+  });
+
+  // SET RESOLUTION
+  $(document).on('click', '#resolution-pills li a', function () {
+    var i,
+      resolution = $(this).parent().attr('data-value'),
+      length = numeter.graphs.length;
+
+    $('#resolution-pills li').removeClass('active');
+    $(this).parent().addClass('active');
+
+    // Walk on graphs for update        
+    for (i = 0; i < length; i = i + 1) {
+      numeter.update_graph(numeter.graphs[i], resolution);
+    }
+  });
+}(jQuery, window, document));

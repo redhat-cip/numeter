@@ -1,7 +1,7 @@
 <ul class="unstyled">
  {% for host in group %}
   <li>
-   <a class="accordion-host" host-id="{{ host.id }}">{{ host }}</a>
+   <a class="accordion-host" data-host-id="{{ host.id }}">{{ host }}</a>
    <div id="host-{{ host.id }}-content"></div>
   </li>
  {% endfor %}
