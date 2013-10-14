@@ -37,6 +37,30 @@ class StorageTestCase(test_base.TestCase):
         super(StorageTestCase, self).tearDown()
         numeter.storage.Storage.getgloballog = numeter.storage.Storage.getgloballog
 
+    def test_storage_get_host_list(self):
+        with mock.patch('__builtin__.open', mock.mock_open(), create=True) as file_mock:
+            # Test with Empty file
+            file_mock.return_value.readlines.return_value = []
+            self.storage._get_host_list()
+            self.assertEqual(self.storage._host_list, []) 
+            # Empty line
+            file_mock.return_value.readlines.return_value = ['','']
+            self.storage._get_host_list()
+            self.assertEqual(self.storage._host_list, []) 
+            # Test with 3 hostname and one db and password
+            file_mock.return_value.readlines.return_value = ['foo','bar']
+            self.storage._get_host_list()
+            self.assertEqual(self.storage._host_list, ['foo', 'bar',])
+            # One host + comment
+            file_mock.return_value.readlines.return_value = ['# my host','foo']
+            self.storage._get_host_list()
+            self.assertEqual(self.storage._host_list, ['foo'])
+            # clear \s after hostname
+            file_mock.return_value.readlines.return_value = ['foo   ']
+            self.storage._get_host_list()
+            self.assertEqual(self.storage._host_list, ['foo'])
+
+
 #    def test_storage_getData(self):
 #        # Start connexion storage (db2)
 #        self.storage._redis_storage_db = 2
