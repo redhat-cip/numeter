@@ -85,7 +85,6 @@ class Plugin(models.Model):
 
     def get_info(self):
         """
-        Hard coding of self.host.get_plugin_info..
         Return info for the instancied plugin.
         """
         return self.host.get_plugin_info(self.name)

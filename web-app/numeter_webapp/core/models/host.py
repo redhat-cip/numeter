@@ -134,9 +134,10 @@ class Host(models.Model):
         r = self.get_data(**data)
         # Dict sent in AJAX
         r_data = {
-            'labels':['Date'],
-            'name':data['plugin'].lower(),
-            'datas':[]
+            'labels': ['Date'],
+            'name': data['plugin'].lower(),
+            'datas': [],
+            'infos': self.get_plugin_info(data['plugin'])
         }
         r_data['labels'].extend(self.get_plugin_data_sources(data['plugin']))
 
