@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import Q
 from django.utils.timezone import now
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager as _UserManager
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -10,7 +10,8 @@ from core.models import Host, Group
 from core.models.utils import MediaField
 
 
-class UserManager(UserManager):
+class UserManager(_UserManager):
+    """Custom Manager with extra methods."""
     def web_filter(self, q):
         return self.filter(
             Q(username__icontains=q) |
@@ -19,6 +20,7 @@ class UserManager(UserManager):
         ).distinct()
 
     def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):
+        """Base method to create user."""
         if not username:
             raise ValueError('The given username must be set')
         email = self.normalize_email(email)
@@ -33,19 +35,24 @@ class UserManager(UserManager):
         return user
 
     def create_user(self, username, password=None, **extra_fields):
+        """Create simple user."""
         return self._create_user(username, '', password, False, False, **extra_fields)
 
     def create_superuser(self, username, password, **extra_fields):
+        """Create super user."""
         return self._create_user(username, '', password, True, True, **extra_fields)
 
     def all_superuser(self):
+        """Return all superusers."""
         return self.filter(is_superuser=True)
 
     def all_simpleuser(self):
+        """Return all simple users."""
         return self.filter(is_superuser=False)
 
 
 class User(AbstractBaseUser):
+    """Model to deal with authentification."""
     username = models.CharField(_('username'), max_length=30, unique=True)
     email = models.EmailField(_('email address'), blank=True)
     is_superuser = models.BooleanField(_('superuser status'), default=False)

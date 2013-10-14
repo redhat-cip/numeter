@@ -22,7 +22,7 @@ class Cmd_Group_List_Test(CmdTestCase):
     def test_list(self):
         """Get listing."""
         group = Group.objects.create(name='TEST GROUP')
-        argv = ['', 'source', 'list']
+        argv = ['', 'group', 'list']
         Command().run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
@@ -42,7 +42,7 @@ class Cmd_Group_Add_Test(CmdTestCase):
 
     def test_quiet_add(self):
         """Add a group without print."""
-        argv = ['', 'source', 'add', '-n', 'TEST GROUP', '-q']
+        argv = ['', 'group', 'add', '-n', 'TEST GROUP', '-q']
         Command().run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
@@ -51,7 +51,7 @@ class Cmd_Group_Add_Test(CmdTestCase):
     def test_add_already_existing(self):
         """Try to add an existing group."""
         group = Group.objects.create(name='TEST GROUP')
-        argv = ['', 'source', 'add', '-n', 'TEST GROUP', '-q']
+        argv = ['', 'group', 'add', '-n', 'TEST GROUP', '-q']
         Command().run_from_argv(argv)
         # Test creation
         new_count = Group.objects.count()
@@ -59,7 +59,7 @@ class Cmd_Group_Add_Test(CmdTestCase):
 
     def test_add_several(self):
         """Add several group."""
-        argv = ['', 'source', 'add', '-n', 'GROUP1,GROUP2']
+        argv = ['', 'group', 'add', '-n', 'GROUP1,GROUP2']
         Command().run_from_argv(argv)
         # Test creation
         new_count = Group.objects.count()
@@ -71,6 +71,7 @@ class Cmd_Group_Del_Test(CmdTestCase):
     """Test ``manage.py group del``."""
     def test_delete(self):
         """Delete a group."""
+        from core.models import Group
         group = Group.objects.create(name='TEST GROUP')
         argv = ['', 'group', 'del', '-i', str(group.id)]
         Command().run_from_argv(argv)

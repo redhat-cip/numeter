@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import SubfieldBase, CharField
-from django.forms.fields import MultipleChoiceField
+from django.forms.fields import ChoiceField
 from django.conf import settings as s
 from os import listdir, path
 
@@ -125,6 +125,6 @@ class MediaField(CharField):
         return ' '.join(value)
 
     def formfield(self, **kwargs):
-        """Automaticaly uses MultipleChoiceField."""
+        """Automaticaly uses ChoiceField."""
         kwargs['choices'] = self.choices
-        return MultipleChoiceField(**kwargs)
+        return ChoiceField(**kwargs)

@@ -84,7 +84,11 @@ def set_storage(extras=[]):
             # Skip
             else:
                 self.skipTest("No test storage has been configurated.")
-
+            # Add user and groups
+            # if 'group' in extras:
+            #     call_command('loaddata', 'test_groups.json', database='default', verbosity=0)
+            # if 'user' in extras:
+            #     call_command('loaddata', 'test_users.json', database='default', verbosity=0)
             return func(self, *args, **kwargs)
         return inner
     return decorator

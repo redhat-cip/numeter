@@ -14,7 +14,7 @@ class User_Form(forms.ModelForm):
           'username': forms.TextInput({'placeholder':_('Username'),'class':'span'}),
           'email': forms.TextInput({'placeholder':_('Email'),'class':'span'}),
           'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span'}),
-          'graph_lib': forms.SelectMultiple({'class':'span'}),
+          'graph_lib': forms.Select({'class':'span'}),
           'groups': forms.SelectMultiple({'class':'span'}),
         }
 

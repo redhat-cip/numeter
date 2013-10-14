@@ -75,7 +75,6 @@ class Add_Command(BaseCommand):
         opts['username'] = opts['username'] or raw_input('Username > ')
         opts['password1'] = opts['password'] or getpass('Password >')
         opts['password2'] = opts['password'] or getpass('Confirmation >')
-        opts['graph_lib'] = [opts['graph_lib']]
         F = User_CreationForm(data=opts)
         if F.is_valid():
             u = F.save()
@@ -99,7 +98,7 @@ class Add_Command(BaseCommand):
 #         make_option('-g', '--graph_lib', action='store', default='dygraph', help="Set graph library"),
 #         make_option('-q', '--quiet', action='store_true', default=False, help="Don't print info"),
 #     )
-# 
+#
 #     def handle(self, *args, **opts):
 #         if opts['quiet']: self.stdout = open(devnull, 'w')
 #         # Select group by id
