@@ -33,7 +33,7 @@ $(document).on('shown', '.ajax-tabs li a', function(e) {
   var url = $(this).attr('data-url');
   var target = $(this).attr('data-target');
   $(target).empty();
-  print_loading_gif(target, 250, 250);
+  numeter.print_loading_gif(target, 250, 250);
   $.ajax({type:'GET', url: url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -47,7 +47,7 @@ $(document).on('shown', '.sub-menu-tabs li a', function() {
   var url = $(this).attr('data-url');
   var target = $(this).attr('data-target');
   $(target).empty();
-  print_loading_gif(target, 250, 250);
+  numeter.print_loading_gif(target, 250, 250);
   $.ajax({type:'GET', url:url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -63,7 +63,7 @@ $(document).on('click', '[class*="get-"]', function() {
   var cur_tab = $(this).parentsUntil('.tab-pane').parent().attr('id')
   $('a[data-target="#'+cur_tab+'"]').parent().removeClass('active');
   $(target).html('')
-  print_loading_gif(target, 250, 250);
+  numeter.print_loading_gif(target, 250, 250);
   $.ajax({type:'GET', url:url, async:true,
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -113,7 +113,7 @@ $(document).on('submit', '.ajax-form', function() {
       if ( data['response'] == 'ok' ) {
         $('.messages').append(data['html']);
         $('a[data-target="#'+cur_tab+'"]').parent().removeClass('active');
-        print_loading_gif(cur_tab, 250, 250);
+        numeter.print_loading_gif(cur_tab, 250, 250);
         // Reload form
         if ( data['callback-url'] ) {
           $.ajax({type:'GET', url:data['callback-url'], async:true,

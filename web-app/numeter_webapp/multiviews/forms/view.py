@@ -15,11 +15,11 @@ class Small_View_Form(View_Form):
       'data-chosen': '#id_sources',
     }))
     available_sources = forms.ModelMultipleChoiceField(
-      queryset = Data_Source.objects.all(),
+      queryset = Data_Source.objects.none(),
       widget=forms.SelectMultiple({'class':'span'})
     )
     sources = forms.ModelMultipleChoiceField(
-      queryset = Data_Source.objects.all(),
+      queryset = Data_Source.objects.none(),
       widget=forms.SelectMultiple({'class':'span','size':'6'})
     )
 
@@ -39,11 +39,11 @@ class Small_View_Form(View_Form):
             raise TypeError('Object must have a User object for initialization')
         if self.instance.id is None:
             self.fields['sources'].queryset = Data_Source.objects.none()
-            self.fields['available_sources'].queryset = Data_Source.objects.user_filter(self.user)
+            self.fields['available_sources'].queryset = Data_Source.objects.user_filter(self.user)[:20]
             self.fields['search_source'].widget.attrs.update({'data-into': '#id_sources'})
         else:
             self.fields['sources'].queryset = self.instance.sources.all()
-            self.fields['available_sources'].queryset = Data_Source.objects.user_filter(self.user).exclude(pk__in=self.instance.sources.all())
+            self.fields['available_sources'].queryset = Data_Source.objects.user_filter(self.user).exclude(pk__in=self.instance.sources.all())[:20]
 
         def get_submit_url(self):
             """Get POST or PATCH url."""
