@@ -93,7 +93,42 @@ class StorageTestCase(test_base.TestCase):
     def test_storage_write_info(self):
         #result = self.storage._redis_connexion.get_and_flush_hset()
         #result = self.storage._write_info( hostID, info_json)
-        pass
+        # Nan json info
+        result = self.storage._write_info('foo', 'This is not json')
+        self.assertFalse(result)
+        # Empty info
+        info_json = json.dumps({})
+        result = self.storage._write_info('foo', info_json)
+        self.assertFalse(result)
+        # MyInfo plugin with no ID or Name
+        info_json = json.dumps({'Plugin': 'MyInfo'})
+        result = self.storage._write_info('foo', info_json)
+        self.assertFalse(result)
+        ## MyInfo valid -> generate host HASH and HOSTS in redis and WSP Path
+        self.storage._wsp_path_md5_char = 2
+        info_json = json.dumps({'Plugin': 'MyInfo','Name': "bar", 'ID': 'foo'})
+        result = self.storage._write_info('foo', info_json)
+        self.assertTrue(result)
+        excepted = {
+                    'HOST_ID': {'foo': 'ac'},
+                    'WSP_PATH': {'foo': '/opt/numeter/wsp/ac/foo'},
+                    'HOSTS': {
+                        'foo': '{"Plugin": "MyInfo", "hostIDHash": "ac",'' "ID": "foo", "HostIDFiltredName": "foo", "Name": "bar"}'
+                        }
+                    }
+        result = self.storage._redis_connexion.get_and_flush_hset()
+        self.assertEqual(result, excepted)
+        ## Info with no Infos
+        info_json = json.dumps({'Plugin': 'foo'})
+        result = self.storage._write_info('foo', info_json)
+        self.assertFalse(result)
+        ## Info just write INFOS in redis
+        info_json = json.dumps({'Plugin': 'foo', 'Infos': { 'bar': 'somethings'}})
+        result = self.storage._write_info('foo', info_json)
+        self.assertTrue(result)
+        excepted = {'INFOS@foo': {u'foo': '{"Infos": {"bar": "somethings"}, "Plugin": "foo"}'}}
+        result = self.storage._redis_connexion.get_and_flush_hset()
+        self.assertEqual(result, excepted)
 
     def test_storage_write_data(self):
         pass
