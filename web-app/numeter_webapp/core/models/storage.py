@@ -94,6 +94,7 @@ class Storage_Manager(models.Manager):
         return
 
     def repair_hosts(self):
+        """Try to repair all storage/host links."""
         for h in self.get_bad_referenced_hostids():
             whereishost = self.which_storage(h)
             if whereishost is not None:
@@ -223,7 +224,6 @@ class Storage(models.Model):
             raise self.ConnectionError(e)
         return jloads(r)
 
-    # TODO : Remake like Host.create_plugins
     def create_host(self, hostid):
         """Create a host in DB from its storage ID."""
         hosts = self.get_hosts()
