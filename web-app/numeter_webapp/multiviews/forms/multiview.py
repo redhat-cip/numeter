@@ -7,11 +7,11 @@ from multiviews.models import View, Multiview
 class Small_Multiview_Form(Multiview_Form):
     """Small Multiview ModelForm."""
     available_views = forms.ModelMultipleChoiceField(
-      queryset = View.objects.all(),
+      queryset = View.objects.none(),
       widget=forms.SelectMultiple({'class':'span'})
     )
     views = forms.ModelMultipleChoiceField(
-      queryset = View.objects.all(),
+      queryset = View.objects.none(),
       widget=forms.SelectMultiple({'class':'span'})
     )
 
@@ -28,9 +28,9 @@ class Small_Multiview_Form(Multiview_Form):
         if not self.user:
             raise TypeError('Object must have a User object for initialization')
         if self.instance.id is None:
-            self.fields['views'].queryset = View.objects.all()
-            self.fields['available_views'].queryset = View.objects.user_filter(self.user)
+            self.fields['views'].queryset = View.objects.none()
+            self.fields['available_views'].queryset = View.objects.user_filter(self.user)[:20]
         else:
             self.fields['views'].queryset = self.instance.views.all()
-            self.fields['available_views'].queryset = View.objects.user_filter(self.user).exclude(pk__in=self.instance.views.all())
+            self.fields['available_views'].queryset = View.objects.user_filter(self.user).exclude(pk__in=self.instance.views.all())[:20]
 
