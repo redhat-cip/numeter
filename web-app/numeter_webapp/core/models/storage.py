@@ -87,7 +87,7 @@ class Storage_Manager(models.Manager):
         """Return the storage of owner of an hostid."""
         # TODO: Remake with better meth
         for s in self.get_query_set():
-            hosts = s._get_hostids()
+            hosts = s.get_hosts()
             for h in hosts:
                 if h == hostid:
                     return s
@@ -234,18 +234,27 @@ class Storage(models.Model):
             storage=self,
         )
         return h
-    def create_hosts(self):
-        """Create alls hosts in DB."""
-        hosts = self.get_hosts()
-        created_hosts = []
-        for hostid in hosts:
-            h = hosts[hostid]
-            created_hosts.append(Host.objects.create(
-                name=h['Name'],
-                hostid=h['ID'],
-                storage=self,
-            ))
-        return h
+
+    def create_hosts(self, hostids=[], commit=True):
+        """
+        Create hosts from the given host ID list.
+        If no host ID is given, all are created.
+        """
+        new_hosts = []
+        for hostid,infos in self.get_hosts().items():
+            if hostid in hostids or hostids == []:
+                if not Host.objects.filter(hostid=hostid).exists():
+                    new_hosts.append(Host(
+                        name=infos['Name'],
+                        hostid=infos['ID'],
+                        storage=self,
+                    ))
+                else:
+                    Host.objects.filter(hostid=hostid).update(storage=self)
+
+        if commit:
+            [ h.save() for h in new_hosts ]
+        return new_hosts
 
     def get_hosts(self):
         """
@@ -339,15 +348,10 @@ class Storage(models.Model):
                 storage=self,
             )
 
-    def _get_hostids(self):
-        """Return a list of host's from storage."""
-        hosts = self.get_hosts().values()
-        return [ h['ID'] for h in hosts ]
-
     def _get_unsaved_hosts(self):
         """Lookup up for hosts foundable on this storage but not in db."""
         saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
-        remote_hosts = self._get_hostids()
+        remote_hosts = self.get_hosts()
         diff = set(saved_hosts) ^ set(remote_hosts)
         unsaved = list( set(remote_hosts) & diff )
         return unsaved
@@ -355,31 +359,7 @@ class Storage(models.Model):
     def _get_unfoundable_hostids(self):
         """Lookup up for hosts saved in db but unfoundable on this storage."""
         saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
-        remote_hosts = self._get_hostids()
+        remote_hosts = self.get_hosts()
         diff = set(saved_hosts) ^ set(remote_hosts)
         unfoundable = list( set(saved_hosts) & diff )
         return unfoundable
-
-    def _simple_create_hosts(self):
-        """Create hosts in db if it doesn't already exist."""
-        hosts = self.get_hosts().values()
-        for h in hosts:
-            if not Host.object.filter(hostid=h['ID']).exists():
-                Host.objects.create(
-                    name=h['Name'],
-                    hostid=h['ID'],
-                    storage=self,
-                )
-
-    def create_hosts(self):
-        """Create hosts and update aleardy existing."""
-        hosts = self.get_hosts().values()
-        for h in hosts:
-            if not Host.objects.filter(hostid=h['ID']).exists():
-                Host.objects.create(
-                    name=h['Name'],
-                    hostid=h['ID'],
-                    storage=self,
-                )
-            else:
-                Host.objects.filter(hostid=h['ID']).update(storage=self)
