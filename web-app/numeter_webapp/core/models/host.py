@@ -151,7 +151,7 @@ class Host(models.Model):
     def create_plugins(self, plugin_names=[], commit=True):
         """
         Create plugins from the given plugins list.
-        If not plugins is given, all are created.
+        If no plugin is given, all are created.
         """
         from core.models import Plugin
         plugins = self.get_plugin_list()
