@@ -33,6 +33,7 @@
         '">'].join('')
         );
     },
+    // REMOVE LOAD GIF
     remove_loading_gif: function (from) {
       $(from + ' .loader').remove();
     },

@@ -21,7 +21,8 @@
      <li class="dropdown">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i class="icon-user"></i> {{ request.user }} <span class="caret"></span> </a>
       <ul class="dropdown-menu">
-	   <li class="{{ request|active_hyperlink:'configuration' }}"><a href="{% url 'configuration' %}"><i class="icon-wrench"></i> {% trans "Configuration" %}</a></li>
+       <li><a id="btn-profile" class="use_modal" data-url="{% url 'profile' %}"><i class="icon-user"></i> {% trans "Profile settings" %}</a></li>
+       <li class="{{ request|active_hyperlink:'configuration' }}"><a href="{% url 'configuration' %}"><i class="icon-wrench"></i> {% trans "Configuration" %}</a></li>
        <li class="divider"></li>
        <li><a href="{% url 'logout' %}"><i class="icon-share"></i> {% trans "Logout" %}</a></li>
       </ul>

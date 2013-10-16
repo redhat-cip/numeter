@@ -1,42 +1,3 @@
-// MESSAGES
-// BASIC FUNC
-// var print_message = function(msg,tag,into) {
-//   var html = '<div id="msg-'+tag+'" class="alert alert-block alert-'+tag+'"><a href="#" data-dismiss="alert" class="close">×</a><div>'+msg+'</div></div>';
-//   $(into).append(html);
-// }
-
-// var error_modal = function(err) {
-//   $('#myModal').modal('show');
-//   $('#myModal').html('<center><h4>Connection error !</h4></center>');
-//   //if ( err ) {
-//     $('#myModal').append('<div class="span"><pre>'+err+'</pre></div>');
-//   //}
-// }
-
-// // ADD LOADING GIF
-// var numeter.print_loading_gif = function(into, heigth, width) {
-//   if(typeof(heigth)==='undefined') heigth = '100%';
-//   if(typeof(width)==='undefined') width = '100%';
-//   $(into).append('<div class="loader" style="text-align:center;"><img src="/static/img/ajax-loader.gif" height="'+heigth+'" width="'+width+'">' );
-// }
-// var remove_loading_gif = function(from) {
-//   $(from+ ' .loader').remove();
-// }
-
-
-// MISC
-// GET APROPOS
-$(document).on('click', '[href="/apropos"]', function() {
-  $.ajax({type:'GET', url:'/apropos', async:true,
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('#myModal').html(data);
-      $('#myModal').modal('show');
-    },
-  });
-  return false;
-});
-
 // REGEX SELECTOR
 jQuery.expr[':'].regex = function(elem, index, match) {
   var matchParams = match[3].split(','),
@@ -134,4 +95,47 @@ $(document).on('keypress', '.q-opt', function(e) {
       },
     });
   }
+});
+
+$(document).ready(function () {
+  // SHOW MODAL
+  $(document).on('click', '.use_modal', function(e) {
+    e.preventDefault();
+    var url = $(this).attr('data-url');
+    $.ajax({ url:url, async:true,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data) {
+        $('#myModal').html(data);
+        $('#myModal').modal('show');
+      },
+    });
+  });
+  // PROFILE
+  // UPDATE PROFILE
+  $(document).on('submit', '#profile-update-form', function(e) {
+    e.preventDefault();
+    var url = $(this).attr('action');
+    $.ajax({
+      type: 'POST', url: url, async: true,
+      data: $('#profile-update-form').serialize(),
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $('.messages').append(data);
+      },
+    });
+  });
+  
+  // UPDATE PASSWORD
+  $(document).on('submit', '#profile-update-password-form', function(e) {
+    e.preventDefault();
+    var url = $(this).attr('action');
+    $.ajax({
+      type: 'POST', url: url, async: true,
+      data: $('#profile-update-password-form').serialize(),
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        $('.messages').append(data);
+      },
+    });
+  });
 });
