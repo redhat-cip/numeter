@@ -1,31 +1,3 @@
-// PROFILE
-// UPDATE PROFILE
-$(document).on('submit', '#profile-update-form', function() {
-  var url = $(this).attr('action');
-  $.ajax({
-    type: 'POST', url: url, async: true,
-    data: $('#profile-update-form').serialize(),
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
-    },
-  });
-  return false;
-});
-
-// UPDATE PASSWORD
-$(document).on('submit', '#profile-update-password-form', function() {
-  var url = $(this).attr('action');
-  $.ajax({
-    type: 'POST', url: url, async: true,
-    data: $('#profile-update-password-form').serialize(),
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
-    },
-  });
-  return false;
-});
 
 // GET MENU INDEX
 $(document).on('shown', '.ajax-tabs li a', function(e) {
