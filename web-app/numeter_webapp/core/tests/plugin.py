@@ -10,10 +10,7 @@ class Plugin_Manager_Test(LiveServerTestCase):
 
     @set_storage()
     def setUp(self):
-        self.storage._update_hosts()
-        if not Host.objects.exists():
-            self.skipTest("There's no host in storage.")
-        self.host = Host.objects.all()[0]
+        pass
 
     def tearDown(self):
         Host.objects.all().delete()

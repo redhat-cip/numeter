@@ -7,12 +7,10 @@ from core.tests.utils import storage_enabled, set_storage
 
 
 class Storage_Test(LiveServerTestCase):
-
-    @set_storage()
+    """Basic Storage tests, for check model behavor."""
+    @set_storage(extras=['host'])
     def setUp(self):
-        self.storage._update_hosts()
-        if not Host.objects.exists():
-            self.skipTest("There's no host in storage.")
+        pass
 
     def tearDown(self):
         Host.objects.all().delete()
@@ -35,11 +33,11 @@ class Storage_Test(LiveServerTestCase):
         """Create host in Db from datas."""
         self.storage.create_hosts()
         hosts = Host.objects.all()
+        self.assertGreater(hosts.count(), 0, "No host was created.")
 
     @storage_enabled()
     def test_get_info(self):
         """Retrieve host info."""
-        self.storage._update_hosts()
         host = Host.objects.all()[0]
         r = self.storage.get_info(host.hostid)
         self.assertIsInstance(r, dict, "Invalide response type, should be dict.")
@@ -47,7 +45,6 @@ class Storage_Test(LiveServerTestCase):
     @storage_enabled()
     def test_get_categories(self):
         """Retrieve host categories."""
-        self.storage._update_hosts()
         host = Host.objects.all()[0]
         r = self.storage.get_categories(host.hostid)
         self.assertIsInstance(r, list, "Invalide response type, should be list.")
@@ -55,7 +52,6 @@ class Storage_Test(LiveServerTestCase):
     @storage_enabled()
     def test_get_plugins(self):
         """Retrieve all host plugins."""
-        self.storage._update_hosts()
         host = Host.objects.all()[0]
         r = self.storage.get_plugins(host.hostid)
         # self.assertIsInstance(r, list, "Invalide response type, should be list.")
@@ -63,7 +59,6 @@ class Storage_Test(LiveServerTestCase):
     @storage_enabled()
     def test_get_plugins_by_category(self):
         """Retrieve plugins only for a category."""
-        self.storage._update_hosts()
         host = Host.objects.all()[0]
         category = self.storage.get_categories(host.hostid)[0]
         r = self.storage.get_plugins_by_category(host.hostid, category)
@@ -72,7 +67,6 @@ class Storage_Test(LiveServerTestCase):
     @storage_enabled()
     def test_get_plugins_data_sources(self):
         """Retrieve data sources a plugin."""
-        self.storage._update_hosts()
         host = Host.objects.all()[0]
         plugin = self.storage.get_plugins(host.hostid)[0]['Plugin']
         r = self.storage.get_plugin_data_sources(host.hostid, plugin)
@@ -81,7 +75,6 @@ class Storage_Test(LiveServerTestCase):
     @storage_enabled()
     def test_get_data(self):
         """Retrieve data sources a plugin."""
-        self.storage._update_hosts()
         host = Host.objects.all()[0]
         plugin = self.storage.get_plugins(host.hostid)[0]['Plugin']
         source = self.storage.get_plugin_data_sources(host.hostid, plugin)[0]
@@ -92,7 +85,7 @@ class Storage_Test(LiveServerTestCase):
     @storage_enabled()
     def test_get_unsaved_hosts(self):
         """Find not referenced hosts."""
-        self.storage._update_hosts()
+        self.storage.create_hosts()
         # Del an host and find it
         Host.objects.all()[0].delete()
         unsaved_hosts = self.storage._get_unsaved_hosts()
@@ -101,7 +94,6 @@ class Storage_Test(LiveServerTestCase):
     @storage_enabled()
     def test_get_saved_hosts(self):
         """Find referenced host"zzs."""
-        self.storage._update_hosts()
         initial_count = Host.objects.count()
         # Create an host and find it
         Host.objects.create(name='test', hostid='testid', storage=self.storage)
@@ -122,7 +114,7 @@ class Storage_Manager_Test(LiveServerTestCase):
 
     def test_unsaved_hosts(self):
         """Find not referenced hosts."""
-        self.storage1._update_hosts()
+        self.storage1.create_hosts()
         # Test to find storage2's hosts
         unsaved_hosts = Storage.objects.get_unsaved_hostids()
         hosts = self.storage2.get_hosts().keys()
@@ -134,7 +126,7 @@ class Storage_Manager_Test(LiveServerTestCase):
 
     def test_find_host(self):
         """Find which storage has an host."""
-        self.storage1._update_hosts()
+        self.storage1.create_hosts()
         host = Host.objects.all()[0]
         # Test to find an host
         whereisit = Storage.objects.which_storage(host.hostid)
@@ -153,7 +145,7 @@ class Storage_Manager_Test(LiveServerTestCase):
     def test_repair_hosts(self):
         """Fix Host/Storage bad links."""
         # Set all storage1's hosts bad
-        self.storage1._update_hosts()
+        self.storage1.create_hosts()
         Host.objects.all().update(storage=self.storage2)
 
         # Get the crap and test it
