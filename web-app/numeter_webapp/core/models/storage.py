@@ -330,24 +330,6 @@ class Storage(models.Model):
             cache.set(key_hash, _data )
         return _data
 
-    def _update_hosts(self):
-        """
-        Delete storage's hosts and create new.
-        Be careful it won't remember groups.
-        """
-        Host.objects.filter(storage=self).delete()
-        # TODO : test this part
-        # hostids = self.get_hosts().keys()
-        # for hostid in hostids:
-        #     self.create_host(hostid)
-        hosts = self.get_hosts().values()
-        for h in hosts:
-            Host.objects.create(
-                name=h['Name'],
-                hostid=h['ID'],
-                storage=self,
-            )
-
     def _get_unsaved_hosts(self):
         """Lookup up for hosts foundable on this storage but not in db."""
         saved_hosts = [ H.hostid for H in Host.objects.filter(storage=self) ]
