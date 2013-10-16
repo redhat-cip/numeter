@@ -9,10 +9,18 @@
   // GET SIMPLE GRAPH
   numeter.get_simple_graph = function (url, into_id) {
     numeter.preview_request = $.getJSON(url, function (data) {
+      // Convert time to Date obj
       var g, i, length = data.datas.length;
       for (i = 0; i < length; i = i + 1) {
         data.datas[i][0] = new Date(data.datas[i][0] * 1000);
       }
+      // Make series
+      var source_name = data.labels[1];
+      var series = {};
+        console.log(source_name);
+      series[source_name] = {};
+      if ( data.infos.draw == 'STACK' ) series[source_name]['fillGraph'] = true;
+
       g = new Dygraph(
         document.getElementById(into_id),
         data.datas,
@@ -21,6 +29,7 @@
           pixelsPerLabel: 60,
           gridLineWidth: 0.1,
           labelsKMG2: true,
+          series: series,
           height: 150 }
       );
       numeter.graphs.push(g);
@@ -37,22 +46,45 @@
       for (i = 0; i < length; i = i + 1) {
         data.datas[i][0] = new Date(data.datas[i][0] * 1000);
       }
+      // Stacked or not
+      var is_stacked = false;
+      for ( var i in data.infos ) {
+        if ( data.infos[i].draw == 'STACK' ) is_stacked = true;
+      }
+      // Make series
+      var series = {}
+      for ( var source in data.infos ) {
+        series[source] = {}
+        if ( data.infos[source].draw == 'STACK' ) series[source]['fillGraph'] = true;
+      }
+      series.warning = {
+        fillGraph: false,
+        strokeWidth: 1.0,
+        highlightCircleSize: 0.0
+      }
+      series.critical = {
+        fillGraph: false,
+        strokeWidth: 1.0,
+        highlightCircleSize: 0.0
+      }
 
       g = new Dygraph(
         document.getElementById(into),
         data.datas,
         {
           title: data.name,
+          series: series,
           height: 250,
           width: width,
           legend: 'always',
-          fillGraph: true,
+          //fillGraph: true,
           pixelsPerLabel: 60,
           gridLineWidth: 0.1,
           strokeWidth: 1.5,
           colors: data.colors,
           showRangeSelector: true,
           highlightCircleSize: 4.0,
+          stackedGraph: is_stacked,
           labels: data.labels,
           labelsKMG2: true,
           labelsSeparateLines: true,
@@ -65,18 +97,6 @@
           axes: {
             y: {
               axisLabelWidth: 30000
-            }
-          },
-          series: {
-            warning: {
-              fillGraph: false,
-              strokeWidth: 1.0,
-              highlightCircleSize: 0.0
-            },
-            critical: {
-              fillGraph: false,
-              strokeWidth: 1.0,
-              highlightCircleSize: 0.0
             }
           }
         }

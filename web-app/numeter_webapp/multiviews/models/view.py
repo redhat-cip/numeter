@@ -105,7 +105,8 @@ class View(models.Model):
             'type':'view',
             'id':self.id,
             'source_ids':[],
-            'events':[]
+            'events':[],
+            'infos':{},
         }
         # Get All host and Events
         #host_pk = self.sources.all().values_list('plugin__host')
@@ -129,6 +130,8 @@ class View(models.Model):
             # Add name
             datas.append(r['DATAS'][s.name])
             r_data['source_ids'].append(s.id)
+            # Add infos
+            r_data['infos'][unique_name] = s.get_info()
         # Get Events
         events = self.get_events()
         # Skip if there's no data
