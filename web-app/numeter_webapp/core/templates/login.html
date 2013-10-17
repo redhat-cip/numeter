@@ -31,6 +31,7 @@
         {% include "base/messages.html" %}
        </div>
        <form method="POST" action="{% url 'login' %}" accept-charset="UTF-8">{% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.GET.next|default:'/' }}">
         <input type="text" class="span4" name="username" placeholder="{% trans "Username" %}">
         <input type="password" class="span4" name="password" placeholder="{% trans "Password" %}">
         <br><br>

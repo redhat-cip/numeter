@@ -5,6 +5,7 @@ from core.models import User
 
 
 class Profile_Test(TestCase):
+    """Tests user's profile modal."""
     fixtures = ['test_users.json']
 
     def setUp(self):

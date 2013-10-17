@@ -11,7 +11,7 @@ def login(request):
         if user is not None:
             if user.is_active:
                 log_in(request, user)
-                return redirect('index')
+                return redirect(request.POST.get('next','/'))
             else:
                 messages.add_message(request, messages.ERROR, _(u"Incorrect login name or password !"))
         else:
