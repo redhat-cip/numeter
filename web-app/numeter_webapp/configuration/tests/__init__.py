@@ -1,4 +1,3 @@
-from profile import Profile_Test
 from user import User_Test
 from group import Group_Test
 from storage import Storage_Test
@@ -13,7 +12,6 @@ from event import Event_Test
 def suite():
     import unittest
     TEST_CASES = (
-        'configuration.tests.profile',
         'configuration.tests.user',
         'configuration.tests.group',
         'configuration.tests.storage',

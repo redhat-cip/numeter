@@ -4,9 +4,6 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns('',
     url(r'^$', 'configuration.views.index.index', name='configuration'),
-    url(r'^profile$', 'configuration.views.profile.index', name='profile index'),
-    url(r'^profile/(?P<user_id>\d+)/update$', 'configuration.views.profile.update', name='update profile'),
-    url(r'^profile/(?P<user_id>\d+)/update_password$', 'configuration.views.profile.update_password', name='update password'),
     # Users
     url(r'^user$', 'configuration.views.user.index', name='user index'),
     url(r'^user/list$', 'configuration.views.user.user_list', name='user list'),

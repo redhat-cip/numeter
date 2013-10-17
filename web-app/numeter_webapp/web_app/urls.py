@@ -13,7 +13,6 @@ urlpatterns = patterns('',
     # Profile
     url(r'^profile$', 'core.views.profile.modal', name='profile'),
     url(r'^profile/(?P<user_id>\d+)$', 'core.views.profile.update', name='profile update'),
-    url(r'^profile/(?P<user_id>\d+)$', 'core.views.profile.update', name='profile update'),
     url(r'^profile/(?P<user_id>\d+)/password$', 'core.views.profile.password', name='profile password'),
     # Graph
     url(r'^get/graph/(?P<host_id>\d+)/(?P<plugin>.+)$', 'core.views.hosttree.get_data', name='plugin'),

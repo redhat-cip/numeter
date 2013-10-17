@@ -87,7 +87,7 @@ class User(AbstractBaseUser):
         return reverse('user update', args=[str(self.id)])
 
     def get_update_password_url(self):
-        return reverse('update password', args=[str(self.id)])
+        return reverse('profile password', args=[str(self.id)])
 
     def get_delete_url(self):
         return reverse('user delete', args=[str(self.id)])

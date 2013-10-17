@@ -13,7 +13,7 @@
   <div class="tab-content">
 
    <div class="tab-pane active in" id="profile-index">
-    <form id="profile-update-form" method="POST" action="{% url 'update profile' EditForm.instance.id %}">
+    <form id="profile-update-form" method="POST" action="{% url 'profile update' EditForm.instance.id %}">
      {% csrf_token %}
      <fieldset>
     
@@ -40,7 +40,7 @@
    </div> <!-- tab-pane  --!>
 
    <div class="tab-pane fade" id="profile-password">
-    <form id="profile-update-password-form" method="POST" action="{% url 'update password' EditForm.instance.id %}">
+    <form id="profile-update-password-form" method="POST" action="{% url 'profile password' EditForm.instance.id %}">
      {% csrf_token %}
      <fieldset>
     
