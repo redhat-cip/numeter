@@ -13,7 +13,6 @@
     <label for="id_sources" class="control-label">{{ Multiview_Form.views.label }}</label>
     <div class="controls">
      <div class="row-fluid">
-      {% if Multiview_Form.instance.id %}
       <div class="span5">{{ Multiview_Form.available_views }}</div>
       <div class="span2" style="text-align: center;">
        <button class="btn btn-mini move-option" data-from="#id_available_views" data-to=".span5 #id_views"><i class="icon-chevron-right"></i></button>
@@ -22,9 +21,6 @@
        <button class="btn btn-mini move-option" data-from=".span5 #id_views" data-to="#id_available_views"><i class="icon-chevron-left"></i></button>
       </div>
       <div class="span5">{{ Multiview_Form.views }}</div>
-      {% else %}
-       {{ Multiview_Form.views }}
-      {% endif %}
      </div>
     </div>
    </div> 

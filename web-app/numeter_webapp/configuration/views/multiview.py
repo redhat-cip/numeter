@@ -22,7 +22,6 @@ def list(request):
 
 
 @login_required()
-@superuser_only()
 def add(request):
     if request.method == 'POST':
         F = Multiview_Form(request.POST)
