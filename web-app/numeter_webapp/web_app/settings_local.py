@@ -163,3 +163,6 @@ if config.getboolean_d('debug', 'use_debug_toolbar', False) and DEBUG:
     INSTALLED_APPS = INSTALLED_APPS+('debug_toolbar',)
     INTERNAL_IPS = ('127.0.0.1','192.168.100.1')
     MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES+('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    DEBUG_TOOLBAR_CONFIG = {
+      'INTERCEPT_REDIRECTS': False
+    }
