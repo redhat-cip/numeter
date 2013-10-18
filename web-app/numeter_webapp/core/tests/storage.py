@@ -1,4 +1,4 @@
-from django.test import LiveServerTestCase
+from django.test import TestCase, LiveServerTestCase
 from django.core import management
 from django.conf import settings
 
@@ -156,3 +156,34 @@ class Storage_Manager_Test(LiveServerTestCase):
         Storage.objects.repair_hosts()
         bad_hosts = Storage.objects.get_bad_referenced_hostids()
         self.assertEqual(len(bad_hosts), 0, "There are always bad referenced %i host(s)." % len(bad_hosts))
+
+
+class Storage_Error_Test(TestCase):
+    def setUp(self):
+        self.storage = Storage.objects.create(address='FalseAddr', port=9999)
+
+    def test_raise_error(self):
+        """Test bad storage raises ``Storage.ConnectionError``"""
+        with self.assertRaises(Storage.ConnectionError):
+            self.storage.get_hosts()
+
+    def test_get_all_host(self):
+        """
+        Launch ``Storage.objects.get_all_host_info`` with bad storage
+        and without ConnectionError.
+        """
+        Storage.objects.get_all_host_info()
+
+    def test_get_unfoudable_host(self):
+        """
+        Launch ``Storage.objects.get_unfoundable_hostids`` with bad storage
+        and without ConnectionError.
+        """
+        Storage.objects.get_unfoundable_hostids()
+
+    def test_which_storage(self):
+        """
+        Launch ``Storage.objects.which_storage`` with bad storage
+        and without ConnectionError.
+        """
+        Storage.objects.which_storage('False')

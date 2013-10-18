@@ -35,7 +35,10 @@ class Storage_Manager(models.Manager):
         """Return a list of all hosts' infos."""
         host_dict = {}
         for S in Storage.objects.all():
-            host_dict.update(S.get_hosts())
+            try:
+                host_dict.update(S.get_hosts())
+            except Storage.ConnectionError:
+                pass
         return host_dict
 
     def get_all_hostids(self):
@@ -49,7 +52,10 @@ class Storage_Manager(models.Manager):
         """
         host_list = []
         for S in self.get_query_set():
-            host_list.extend(S._get_unfoundable_hostids())
+            try:
+                host_list.extend(S._get_unfoundable_hostids())
+            except Storage.ConnectionError:
+                pass
         return host_list
 
     def get_bad_referenced_hostids(self):
@@ -80,17 +86,19 @@ class Storage_Manager(models.Manager):
 
     def get_hosts(self, hostids):
         """Search a list of hostid on all storage."""
-        host_list = self.get_all_hostids()
-        return Host.objects.filter(hostid__in=hostids)
+        return self.get_all_hostids()
 
     def which_storage(self, hostid):
         """Return the storage of owner of an hostid."""
         # TODO: Remake with better meth
         for s in self.get_query_set():
-            hosts = s.get_hosts()
-            for h in hosts:
-                if h == hostid:
-                    return s
+            try:
+                hosts = s.get_hosts()
+                for h in hosts:
+                    if h == hostid:
+                        return s
+            except Storage.ConnectionError:
+                pass
         return
 
     def repair_hosts(self):
@@ -113,8 +121,8 @@ class Storage(models.Model):
 
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
     address = models.CharField(_('address'), max_length=200)
-    port = models.IntegerField(_('port'), blank=True,null=True,default=80)
-    url_prefix = models.CharField(_('URL prefix'), max_length=100, blank=True, null=True, help_text=_('Start point of API'))
+    port = models.IntegerField(_('port'), blank=True, null=True,default=80)
+    url_prefix = models.CharField(_('URL prefix'), max_length=100, default='', blank=True, help_text=_('Start point of API'))
     protocol = models.CharField(_('protocol'), max_length=5, default='http', choices=HTTP_PROTOCOLS)
     login = models.CharField(_('login'), max_length=100, blank=True, null=True, help_text=('Used for HTTP authentification'))
     password = models.CharField(_('password'), max_length=100, blank=True, null=True)
@@ -261,7 +269,7 @@ class Storage(models.Model):
         Return a dictionnary representing storage's hosts.
         It is raw data from storage API.
         """
-        key_hash = md5( ('storage/%i/hosts' % self.id) ).hexdigest()
+        key_hash = md5( ('storage/%i-%s:%s/hosts' % (self.id, self.address, self.port)) ).hexdigest()
         data = cache.get(key_hash)
         if not data:
             data = self._connect('hosts')

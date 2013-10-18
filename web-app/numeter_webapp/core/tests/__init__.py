@@ -1,6 +1,6 @@
 from login import Login_Test
 from perms import Perms_Test
-from storage import Storage_Test, Storage_Manager_Test
+from storage import Storage_Test, Storage_Manager_Test, Storage_Error_Test
 from host import Host_Test
 from plugin import Plugin_Manager_Test, Plugin_Test
 from source import Source_Manager_Test, Source_Test
