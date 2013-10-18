@@ -10,8 +10,8 @@ import re
 import logging
 import sys
 from numeter.queue import client as NumeterQueueP
-from cachelastvalue import CacheLastValue
-from storeandforward import StoreAndForward
+from numeter.poller.cachelastvalue import CacheLastValue
+from numeter.poller.storeandforward import StoreAndForward
 
 #
 # Poller
