@@ -9,7 +9,7 @@ import datetime
 import argparse
 
 try: 
-    from numeter.redis import myRedisConnect
+    from numeter.redis import RedisConnect
 except ImportError:
     print "STATE UNKNOWN: unable to load redis module"
     sys.exit(3)
@@ -37,7 +37,7 @@ WARN_DELAY = ARGS.warning or 600
 CRIT_DELAY = ARGS.critical or 1200
 
 def get_delay():
-    redis_connexion = myRedisConnect(host=REDIS_HOST,
+    redis_connexion = RedisConnect(host=REDIS_HOST,
                   port=REDIS_PORT,
                   socket_timeout=REDIS_TIMEOUT,
                   db=REDIS_DB,

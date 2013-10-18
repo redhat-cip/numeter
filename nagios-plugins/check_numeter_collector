@@ -7,7 +7,7 @@ import sys
 import argparse
 
 try:
-    from numeter.redis import myRedisConnect
+    from numeter.redis import RedisConnect
 except ImportError:
     print "STATE UNKNOWN: unable to load redis module"
     sys.exit(3)
@@ -34,7 +34,7 @@ REDIS_PASSWORD  =  None
 CRITICAL = ARGS.critical or 30
 WARNING = ARGS.warning or 15
 
-REDIS_CONNECTION = myRedisConnect(host=REDIS_HOST,
+REDIS_CONNECTION = RedisConnect(host=REDIS_HOST,
                   port=REDIS_PORT,
                   socket_timeout=REDIS_TIMEOUT,
                   db=REDIS_DB,

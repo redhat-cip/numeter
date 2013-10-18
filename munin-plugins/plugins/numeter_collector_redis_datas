@@ -24,7 +24,7 @@ else:
     IMPORT_COLLECTOR = True
 
 try: 
-    from numeter.redis import myRedisConnect
+    from numeter.redis import RedisConnect
 except ImportError:
     IMPORT_REDIS = False
 else:
@@ -56,7 +56,7 @@ def load_params():
 
 
 def print_values():
-    redis_connexion = myRedisConnect(host=REDIS_HOST,
+    redis_connexion = RedisConnect(host=REDIS_HOST,
                       port=REDIS_PORT,
                       socket_timeout=REDIS_TIMEOUT,
                       db=REDIS_DB,
