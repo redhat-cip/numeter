@@ -29,7 +29,7 @@ import subprocess
 import re
 
 try: 
-    from numeter_poller import myPoller
+    from numeter.poller import Poller
 except ImportError:
     IMPORT_POLLER = False
 else:

@@ -8,7 +8,7 @@ from daemon import runner
 from lockfile import LockTimeout
 import logging
 
-from numeter.poller import myPoller
+from numeter.poller import Poller
 import ConfigParser
 
 class App():
@@ -44,7 +44,7 @@ class App():
         return configParse
 
     def run(self):
-        poller = myPoller(self.poller_configFile)
+        poller = Poller(self.poller_configFile)
         poller.disable_pollerTimeToGo = True
         lastCheckTime = None
         while True:
