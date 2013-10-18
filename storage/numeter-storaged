@@ -8,7 +8,7 @@ from daemon import runner
 from lockfile import LockTimeout
 import logging
 
-from numeter.storage import myStorage
+from numeter.storage import Storage
 import ConfigParser
 
 class App():
@@ -43,7 +43,7 @@ class App():
         return configParse
 
     def run(self):
-        storage = myStorage(self.storage_configFile)
+        storage = Storage(self.storage_configFile)
         storage.startStorage()
 
 app = App()

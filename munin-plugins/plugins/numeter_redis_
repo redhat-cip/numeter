@@ -27,7 +27,7 @@ else:
     IMPORT_COLLECTOR = True
 
 try: 
-    from numeter.storage import myStorage
+    from numeter.storage import Storage
 except ImportError:
     IMPORT_STORAGE = False
 else:

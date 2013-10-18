@@ -22,9 +22,9 @@
 
 """ calls numeter function """
 
-from numeter.storage import myStorage
+from numeter.storage import Storage
 
 if __name__ == '__main__':
-    storage = myStorage("/etc/numeter/numeter_storage.cfg")
+    storage = Storage("/etc/numeter/numeter_storage.cfg")
     storage.startStorage()
     exit(0)
