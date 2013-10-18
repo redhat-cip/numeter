@@ -10,7 +10,7 @@ import ConfigParser
 
 myPath = os.path.abspath(os.path.dirname(__file__))
 
-from numeter.poller import MuninModule
+from numeter.poller.muninModule import MuninModule
 
 import base as test_base
 
