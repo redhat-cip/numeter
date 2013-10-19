@@ -35,6 +35,7 @@
       numeter.graphs.push(g);
     });
   };
+
   // GET ADVANCED GRAPH
   numeter.get_graph = function (url, into, res) {
     $.getJSON(url + '?res=' + res, function (data) {
@@ -74,8 +75,8 @@
         {
           title: data.name,
           series: series,
-          height: 250,
-          width: width,
+          height: 220,
+          //width: width,
           legend: 'always',
           //fillGraph: true,
           pixelsPerLabel: 60,
@@ -86,19 +87,20 @@
           highlightCircleSize: 4.0,
           stackedGraph: is_stacked,
           labels: data.labels,
+          labelsDiv: document.getElementById('graph-labels-' + data.name),
           labelsKMG2: true,
           labelsSeparateLines: true,
-          labelsDivWidth: 300,
+          //labelsDivWidth: 300,
           labelsDivStyles: {
             backgroundColor: 'rgba(200, 200, 200, 0.20)',
             borderRadius: '10px',
             padding: '4px'
           },
-          axes: {
-            y: {
-              axisLabelWidth: 30000
-            }
-          }
+          //axes: {
+          //  y: {
+          //    axisLabelWidth: 30000
+          //  }
+          //}
         }
       );
       g.url = url;
