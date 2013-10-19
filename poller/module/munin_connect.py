@@ -17,6 +17,7 @@ class MuninSock(object):
         return self.munin_sock
 
     def __exit__(self, type, value, traceback):
+        self.munin_sock.shutdown(socket.SHUT_RDWR)
         self.munin_sock.close()
 
 
