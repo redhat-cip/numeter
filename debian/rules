@@ -4,7 +4,8 @@
 export DH_ALWAYS_EXCLUDE=COPYING:CHANGES
 
 %:
-	dh $@ --with quilt
+	#dh $@ --with quilt
+	dh $@ --with python2
 
 override_dh_auto_install:
 	# common
