@@ -68,7 +68,7 @@
       graph_div =
         $(document.createElement('div')).attr({
           'id': 'graph-' + plugin + '-container',
-          'class': 'well'
+          'class': 'well row-fluid'
         });
 
     $(into).append(graph_div);
@@ -77,13 +77,14 @@
       $(document.createElement('div'))
         .attr({
           id: 'graph-' + plugin,
-          // class: 'graph',
-          style: 'width: 100%; height: 320px;'
+          class: 'span9',
+          style: 'height: 320px;'
         }),
 
       $(document.createElement('div'))
         .attr({
-          id: 'graphleg-' + plugin
+          id: 'graph-labels-' + plugin,
+          class: 'span3',
         })
     ]);
     numeter.get_graph(url, 'graph-' + plugin, resolution);
