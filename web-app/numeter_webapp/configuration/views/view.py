@@ -4,7 +4,8 @@ from django.contrib import messages
 
 from core.models import Data_Source
 from multiviews.models import View, Multiview, Event
-from configuration.forms.view import View_Form
+#from configuration.forms.view import View_Form
+from multiviews.forms.view import Small_View_Form as View_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 from core.utils.http import render_HTML_JSON
@@ -40,7 +41,7 @@ def list(request):
 def add(request):
     if request.method == 'POST':
         data = {}
-        F = View_Form(request.POST)
+        F = View_Form(data=request.POST, user=request.user)
         if F.is_valid():
             V = F.save()
             messages.success(request, _("View added with success."))
@@ -56,7 +57,7 @@ def add(request):
         return render_HTML_JSON(request, data, 'base/messages.html', {})
     else:
         return render(request, 'views/view.html', {
-            'View_Form': View_Form(),
+            'View_Form': View_Form(user=request.user),
         })
 
 
@@ -64,7 +65,7 @@ def add(request):
 @superuser_only()
 def get(request, view_id):
     V = get_object_or_404(View.objects.filter(pk=view_id))
-    F = View_Form(instance=V)
+    F = View_Form(instance=V, user=request.user)
     return render(request, 'views/view.html', {
         'View_Form': F,
     })
@@ -74,7 +75,7 @@ def get(request, view_id):
 @superuser_only()
 def update(request, view_id):
     V = get_object_or_404(View.objects.filter(pk=view_id))
-    F = View_Form(data=request.POST, instance=V)
+    F = View_Form(data=request.POST, instance=V, user=request.user)
     data = {}
     if F.is_valid():
         F.save()

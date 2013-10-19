@@ -1,0 +1,60 @@
+{% load i18n %}
+<form class="view-form ajax-form" action="{{ View_Form.instance.get_update_url }}" method="POST" data-data-url="{{ View_Form.instance.get_data_url }}">
+ {% csrf_token %}
+ <fieldset>
+  <div class="span6">
+   <div class="control-group condensed">
+    <label for="id_name" class="control-label">{{ View_Form.name.label }}</label>
+    <div class="controls">{{ View_Form.name }}</div>
+   </div> 
+
+   <div class="control-group condensed">
+    <label for="id_sources" class="control-label">{{ View_Form.sources.label }}</label>
+    <div class="controls">
+     <div class="row-fluid">
+      <div class="span5">
+       {{ View_Form.search_source }}
+       {{ View_Form.available_sources }}
+      </div>
+      <div class="span2" style="text-align: center;">
+       <button class="btn btn-mini move-option" data-from="#id_available_sources" data-to=".span5 #id_sources"><i class="icon-chevron-right"></i></button>
+       <br>
+       <br>
+       <button class="btn btn-mini move-option" data-from=".span5 #id_sources" data-to="#id_available_sources"><i class="icon-chevron-left"></i></button>
+      </div>
+      <div class="span5">{{ View_Form.sources }}</div>
+     </div>
+    </div>
+   </div> 
+
+   <div class="control-group condensed">
+    <label for="id_threshold" class="control-label">{% trans 'Threshold' %}</label>
+    <div class="controls">
+     <div class="row-fluid">
+      <div class="span6">{{ View_Form.warning }}</div>
+      <div class="span6">{{ View_Form.critical }}</div>
+     </div>
+    </div>
+   </div> 
+
+   <div class="control-group condensed">
+    <div class="controls">{{ View_Form.comment }}</div>
+   </div> 
+  </div> 
+
+  <div class="span6">
+  {% if View_Form.instance.id %}
+   <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
+   <button id="btn-delete-view" class="btn btn-danger" data-id="{{ View_Form.instance.id }}" data-into=".messages" data-url="{{ View_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+  {% else %}
+   <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
+  {% endif %}
+
+  {% if View_Form.instance.id %}
+  <hr>
+  <div id="view-preview" class="span11 graph"></div>
+  {% endif %}
+  </div> 
+ </fieldset>
+</form>
+

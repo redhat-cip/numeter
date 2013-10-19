@@ -7,9 +7,11 @@
 
 <div class="modal-body">
  <h5>{% trans "Add source(s) to:" %}</h5>
- <select class="span" id="chosen-view" size="6">
-  {% for v in views %}<option value="{{ v.id }}">{{ v }}</option>{% endfor %}
- <select>
+ <div class="row-fluid">
+  <select class="span" id="chosen-view" size="6">
+   {% for v in views %}<option value="{{ v.id }}">{{ v }}</option>{% endfor %}
+  <select>
+ </div>
 
  <h5>{% trans "Source(s) to add:" %}</h5>
  <ul class="unstyled">

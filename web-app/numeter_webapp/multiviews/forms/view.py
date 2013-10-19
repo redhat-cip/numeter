@@ -7,7 +7,9 @@ from multiviews.models import View
 
 class Small_View_Form(View_Form):
     """Small View ModelForm."""
-    search_source = forms.CharField(widget=forms.TextInput({
+    search_source = forms.CharField(
+      required=False,
+      widget=forms.TextInput({
       'placeholder': _('Search for sources'),
       'class': 'span q-opt',
       'data-url': '/api/source/',
@@ -16,10 +18,11 @@ class Small_View_Form(View_Form):
     }))
     available_sources = forms.ModelMultipleChoiceField(
       queryset = Data_Source.objects.none(),
-      widget=forms.SelectMultiple({'class':'span'})
+      widget=forms.SelectMultiple({'class':'span'}),
+      required=False
     )
     sources = forms.ModelMultipleChoiceField(
-      queryset = Data_Source.objects.none(),
+      queryset = Data_Source.objects.all(),
       widget=forms.SelectMultiple({'class':'span','size':'6'})
     )
 
@@ -37,13 +40,21 @@ class Small_View_Form(View_Form):
         super(Small_View_Form, self).__init__(*args, **kwargs)
         if not self.user:
             raise TypeError('Object must have a User object for initialization')
-        if self.instance.id is None:
-            self.fields['sources'].queryset = Data_Source.objects.none()
+        # Blank
+        if self.instance.id is None and not self.data:
             self.fields['available_sources'].queryset = Data_Source.objects.user_filter(self.user)[:20]
-            self.fields['search_source'].widget.attrs.update({'data-into': '#id_sources'})
-        else:
-            self.fields['sources'].queryset = self.instance.sources.all()
+            self.fields['sources'].queryset = Data_Source.objects.none()
+        # Created in GET
+        elif self.instance.id and not self.data:
             self.fields['available_sources'].queryset = Data_Source.objects.user_filter(self.user).exclude(pk__in=self.instance.sources.all())[:20]
+            self.fields['sources'].queryset = self.instance.sources.all()
+        # Created in POST
+        elif self.instance.id and self.data:
+            self.fields['sources'].queryset = Data_Source.objects.all()
+        # Creating
+        elif not self.instance.id and self.data:
+            self.fields['available_sources'].queryset = Data_Source.objects.all()
+            self.fields['sources'].queryset = Data_Source.objects.user_filter(self.user)
 
         def get_submit_url(self):
             """Get POST or PATCH url."""
