@@ -1,0 +1,18 @@
+server {
+    listen 80;
+    server_name zulutab;
+
+    access_log /var/log/nginx/django-status/access.log;
+    error_log /var/log/nginx/django-status/error.log;
+
+    location ~ ^/static/(.*)$ {
+        alias /usr/src/numeter/web-app/numeter_webapp/static/$1;
+    }
+    location ~ ^/media/(.*)$ {
+        alias /usr/src/numeter/web-app/numeter_webapp/../media/$1;
+    }
+    location / {
+        uwsgi_pass unix:///run/uwsgi-numeter-webapp.sock;
+        include uwsgi_params;
+    }
+}

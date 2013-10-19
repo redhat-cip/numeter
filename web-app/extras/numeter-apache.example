@@ -7,7 +7,7 @@ Listen *:80
     DocumentRoot @APP_DIR@/
 
     Alias /static @APP_DIR@/static/
-    Alias /media/ @APP_DIR@/media/ 
+    Alias /media /var/www/numeter/media/ 
 
     WSGIScriptAlias / @APP_DIR@/numeter/wsgi
 
