@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Gaël Lambert <gael.lambert@enovance.com>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper, python, quilt, python-setuptools
-X-Python-Version: >=2.5, <=2.7
+X-Python-Version: >=2.7
 Standards-Version: 3.9.3
 Homepage: https://github.com/enovance/numeter
 
