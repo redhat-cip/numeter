@@ -45,15 +45,14 @@ class App():
 
     def run(self):
         lastCheckTime = None
+        poller = Poller(self.poller_configFile)
+        poller.disable_pollerTimeToGo = True
         while True:
             nowTimestamp = "%.0f" % time.time()
             # +5 give you an accuracy of 5 sec more or less between fetch
             if lastCheckTime is None \
             or (int(lastCheckTime)+self._poller_time) <= (int(nowTimestamp)+5):
-                poller = Poller(self.poller_configFile)
-                poller.disable_pollerTimeToGo = True
                 poller.startPoller()
-                del(poller)
                 lastCheckTime = nowTimestamp
             time.sleep(1)
 
