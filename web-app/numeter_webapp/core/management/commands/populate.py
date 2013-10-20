@@ -14,6 +14,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **opts):
+        if opts['quiet']: self.stdout = open(devnull, 'w')
         # Walk on storage
         for s in Storage.objects.all():
             self.stdout.write('Creating hosts from storage %s' % s)
