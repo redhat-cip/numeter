@@ -34,7 +34,7 @@ def list(request):
 
 @login_required()
 def add(request):
-    return render(request, 'customize/multiview/multiview.html', {
+    return render(request, 'forms/multiview.html', {
        'Multiview_Form': Multiview_Form(user=request.user),
     })
 
@@ -43,7 +43,7 @@ def add(request):
 def edit(request, multiview_id):
     M = get_object_or_404(Multiview.objects.filter(id=multiview_id))
     F = Multiview_Form(instance=M, user=request.user)
-    return render(request, 'customize/multiview/multiview.html', {
+    return render(request, 'forms/multiview.html', {
         'Multiview_Form': F,
     })
 

@@ -17,3 +17,7 @@ class View_Resource(ModelResource):
           'name': ALL,
           'sources': ALL_WITH_RELATIONS,
         }
+
+    def dehydrate(self, bundle):
+        bundle.data['fullname'] = bundle.obj.__unicode__()
+        return bundle

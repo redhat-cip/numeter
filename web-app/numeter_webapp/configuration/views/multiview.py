@@ -3,7 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
 from multiviews.models import Multiview
-from configuration.forms.multiview import Multiview_Form
+#from configuration.forms.multiview import Multiview_Form
+from multiviews.forms.multiview import Small_Multiview_Form as Multiview_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 from core.utils.http import render_HTML_JSON
@@ -24,7 +25,7 @@ def list(request):
 @login_required()
 def add(request):
     if request.method == 'POST':
-        F = Multiview_Form(request.POST)
+        F = Multiview_Form(data=request.POST, user=request.user)
         data = {}
         if F.is_valid():
             M = F.save()
@@ -40,8 +41,8 @@ def add(request):
             data['response'] = 'error'
         return render_HTML_JSON(request, data, 'base/messages.html', {})
     else:
-        return render(request, 'views/multiview.html', {
-            'Multiview_Form': Multiview_Form(),
+        return render(request, 'forms/multiview.html', {
+            'Multiview_Form': Multiview_Form(user=request.user),
         })
 
 
@@ -49,8 +50,8 @@ def add(request):
 @superuser_only()
 def get(request, multiview_id):
     M = get_object_or_404(Multiview.objects.filter(pk=multiview_id))
-    F = Multiview_Form(instance=M)
-    return render(request, 'views/multiview.html', {
+    F = Multiview_Form(instance=M, user=request.user)
+    return render(request, 'forms/multiview.html', {
         'Multiview_Form': F,
     })
 
@@ -59,7 +60,7 @@ def get(request, multiview_id):
 @superuser_only()
 def update(request, multiview_id):
     M = get_object_or_404(Multiview.objects.filter(pk=multiview_id))
-    F = Multiview_Form(data=request.POST, instance=M)
+    F = Multiview_Form(data=request.POST, instance=M, user=request.user)
     data = {}
     if F.is_valid():
         F.save()

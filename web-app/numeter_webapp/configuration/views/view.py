@@ -56,7 +56,7 @@ def add(request):
             data['response'] = 'error'
         return render_HTML_JSON(request, data, 'base/messages.html', {})
     else:
-        return render(request, 'views/view.html', {
+        return render(request, 'forms/view.html', {
             'View_Form': View_Form(user=request.user),
         })
 
@@ -66,7 +66,7 @@ def add(request):
 def get(request, view_id):
     V = get_object_or_404(View.objects.filter(pk=view_id))
     F = View_Form(instance=V, user=request.user)
-    return render(request, 'views/view.html', {
+    return render(request, 'forms/view.html', {
         'View_Form': F,
     })
 
