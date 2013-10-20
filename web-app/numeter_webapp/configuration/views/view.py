@@ -4,8 +4,7 @@ from django.contrib import messages
 
 from core.models import Data_Source
 from multiviews.models import View, Multiview, Event
-#from configuration.forms.view import View_Form
-from multiviews.forms.view import Small_View_Form as View_Form
+from configuration.forms.view import Extended_View_Form as View_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 from core.utils.http import render_HTML_JSON
