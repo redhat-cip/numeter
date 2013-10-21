@@ -17,8 +17,8 @@ class BaseAPIClient(messaging.RPCClient):
 
     def poller_msg(self, context, topic, args=None):
         LOG.info('Send message %s context %s' % (topic, context))
-        cctxt = self.prepare(topic=topic)
-        return cctxt.cast(context,'poller_msg', args=args)
+        args['topic'] = topic
+        return self.cast(context,'poller_msg', args=args)
 
 def get_rpc_client(hosts=[]):
     conf = cfg.CONF
