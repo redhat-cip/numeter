@@ -15,3 +15,4 @@ common/dist/
 poller/dist/
 storage/dist/
 *.egg-info
+nosetests.xml
