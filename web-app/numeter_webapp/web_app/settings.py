@@ -87,7 +87,6 @@ INSTALLED_APPS = (
     # 'tastypie',
 )
 
-
 LOGIN_URL = '/login'
 AUTH_USER_MODEL = 'core.User'
 SECRET_KEY = 'secret'

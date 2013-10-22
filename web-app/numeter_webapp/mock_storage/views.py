@@ -40,11 +40,11 @@ def hinfo(request, id):
     return HttpResponse(jdumps(host_json))
 
 
-def list(request):
-    return HttpResponse(get_list_json())
+def list(request, id):
+    return HttpResponse(get_list_json(id))
 
 
-def data(request):
+def data(request, id):
     sources = request.GET['ds'].split(',')
     start_date = get_start_date(request.GET['res'])
     step = res[request.GET['res']]

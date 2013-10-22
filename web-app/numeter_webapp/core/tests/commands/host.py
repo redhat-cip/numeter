@@ -34,14 +34,13 @@ class Cmd_Host_List_Test(CmdTestCase):
 
 class Cmd_Host_Add_Test(CmdTestCase):
     """Test ``manage.py host add``."""
-    @set_storage(extras=['host'])
+    @set_storage()
     def setUp(self):
         super(Cmd_Host_Add_Test, self).setUp()
 
     def test_add(self):
         """Add a host."""
-        DEFAULT_ID = Host.objects.all()[0].hostid
-        Host.objects.all()[0].delete()
+        DEFAULT_ID = Storage.objects.get_all_hostids()[0]
         DEFAULT_COUNT = Host.objects.count()
         argv = ['', 'host', 'add', '-i', DEFAULT_ID]
         Command().run_from_argv(argv)
@@ -51,8 +50,7 @@ class Cmd_Host_Add_Test(CmdTestCase):
 
     def test_quiet_add(self):
         """Add a host without print."""
-        DEFAULT_ID = Host.objects.all()[0].hostid
-        Host.objects.all()[0].delete()
+        DEFAULT_ID = Storage.objects.get_all_hostids()[0]
         argv = ['', 'host', 'add', '-i', DEFAULT_ID, '-q']
         Command().run_from_argv(argv)
         # Test stdout
@@ -61,8 +59,9 @@ class Cmd_Host_Add_Test(CmdTestCase):
 
     def test_add_already_existing(self):
         """Try to add an existing host."""
+        DEFAULT_ID = Storage.objects.get_all_hostids()[0]
+        host = Storage.objects.which_storage(DEFAULT_ID).create_host(DEFAULT_ID)
         DEFAULT_COUNT = Host.objects.count()
-        DEFAULT_ID = Host.objects.all()[0].hostid
         argv = ['', 'host', 'add', '-i', DEFAULT_ID]
         Command().run_from_argv(argv)
         # Test creation
@@ -168,7 +167,7 @@ class Cmd_Host_Repair_Test(CmdTestCase):
     def test_repair(self):
         """Repair host/storage link."""
         HOST_ID = self.host.hostid
-        INITIAL_STORAGE = Host.objects.all()[0].storage
+        INITIAL_STORAGE = self.host.storage
         BAD_STORAGE = Storage.objects.exclude(pk=INITIAL_STORAGE.pk)[0]
         argv = ['', 'host', 'repair']
         # Test modification
@@ -177,3 +176,4 @@ class Cmd_Host_Repair_Test(CmdTestCase):
         Command().run_from_argv(argv)
         self.host = Host.objects.get(pk=self.host.pk)
         self.assertEqual(self.host.storage, INITIAL_STORAGE, "Host hasn't been repaired.")
+        

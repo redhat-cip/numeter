@@ -16,13 +16,13 @@ def get_host_json(hostid, mock_id):
     return hosts.get(hostid, {})
 
 
-def get_list_json():
-    with open(BASEDIR+'/../mock_storage/fixtures/list.json') as f:
+def get_list_json(id):
+    with open(BASEDIR+'/../mock_storage/fixtures/list%s.json' % id) as f:
         response = f.read()
     return response
 
 
-def get_start_date(res):
+def get_start_date(res='Daily'):
     if res == 'Daily': return now() - timedelta(days=2)
     elif res == 'Weekly': return now() - timedelta(days=14)
     elif res == 'Monthly': return now() - timedelta(days=60)

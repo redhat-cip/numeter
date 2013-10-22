@@ -43,7 +43,7 @@ class Storage_Manager(models.Manager):
 
     def get_all_hostids(self):
         """Return a list of ids of all hosts from storage."""
-        return [ h['ID'] for h in self.get_all_host_info() ]
+        return [ h['ID'] for h in self.get_all_host_info().values() ]
 
     def get_unfoundable_hostids(self):
         """
@@ -84,6 +84,7 @@ class Storage_Manager(models.Manager):
             raise ValueError("Bad host ID.")
         return Host.objects.get(hostid=hostid)
 
+    # TODO
     def get_hosts(self, hostids):
         """Search a list of hostid on all storage."""
         return self.get_all_hostids()
