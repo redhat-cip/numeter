@@ -1,3 +1,9 @@
+numeter (0.2.3.12) numeter-squeeze; urgency=low
+
+  * Numeter with rabbitmq
+
+ -- Support eNovance <support@enovance.com>  Tue, 22 Oct 2013 09:35:43 +0000
+
 numeter (0.2.3.11) numeter-squeeze; urgency=low
 
    * Use UPSTREAM_BRANCH env vars in extra/build-package.sh
