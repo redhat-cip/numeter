@@ -4,22 +4,29 @@
 
 import sys
 import time
-from daemon import runner
-from lockfile import LockTimeout
 import logging
+import ConfigParser
+from daemon import runner
+from os.path import isfile
+from lockfile import LockTimeout
 
 # Need before oslo messaging (oslo/messaging/_cmd/zmq_receiver.py line 19)
 import eventlet
 eventlet.monkey_patch()
 
 from numeter.poller import Poller
-import ConfigParser
 
 class App():
     def __init__(self):
+        # Fix daemon launch if you have no tty (like puppet)
+        # Quick fix will be remove soon
+        if isfile('/dev/tty'):
+            self.stdout_path = '/dev/tty'
+            self.stderr_path = '/dev/tty'
+        else:
+            self.stdout_path = '/dev/null'
+            self.stderr_path = '/dev/null'
         self.stdin_path = '/dev/null'
-        self.stdout_path = '/dev/tty'
-        self.stderr_path = '/dev/tty'
         self.pidfile_path =  '/var/run/numeter_poller.pid'
         self.pidfile_timeout = 1.1
         self._poller_time = 60
