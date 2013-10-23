@@ -120,9 +120,9 @@ class Storage_Manager_Test(LiveServerTestCase):
         hosts = self.storage2.get_hosts().keys()
         self.assertEqual(len(unsaved_hosts), len(hosts), "Missing host number not match.")
         # Test to del hosts and find them
-        [ h.delete() for h in Host.objects.all()[0:5] ]
+        [ h.delete() for h in Host.objects.all()[:1] ]
         unsaved_hosts = Storage.objects.get_unsaved_hostids()
-        self.assertEqual(len(unsaved_hosts), len(hosts)+5, "Missing host number not match.")
+        self.assertEqual(len(unsaved_hosts), len(hosts)+1, "Missing host number not match.")
 
     def test_find_host(self):
         """Find which storage has an host."""

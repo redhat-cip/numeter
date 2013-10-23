@@ -108,7 +108,7 @@ class Data_Source(models.Model):
             'colors': [],
             'name': self.name,
             'datas': [],
-            'infos': self.get_info()
+            'infos': {self.name:self.get_info()}
         }
         # Get all data
         r = self.get_data(**data)

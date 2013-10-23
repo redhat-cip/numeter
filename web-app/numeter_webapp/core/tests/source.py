@@ -8,19 +8,23 @@ class Source_Manager_Test(LiveServerTestCase):
     @set_storage(extras=['host','plugin'])
     def setUp(self):
         self.host = Host.objects.all()[0]
-        self.plugin = Plugin.objects.all()[0]
 
     def tearDown(self):
         Host.objects.all().delete()
 
     def test_full_create(self):
-        available_sources = self.plugin.get_data_sources()
+        """Test ``Data_Source.objects.full_create``."""
+        available_sources = []
+        for plugin in Plugin.objects.all():
+            available_sources = plugin.get_data_sources()
+            if len(available_sources) >= 2: break
         # Create one
         POST = False_HttpRequest_dict({
-          'host': self.host.hostid,
-          'plugin': self.plugin.name,
+          'host': plugin.host.hostid,
+          'plugin': plugin.name,
           'sources[]': available_sources[:1]
         })
+        Plugin.objects.all().delete()
         sources = Data_Source.objects.full_create(POST)
         self.assertEqual(len(sources), 1,
             "Bad number of created sources (%i), should be 1." % len(sources)
@@ -31,8 +35,8 @@ class Source_Manager_Test(LiveServerTestCase):
             "Bad number of created sources (%i), should be 0." % len(sources)
         )
         # Create source and plugin
-        POST['plugin'] = self.plugin.name
-        self.plugin.delete()
+        POST['plugin'] = plugin.name
+        plugin.delete()
         Data_Source.objects.all().delete()
         sources = Data_Source.objects.full_create(POST)
         self.assertEqual(len(sources), 1,
@@ -40,7 +44,7 @@ class Source_Manager_Test(LiveServerTestCase):
         )
         plugin_count = Plugin.objects.filter(name=POST['plugin']).count()
         self.assertEqual(plugin_count, 1,
-            "Bad number of created sources (%i), should be 1." % plugin_count
+            "Bad number of created plugin (%i), should be 1." % plugin_count
         )
         # Create with false source
         POST['sources[]'] = ['test']

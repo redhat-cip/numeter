@@ -16,7 +16,7 @@ class Cmd_Source_List_Test(CmdTestCase):
 
     def test_empty_list(self):
         """Get empty listing."""
-        Source.objects.all().delete()
+        for s in Source.objects.all(): s.delete()
         argv = ['', 'source', 'list']
         Command().run_from_argv(argv)
         # Test stdout
@@ -32,7 +32,7 @@ class Cmd_Source_List_Test(CmdTestCase):
         self.assertTrue(out, "No output.")
 
     def test_filtered_list(self):
-        """Get listing of a plugin."""
+        """Get filtered listing of a source."""
         PLUGIN_ID = str(Plugin.objects.all()[0].id)
         argv = ['', 'source', 'list', '-i', PLUGIN_ID]
         Command().run_from_argv(argv)

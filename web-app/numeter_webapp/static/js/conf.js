@@ -71,7 +71,7 @@ $(document).on('click', '.ajax-tab-add', function (e) {
 });
 
 // SUBMIT FORM
-$(document).on('submit', '.ajax-form', function() {
+$(document).on('submit', '.ajax-form', function(e) {
   var form = $(this);
   var url = $(this).attr('action');
   var cur_tab_container = $(this).parentsUntil('.tab-pane').parent()
