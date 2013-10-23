@@ -1,3 +1,9 @@
+numeter (0.2.3.12) numeter-wheezy; urgency=low
+
+  * Numeter with rabbitmq
+
+ -- Support eNovance <support@enovance.com>  Tue, 22 Oct 2013 09:36:52 +0000
+
 numeter (0.2.3.11) numeter-wheezy; urgency=low
 
    * Use UPSTREAM_BRANCH env vars in extra/build-package.sh

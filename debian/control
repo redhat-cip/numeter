@@ -29,7 +29,7 @@ Description: Numeter is a new and dynamic graphing solution.
 Package: numeter-common
 Architecture: all
 Homepage: https://github.com/enovance/numeter
-Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-kombu, python-oslo.messaging
+Depends: ${misc:Depends}, ${python:Depends}, python, python-daemon, python-kombu, python-oslo.messaging, python-eventlet
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
  Common tools for numeter components.
