@@ -36,8 +36,6 @@ def print_config(check_type):
         print '%s.label %s' % (name, name)
         print '%s.draw LINE' % name
         print '%s.info %s value' % (name, name)
-        if name == "collectors":
-            print '%s.color #909122' % name
         elif name == "hosts":
             print '%s.color #67809e' % name
         elif name == "plugins":
@@ -56,7 +54,6 @@ def load_params():
                                  '/var/log/numeter/numeter-storage.log')
     STORAGE_PATTERN  = os.getenv('storagePattern',
                                  '.*---- End : numeter_storage, '
-                                 + '([0-9\.]+) collector, '
                                  + '([0-9\.]+) Hosts, '
                                  + '([0-9\.]+) Plugins, '
                                  + '([0-9\.]+) Datas in '
@@ -91,8 +88,7 @@ def print_value_storage(name, value):
 if __name__ == '__main__':
     ARGV = sys.argv[:]
     # Disable seconds
-    #CHECK_TYPE = ['collectors','hosts','plugins','datas','seconds']
-    CHECK_TYPE = ['collectors', 'hosts', 'plugins', 'datas']
+    CHECK_TYPE = ['hosts', 'plugins', 'datas']
     if len(ARGV) > 1:
         if ARGV[1] == 'config':
             print_config(CHECK_TYPE)
@@ -100,7 +96,9 @@ if __name__ == '__main__':
             if not IMPORT_STORAGE:
                 print 'no (failed import storage module)'
                 sys.exit(0)
-            print 'yes'
+            # Disable this plugin. New stats for storage in progress
+            print 'no'
+            #print 'yes'
     elif IMPORT_STORAGE:
         load_params()
         FILELINE = get_file_line()
