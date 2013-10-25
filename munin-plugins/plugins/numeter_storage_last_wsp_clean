@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #
-# Plugin to monitor the time since the last rrd clean for the numeter storage
+# Plugin to monitor the time since the last wsp clean for the numeter storage
 #
 # Magic markers
 #%# capabilities=autoconf
 #%# family=auto
 #
-#  [numeter_storage_last_rrd_clean]
+#  [numeter_storage_last_wsp_clean]
 #  env.redisKey
 #  env.redisHost
 #  env.redisPort
@@ -34,15 +34,15 @@ else:
     IMPORT_REDIS = True
 
 def print_config():
-    print 'graph_title Numeter storage last rrd clean'
-    print 'graph_info This graph shows time since the last rrd clean'
+    print 'graph_title Numeter storage last wsp clean'
+    print 'graph_info This graph shows time since the last wsp clean'
     print 'graph_vlabel Seconds'
     print 'graph_args --base 1000 --lower-limit 0'
     print 'graph_category numeter'
-    print 'lastrrdcleanclean.label lastrrdclean'
-    print 'lastrrdcleanclean.draw LINE'
-    print 'lastrrdcleanclean.info lastrrdclean Time'
-    print 'lastrrdcleanclean.color #909122'
+    print 'lastwspcleanclean.label lastwspclean'
+    print 'lastwspcleanclean.draw LINE'
+    print 'lastwspcleanclean.info lastwspclean Time'
+    print 'lastwspcleanclean.color #909122'
 
 def load_params():
     global REDIS_KEY
@@ -52,7 +52,7 @@ def load_params():
     global REDIS_DB
     global REDIS_PASSWORD
 
-    REDIS_KEY       = os.getenv('redisKey','LAST_RRD_CLEAN')
+    REDIS_KEY       = os.getenv('redisKey','LAST_WSP_CLEAN')
     REDIS_HOST      = os.getenv('redisHost', '127.0.0.1')
     REDIS_PORT      = os.getenv('redisPort', 6379)
     REDIS_TIMEOUT   = os.getenv('redisTimeout', 10)
@@ -75,13 +75,13 @@ def print_values():
     lastfetch = redis_connexion.redis_get(REDIS_KEY)
 
     if not lastfetch:
-        print "lastrrdcleanclean.value U"
+        print "lastwspcleanclean.value U"
         sys.exit(1)
     timenow = datetime.datetime.now()
     timenow = time.mktime(timenow.timetuple())
     lastclean = timenow - int(lastfetch)
 
-    print 'lastrrdcleanclean.value', lastclean
+    print 'lastwspcleanclean.value', lastclean
 
 
 if __name__ == '__main__':
