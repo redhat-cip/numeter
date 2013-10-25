@@ -34,7 +34,7 @@ else:
     IMPORT_STORAGE = True
 
 try:
-    FPID = open('/var/run/numeter.storage.pid', 'r')
+    FPID = open('/var/run/numeter_storage.pid', 'r')
     PIDOK = True
 except IOError:
     print 'storage not running or pid file missing'
