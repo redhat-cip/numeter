@@ -50,6 +50,7 @@ def get_rpc_server(topics, server, hosts, endpoints):
     conf = cfg.CONF
     conf.transport_url = 'rabbit://'
     conf.rabbit_hosts = hosts
+    conf.control_exchange = 'numeter'
     transport = messaging.get_transport(conf)
     # Default topic and queue_name
     targets = [messaging.Target(topic=server, server=server)]
