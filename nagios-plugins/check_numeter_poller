@@ -5,67 +5,59 @@
 
 import sys
 import time
-import datetime
+from datetime import datetime
 import argparse
-
-try: 
-    from numeter.redis import RedisConnect
-except ImportError:
-    print "STATE UNKNOWN: unable to load redis module"
-    sys.exit(3)
+import subprocess
+import re
 
 # Get args
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument("-w", "--warning", 
-            help="Warning delay since last collector polling. Default 600s", type=int)
+            help="Warning delay since last polling. Default 600s", type=int)
 PARSER.add_argument("-c", "--critical", 
-            help="Critical delay since last collector polling. Default 1200s", type=int)
-PARSER.add_argument("-d", "--database",
-            help="Database to use. Default 0", type=int)
-PARSER.add_argument("-p", "--port",
-            help="Port number to use. Default 5959", type=int)
+            help="Critical delay since last polling. Default 1200s", type=int)
+PARSER.add_argument("-f", "--file",
+            help="Poller log file", type=str)
 ARGS = PARSER.parse_args()
 
-REDIS_HOST      = '127.0.0.1'
-REDIS_PORT      =  ARGS.port or 5959 
-REDIS_TIMEOUT   =  10
-REDIS_DB        =  ARGS.database or 0
-REDIS_PASSWORD  =  None
+POLLER_LOG = ARGS.file or '/var/log/numeter/numeter-poller.log'
 
 # Set values
 WARN_DELAY = ARGS.warning or 600
 CRIT_DELAY = ARGS.critical or 1200
 
+def get_last_polling():
+    "Return the last matching line in log file"
+    grep_pattern = ' End : numeter_'
+    stdout = subprocess.Popen('grep "%s" %s 2>/dev/null | tail -1' % (grep_pattern , POLLER_LOG),
+                              shell=True,
+                              stdout=subprocess.PIPE)
+    output = stdout.communicate()[0]
+
+    poller_pattern  = ( '([0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+),.*---- End.*')
+
+    regex = re.match(poller_pattern, output)
+    if regex is not None:
+        return regex.group(1)
+    else:
+        return None
+
 def get_delay():
-    redis_connexion = RedisConnect(host=REDIS_HOST,
-                  port=REDIS_PORT,
-                  socket_timeout=REDIS_TIMEOUT,
-                  db=REDIS_DB,
-                  password=REDIS_PASSWORD)
 
-    if redis_connexion._error:
-        connection_error()
+    last_polling = get_last_polling()
 
-    server_list = redis_connexion.redis_hkeys('SERVER')
+    # get delta
+    last = datetime.strptime(last_polling, "%Y-%m-%d %H:%M:%S")
+    now = datetime.now()
 
-    for server in server_list:
-        last_visit = redis_connexion.redis_hget('SERVER', server)
+    delay = (now - last).total_seconds()
 
-        timenow = datetime.datetime.now()
-        timenow = time.mktime(timenow.timetuple())
-        delay = (timenow - int(last_visit))
-
-        if delay > CRIT_DELAY:
-            print "CRITICAL: server %s collected data %ds ago " % (server, delay)
-            sys.exit(2)
-        elif delay > WARN_DELAY:
-            print "WARNING: server %s collected data %ds ago " % (server, delay)
-            sys.exit(1)
-
-
-def connection_error():
-    print "STATE UNKNOWN: Unable to connect to redis server"
-    sys.exit(3)
+    if delay > CRIT_DELAY:
+        print "CRITICAL: last polling data %ds ago " % delay
+        sys.exit(2)
+    elif delay > WARN_DELAY:
+        print "WARNING: last polling %ds ago " % delay
+        sys.exit(1)
 
 
 # main program

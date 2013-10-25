@@ -22,9 +22,9 @@ PARSER.add_argument("-P", "--plugins",
 PARSER.add_argument("-H", "--hosts", 
             help="Max deleted hosts. Default 1", type=int)
 PARSER.add_argument("-c", "--clean",
-            help="Max days since last RRD clean. Default 2", type=int)
-PARSER.add_argument("-o", "--oldrrd",
-            help="Max old RRDs. Default 1", type=int)
+            help="Max days since last WSP clean. Default 2", type=int)
+PARSER.add_argument("-o", "--oldwsp",
+            help="Max old WSPs. Default 1", type=int)
 PARSER.add_argument("-d", "--database",
             help="Database to use. Default 2", type=int)
 PARSER.add_argument("-p", "--port",
@@ -40,8 +40,8 @@ REDIS_PASSWORD  =  None
 # Set critical values
 MAX_DELETED_PLUGINS = ARGS.plugins or 1
 MAX_DELETED_HOSTS = ARGS.hosts or 1
-MAX_RRD_CLEAN = ARGS.clean or 2
-MAX_OLD_RRDS = ARGS.oldrrd or 1
+MAX_WSP_CLEAN = ARGS.clean or 2
+MAX_OLD_WSPS = ARGS.oldwsp or 1
 
 
 def get_deleted_plugins():
@@ -64,7 +64,7 @@ def get_deleted_plugins():
         sys.exit(2)
 
 
-def get_last_rrd_clean():
+def get_last_wsp_clean():
     redis_connexion = RedisConnect(host=REDIS_HOST,
        	          port=REDIS_PORT,
                   socket_timeout=REDIS_TIMEOUT,
@@ -75,7 +75,7 @@ def get_last_rrd_clean():
         connection_error()
 
         try:
-            lastfetch = redis_connexion.redis_get('LAST_RRD_CLEAN')
+            lastfetch = redis_connexion.redis_get('LAST_WSP_CLEAN')
         except: 
             query_error()
 
@@ -84,8 +84,8 @@ def get_last_rrd_clean():
         # Time delta in seconds / 3600 = hours
         lastclean = (timenow - int(lastfetch)) / 3600
 
-        if lastclean > MAX_RRD_CLEAN * 24:
-            print "CRITICAL: rrd clean %d hours ago" % (lastclean)
+        if lastclean > MAX_WSP_CLEAN * 24:
+            print "CRITICAL: wsp clean %d hours ago" % (lastclean)
             sys.exit(2)
 
 
@@ -107,7 +107,7 @@ def get_deleted_hosts():
         print "CRITICAL: %d deleted hosts (%d allowed)" % (deleted_hosts, MAX_DELETED_HOSTS)
         sys.exit(2)
 
-def get_old_rrds():
+def get_old_wsps():
     redis_connexion = RedisConnect(host=REDIS_HOST,
                       port=REDIS_PORT,
                       socket_timeout=REDIS_TIMEOUT,
@@ -118,12 +118,12 @@ def get_old_rrds():
         connection_error()
 
     try: 
-        old_rrds =  len(json.loads(redis_connexion.redis_get('OLD_RRD')))
+        old_wsps =  len(json.loads(redis_connexion.redis_get('OLD_WSP')))
     except:
         query_error()
 
-    if old_rrds > MAX_OLD_RRDS:
-        print "CRITICAL: %d old_rrds (%d allowed)" % (old_rrds, MAX_OLD_RRDS)
+    if old_wsps > MAX_OLD_WSPS:
+        print "CRITICAL: %d old_wsps (%d allowed)" % (old_wsps, MAX_OLD_WSPS)
         sys.exit(2) 
 
 def connection_error():
@@ -132,13 +132,14 @@ def connection_error():
 
 def query_error():
     print "STATE UNKNOWN: Unable to fetch value"
+    sys.exit(3)
 
 
 # main program
 get_deleted_plugins()
 get_deleted_hosts()
-get_last_rrd_clean()
-get_old_rrds()
+get_last_wsp_clean()
+get_old_wsps()
 
 print "OK"
 
