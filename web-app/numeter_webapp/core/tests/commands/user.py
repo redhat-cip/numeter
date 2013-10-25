@@ -49,7 +49,7 @@ class Cmd_User_Add_Test(CmdTestCase):
         self.assertFalse(out, "Output is printed:\n" + out)
 
     def test_add_already_existing(self):
-        """Try to add an existing group."""
+        """Try to add an existing user."""
         argv = ['', 'user', 'add', '-u', 'TEST USER', '--password=pass']
         Command().run_from_argv(argv)
         Command().run_from_argv(argv)

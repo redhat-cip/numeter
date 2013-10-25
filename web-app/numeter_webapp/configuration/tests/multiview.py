@@ -16,12 +16,6 @@ class Multiview_Test(LiveServerTestCase):
         self.c.login(username='root', password='toto')
         self.view = View.objects.create(name='test view')
 
-    def tearDown(self):
-        Plugin.objects.all().delete()
-        Data_Source.objects.all().delete()
-        View.objects.all().delete()
-        Multiview.objects.all().delete()
-
     def test_list(self):
         """Get multiview list."""
         url = reverse('multiview list')

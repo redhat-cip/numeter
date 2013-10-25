@@ -11,9 +11,6 @@ class Group_Test(TestCase):
         self.c = Client()
         self.c.login(username='root', password='toto')
 
-    def tearDown(self):
-        Group.objects.all().delete()
-
     def test_list(self):
         """Get grup list."""
         url = reverse('group list')

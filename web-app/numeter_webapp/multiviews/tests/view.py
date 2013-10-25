@@ -17,12 +17,6 @@ class View_Test(LiveServerTestCase):
         self.source = Data_Source.objects.all()[0]
         self.view = create_view()
 
-    def tearDown(self):
-        Plugin.objects.all().delete()
-        Data_Source.objects.all().delete()
-        View.objects.all().delete()
-        Event.objects.all().delete()
-
     def test_get_events(self):
         """Get event(s) for a view.""" 
         event = create_event()

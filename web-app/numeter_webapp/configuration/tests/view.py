@@ -15,11 +15,6 @@ class View_Test(LiveServerTestCase):
         self.c = Client()
         self.c.login(username='root', password='toto')
 
-    def tearDown(self):
-        Plugin.objects.all().delete()
-        Data_Source.objects.all().delete()
-        View.objects.all().delete()
-
     def test_source_list(self):
         """Get view list."""
         url = reverse('view list')

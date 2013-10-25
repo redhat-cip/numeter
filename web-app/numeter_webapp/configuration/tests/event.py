@@ -8,7 +8,7 @@ from multiviews.models import Event
 
 
 class Event_Test(LiveServerTestCase):
-    fixtures = ['test_users.json','test_storage.json']
+    fixtures = ['test_users.json']
 
     @set_storage(extras=['host'])
     def setUp(self):
@@ -16,10 +16,7 @@ class Event_Test(LiveServerTestCase):
         self.c.login(username='root', password='toto')
         self.host = Host.objects.all()[0]
 
-    def tearDown(self):
-        Event.objects.all().delete()
-
-    def test_source_list(self):
+    def test_event_list(self):
         """Get event list."""
         url = reverse('event list')
         r = self.c.get(url)

@@ -101,6 +101,10 @@ from sys import argv
 if len(argv) > 1:
     if argv[1] == 'test' :
         from settings_test import *
+    # TODO: Useful or not ?
+    #    TESTING = True
+    #else:
+    #    TESTING = False
 
 # Make validation
 import settings_validation

@@ -14,9 +14,6 @@ class Storage_Test(LiveServerTestCase):
         self.c = Client()
         self.c.login(username='root', password='toto')
 
-    def tearDown(self):
-        Storage.objects.all().delete()
-
     def test_index(self):
         """Simple get."""
         url = reverse('storage index')
@@ -24,7 +21,7 @@ class Storage_Test(LiveServerTestCase):
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
     def test_get(self):
-        """Simple get."""
+        """Simple get a storage."""
         url = reverse('storage', args=[1])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)

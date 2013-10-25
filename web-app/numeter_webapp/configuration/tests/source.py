@@ -17,10 +17,6 @@ class Source_Test(LiveServerTestCase):
         self.plugin = Plugin.objects.all()[0]
         self.source = Data_Source.objects.all()[0]
 
-    def tearDown(self):
-        Plugin.objects.all().delete()
-        Data_Source.objects.all().delete()
-
     def test_list(self):
         """Get source list."""
         url = reverse('source list')

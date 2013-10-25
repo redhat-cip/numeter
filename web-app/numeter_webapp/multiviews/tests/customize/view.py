@@ -20,10 +20,6 @@ class Customize_View_Test(LiveServerTestCase):
         self.plugin = Plugin.objects.all()[0]
         self.source = Data_Source.objects.all()[0]
 
-    def tearDown(self):
-        Plugin.objects.all().delete()
-        Data_Source.objects.all().delete()
-
     def test_index(self):
         """Get view index."""
         url = reverse('multiviews customize view index')

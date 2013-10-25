@@ -16,11 +16,6 @@ class Plugin_Test(LiveServerTestCase):
         self.c.login(username='root', password='toto')
         self.host = Host.objects.all()[0]
 
-    def tearDown(self):
-        Host.objects.all().delete()
-        Plugin.objects.all().delete()
-        Data_Source.objects.all().delete()
-
     def test_index(self):
         """Get plugin index."""
         url = reverse('plugin index')
