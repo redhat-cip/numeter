@@ -17,9 +17,23 @@
       // Make series
       var source_name = data.labels[1];
       var series = {};
-        console.log(source_name);
-      series[source_name] = {};
-      if ( data.infos.draw == 'STACK' ) series[source_name]['fillGraph'] = true;
+      // Stacked or not
+      var is_stacked = false;
+      for ( var i in data.infos ) {
+        if ( data.infos[i].draw !== undefined ) {
+          if ( data.infos[i].draw.indexOf('STACK') != -1 ) is_stacked = true;
+        }
+      }
+      // Make series
+      var series = {}
+      for ( var source in data.infos ) {
+        series[source] = {}
+        if ( data.infos[source].draw !== undefined ) {
+          if ( data.infos[source].draw.indexOf("AREA") != -1 ) { 
+              series[source]['fillGraph'] = true;
+          }
+        }
+      }
 
       g = new Dygraph(
         document.getElementById(into_id),
@@ -50,13 +64,19 @@
       // Stacked or not
       var is_stacked = false;
       for ( var i in data.infos ) {
-        if ( data.infos[i].draw == 'STACK' ) is_stacked = true;
+        if ( data.infos[i].draw !== undefined ) {
+          if ( data.infos[i].draw.indexOf('STACK') != -1 ) is_stacked = true;
+        }
       }
       // Make series
       var series = {}
       for ( var source in data.infos ) {
         series[source] = {}
-        if ( data.infos[source].draw == 'STACK' ) series[source]['fillGraph'] = true;
+        if ( data.infos[source].draw !== undefined ) {
+          if ( data.infos[source].draw.indexOf("AREA") != -1 ) { 
+              series[source]['fillGraph'] = true;
+          }
+        }
       }
       series.warning = {
         fillGraph: false,
@@ -112,6 +132,7 @@
   numeter.update_graph = function (graph, res) {
     $.getJSON(graph.url + '?res=' + res, function (data) {
       var i, length = data.datas.length;
+      // MAKE DATES
       for (i = 0; i < length; i = i + 1) {
         data.datas[i][0] = new Date(data.datas[i][0] * 1000);
       }
