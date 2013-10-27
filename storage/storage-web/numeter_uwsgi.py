@@ -90,8 +90,6 @@ def hosts():
     # Convert key: json to key:dict
     for hostID, value_json in allhosts.iteritems():
         value = jsonToPython(value_json)
-        # TODO FIXEME : delete Address (backward compatibility)
-        value['Address'] = hostID
         response[hostID] = value
     return pythonToJson(response)
 
