@@ -32,11 +32,9 @@ class Storage(object):
 
         # Default configuration
         self._enable                    = False
-        self._simulate                  = False
         self._logLevel                  = "debug"
         self._log_level_stdr            = "debug"
         self._log_path                  = "/var/log/cron_numeter.log"
-        self._simulate_file             = "/tmp/numeter.simulate"
         self._rpc_hosts                 = ["127.0.0.1"]
         self._rpc_password              = 'guest'
         self._host_list_file            = "/dev/shm/numeter_storage_host_list"
@@ -70,15 +68,10 @@ class Storage(object):
                 "configuration enable = false")
             exit(2)
 
-        if not self._simulate:
-            # Open redis connexion
-            self._logger.debug("Simulate=false : start redis connection")
-            self._redis_connexion = self.redisStartConnexion()
-
-            if self._redis_connexion._error:
-                self._logger.critical("Redis storage connexion ERROR - "
-                    "Check redis access or password")
-                exit(1)
+        if self._redis_connexion._error:
+            self._logger.critical("Redis storage connexion ERROR - "
+                "Check redis access or password")
+            exit(1)
 
         if not self._get_host_list():
             self._logger.critical("Numeter storage get host list fail")
@@ -548,20 +541,6 @@ class Storage(object):
             self._logger.info("Config : enable = "+str(self._enable))
         else:
             self._logger.info("Config : enable = "+str(self._enable))
-
-        # simulate
-        if self._configParse.has_option('global', 'simulate') \
-        and self._configParse.getboolean('global', 'simulate'):
-            self._simulate = self._configParse.getboolean('global', 'simulate')
-            self._logger.info("Config : simulate = "+str(self._simulate))
-        else:
-            self._logger.info("Config : simulate = "+str(self._simulate))
-
-        # simulate_file
-        if self._configParse.has_option('global', 'simulate_file') \
-        and self._configParse.get('global', 'simulate_file'):
-            self._simulate_file = self._configParse.get('global', 'simulate_file')
-            self._logger.info("Config : simulate_file = "+self._simulate_file)
 
         # host_list_file
         if self._configParse.has_option('global', 'host_list_file') \
