@@ -12,7 +12,7 @@ server {
     error_log   /var/log/nginx/numeter-web-app_error.log;
 
     # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #   
+    #
     location ~ \.php$ {
        #fastcgi_pass   127.0.0.1:9000;
        fastcgi_pass   unix:/var/run/php5-fpm.sock;
@@ -20,13 +20,13 @@ server {
        include         fastcgi_params;
        fastcgi_param   SCRIPT_FILENAME    $document_root$fastcgi_script_name;
        fastcgi_param   SCRIPT_NAME        $fastcgi_script_name;
-    }   
+    }
 
     # deny access to .htaccess files, if Apache's document root
     # concurs with nginx's one
-    #   
+    #
     location ~ /\.ht {
        deny  all;
-    }   
+    }
 }
 

@@ -6,14 +6,14 @@ Local database format
 ======================
 
 ::
-    
+
     +--------+         +---------------+
     |  HSET  |         | INFOS@HostID1 | ----->  if   : {JSON:Value:ID:...}
     +--------+         +---------------+   |-->  df   : {JSON:Value:ID:...}
                        +---------------+
                        | INFOS@HostID2 | ----->  if   : {JSON:Value:ID:...}
                        +---------------+   |-->  df   : {JSON:Value:ID:...}
-    
+
     +--------+         +-------------+
     |  HSET  |         |   HOSTS     | ----->  Host1   : { MyInfos }
     +--------+         +-------------+   |-->  Host2   : { MyInfos }

@@ -28,7 +28,7 @@ import sys
 import subprocess
 import re
 
-try: 
+try:
     from numeter.poller import Poller
 except ImportError:
     IMPORT_POLLER = False
@@ -46,7 +46,7 @@ def get_pid():
     pid = FPID.readline()
     pid = pid.rstrip()
     return pid
-    
+
 def print_config(data_list):
     print 'graph_title Numeter poller mem usage'
     print 'graph_info This graph shows the memory usage of the Numeter poller daemon'

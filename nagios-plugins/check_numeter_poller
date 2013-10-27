@@ -12,9 +12,9 @@ import re
 
 # Get args
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument("-w", "--warning", 
+PARSER.add_argument("-w", "--warning",
             help="Warning delay since last polling. Default 600s", type=int)
-PARSER.add_argument("-c", "--critical", 
+PARSER.add_argument("-c", "--critical",
             help="Critical delay since last polling. Default 1200s", type=int)
 PARSER.add_argument("-f", "--file",
             help="Poller log file", type=str)

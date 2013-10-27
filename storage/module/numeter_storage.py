@@ -610,5 +610,3 @@ class Storage(object):
         and self._configParse.getint('global', 'wsp_clean_time'):
             self._wsp_clean_time = self._configParse.getint('global', 'wsp_clean_time')
             self._logger.info("Config : wsp_clean_time = "+str(self._wsp_clean_time))
-
-

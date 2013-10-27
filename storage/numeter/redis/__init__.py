@@ -49,7 +49,7 @@ class RedisConnect(object):
     def redis_set(self,key,value):
 #        print "-SET "+key+", "+value
         try:
-            self._conn.set(key, value)   
+            self._conn.set(key, value)
         except redis.exceptions.ConnectionError, e:
             print "SET - error redis"
 
@@ -76,7 +76,7 @@ class RedisConnect(object):
 #        print "-ZADD "+name+", "+str(score)
 #        print "-ZADD "+name+", "+str(score)+", "+value
         try:
-            self._conn.zadd(name, value, score)   
+            self._conn.zadd(name, value, score)
             # Version > 2.0.0-1 -> 2.4.9-1
 #            self._conn.zadd(name, **{value: key}) # For future deprecated https://github.com/andymccurdy/redis-py/pull/164
         except redis.exceptions.ConnectionError, e:
@@ -95,72 +95,64 @@ class RedisConnect(object):
     def redis_zremrangebyscore(self,name,valmin,valmax):
 #        print "-ZRemRangeByScore "+name+", "+valmin+", "+valmax
         try:
-            return self._conn.zremrangebyscore(name, valmin, valmax)   
+            return self._conn.zremrangebyscore(name, valmin, valmax)
         except redis.exceptions.ConnectionError, e:
             print "ZREMRANGEBYSCORE - error redis"
 
     def redis_hset(self,name,key,value):
         try:
-            self._conn.hset(name, key, value)   
+            self._conn.hset(name, key, value)
         except redis.exceptions.ConnectionError, e:
             print "HSET - error redis"
 
     def redis_hmset(self,name,mapping):
 #        mapping = {'a': '1', 'b': '2', 'c': '3'}
         try:
-            self._conn.hmset(name, mapping)   
+            self._conn.hmset(name, mapping)
         except redis.exceptions.ConnectionError, e:
             print "HMSET - error redis"
 
     def redis_hmget(self,name,key):
 #       [Key,key,key]
         try:
-            return self._conn.hmget(name,key)   
+            return self._conn.hmget(name,key)
         except redis.exceptions.ConnectionError, e:
             print "HMGET - error redis"
 
     def redis_hget(self,name,key):
         try:
-            return self._conn.hget(name,key)   
+            return self._conn.hget(name,key)
         except redis.exceptions.ConnectionError, e:
             print "HGET - error redis"
 
     def redis_hexists(self,name,key):
         # True / False
         try:
-            return self._conn.hexists(name,key)   
+            return self._conn.hexists(name,key)
         except redis.exceptions.ConnectionError, e:
             print "HEXISTS - error redis"
 
 
     def redis_hdel(self,name,key):
         try:
-            return self._conn.hdel(name,key)   
+            return self._conn.hdel(name,key)
         except redis.exceptions.ConnectionError, e:
             print "HDEL - error redis"
 
     def redis_hkeys(self,name):
         try:
-            return self._conn.hkeys(name)   
+            return self._conn.hkeys(name)
         except redis.exceptions.ConnectionError, e:
             print "HKEYS - error redis"
 
     def redis_hvals(self,name):
         try:
-            return self._conn.hvals(name)   
+            return self._conn.hvals(name)
         except redis.exceptions.ConnectionError, e:
             print "HVALS - error redis"
 
     def redis_hgetall(self,name):
         try:
-            return self._conn.hgetall(name)   
+            return self._conn.hgetall(name)
         except redis.exceptions.ConnectionError, e:
             print "HGETALL - error redis"
-
-
-
-
-
-
-
-

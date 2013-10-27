@@ -9,7 +9,7 @@ import datetime
 import json
 import argparse
 
-try: 
+try:
     from numeter.redis import RedisConnect
 except ImportError:
     print "STATE UNKNOWN: unable to load redis module"
@@ -17,9 +17,9 @@ except ImportError:
 
 # Get args
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument("-P", "--plugins", 
+PARSER.add_argument("-P", "--plugins",
             help="Max deleted plugins. Default 1", type=int)
-PARSER.add_argument("-H", "--hosts", 
+PARSER.add_argument("-H", "--hosts",
             help="Max deleted hosts. Default 1", type=int)
 PARSER.add_argument("-c", "--clean",
             help="Max days since last WSP clean. Default 2", type=int)
@@ -76,7 +76,7 @@ def get_last_wsp_clean():
 
         try:
             lastfetch = redis_connexion.redis_get('LAST_WSP_CLEAN')
-        except: 
+        except:
             query_error()
 
         timenow = datetime.datetime.now()
@@ -117,14 +117,14 @@ def get_old_wsps():
     if redis_connexion._error:
         connection_error()
 
-    try: 
+    try:
         old_wsps =  len(json.loads(redis_connexion.redis_get('OLD_WSP')))
     except:
         query_error()
 
     if old_wsps > MAX_OLD_WSPS:
         print "CRITICAL: %d old_wsps (%d allowed)" % (old_wsps, MAX_OLD_WSPS)
-        sys.exit(2) 
+        sys.exit(2)
 
 def connection_error():
     print "STATE UNKNOWN: Unable to connect to redis server"

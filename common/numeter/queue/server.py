@@ -13,8 +13,8 @@ class OverrideMessageHandlingServer(messaging.server.MessageHandlingServer):
 
         try:
             listener = self.transport._listen(self.target)
-        except driver_base.TransportDriverError as ex: 
-            raise ServerListenError(self.target, ex) 
+        except driver_base.TransportDriverError as ex:
+            raise ServerListenError(self.target, ex)
 
         for target in self.target.targets:
             listener.conn.declare_topic_consumer(target.topic,

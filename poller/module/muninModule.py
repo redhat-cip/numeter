@@ -38,12 +38,12 @@ class MuninModule(ModulesGeneric):
     def getData(self):
         "get and return all data collected"
 
-        # Get list of all plugins 
+        # Get list of all plugins
         pluginList = self.munin_connection.munin_list()
 
         datas = []
         for plugin in pluginList:
-            if re.match(self._plugins_enable, plugin):  
+            if re.match(self._plugins_enable, plugin):
                 self._logger.info("MuninModule : get data for " + plugin)
                 fetchResult = self.formatFetchData(plugin)
                 if fetchResult == None: continue
@@ -59,11 +59,11 @@ class MuninModule(ModulesGeneric):
 
         infos = []
         for plugin in pluginList:
-            if re.match(self._plugins_enable, plugin):  
+            if re.match(self._plugins_enable, plugin):
                 self._logger.info("MuninModule : get Infos for " + plugin)
                 fetchResult = self.formatFetchInfo(plugin)
                 if fetchResult == None: continue
-                self._logger.debug("MuninModule : infos : " 
+                self._logger.debug("MuninModule : infos : "
                             + str(fetchResult))
                 infos.append(fetchResult)
         return infos
@@ -83,8 +83,8 @@ class MuninModule(ModulesGeneric):
         # Get now timestamp
         nowTimestamp = "%s" % int(time.time())
         # Set plugin informations
-        data = {  'TimeStamp': nowTimestamp, 
-                   'Plugin': plugin, 
+        data = {  'TimeStamp': nowTimestamp,
+                   'Plugin': plugin,
                    'Values': pluginData
         }
         return data
@@ -101,12 +101,12 @@ class MuninModule(ModulesGeneric):
             return None
 
         # Set plugin informations (defaul values)
-        infos =  {    'Plugin': plugin, 
-                      'Base': '1000', 
-                      'Describ': '', 
-                      'Title': plugin, 
-                      'Vlabel': '', 
-                      'Order': '', 
+        infos =  {    'Plugin': plugin,
+                      'Base': '1000',
+                      'Describ': '',
+                      'Title': plugin,
+                      'Vlabel': '',
+                      'Order': '',
                       'Infos': {}
                  }
 
@@ -128,7 +128,7 @@ class MuninModule(ModulesGeneric):
                 if match is not None:
                     infos['Base'] = match.group(1)
             # only values info has dict : '_run': {'warning': '92', 'label': '/run'}
-            elif type(value) == type(dict()): 
+            elif type(value) == type(dict()):
                 value['id'] = key
                 infos["Infos"][key] = value
             else: continue
@@ -177,4 +177,3 @@ class MuninModule(ModulesGeneric):
         and self._configParser.getint('MuninModule', 'munin_port'):
             self._munin_port = self._configParser.getint('MuninModule'
                                         , 'munin_port')
-

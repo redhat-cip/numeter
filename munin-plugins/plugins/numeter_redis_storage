@@ -19,14 +19,14 @@
 import sys
 import os
 
-try: 
+try:
     from numeter.storage import Storage
 except ImportError:
     IMPORT_STORAGE = False
 else:
     IMPORT_STORAGE = True
 
-try: 
+try:
     from numeter.redis import RedisConnect
 except ImportError:
     IMPORT_REDIS = False

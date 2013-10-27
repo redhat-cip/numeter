@@ -22,7 +22,7 @@ class MuninSock(object):
 
 
 class MuninConnection(object):
-    
+
     def __init__(self, munin_host="127.0.0.1", munin_port=4949):
         self.watchdog = 1000 # watchdog for munin socket error
         self.munin_host = munin_host

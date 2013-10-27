@@ -10,10 +10,10 @@ Overview
     :align: center
     :width: 300px
 
-The Numeter infrastructure : instances of every component may be added to handle the load 
+The Numeter infrastructure : instances of every component may be added to handle the load
 
 All components can be installed on the same server or on multiple servers depending on their specifications.
- 
+
 Numeter is written in Python and uses Redis. We are considering going from a pull mode to a push mode using rabbitmq.
 
 ***********
@@ -54,8 +54,8 @@ Features
   * PNG graph export
   * User & Group management
   * Automatic dashboard creation
-  * Open architecture allows new features to be created easily 
-  * Scalable 
+  * Open architecture allows new features to be created easily
+  * Scalable
 
 
 

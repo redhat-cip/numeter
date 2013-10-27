@@ -44,11 +44,11 @@ class StorageTestCase(test_base.TestCase):
             # Test with Empty file
             file_mock.return_value.readlines.return_value = []
             self.storage._get_host_list()
-            self.assertEqual(self.storage._host_list, []) 
+            self.assertEqual(self.storage._host_list, [])
             # Empty line
             file_mock.return_value.readlines.return_value = ['','']
             self.storage._get_host_list()
-            self.assertEqual(self.storage._host_list, []) 
+            self.assertEqual(self.storage._host_list, [])
             # Test with 3 hostname and one db and password
             file_mock.return_value.readlines.return_value = ['foo','bar']
             self.storage._get_host_list()

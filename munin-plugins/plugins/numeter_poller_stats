@@ -19,7 +19,7 @@ import os
 import subprocess
 import re
 
-try: 
+try:
     from numeter.poller import Poller
 except ImportError:
     IMPORT_POLLER = False
@@ -59,7 +59,7 @@ def load_params():
                                  + '([0-9\.]+) Plugins in '
                                  + '([0-9\.]+), seconds')
     GREP_PATTERN     = os.getenv('grepPattern',
-                                 ' End : numeter_') # For performance 
+                                 ' End : numeter_') # For performance
 
 def get_file_line():
     "Return the last matching line in log file"
@@ -93,13 +93,13 @@ if __name__ == '__main__':
         if ARGV[1] == 'config':
             print_config(CHECK_TYPE)
         elif ARGV[1] == 'autoconf':
-            if not IMPORT_POLLER:  
+            if not IMPORT_POLLER:
                 print 'no (failed import poller module)'
                 sys.exit(0)
             print 'yes'
     elif IMPORT_POLLER:
         load_params()
         FILELINE = get_file_line()
-        for NAME in CHECK_TYPE: 
+        for NAME in CHECK_TYPE:
             VALUE = get_value_in_line(NAME, FILELINE)
             print_value_poller(NAME, VALUE)
