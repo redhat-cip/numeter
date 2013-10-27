@@ -5,10 +5,12 @@ from customize.source import Customize_Source_Test
 from customize.view import Customize_View_Test
 from customize.multiview import Customize_Multiview_Test
 from customize.event import Customize_Event_Test
+from commands.skeleton import Cmd_Skeleton_List_Test, Cmd_Skeleton_Add_Test, Cmd_Skeleton_Del_Test, Cmd_Skeleton_Mod_Test, Cmd_Skeleton_Create_View_Test
 
 def suite():
     import unittest
     TEST_CASES = (
+        'multiviews.tests.commands.skeleton',
         'multiviews.tests.view',
         'multiviews.tests.skeleton',
 #        'multiviews.tests.event',
