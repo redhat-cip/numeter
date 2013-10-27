@@ -4,6 +4,26 @@ import json
 import logging
 
 class StoreAndForward(object):
+    """
+    Use case exemple :
+
+    # Init logging level with debug stream handler
+    logging.getLogger('StoreAndForward').setLevel(logging.CRITICAL)
+    logging.getLogger('StoreAndForward').setLevel(logging.INFO)
+    logging.getLogger('StoreAndForward').addHandler(logging.StreamHandler())
+
+    from time import time
+
+    with StoreAndForward(cache_file='./sandbox/cache_storeandforward.json') as cache :
+
+        # Add stored message
+        cache.add_message('DATA', 'munin.if_eth0.up', '{%s content}' % time())
+
+        Read stored message
+        for message in cache.consume():
+            print message
+    """
+
     def __init__(self, cache_file='/dev/shm/store_and_forward.json', logger=__name__):
         self._cache_file = cache_file
         self._cache = []
@@ -41,22 +61,3 @@ class StoreAndForward(object):
     def consume(self):
         while self._cache:
             yield self._cache.pop()
-
-## Init logging level
-#logging.getLogger('StoreAndForward').setLevel(logging.CRITICAL)
-#
-## Add handler for debug
-#logging.getLogger('StoreAndForward').setLevel(logging.INFO)
-#logging.getLogger('StoreAndForward').addHandler(logging.StreamHandler())
-#
-# with StoreAndForward(cache_file='./sandbox/cache_storeandforward.json') as cache :
-#
-#from time import time
-#cache.add_message('DATA', 'munin.if_eth0.up', '{%s content}' % time())
-#
-#
-#for message in cache.consume():
-#    print message
-#
-#cache.dump_cache()
-##module.plugin.value : timestamp / value
