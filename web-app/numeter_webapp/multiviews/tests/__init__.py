@@ -1,4 +1,5 @@
 from view import View_Test
+from skeleton import Skeleton_Test
 from event import Event_Test
 from customize.source import Customize_Source_Test
 from customize.view import Customize_View_Test
@@ -9,11 +10,12 @@ def suite():
     import unittest
     TEST_CASES = (
         'multiviews.tests.view',
-        'multiviews.tests.event',
+        'multiviews.tests.skeleton',
+#        'multiviews.tests.event',
         'multiviews.tests.customize.source',
         'multiviews.tests.customize.view',
         'multiviews.tests.customize.multiview',
-        'multiviews.tests.customize.event',
+#        'multiviews.tests.customize.event',
     )
     suite = unittest.TestSuite()
     for t in TEST_CASES:

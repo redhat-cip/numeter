@@ -74,6 +74,8 @@ class Plugin(models.Model):
                         new_ds.append(new_d)
                     except:
                         pass
+                else:
+                    new_ds.append(Data_Source.objects.get(name=ds, plugin=self))
         return new_ds
 
     def get_data_sources(self):

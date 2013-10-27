@@ -161,6 +161,8 @@ class Host(models.Model):
                 if not Plugin.objects.filter(name=p, host=self).exists():
                     new_p = Plugin(name=p, host=self)
                     new_ps.append(new_p)
+                else:
+                    new_ps.append(Plugin.objects.get(name=p, host=self))
         if commit:
             [ p.save() for p in new_ps ]
         return new_ps
