@@ -20,10 +20,11 @@ class BaseAPIClient(messaging.RPCClient):
         cctxt = self.prepare(topic=topic)
         return cctxt.cast(context,'poller_msg', args=args)
 
-def get_rpc_client(hosts=[]):
+def get_rpc_client(hosts=[], password='guest'):
     conf = cfg.CONF
     conf.transport_url = 'rabbit://'
     conf.rabbit_max_retries = 1
     conf.rabbit_hosts = hosts
+    conf.rabbit_password = password
     transport = messaging.get_transport(conf)
     return BaseAPIClient(transport)

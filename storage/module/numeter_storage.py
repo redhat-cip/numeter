@@ -38,6 +38,7 @@ class Storage(object):
         self._log_path                  = "/var/log/cron_numeter.log"
         self._simulate_file             = "/tmp/numeter.simulate"
         self._rpc_hosts                 = ["127.0.0.1"]
+        self._rpc_password              = 'guest'
         self._host_list_file            = "/dev/shm/numeter_storage_host_list"
         self._redis_storage_port        = 6379
         self._redis_storage_timeout     = 10
@@ -89,10 +90,12 @@ class Storage(object):
             exit(1)
 
         # start consumer
-        self._queue_consumer = NumeterQueueC.get_rpc_server(topics=self._host_list,
-                                                      server=self._storage_name,
-                                                      endpoints=[StorageEndpoint(self)],
-                                                      hosts=self._rpc_hosts)
+        self._queue_consumer = NumeterQueueC.get_rpc_server(
+                                              topics=self._host_list,
+                                              server=self._storage_name,
+                                              endpoints=[StorageEndpoint(self)],
+                                              hosts=self._rpc_hosts,
+                                              password=self._rpc_password)
         try:
             self._queue_consumer.start()
         except KeyboardInterrupt:
@@ -577,6 +580,11 @@ class Storage(object):
         and self._configParse.get('global', 'rpc_hosts'):
             self._rpc_hosts = self._configParse.get('global', 'rpc_hosts').split(',')
             self._logger.info("Config : rpc_hosts = %s" % self._rpc_hosts)
+        # rpc_password
+        if self._configParse.has_option('global', 'rpc_password') \
+        and self._configParse.get('global', 'rpc_password'):
+            self._rpc_password = self._configParse.get('global', 'rpc_password')
+            self._logger.info("Config : rpc_password = %s" % self._rpc_password)
 
         # redis_storage_port
         if self._configParse.has_option('global', 'redis_storage_port') \

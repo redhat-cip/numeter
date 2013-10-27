@@ -30,7 +30,8 @@ class Poller(object):
         self._poller_time            = 60
         self._plugins_refresh_time   = 300
         self._need_refresh           = False # Passe a True suivant le refresh_time
-        self._rpc_hosts            = ['127.0.0.1:5672']
+        self._rpc_hosts              = ['127.0.0.1:5672']
+        self._rpc_password           = 'guest'
         self._plugin_number          = 0
         self.disable_pollerTimeToGo  = False
         self._cache = None
@@ -147,7 +148,8 @@ class Poller(object):
 
 
     def _sendMsg(self, msgType, plugin, msgContent):
-        queue = NumeterQueueP.get_rpc_client(hosts=self._rpc_hosts)
+        queue = NumeterQueueP.get_rpc_client(hosts=self._rpc_hosts,
+                                             password=self._rpc_password)
         try:
             routing_key = '%s' % (self._myInfo_hostID)
             context = dict(topic=routing_key,
@@ -424,6 +426,11 @@ class Poller(object):
         and self._configParse.get('global', 'rpc_hosts'):
             self._rpc_hosts = self._configParse.get('global', 'rpc_hosts').split(',')
             self._logger.info("Config : rpc_hosts = " + ','.join(self._rpc_hosts))
+        # rpc_password
+        if self._configParse.has_option('global', 'rpc_password') \
+        and self._configParse.get('global', 'rpc_password'):
+            self._rpc_password = self._configParse.get('global', 'rpc_password')
+            self._logger.info("Config : rpc_password = %s" % self._rpc_password)
         # getMyInfo - Name
         if self._configParse.has_option('MyInfo', 'name') \
         and self._configParse.get('MyInfo', 'name'):

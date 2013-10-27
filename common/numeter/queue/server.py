@@ -45,11 +45,12 @@ def _get_rpc_server(transport, target, endpoints,
                                             dispatcher, executor)
 
 
-def get_rpc_server(topics, server, hosts, endpoints):
+def get_rpc_server(topics, server, hosts, endpoints, password='guest'):
     eventlet.monkey_patch()
     conf = cfg.CONF
     conf.transport_url = 'rabbit://'
     conf.rabbit_hosts = hosts
+    conf.rabbit_password = password
     conf.control_exchange = 'numeter'
     transport = messaging.get_transport(conf)
     # Default topic and queue_name
