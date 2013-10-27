@@ -231,7 +231,7 @@ class Storage(object):
             return False
 
         wspPath = '%s/%s' % (data_path, plugin)
-        for ds_name, value in data["Values"].iteritems():
+        for ds_name, value in data.get("Values", {}).iteritems():
 
             ds_path = '%s/%s.wsp' % (wspPath, ds_name)
             # Create wsp file - config wsp here

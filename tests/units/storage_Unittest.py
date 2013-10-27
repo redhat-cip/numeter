@@ -135,10 +135,10 @@ class StorageTestCase(test_base.TestCase):
         self.assertFalse(result)
         # Give RRD path for the next checks
         self.storage._redis_connexion.redis_hset("WSP_PATH", 'foo', '/tmp/bla')
-        ## no data -> true just do nothing : TODO bug need to fix this
-        #data_json = json.dumps({})
-        #result = self.storage._write_data('foo', 'cpu', data_json)
-        #self.assertTrue(result)
+        # no data -> true just do nothing
+        data_json = json.dumps({})
+        result = self.storage._write_data('foo', 'cpu', data_json)
+        self.assertTrue(result)
         # Writa new wsp and create dir
         with mock.patch('os.path.exists', mock.MagicMock()) as exists_mock, \
              mock.patch('os.path.isfile', mock.MagicMock()) as isfile_mock, \
