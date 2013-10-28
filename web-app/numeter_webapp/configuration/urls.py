@@ -67,6 +67,13 @@ urlpatterns = patterns('',
     url(r'^multiview/(?P<multiview_id>\d+)$', 'configuration.views.multiview.get', name='multiview'),
     url(r'^multiview/(?P<multiview_id>\d+)/update$', 'configuration.views.multiview.update', name='multiview update'),
     url(r'^multiview/(?P<multiview_id>\d+)/delete$', 'configuration.views.multiview.delete', name='multiview delete'),
+    # Skeleton
+    url(r'^skeleton/list$', 'configuration.views.skeleton.list', name='skeleton list'),
+    url(r'^skeleton/list/delete$', 'configuration.views.skeleton.bulk_delete', name='skeleton bulk delete'),
+    url(r'^skeleton/add$', 'configuration.views.skeleton.add', name='skeleton add'),
+    url(r'^skeleton/(?P<skeleton_id>\d+)$', 'configuration.views.skeleton.get', name='skeleton'),
+    url(r'^skeleton/(?P<skeleton_id>\d+)/update$', 'configuration.views.skeleton.update', name='skeleton update'),
+    url(r'^skeleton/(?P<skeleton_id>\d+)/delete$', 'configuration.views.skeleton.delete', name='skeleton delete'),
     # Event
     url(r'^event/list$', 'configuration.views.event.list', name='event list'),
     url(r'^event/list/delete$', 'configuration.views.event.bulk_delete', name='event bulk delete'),

@@ -1,0 +1,32 @@
+{% load i18n %}
+<form class="skeleton-form ajax-form" action="{{ Skeleton_Form.instance.get_update_url }}" method="POST" data-id="{{ Skeleton_Form.instance.id }}">
+ {% csrf_token %}
+ <fieldset>
+  <div class="span6">
+
+   <div class="control-group condensed">
+    <label for="id_name" class="control-label">{{ Skeleton_Form.name.label }}</label>
+    <div class="controls">{{ Skeleton_Form.name }}</div>
+   </div> 
+
+   <div class="control-group condensed">
+    <label class="control-label">{{ Skeleton_Form.plugin_pattern.label }}</label>
+    <div class="controls">{{ Skeleton_Form.plugin_pattern }}{{ Skeleton_Form.source_pattern }} </div>
+   </div> 
+
+   <div class="control-group condensed">
+    <div class="controls">{{ Skeleton_Form.comment }}</div>
+   </div> 
+  </div> 
+
+  <div class="span6">
+   {% if Skeleton_Form.instance.id %}
+    <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
+    <button id="btn-delete-skeleton" class="btn btn-danger" data-into=".messages" data-id="{{ Skeleton_Form.instance.id }}" data-url="{{ Skeleton_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+   {% else %}
+    <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
+   {% endif %}
+  </div> 
+ 
+ </fieldset>
+</form>

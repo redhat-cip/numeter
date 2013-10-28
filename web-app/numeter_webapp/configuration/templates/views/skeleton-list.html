@@ -1,0 +1,46 @@
+{% load i18n %}
+<input class="span q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by name" %}" data-into="#skeleton-list" data-url="{% url 'skeleton list' %}?page=1"/>
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>{% trans "Name" %}</th>
+    <th>{% trans "Plugin pattern" %}</th>
+    <th>{% trans "Source pattern" %}</th>
+   </tr>
+  </thead>
+  <tbody>
+   {% for skeleton in Skeletons %}
+   <tr>
+    <td><input class="skeleton-checkbox" type="checkbox" name="{{ skeleton.id }}"></td>
+    <td><a class="get-skeleton" data-url="{{ skeleton.get_absolute_url }}" data-into="#skeleton-list">{{ skeleton.name }}</a></td>
+    <td>{{ skeleton.plugin_pattern }}</td>
+    <td>{{ skeleton.source_pattern }}</td>
+   </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+
+ <div>
+  <ul class="pager">
+   {% if Skeletons.has_previous %}
+   <li class="previous"><a class="get-page" data-into="#skeleton-list" data-url="{{ Skeletons.0.get_list_url }}?page={{ Skeletons.previous_page_number }}&q={{ q }}">&larr; {% trans "Previous" %}</a></li>
+   {% endif %}
+   {% if Skeletons.has_next %}
+   <li class="next"><a class="get-page" data-into="#skeleton-list" data-url="{{ Skeletons.0.get_list_url }}?page={{ Skeletons.next_page_number }}&q={{ q }}">{% trans "Next" %} &rarr;</a></li>
+   {% endif %}
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>{% trans "Action:" %}</h5>
+ <div class="input-append">
+  <select id="skeletons-action">
+   <option data-url="{% url "skeleton bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+  </select>
+  <button class="btn bulk-action" type="button" data-action-element="#skeletons-action" data-checkboxes=".skeleton-checkbox">{% trans "Apply" %}</button>
+ </div>
+</div>

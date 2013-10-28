@@ -17,7 +17,8 @@ class Skeleton_QuerySetManager(QuerySet):
         """Extended search from a string."""
         return self.filter(
             Q(name__icontains=q) |
-            Q(sources__name__icontains=q)
+            Q(plugin_pattern__icontains=q) |
+            Q(source_pattern__icontains=q)
         ).distinct()
 
     def user_web_filter(self, q, user):
@@ -25,7 +26,6 @@ class Skeleton_QuerySetManager(QuerySet):
         views = self.web_filter(q)
         if user.is_superuser:
             return views
-        return views.filter(sources__plugin__host__group__in=user.groups.all()).distinct()
 
 
 class Skeleton(models.Model):

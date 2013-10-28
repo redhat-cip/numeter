@@ -6,6 +6,7 @@ from plugin import Plugin_Test
 from source import Source_Test
 from view import View_Test
 from multiview import Multiview_Test
+from skeleton import Skeleton_Test
 from event import Event_Test
 
 
@@ -20,6 +21,7 @@ def suite():
         'configuration.tests.source',
         'configuration.tests.view',
         'configuration.tests.multiview',
+        'configuration.tests.skeleton',
         'configuration.tests.event',
     )
     suite = unittest.TestSuite()

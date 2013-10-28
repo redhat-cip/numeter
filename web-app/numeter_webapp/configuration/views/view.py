@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
 from core.models import Data_Source
-from multiviews.models import View, Multiview, Event
+from multiviews.models import View, Multiview, Skeleton, Event
 from configuration.forms.view import Extended_View_Form as View_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
@@ -20,6 +20,7 @@ def index(request):
         'Views': Views,
         'Views_count': Views_count,
         'Multiviews_count': Multiview.objects.count(),
+        'Skeletons_count': Skeleton.objects.count(),
         'Events_count': Event.objects.count(),
     })
 
