@@ -26,5 +26,6 @@ def get_rpc_client(hosts=[], password='guest'):
     conf.rabbit_max_retries = 1
     conf.rabbit_hosts = hosts
     conf.rabbit_password = password
+    conf.control_exchange = 'numeter'
     transport = messaging.get_transport(conf)
     return BaseAPIClient(transport)
