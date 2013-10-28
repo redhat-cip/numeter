@@ -26,6 +26,9 @@ You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. Yo
 
 **From packages :** ::
 
+    echo 'deb http://ftp.fr.debian.org/debian wheezy-backports main' >> /etc/apt/sources.list.d/debian-backports.list
+    apt-get update
+    
     apt-get install -t wheezy-backports python-django python-mimeparse
     easy_install django-tastypie
 
@@ -34,7 +37,7 @@ Numeter Webapp setup
 
 Get sources ::
 
-    https://github.com/enovance/numeter
+    git clone https://github.com/enovance/numeter
 
 Launch the setup ::
 
@@ -63,18 +66,18 @@ Install python requirements:  ::
 
 Create valid user and database: ::
 
-    CREATE TABLE numeter;
+    CREATE DATABASE numeter;
     GRANT ALL ON numeter.* TO numeter@'localhost' IDENTIFIED BY 'yourpass';
 
 Edit Webaap configuration file, ``/etc/numeter/numeter_webapp.cfg`` ::
 
-    sed -i /etc/numeter/numeter_webapp.cfg '
-      s/engine.*/engine = django.db.backends.mysql/ ;
-      s/name.*/name = numeter/ ;
-      s/user.*/user = numeter/ ;
-      s/password.*/password = yourpass/ ;
-      s/host.*/host = localhost/ ;
-      s/port.*/port = 3306/
+    sed -i /etc/numeter/numeter_webapp.cfg -re '
+      s/^engine.*/engine = django.db.backends.mysql/ ;
+      s/^name.*/name = numeter/ ;
+      s/^user.*/user = numeter/ ;
+      s/^password.*/password = yourpass/ ;
+      s/^host.*/host = localhost/ ;
+      s/^port.*/port = 3306/
     '
 
 **Sqlite3** ::
@@ -150,7 +153,7 @@ First launch
 ::
 
     numeter-webapp syncdb
-    numeter-webapp add-storage --alias=local_storage --port=8080 --urlprefix=/numeter-storage/ --address=127.0.0.1
+    numeter-webapp storage add --name=local_storage --port=8080 --url_prefix=/numeter-storage --address=127.0.0.1
 
 .. note::
     ``syncdb`` will ask you to create a first superuser. If you choose 'no', it will be possible to make it with ``numeter-webapp user add -S``.
