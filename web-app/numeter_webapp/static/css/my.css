@@ -1,71 +1,111 @@
 body {
-  padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+    padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 }
 
 div[id="body"] {
-  min-height: 200px;
+    min-height: 200px;
 }
 
 .center {
-  float: none;
-  margin-left: auto;
-  margin-right: auto;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .editor {
-  font-family:Menlo,Monaco,Consolas,"Courier New",monospace
+    font-family:Menlo,Monaco,Consolas,"Courier New",monospace
 }
 
 .accordion li {
-  margin-left: 10px;
-  cursor: pointer;  
+    margin-left: 10px;
+    cursor: pointer;  
 }
 
 .popover {
-  height: 200px;
-  width: 400px;
-  max-width: 1000px;
+    height: 200px;
+    width: 400px;
+    max-width: 1000px;
 }
 
 .accordion-group .accordion-heading {
-  text-align: center;
+    text-align: center;
 }
 
 .messages {
-  position: fixed;
-  right: 20px;
-  top: 20px;
-  width: 300px;
-  z-index: 9999;
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    width: 300px;
+    z-index: 9999;
 }
 
 .to-add {
-  color: #4BBB39;
+    color: #4BBB39;
 }
 .to-add:hover {
-  color: #6BBB39;
+    color: #6BBB39;
 }
 
 .to-remove {
-  color: #BB4B39;
+    color: #BB4B39;
 }
 .to-remove:hover {
-  color: #BB6B39;
+    color: #BB6B39;
 }
 
 .messages .alert-block {
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 }
 
 .alert-error {
-  border: 1px solid #9D261D;
+    border: 1px solid #9D261D;
 }
 
 .alert-success {
-  border: 1px solid #46A546;
+    border: 1px solid #46A546;
 }
 
 .graph {  
-  width: 100%; 
-  height: 320px;
+    width: 100%; 
+    height: 320px;
 }
+
+.rickshaw_legend {
+    background: inherit;
+  }
+
+  .detail .x_label {
+      display: none;
+        }
+
+        .rickshaw_graph .x_tick .title {
+            bottom: -25px;
+            left: -20px;
+                }
+
+                .legend_container, .chart_display, .y_axis_container, .chart_minimap {
+                    display: inline-block;
+                  }
+
+                  .chart_display,.legend_container, .y_axis_container {
+                      vertical-align: top;
+                    }
+
+                    .y_axis_container {
+                        width: 50px;
+                      }
+
+                      .legend_container {
+                          width: 100px;  
+                          height: 320px;  
+                          padding: 0px;
+                            }
+
+                            .chart_minimap {
+                                margin-left: -5px;
+                              }
+
+                              .chart_display {
+                                  margin-left: -5px;
+                                  margin-bottom: 10px;
+                                  }
