@@ -68,6 +68,8 @@ class Storage(object):
                 "configuration enable = false")
             exit(2)
 
+        self._redis_connexion = self.redisStartConnexion()
+
         if self._redis_connexion._error:
             self._logger.critical("Redis storage connexion ERROR - "
                 "Check redis access or password")
