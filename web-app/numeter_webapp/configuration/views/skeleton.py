@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
 from multiviews.models import Skeleton
-from configuration.forms.skeleton import Skeleton_Form
+from configuration.forms.skeleton import Skeleton_Form, Skeleton_To_View_Form
 from core.utils.decorators import login_required, superuser_only
 from core.utils import make_page
 from core.utils.http import render_HTML_JSON
@@ -83,6 +83,33 @@ def delete(request, skeleton_id):
     S.delete()
     messages.success(request, _("Skeleton deleted with success."))
     return render(request, 'base/messages.html', {})
+
+
+@login_required()
+@superuser_only()
+def use(request, skeleton_id):
+    S = get_object_or_404(Skeleton.objects.filter(pk=skeleton_id))
+    if request.method == 'GET':
+        F = Skeleton_To_View_Form(user=request.user, skeleton=S)
+        return render(request, 'modals/use-skeleton.html', {
+            'Skeleton_To_View_Form': F,
+        })
+    else:
+        print request.POST
+        F = Skeleton_To_View_Form(user=request.user, skeleton=S, data=request.POST)
+        data = {}
+        if F.is_valid():
+            print F.save()
+            messages.success(request, _("View creatted with success."))
+            data['response'] = 'ok'
+            data['callback-url'] = S.get_absolute_url()
+        else:
+            for field,error in F.errors.items():
+                messages.error(request, '<b>%s</b>: %s' % (field,error))
+                print field,error
+            data['response'] = 'error'
+        print data
+        return render_HTML_JSON(request, data, 'base/messages.html', {})
 
 
 # TODO : Make unittest

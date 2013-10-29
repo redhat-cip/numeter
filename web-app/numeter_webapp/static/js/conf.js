@@ -222,6 +222,33 @@ $(document).on('click', '#btn-create-sources', function() {
   });
 });
 
+// BUTTON CREATE VIEW FROM SKELETON - MODAL
+$(document).on('click', '#btn-use-skeleton', function(e) {
+  e.preventDefault();
+  var url = $(this).attr('data-url');
+  $.ajax({
+    type: 'GET', url: url, async: true,
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('#myModal').html(data);
+      $('#myModal').modal('show');
+    },
+  });
+});
+// BUTTON CREATE VIEW FROM SKELETON - VIEW
+$(document).on('click', '#btn-use-skeleton_2', function() {
+  var url = $(this).attr('data-url');
+  var form = $('.use-skeleton-form');
+  $.ajax({
+    type: 'POST', url: url, async: true,
+    data: form.serialize(),
+    error: function(data, status, xhr) { error_modal() },
+    success: function(data, status, xhr) {
+      $('.messages').append(data);
+    },
+  });
+});
+
 // USE BULK ACTION
 $(document).on('click', '.bulk-action', function() {
   var action_element_id = $(this).attr('data-action-element');

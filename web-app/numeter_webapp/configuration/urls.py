@@ -74,6 +74,7 @@ urlpatterns = patterns('',
     url(r'^skeleton/(?P<skeleton_id>\d+)$', 'configuration.views.skeleton.get', name='skeleton'),
     url(r'^skeleton/(?P<skeleton_id>\d+)/update$', 'configuration.views.skeleton.update', name='skeleton update'),
     url(r'^skeleton/(?P<skeleton_id>\d+)/delete$', 'configuration.views.skeleton.delete', name='skeleton delete'),
+    url(r'^skeleton/(?P<skeleton_id>\d+)/use$', 'configuration.views.skeleton.use', name='skeleton use'),
     # Event
     url(r'^event/list$', 'configuration.views.event.list', name='event list'),
     url(r'^event/list/delete$', 'configuration.views.event.bulk_delete', name='event bulk delete'),

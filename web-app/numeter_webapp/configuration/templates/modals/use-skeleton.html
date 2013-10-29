@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="modal-header">
+ <button type="button" class="close" data-dismiss="modal">×</button>
+ <h4>{% blocktrans %}Create view from {{ Skeleton_To_View_Form.skeleton }}{% endblocktrans %}
+</div>
+
+<div class="modal-body">
+ {% if Skeleton_To_View_Form.available_hosts %}
+  <h5>{% trans "Select from which host(s) you want to create:" %}</h5>
+  {% include "forms/use-skeleton.html" %}
+ {% else %}
+  <h4>{% trans "There's no host to choose." %}</h4>
+ {% endif %}
+</div>
+
+<div class="modal-footer">
+ {% if Skeleton_To_View_Form.available_hosts %}
+  <button id="btn-use-skeleton_2" class="btn btn-primary" data-url="{% url "skeleton use" Skeleton_To_View_Form.skeleton.id %}" data-dismiss="modal">{% trans 'Create' %}</button>
+ {% endif %}
+ <button class="btn" data-dismiss="modal">{% trans 'Close' %}</button>
+</div>
