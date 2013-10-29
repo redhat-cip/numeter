@@ -43,10 +43,9 @@ if __name__ == '__main__':
           cmdclass={"install_data": my_install},
           version='0.2.3.12',
           description='Numeter Poller',
-          long_description="""Numeter is a new graphing solution (like Cacti for \
-          example) made by some guys working at eNovance. Poller and collector are \
-          written in Python and datas are stored in a Redis DB. The webapp is written in PHP.\
-          Documentation is available here: https://numeter.readthedocs.org""",
+          long_description="""Numeter is a new and dynamic graphing solution \
+made by some of the folks at eNovance. We use it as part of our cloud \
+solutions. It is based on Python, sexy and highly scalable.""",
           author='Gaël Lambert (gaelL)',
           author_email='gael.lambert@enovance.com',
           maintainer='Gaël Lambert (gaelL)',
