@@ -216,8 +216,15 @@ class Poller(object):
 
     def loadModules(self):
         "Get and write data / infos of all modules"
-        # Load dynammic modules
         writedInfos = []
+        # loadModules getMyInfo
+        if self._need_refresh:
+            self._logger.info("Call plugin getMyInfo")
+            allInfos = self.getMyInfo()
+            self._sendInfo(allInfos)
+            writedInfos.append('MyInfo')
+
+        # Load dynammic modules
         for module in self._modules.split("|"):
             allDatas = allInfos = []
             self._logger.info("Try to launch module : %s" % module)
@@ -250,14 +257,6 @@ class Poller(object):
             except Exception as e:
                 self._logger.error("Module : %s Exception : %s" % (module, e))
                 continue
-        # Exec fixe module
-        # loadModules getMyInfo
-        if self._need_refresh:
-            allInfos = []
-            self._logger.info("Call plugin getMyInfo")
-            allInfos = self.getMyInfo()
-            self._sendInfo(allInfos)
-            writedInfos.append('MyInfo')
 
 
 
