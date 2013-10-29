@@ -30,7 +30,7 @@ class my_install(install_data):
         if install_cmd.root:
             self.install_dir = install_cmd.root
         else:
-            self.install_dir = install_cmd.install_data
+            self.install_dir = "/"
         install_data.run(self)
         for script in self.get_outputs():
             # Rename name.init in name
@@ -55,7 +55,6 @@ solutions. It is based on Python, sexy and highly scalable.""",
           license='GNU Affero General Public License v3',
           scripts = ['numeter-poller', 'numeter-pollerd'],
           packages = ['numeter', 'numeter.poller'],
-          package_dir = {'numeter.poller': 'module/'},
           namespace_packages = ['numeter'],
           data_files = [('etc/numeter', ['numeter_poller.cfg']),
                         ('var/log/numeter', ''),

@@ -30,7 +30,7 @@ class my_install(install_data):
         if install_cmd.root:
             self.install_dir = install_cmd.root
         else:
-            self.install_dir = install_cmd.install_data
+            self.install_dir = "/"
         install_data.run(self)
         for script in self.get_outputs():
             # Rename name.init in name
@@ -55,9 +55,7 @@ solutions. It is based on Python, sexy and highly scalable.""",
           license='GNU Affero General Public License v3',
           scripts = ['numeter-storage', 'numeter-storaged'],
           packages = ['numeter', 'numeter.redis' , 'numeter.storage'],
-          package_dir = {'numeter.storage':'module/'},
           namespace_packages = ['numeter'],
-          #package_data={'': ['storage/numeter.storage.py']},
           #data_files = [('/etc', ['etc/numeter.conf']),
           #              ('/etc/logrotate.d', ['etc/logrotate.d/numeter']),
           #              ('share/doc/numeter',['README', 'COPYING', 'CHANGES']),
