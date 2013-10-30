@@ -1,9 +1,9 @@
 server {
     listen 80;
-    server_name zulutab;
+    server_name numeter.lan;
 
-    access_log /var/log/nginx/django-status/access.log;
-    error_log /var/log/nginx/django-status/error.log;
+    access_log /var/log/nginx/numeter_webapp_access.log;
+    error_log /var/log/nginx/numeter_webapp_error.log;
 
     location ~ ^/static/(.*)$ {
         alias /usr/src/numeter/web-app/numeter_webapp/static/$1;
