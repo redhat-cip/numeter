@@ -1,7 +1,7 @@
 [uwsgi]
 thread = 3
 master = True
-no-site = Fals
+no-site = False
 vacuum = True
 plugins = python
 
