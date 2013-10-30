@@ -6,13 +6,13 @@ server {
     error_log /var/log/nginx/numeter_webapp_error.log;
 
     location ~ ^/static/(.*)$ {
-        alias /usr/src/numeter/web-app/numeter_webapp/static/$1;
+        alias @APP_DIR@/static/$1;
     }
     location ~ ^/media/(.*)$ {
-        alias /usr/src/numeter/web-app/numeter_webapp/../media/$1;
+        alias /var/www/numeter/media/$1;
     }
     location / {
-        uwsgi_pass unix:///run/uwsgi-numeter-webapp.sock;
+        uwsgi_pass unix:///run/uwsgi/app/numeter_webapp/socket;
         include uwsgi_params;
     }
 }
