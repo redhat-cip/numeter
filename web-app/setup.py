@@ -11,12 +11,12 @@
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
@@ -60,7 +60,7 @@ class my_install(install_data):
         root = self.root or ''
         with open('%s/etc/numeter/secret_key.txt' % root, 'w') as f:
             f.write(NEW_SECRET_KEY)
-        
+
 
 if __name__ == '__main__':
 
@@ -89,6 +89,9 @@ if __name__ == '__main__':
               ('/etc/numeter', ['numeter_webapp.cfg']),
               ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-combined.js']),
               ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-numeter.js']),
+              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/d3.js']),
+              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/rickshaw-combined.js']),
+              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/rickshaw-numeter.js']),
               ('/var/log/numeter/webapp', ''),
           ],
           classifiers=[
