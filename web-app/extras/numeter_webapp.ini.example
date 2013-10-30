@@ -8,5 +8,5 @@ plugins = python
 chdir = @APP_DIR@
 env = DJANGO_SETTINGS_MODULE=web_app.settings
 module = numeter_webapp.web_app.wsgi:application
-socket = /run/uwsgi-numeter-webapp.sock
+socket = /run/uwsgi/app/numeter_webapp/socket
 chmod-socket = 660
