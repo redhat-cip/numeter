@@ -118,11 +118,11 @@ We advise to use Apache + mod_wsgi or Nginx + uWSGI. The Django embebbed webserv
 
 Copy the site template in your apache configuration: ::
 
-    cp extras/numeter-apache.example /etc/apache2/site-available/numeter-webapp
+    cp extras/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
     # For packaged setup /usr/share/doc/numeter/webapp/numeter-wsgi
     NUMETER_DIR=$(dirname $(python -c 'import numeter_webapp;print numeter_webapp.__file__'))
-    sed -i /etc/apache2/site-available/numeter-wsgi "s#@APP_DIR@#$NUMETER_DIR# ; s/ServerName.*/ServerName YoursServer/"
-    ln -s /etc/apache2/site-available/numeter-wsgi /etc/apache2/site-enabled/numeter-wsgi
+    sed -i /etc/apache2/sites-available/numeter-wsgi "s#@APP_DIR@#$NUMETER_DIR# ; s/ServerName.*/ServerName YoursServer/"
+    ln -s /etc/apache2/sites-available/numeter-wsgi /etc/apache2/sites-enabled/numeter-wsgi
 
 .. note::
     You can customize it for match with your security requirements.
