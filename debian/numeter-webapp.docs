@@ -1,0 +1,5 @@
+web-app/README
+web-app/INSTALL
+web-app/extras/numeter-apache.example
+web-app/extras/numeter-nginx.example
+web-app/extras/numeter_webapp.ini.example
