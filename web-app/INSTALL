@@ -49,6 +49,7 @@ Configure
 
 Webapp's settings are by default in ``/etc/numeter/numeter_webapp.cfg``.
 You have to define following stuff:
+
     * A database backend
     * A web frontend
     * Optionnaly a cache backend
@@ -115,7 +116,7 @@ We advise to use Apache + mod_wsgi or Nginx + uWSGI. The Django embebbed webserv
 
 **Apache**
 
-Install mod uwsgi : ::
+Install mod wsgi : ::
 
     apt-get install libapache2-mod-wsgi
     a2enmod wsgi
@@ -131,9 +132,32 @@ Copy the site template in your apache configuration: ::
 .. note::
     You can customize it for match with your security requirements.
 
+    With debian example config are located in `/usr/share/doc/numeter-storage/`
+
 **Nginx**
 
-(Available but not describe)
+Install nginx and uwsgi : ::
+
+    apt-get install nginx uwsgi uwsgi-plugin-python
+
+Copy the site template in your apache configuration: ::
+
+    NUMETER_DIR=$(dirname $(python -c 'import numeter_webapp;print numeter_webapp.__file__'))
+    # Nginx
+    cp web-app/extras/numeter-nginx.example /etc/nginx/sites-available/numeter-webapp
+    ln -s /etc/nginx/sites-available/numeter-webapp /etc/nginx/sites-enabled/
+    sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/nginx/sites-available/numeter-webapp
+    /etc/init.d/nginx restart
+    # uwsgi
+    cp web-app/extras/numeter_webapp.ini.example /etc/uwsgi/apps-available/numeter_webapp.ini
+    ln -s /etc/uwsgi/apps-available/numeter_webapp.ini /etc/uwsgi/apps-enabled/
+    sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/uwsgi/apps-available/numeter_webapp.ini
+    /etc/init.d/uwsgi restart
+
+.. note::
+    You can customize it for match with your security requirements.
+
+    With debian example config are located in `/usr/share/doc/numeter-storage/`
 
 Use memcached backend
 ----------------------
