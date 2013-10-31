@@ -48,6 +48,7 @@ Example::
 ``name``
 ^^^^^^^^
 .. warning::
+
     Required
 
 This setting defines name of the database to use. For SQLite, it's the full path to the database file.
@@ -322,7 +323,7 @@ Example::
     use_mock_storage = True
 
 ``use_debug_toolbar``
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 .. note::
     Optionnal, defaults to ``False``, set as ``False`` if ``debug = False``.
 
