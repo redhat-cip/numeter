@@ -16,3 +16,4 @@
     </Directory>
 
 </VirtualHost>
+WSGIPythonPath @APP_DIR@
