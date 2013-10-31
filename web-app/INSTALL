@@ -115,6 +115,11 @@ We advise to use Apache + mod_wsgi or Nginx + uWSGI. The Django embebbed webserv
 
 **Apache**
 
+Install mod uwsgi : ::
+
+    apt-get install libapache2-mod-wsgi
+    a2enmod wsgi
+
 Copy the site template in your apache configuration: ::
 
     cp web-app/extras/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
