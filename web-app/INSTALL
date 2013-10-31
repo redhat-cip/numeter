@@ -71,14 +71,13 @@ Create valid user and database: ::
 
 Edit Webaap configuration file, ``/etc/numeter/numeter_webapp.cfg`` ::
 
-    sed -i /etc/numeter/numeter_webapp.cfg -re '
+    sed -i -re '
       s/^engine.*/engine = django.db.backends.mysql/ ;
       s/^name.*/name = numeter/ ;
       s/^user.*/user = numeter/ ;
       s/^password.*/password = yourpass/ ;
       s/^host.*/host = localhost/ ;
-      s/^port.*/port = 3306/
-    '
+      s/^port.*/port = 3306/' /etc/numeter/numeter_webapp.cfg
 
 **Sqlite3** ::
 
@@ -118,11 +117,11 @@ We advise to use Apache + mod_wsgi or Nginx + uWSGI. The Django embebbed webserv
 
 Copy the site template in your apache configuration: ::
 
-    cp extras/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
-    # For packaged setup /usr/share/doc/numeter/webapp/numeter-wsgi
+    cp web-app/extras/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
+    # For packaged setup /usr/share/doc/numeter/webapp/numeter-webapp
     NUMETER_DIR=$(dirname $(python -c 'import numeter_webapp;print numeter_webapp.__file__'))
-    sed -i /etc/apache2/sites-available/numeter-wsgi "s#@APP_DIR@#$NUMETER_DIR# ; s/ServerName.*/ServerName YoursServer/"
-    ln -s /etc/apache2/sites-available/numeter-wsgi /etc/apache2/sites-enabled/numeter-wsgi
+    sed -i "s#@APP_DIR@#$NUMETER_DIR# ; s/ServerName.*/ServerName YoursServer/" /etc/apache2/sites-available/numeter-webapp
+    a2ensite numeter-webapp
 
 .. note::
     You can customize it for match with your security requirements.
