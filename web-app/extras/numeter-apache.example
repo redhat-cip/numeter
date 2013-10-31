@@ -8,7 +8,7 @@
     Alias /static @APP_DIR@/static/
     Alias /media /var/www/numeter/media/ 
 
-    WSGIScriptAlias / @APP_DIR@/numeter/wsgi
+    WSGIScriptAlias / @APP_DIR@/web_app/wsgi.py
 
     <Directory @APP_DIR@/ >
         Order deny,allow
