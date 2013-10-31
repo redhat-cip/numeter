@@ -1,4 +1,3 @@
-Listen *:80
 <VirtualHost *:80>
     ServerAdmin admin@domaine.com
     ServerName  numeter.lan
