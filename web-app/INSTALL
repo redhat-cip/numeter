@@ -167,11 +167,11 @@ Use memcached backend
 
 Install Memcached ::
 
-    apt-get install memcached python-memcached
+    apt-get install memcached python-memcache
 
 Set 'use_cache' to True in numeter_webapp.cfg: ::
 
-    sed -i /etc/numeter_webapp.cfg 's/use_cache.*=.*/use_cache = True/'
+    sed -i 's/use_cache.*=.*/use_cache = True/' /etc/numeter_webapp.cfg
 
 .. note::
     By default Webapp will connect to Memcached with a Unix socket at ``/var/run/memcached.sock```.
