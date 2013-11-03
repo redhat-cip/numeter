@@ -2,7 +2,7 @@
 (function (window, $, angular) {
   'use strict';
 
-  angular.module('numeter', []);
+  angular.module('numeter', ['ui.bootstrap']);
 
 
   window.numeter = {
