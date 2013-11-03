@@ -2,9 +2,6 @@
 (function (window, $, angular) {
   'use strict';
 
-  angular.module('numeter', ['ui.bootstrap']);
-
-
   window.numeter = {
     graphs: [],
     load_requests: [],
