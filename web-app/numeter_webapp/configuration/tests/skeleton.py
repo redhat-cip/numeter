@@ -1,12 +1,12 @@
 from django.test import LiveServerTestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
+from core.tests.utils import set_users
 from multiviews.models import View, Skeleton
 
 
 class Skeleton_Test(LiveServerTestCase):
-    fixtures = ['test_users.json','test_storage.json']
-
+    @set_users()
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')
@@ -27,13 +27,11 @@ class Skeleton_Test(LiveServerTestCase):
         url = reverse('skeleton add')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
         # Test to add
         POST = {'name': 'test skeleton', 'plugin_pattern':'.', 'source_pattern':'.'}
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         skeleton = Skeleton.objects.get(name='test skeleton')
-
         # Test to get
         skeleton = Skeleton.objects.get(pk=skeleton.pk)
         url = reverse('skeleton', args=[skeleton.id])

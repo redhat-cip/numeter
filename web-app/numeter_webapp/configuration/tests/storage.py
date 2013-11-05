@@ -3,12 +3,11 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 
 from core.models import Storage
-from core.tests.utils import storage_enabled, set_storage
+from core.tests.utils import set_users, set_storage
 
 
 class Storage_Test(LiveServerTestCase):
-    fixtures = ['test_users.json']
-
+    @set_users()
     @set_storage()
     def setUp(self):
         self.c = Client()

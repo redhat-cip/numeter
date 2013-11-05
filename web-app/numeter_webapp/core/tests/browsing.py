@@ -1,11 +1,11 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
+from core.tests.utils import set_users
 
 
 class Index_Test(TestCase):
-    fixtures = ['test_users.json']
-
+    @set_users()
     def setUp(self):
         self.c = Client()
         self.c.login(username='root', password='toto')

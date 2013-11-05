@@ -1,10 +1,13 @@
 from django.test import TestCase
 from django.test.client import Client
 from core.models import User
+from core.tests.utils import set_users
 
 
 class Login_Test(TestCase):
-    fixtures = ['test_users.json']
+    @set_users()
+    def setUp(self):
+        pass
 
     def test_forbidden_access(self):
         """Go to site withoug logged in."""

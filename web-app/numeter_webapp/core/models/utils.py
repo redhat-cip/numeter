@@ -31,56 +31,46 @@ class QuerySet(models.query.QuerySet):
         return ManagerClass(cls) 
 
 
-class MediaList(list):
-
-    def __init__(self, list=[], dir=s.MEDIA_ROOT+'/graphlib'):
-        super(MediaList, self).__init__(list)
-        self.dir = dir
+class MediaList(unicode):
+    """
+    Object to mmanipulate graphic javascript library.
+    Based on ``unicode`` to make a CHARFIELD and save directory name in db.
+    """
+    def __init__(self, lib):
+        super(MediaList, self).__init__(lib)
+        self.dir = s.MEDIA_ROOT+'graphlib/'
+        self.lib = lib
 
     def _make_html_import(self, full_src):
         """Create HTML <script> tag."""
         IMPORT_TEMP = '<script src="%s"></script>'
         return IMPORT_TEMP % full_src
 
-    def _list_available(self):
-        return listdir(s.MEDIA_ROOT+'graphlib')        
-
-    def _get_full_url(self, src):
-        return s.MEDIA_ROOT+'graphlib/' + src
-
-    def _get_media_url(self, src):
-        return s.MEDIA_URL+'graphlib/' + src
-
     def _walk(self):
         """
         Walk on chosen files and return a generator of chosen files.
         """
-        for f in self:
-            full_src = s.MEDIA_ROOT+'graphlib/'+f
-            media_src = s.MEDIA_URL+'graphlib/'+f
-            # Don't treat non-existing
-            if not path.exists(full_src):
+        # TODO: Make it with os.walk()
+        full_src = self.dir + self.lib
+        media_src = s.MEDIA_URL+'graphlib/' + self.lib
+        # Search in directory
+        for subfile_name in listdir(full_src):
+            sf = full_src + '/' + subfile_name
+            if not path.isfile(sf):
                 continue
-            # Yield files
-            elif not path.isdir(full_src):
-                yield media_src
-            # Search in directory
-            else:
-                for subfile_name in listdir(full_src):
-                    sf = full_src + '/' + subfile_name
-                    if not path.isfile(sf):
-                        continue
-                    elif path.exists(sf):
-                        yield media_src + '/' + subfile_name
+            elif path.exists(sf):
+                yield media_src + '/' + subfile_name
 
     def sources(self):
         """Return list of files' URL."""
         return [ s for s in self._walk() ] 
 
     def file_names(self):
+        """List files."""
         return [ path.basename(s) for s in self._walk() ] 
 
     def get_source_and_name(self):
+        """List files with tuples : (full_dir, dir)."""
         return [ (s,path.basename(s)) for s in self._walk() ] 
 
     def htmlize(self):
@@ -98,31 +88,26 @@ class MediaField(CharField):
     Choices are media files and stored as splited string.
     """
     
-    description = "A choice of files in media"
+    description = "A choice of graphic plugin library."
     __metaclass__ = SubfieldBase
 
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 2000 # Why not ?
         super(MediaField, self).__init__(*args, **kwargs)
         # choices are MEDIA_ROOT
-        self._choices = [ (x,x) for x in listdir(s.MEDIA_ROOT+'graphlib') ]
+        self._choices = [ (x, x) for x in listdir(s.MEDIA_ROOT+'graphlib') ]
 
     def to_python(self, value):
-        """From VARCHAR to MediaList()."""
-        if not value:
-            return MediaList()
-        if isinstance(value, basestring):
-            return MediaList(value.split())
-        elif isinstance(value, (list,tuple)):
-            return MediaList(value)
+        """Return object to handle it."""
+        return MediaList(value)
 
     def validate(self, value, model_instance):
         # TODO : Make validation
         return
 
     def get_prep_value(self, value):
-        """From list() to string."""
-        return ' '.join(value)
+        """Save lib name in db."""
+        return value.lib
 
     def formfield(self, **kwargs):
         """Automaticaly uses ChoiceField."""

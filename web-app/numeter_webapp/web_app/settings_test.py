@@ -2,6 +2,10 @@
 Settings used in testing.
 """
 
+# Disable logger
+import logging
+logging.disable(logging.CRITICAL)
+
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.sqlite3',

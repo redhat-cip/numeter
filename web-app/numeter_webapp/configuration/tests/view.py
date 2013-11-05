@@ -2,14 +2,12 @@ from django.test import LiveServerTestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 
-from core.models import Host, Plugin, Data_Source
-from core.tests.utils import storage_enabled, set_storage
+from core.tests.utils import set_users, set_storage
 from multiviews.models import View
 
 
 class View_Test(LiveServerTestCase):
-    fixtures = ['test_users.json','test_storage.json']
-
+    @set_users()
     @set_storage(extras=['host','plugin','source'])
     def setUp(self):
         self.c = Client()
@@ -31,12 +29,10 @@ class View_Test(LiveServerTestCase):
         url = reverse('view add')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
         # Test to add
         POST = { 'name': 'test view', 'sources': [1]}
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
         # Test to get
         view = View.objects.get(name='test view')
         url = reverse('view', args=[view.id])
@@ -61,7 +57,6 @@ class View_Test(LiveServerTestCase):
         POST = {'name':'test view'}
         r = self.c.post(url, POST) 
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
         # Test if updated
         view = View.objects.get(pk=view.pk)
         self.assertEqual(view.name, 'test view', 'Comment is not changed (%s).' % view.name)
@@ -74,9 +69,7 @@ class View_Test(LiveServerTestCase):
         url = reverse('view delete', args=[view_id])
         r = self.c.post(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
         # Test to get it
         url = reverse('view', args=[view_id])
         r = self.c.get(url)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
-

@@ -3,13 +3,12 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 
 from core.models import Host, Plugin, Data_Source
-from core.tests.utils import storage_enabled, set_storage
+from core.tests.utils import set_users, set_storage
 
 
 class Plugin_Test(LiveServerTestCase):
     """Test to manage plugins with browser."""
-    fixtures = ['test_users.json']
-
+    @set_users()
     @set_storage(extras=['host'])
     def setUp(self):
         self.c = Client()
@@ -28,7 +27,6 @@ class Plugin_Test(LiveServerTestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
-    @storage_enabled()
     def test_create_plugin_from_host(self):
         """Create plugin from host ids."""
         # Test GET
@@ -55,7 +53,6 @@ class Plugin_Test(LiveServerTestCase):
         saved_plugins = Plugin.objects.all()
         self.assertEqual(saved_plugins.count(), 1, "Can create duplicate plugin.")
 
-    @storage_enabled()
     def test_get(self):
         """Get a plugin."""
         plugin = self.host.create_plugins()[0]
@@ -63,7 +60,6 @@ class Plugin_Test(LiveServerTestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
 
-    @storage_enabled()
     def test_create_sources(self):
         """Create sources from a plugin."""
         plugin = self.host.create_plugins()[0]
@@ -92,7 +88,6 @@ class Plugin_Test(LiveServerTestCase):
         POST = { 'comment': 'test comment' }
         r = self.c.post(url, POST) 
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
         # Test if updated
         plugin = Plugin.objects.get(pk=1)
         self.assertEqual(plugin.comment, 'test comment', 'Comment is not changed (%s).' % plugin.comment)
@@ -106,7 +101,6 @@ class Plugin_Test(LiveServerTestCase):
         url = reverse('plugin delete', args=[plugin.id])
         r = self.c.post(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
         # Test to get it
         url = reverse('plugin', args=[plugin.id])
         r = self.c.get(url)
