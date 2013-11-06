@@ -23,7 +23,7 @@ class Profile_Test(TestCase):
     def test_change_username(self):
         """Change username and test if changed."""
         url = self.admin.get_update_url()
-        r = self.c.post(url, {'username': 'toto', 'graph_lib': ['dygraph-combined.js']})
+        r = self.c.post(url, {'username': 'toto', 'graph_lib': 'dygraph'})
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         self.assertTrue(User.objects.filter(username='toto').exists(), "New username not foundable.")
 

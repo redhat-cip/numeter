@@ -2,6 +2,13 @@
 Settings used in testing.
 """
 
+from core.utils.configparser import Custom_ConfigParser
+config = Custom_ConfigParser()
+config.read('/etc/numeter/numeter_webapp.cfg')
+
+import os
+BASEDIR = os.path.dirname(os.path.abspath(__file__))
+
 # Disable logger
 import logging
 logging.disable(logging.CRITICAL)
@@ -19,38 +26,29 @@ DATABASES = {
 
 # Use it as below
 # Storage.objects.create(**settings.TEST_STORAGE)
-TEST_STORAGE = {
-  'name': 'Demo',
-  'address': 'demo.numeter.com',
-  'port': 8080,
-  'url_prefix': '/numeter-storage',
-  'login': '',
-  'password': ''
-}
-
-# Disable logger
-import logging
-logger = logging.getLogger('storage')
-logger.setLevel(10)
+TEST_STORAGES = []
+if config.get_d('test', 'storage1_address', False):
+    TEST_STORAGES.append({
+      'name': 'Test Storage 1',
+      'address': config.get_d('test', 'storage1_address', 'localhost'),
+      'port': config.get_d('test', 'storage1_port', 8080),
+      'url_prefix': config.get_d('test', 'storage1_url_prefix', '/numeter-storage'),
+      'login': config.get_d('test', 'storage1_login', None),
+      'password': config.get_d('test', 'storage1_password', None)
+    })
+if config.get_d('test', 'storage2_address', False):
+    TEST_STORAGES.append({
+      'name': 'Test Storage 2',
+      'address': config.get_d('test', 'storage2_address', 'localhost'),
+      'port': config.get_d('test', 'storage2_port', 8080),
+      'url_prefix': config.get_d('test', 'storage2_url_prefix', '/numeter-storage'),
+      'login': config.get_d('test', 'storage2_login', None),
+      'password': config.get_d('test', 'storage2_password', None)
+    })
 
 # Temporary media files
-# DO NOT SET AS PRODUCTION MEDIA_ROOT
-MEDIA_ROOT = '/tmp/numeter-media/'
+BASE_MEDIA_ROOT = config.get_d('global', 'media_root', (BASEDIR+'/../media/'))
+MEDIA_ROOT = config.get_d('test', 'media_root', '/tmp/numeter-media/')
 
 # Set Liveserver, usefull for mock storage
-import os
 os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8081'
-
-### VALIDATION
-from os import mkdir
-from shutil import rmtree
-import socket
-
-try :
-    rmtree(MEDIA_ROOT, True)
-    mkdir(MEDIA_ROOT)
-    mkdir(MEDIA_ROOT+'/graphlib')
-    with open(MEDIA_ROOT+'/graphlib/dygraph-combined.js', 'w') as f:
-        f.write('test')
-except:
-    pass

@@ -65,11 +65,17 @@ def set_storage(extras=[]):
                 for model in extras:
                     call_command('loaddata', ('mock_%s.json' % model), database='default', verbosity=0)
             # Use settings_local
-            elif settings.TEST_STORAGE['address']:
-                self.storage = Storage.objects.create(**settings.TEST_STORAGE)
-                if not self.storage.is_on():
-                    self.skipTest("Configured storage unreachable.")
+            elif settings.TEST_STORAGES:
+                # Skip if no conf
+                if not settings.TEST_STORAGES:
+                    self.skipTest("There's no configurated test storage(s).")
+                for storage in settings.TEST_STORAGES:
+                    s = Storage.objects.create(**storage)
+                # Try to reach
+                if not True in [ True for s in Storage.objects.all() if s.is_on() ]:
+                    self.skipTest("Configured storage(s) are unreachable:\n%s" % settings.TEST_STORAGES)
                 else:
+                    setattr(self, 'storage', s)
                     if 'host' in extras:
                         hostids = self.storage.get_hosts().keys()
                         if not hostids:

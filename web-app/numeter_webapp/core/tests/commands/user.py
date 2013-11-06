@@ -5,7 +5,7 @@ Tests for user CLI management.
 from core.tests.utils import CmdTestCase
 from core.models import User
 from core.management.commands.user import Command
-from core.tests.utils import set_storage
+from core.tests.utils import set_users, set_storage
 
 
 class Cmd_User_List_Test(CmdTestCase):
@@ -32,6 +32,11 @@ class Cmd_User_List_Test(CmdTestCase):
 
 class Cmd_User_Add_Test(CmdTestCase):
     """Test ``manage.py user add``."""
+    @set_users()
+    def setUp(self):
+        super(Cmd_User_Add_Test, self).setUp()
+        User.objects.all().delete()
+
     def test_add(self):
         """Add a user."""
         argv = ['', 'user', 'add', '-u', 'TESTUSER', '-p', 'pass']
