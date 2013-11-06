@@ -47,6 +47,17 @@
       });
     };
   }];
+
+  window.resolutionCtrl = ['$scope', function ($scope) {
+    $scope.selected = 'daily';
+    
+    $scope.select = function (value) {
+      $scope.selected = value;
+      //TODO: ajust resolution
+    }
+    
+    
+  }];
 }(window, angular));
 
     
