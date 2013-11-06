@@ -27,7 +27,8 @@
             id: object.id,
             url: object.resource_uri,
             name: object.name,
-            categories: []
+            categories: [],
+            open: false
           });
         }
       }).
@@ -46,17 +47,31 @@
           });
       });
     };
+
+    $scope.displayHost = function (host) {
+      if (!host.open) {        
+        $scope.$emit('displayHost', host);
+      }
+    }
   }];
 
   window.resolutionCtrl = ['$scope', function ($scope) {
-    $scope.selected = 'daily';
     
     $scope.select = function (value) {
-      $scope.selected = value;
-      //TODO: ajust resolution
+      $scope.$emit('resChange',value);      
     }
-    
-    
+  }];
+
+  window.graphCtrl = ['$scope', function ($scope) {
+    $scope.selected = 'daily';
+
+    $scope.$on('resChange', function (event, resolution) {
+      $scope.selected = resolution;
+    });
+
+    $scope.$on('displayHost', function (event, args) {
+      
+    });
   }];
 }(window, angular));
 

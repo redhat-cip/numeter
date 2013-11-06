@@ -8,6 +8,7 @@
 {% block body %}
 
 {% verbatim %}
+<div ng-controller="graphCtrl">
 <div  accordion class="span3 accordion" ng-controller="AccordionMenuCtrl" id="menu">  
   <div accordion-group ng-repeat="group in groups">
     <div accordion-heading>
@@ -15,7 +16,10 @@
       </div>
     </div>
     <div accordion>
-      <div accordion-group ng-repeat="host in group.hosts" heading="{{host.name}}">        
+      <div accordion-group ng-repeat="host in group.hosts" is-open="host.open">
+        <div accordion-heading>
+          <div ng-click="displayHost(host)" ng-bind="host.name"></div>          
+        </div>
         <ul>
           <li ng-repeat="category in host.categories" ng-bind="category"></li>
         </ul>        
@@ -46,12 +50,14 @@
    </ul>
   </div>
 
-{% endverbatim %}
+
 
   <div class="row-fluid">
    <div id="graphs" class="span11"></div>
   </div>
  </div>
+</div>
+{% endverbatim %}
 {% endblock %}
 
 {% block scripts %}
