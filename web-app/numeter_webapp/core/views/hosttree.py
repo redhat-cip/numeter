@@ -25,9 +25,11 @@ def host(request, host_id=None):
     H = get_object_or_404(Host.objects.filter(id=host_id))
     if not has_perm(request.user, Host, host_id):
         raise Http404
-    return render(request, 'hosttree/host.html', {
-        'host': H.get_categories(),
-    }) 
+    # return render(request, 'hosttree/host.html', {
+    #     'host': H.get_categories(),
+    # }) 
+
+    return HttpResponse(jdumps(H.get_categories()), content_type="application/json")
 
 
 @login_required()

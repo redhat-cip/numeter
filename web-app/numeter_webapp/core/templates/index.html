@@ -6,24 +6,27 @@
 {% endblock %}
 
 {% block body %}
- <div class="span3">
-  <div class="accordion" id="host-accordion">
-   {% for host in hosts %}
-    {% ifchanged host.group %}
-     <div class="accordion-group">
-      <div class="accordion-heading">
-       <a href="#group-{{ host.group.id }}" data-parent="#host-accordion" data-toggle="collapse" class="accordion-toggle" group-id="{{ host.group.id }}">
-        {% if not host.group %}{% trans "No group" %}{% else %}{{ host.group }}{% endif %}
-       </a>
+
+{% verbatim %}
+<div  class="span3 accordion" ng-controller="AccordionMenuCtrl" id="menu">  
+  <div accordion-group ng-repeat="group in groups">
+    <div accordion-heading>
+      <div ng-click="loadHost(group.hosts)" ng-bind="group.title">        
       </div>
-      <div class="accordion-body collapse" id="group-{{ host.group.id }}" group-id="{{ host.group.id }}" style="height: 0px;">
-       <div class="accordion-inner" id="group-{{ host.group.id }}-content"></div>
+    </div>
+    <div accordion>
+      <div accordion-group ng-repeat="host in group.hosts" heading="{{host.name}}">        
+        <ul>
+          <li ng-repeat="category in host.categories" ng-bind="category"></li>
+        </ul>        
       </div>
-     </div>
-    {% endifchanged %}
-   {% endfor %}
-  </div>
- </div>
+    </div>     
+  </div>  
+</div>  
+{% endverbatim %}
+
+
+
 
  <div class="span9">
   <div class="row-fluid">
