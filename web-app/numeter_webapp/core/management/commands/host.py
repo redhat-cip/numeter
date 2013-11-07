@@ -73,7 +73,6 @@ class Add_Command(BaseCommand):
                 s.create_hosts()
                 self.stdout.write('All host from %s created.' % s)
             return
-
         # Select host by id or ids
         if opts['ids']:
             ids = [ i.strip() for i in opts['ids'].split(',') ]
