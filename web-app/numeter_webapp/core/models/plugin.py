@@ -29,7 +29,7 @@ class Plugin_QuerySetManager(QuerySet):
 
 
 class Plugin(models.Model):
-    name = models.CharField(_('name'), max_length=300)
+    name = models.CharField(_('name'), max_length=200)
     host = models.ForeignKey('core.Host')
     comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)
 
