@@ -11,7 +11,7 @@ import sys
 
 
 class Command(CommandDispatcher):
-    """Host management base command."""
+    """Skeleton management base command."""
     actions = ('list','add','delete','del','modify','mod','create_view')
 
     def _subcommand_names(self):
@@ -77,7 +77,7 @@ class Delete_Command(BaseCommand):
 
     def handle(self, *args, **opts):
         if opts['quiet']: self.stdout = open(devnull, 'w')
-        # Select host by id or ids
+        # Select skeleton by ids
         if opts['ids']:
             ids = [ i.strip() for i in opts['ids'].split(',') ]
             skeletons = Skeleton.objects.filter(id__in=ids)

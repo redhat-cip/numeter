@@ -2,7 +2,7 @@ from django.test import LiveServerTestCase
 from django.core.urlresolvers import reverse
 
 from core.models import Host, Plugin, Data_Source
-from core.tests.utils import storage_enabled, set_storage
+from core.tests.utils import set_storage
 from multiviews.models import View, Event
 from multiviews.tests.utils import create_view, create_event
 

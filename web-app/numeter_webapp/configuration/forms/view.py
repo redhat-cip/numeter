@@ -8,6 +8,11 @@ from multiviews.models import View
 # View_Form with search field
 # When have API
 
+class View_Form(forms.ModelForm):
+    class Meta:
+        model = View
+
+
 class Extended_View_Form(forms.ModelForm):
     """Small View ModelForm."""
     search_source = forms.CharField(

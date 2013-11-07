@@ -70,7 +70,7 @@ class Cmd_Skeleton_Del_Test(CmdTestCase):
         self.assertEqual(new_count, 0, "Skeleton wasn't deleted.")
 
     def test_delete_several(self):
-        """Delete a several group."""
+        """Delete a several skeletons."""
         skeleton = Skeleton.objects.create(name='TEST SKELETON', plugin_pattern='.', source_pattern='.')
         skeleton = Skeleton.objects.create(name='TEST SKELETON2', plugin_pattern='.', source_pattern='.')
         IDS  = ','.join([ str(s.id) for s in Skeleton.objects.all() ])
@@ -93,7 +93,7 @@ class Cmd_Skeleton_Del_Test(CmdTestCase):
 class Cmd_Skeleton_Mod_Test(CmdTestCase):
     """Test ``manage.py skeleton mod``."""
     def test_mod(self):
-        """Modify a group."""
+        """Modify a skeleton."""
         skeleton = Skeleton.objects.create(name='TEST SKELETON', plugin_pattern='.', source_pattern='.')
         argv = ['', 'skeleton', 'mod', '-i', str(skeleton.id), '-n', 'NEW NAME']
         Command().run_from_argv(argv)
@@ -109,6 +109,7 @@ class Cmd_Skeleton_Mod_Test(CmdTestCase):
         # Test stdout
         out = self.stdout.getvalue()
         self.assertFalse(out, "Output is printed:\n"+out)
+
 
 class Cmd_Skeleton_Create_View_Test(CmdTestCase):
     """Test ``manage.py skeleton create_view``."""
