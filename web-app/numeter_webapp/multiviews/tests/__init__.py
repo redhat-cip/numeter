@@ -6,12 +6,14 @@ from customize.view import Customize_View_Test
 from customize.multiview import Customize_Multiview_Test
 from customize.event import Customize_Event_Test
 from commands.view import Cmd_View_List_Test, Cmd_View_Add_Test, Cmd_View_Del_Test, Cmd_View_Mod_Test
+from commands.multiview import Cmd_Multiview_List_Test, Cmd_Multiview_Add_Test, Cmd_Multiview_Del_Test, Cmd_Multiview_Mod_Test
 from commands.skeleton import Cmd_Skeleton_List_Test, Cmd_Skeleton_Add_Test, Cmd_Skeleton_Del_Test, Cmd_Skeleton_Mod_Test, Cmd_Skeleton_Create_View_Test
 
 def suite():
     import unittest
     TEST_CASES = (
         'multiviews.tests.commands.view',
+        'multiviews.tests.commands.multiview',
         'multiviews.tests.commands.skeleton',
         'multiviews.tests.view',
         'multiviews.tests.skeleton',

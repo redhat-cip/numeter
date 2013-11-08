@@ -3,6 +3,10 @@ from django.utils.translation import ugettext_lazy as _
 from multiviews.models import View, Multiview
 
 
+class Multiview_Form(forms.ModelForm):
+    class Meta:
+        model = Multiview
+
 class Extended_Multiview_Form(forms.ModelForm):
     """Small Multiview ModelForm."""
     search_view = forms.CharField(
