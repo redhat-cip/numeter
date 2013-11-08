@@ -15,13 +15,16 @@
         </div>
         
         <div accordion>
-          <div accordion-group ng-repeat="category in host.categories">
+          <div accordion-group ng-repeat="category in host.categories" is-open="category.open">
             <div accordion-heading>
-              {{category.name}}
+              <div ng-click="displayGraph(host.id, category.plugins, category.open)">
+                {{category.name}}
+              </div>
             </div>
 
             <ul>
-              <li ng-repeat="plugin in category.plugins">{{plugin.title}}</li>
+              <li ng-repeat="plugin in category.plugins" ng-click="displayGraph(host.id, [plugin])">
+                {{plugin.title}}</li>
             </ul>
             
           </div>
