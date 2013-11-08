@@ -59,7 +59,7 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
     date_joined = models.DateTimeField(_('date joined'), default=now)
-    graph_lib = MediaField()
+    graph_lib = MediaField(default='dygraph')
     groups = models.ManyToManyField('core.Group', null=True, blank=True)
 
     objects = UserManager()

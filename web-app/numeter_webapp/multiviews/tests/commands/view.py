@@ -124,7 +124,7 @@ class Cmd_View_Mod_Test(CmdTestCase):
     def test_add_sources(self):
         """Add sources to a view."""
         view = create_view()
-        view_source_ids = [ s.id for s in view.sources.all() ]
+        view_source_ids = [ v.id for v in view.sources.all() ]
         default_count = len(view_source_ids)
         # Set new sources
         sources = Source.objects.exclude(id__in=view_source_ids)[:2]
@@ -137,9 +137,9 @@ class Cmd_View_Mod_Test(CmdTestCase):
         self.assertLess(default_count, new_count, "Sources wasn't added.")
 
     def test_rm_sources(self):
-        """Remove sources to a view."""
+        """Remove sources from a view."""
         view = create_view()
-        source_ids = ','.join([ str(s.id) for s in view.sources.all()[:1] ])
+        source_ids = ','.join([ str(v.id) for v in view.sources.all()[:1] ])
         default_count = view.sources.count()
         argv = ['', 'view', 'mod', '-i', str(view.id), '--rm-sources', source_ids ]
         Command().run_from_argv(argv)

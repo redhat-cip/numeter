@@ -90,34 +90,47 @@ class Add_Command(BaseCommand):
                     self.stdout.write('\t'+err)
 
 
-# class Modify_Command(BaseCommand):
-#     option_list = BaseCommand.option_list + (
-#         make_option('-i', '--id', action='store', type='int', help="Select a user by ID"),
-#         make_option('-u', '--username', action='store', default='', help="Set username"),
-#         make_option('-e', '--email', action='store', default='', help="Set email"),
-#         make_option('-g', '--graph_lib', action='store', default='dygraph', help="Set graph library"),
-#         make_option('-q', '--quiet', action='store_true', default=False, help="Don't print info"),
-#     )
-#
-#     def handle(self, *args, **opts):
-#         if opts['quiet']: self.stdout = open(devnull, 'w')
-#         # Select group by id
-#         if not User.objects.filter(id=opts['id']).exists():
-#             self.stdout.write("No user with id '%s' exists." % opts['id'])
-#             sys.exit(1)
-#         opts = dict([ (k,v) for k,v in opts.items() if v is not None ])
-#         # Valid and save
-#         u = User.objects.get(id=opts['id'])
-#         F = User_Admin_EditForm(data=opts, instance=u)
-#         if F.is_valid():
-#             u = F.save()
-#             u_data = u.__dict__
-#             u_data['groups'] = ','.join([ str(_g.id) for _g in u.groups.all() ])
-#             self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'groups': 'Groups ID', 'is_superuser': 'Superuser', 'username': u'Userame', 'graph_lib': 'Graph lib'}))
-#             self.stdout.write(ROW_FORMAT.format(**u_data))
-#         elif not opts['quiet']:
-#             self.stdout.write('* Error(s)')
-#             for field,errors in F.errors.items():
-#                 self.stdout.write(field)
-#                 for err in errors:
-#                     self.stdout.write('\t'+err)
+class Modify_Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('-i', '--id', action='store', type='int', help="Select a user by ID"),
+        make_option('-u', '--username', action='store', default='', help="Set username"),
+        make_option('-e', '--email', action='store', default='', help="Set email"),
+        make_option('-g', '--graph_lib', action='store', default=None, help="Set graph library"),
+        make_option('-q', '--quiet', action='store_true', default=False, help="Don't print info"),
+        make_option('-G', '--groups', action='store', default='', help="Set groups, will remove existing."),
+        make_option('--add-groups', action='store', default='', help="Add groups."),
+        make_option('--rm-groups', action='store', default='', help="Remove groups."),
+    )
+
+    def handle(self, *args, **opts):
+        if opts['quiet']: self.stdout = open(devnull, 'w')
+        # Select group by id
+        if not User.objects.filter(id=opts['id']).exists():
+            self.stdout.write("No user with id '%s' exists." % opts['id'])
+            sys.exit(1)
+        # Set group to add or del
+        to_set = set([ i.strip() for i in opts.pop('groups', '').split(',') if i ])
+        to_add = set([ i.strip() for i in opts.pop('add_groups', '').split(',') ])
+        to_del = set([ i.strip() for i in opts.pop('rm_groups', '').split(',') ])
+        opts = dict([ (k,v) for k,v in opts.items() if v is not None ])
+        # Valid and save
+        u = User.objects.get(id=opts['id'])
+        data = u.__dict__
+        data.update(dict([ (k,v) for k,v in opts.items() if v ]))
+        data['groups'] = to_set or [ str(U.id) for U in u.groups.all() ]
+        data['groups'] = set(data['groups']) - to_del
+        data['groups'] = list(data['groups'] | to_add)
+        data['groups'] = [ i for i in data['groups'] if i ]
+        F = User_Admin_EditForm(data=data, instance=u)
+        if F.is_valid():
+            u = F.save()
+            u_data = u.__dict__
+            u_data['groups'] = ','.join([ str(_g.id) for _g in u.groups.all() ])
+            self.stdout.write(ROW_FORMAT.format(**{u'id': 'ID', 'groups': 'Groups ID', 'is_superuser': 'Superuser', 'username': u'Userame', 'graph_lib': 'Graph lib'}))
+            self.stdout.write(ROW_FORMAT.format(**u_data))
+        elif not opts['quiet']:
+            self.stdout.write('* Error(s)')
+            for field,errors in F.errors.items():
+                self.stdout.write(field)
+                for err in errors:
+                    self.stdout.write('\t'+err)
