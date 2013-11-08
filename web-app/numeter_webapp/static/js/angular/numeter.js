@@ -1,5 +1,5 @@
 /*global window, angular, console*/
-(function (window, angular) {
+(function (angular) {
   'use strict';
 
   function parseGroups(hosts) {
@@ -18,7 +18,8 @@
       group.hosts.push({
         id: host.id,
         name: host.name,
-        categories: []
+        categories: [],
+        open: false
       });
     }
     return groups;
@@ -40,7 +41,7 @@
               $http.get('hosttree/host/' + host.id).
                 success(function (categories) {
                   host.categories = categories.map(function (category) {
-                    return {name: category, plugins: []};
+                    return {name: category, plugins: [], open: false};
                   });
                 });
             });
@@ -50,7 +51,7 @@
             angular.forEach(categories, function (category) {
               $http.get('hosttree/category/' + host_id, {params: {category: category.name}}).
                 success(function (plugins) {                  
-                  category.plugins = plugins;
+                  category.plugins = plugins;                  
                 });
             });
           };
@@ -61,5 +62,13 @@
       $scope.select = function (value) {
         $scope.$emit('resChange', value);
       };
+    }]).
+    controller('graphCtrl', ['$scope', function ($scope) {
+      $scope.selected = 'daily';
+
+      $scope.$on('resChange', function (event, resolution) {
+        $scope.selected = resolution;
+      });
     }]);
-}(window, angular));
+
+}(angular));
