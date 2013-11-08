@@ -50,6 +50,15 @@ class Host(models.Model):
     def __unicode__(self):
         return self.name
 
+    def user_has_perm(self, user):
+        """
+        Return if a user is allowed to access an instance.
+        A user is allowed if super or in same host's group.
+        """
+        if user.is_superuser:
+            return True
+        return self.group in user.groups.all()
+
     def get_absolute_url(self):
         return reverse('host', args=[str(self.id)])
 
