@@ -1,20 +1,23 @@
-from django.conf.urls import patterns, url, include
-from tastypie.api import Api
-from rest.resources.models import Storage_Resource, Host_Resource, User_Resource, Group_Resource, Plugin_Resource, Source_Resource, View_Resource, Multiview_Resource 
-from rest.resources.wild_storage import Wild_Storage_Resource
+"""
+REST urls file.
+"""
+from django.conf.urls import patterns, include, url
+from rest_framework import routers
+from rest.viewsets import *
 
-# Core API
-core_api = Api(api_name='api')
-core_api.register(Storage_Resource())
-core_api.register(Host_Resource())
-core_api.register(User_Resource())
-core_api.register(Group_Resource())
-core_api.register(Plugin_Resource())
-core_api.register(Source_Resource())
-core_api.register(View_Resource())
-core_api.register(Multiview_Resource())
+
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
+router.register(r'groups', GroupViewSet)
+#router.register(r'storages', StorageViewSet)
+#router.register(r'hosts', HostViewSet)
+#router.register(r'plugins', PluginViewSet)
+#router.register(r'sources', SourceViewSet)
+#router.register(r'views', ViewViewSet)
+#router.register(r'multiviews', MultiViewViewSet)
+#router.register(r'skeleton', SkeletonViewSet)
 
 urlpatterns = patterns('',
-  (r'', include(core_api.urls)),
-  (r'wild_storage/', include(Wild_Storage_Resource().urls)),
+    url(r'^rest/', include(router.urls)),
+    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework'))
 )

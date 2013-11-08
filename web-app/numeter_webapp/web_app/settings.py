@@ -74,17 +74,13 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    # Django required extensions
+    'rest_framework', 
     # Numeter Apps
     'core',
     'multiviews',
     'configuration',
     'rest',
-    # Django required extensions
-    # 'tastypie',
 )
 
 LOGIN_URL = '/login'
@@ -92,7 +88,7 @@ AUTH_USER_MODEL = 'core.User'
 SECRET_KEY = 'secret'
 
 from settings_local import *
-from settings_tastypie import *
+from settings_rest import *
 
 import os
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
