@@ -1,0 +1,32 @@
+<div accordion>
+  <div accordion-group ng-repeat="group in groups">
+    <div accordion-heading>
+      <div ng-click="loadCategories(group.hosts)">
+        {{group.title}}
+      </div>
+    </div>
+
+    <div accordion>
+      <div accordion-group ng-repeat="host in group.hosts">
+        <div accordion-heading>
+          <div ng-click="loadPlugins(host.categories, host.id)">
+            {{host.name}}
+          </div>
+        </div>
+        
+        <div accordion>
+          <div accordion-group ng-repeat="category in host.categories">
+            <div accordion-heading>
+              {{category.name}}
+            </div>
+
+            <ul>
+              <li ng-repeat="plugin in category.plugins">{{plugin.title}}</li>
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

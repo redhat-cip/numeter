@@ -1,79 +1,65 @@
-/*global window, angular*/
+/*global window, angular, console*/
 (function (window, angular) {
   'use strict';
 
-  angular.module('numeter', ['ui.bootstrap']);
+  function parseGroups(hosts) {
+    var group, host, title = '', groups = [];
 
+    while (host = hosts.shift()) {
 
-  window.AccordionMenuCtrl = ['$scope', '$http', function ($scope, $http) {
-
-    $http.get('api/host/').
-      success(function (data) {
-        var group, object, objects = data.objects, title = '';
-        $scope.groups = [];
-
-        while (object = objects.shift()) {
-
-          if (object.group !== title) {            
-            group = {
-              title: object.group || 'No group',
-              open: false,
-              hosts: []
-            };
-            $scope.groups.push(group);
-            title = object.group;
-          }          
-          group.hosts.push({
-            id: object.id,
-            url: object.resource_uri,
-            name: object.name,
-            categories: [],
-            open: false
-          });
-        }
-      }).
-      error(function () {
-        // numeter.error_modal();
-      });
-
-    $scope.loadHost = function (hosts) {
-      angular.forEach(hosts, function (host) {
-        $http.get('hosttree/host/' + host.id).
-          success(function (data) {
-            host.categories = data;
-          }).
-          error(function () {
-            // numeter.error_modal();      
-          });
-      });
-    };
-
-    $scope.displayHost = function (host) {
-      if (!host.open) {        
-        $scope.$emit('displayHost', host);
+      if (host.group !== title) {
+        group = {
+          title: host.group || 'No group',
+          hosts: []
+        };
+        groups.push(group);
+        title = host.group;
       }
+      group.hosts.push({
+        id: host.id,
+        name: host.name,
+        categories: []
+      });
     }
-  }];
+    return groups;
+  }
 
-  window.resolutionCtrl = ['$scope', function ($scope) {
-    
-    $scope.select = function (value) {
-      $scope.$emit('resChange',value);      
-    }
-  }];
+  angular.module('numeter', ['ui.bootstrap']).
+    directive('menu', ['$http', function ($http) {
+      return {
+        templateUrl: 'media/menu.html',
+        link: function ($scope) {
+          $http.get('api/host').
+            success(function (data) {
+              $scope.groups = parseGroups(data.objects);
+            });
+        },
+        controller: ['$scope', '$http', function ($scope, $http) {
+          $scope.loadCategories = function (hosts) {
+            angular.forEach(hosts, function (host) {
+              $http.get('hosttree/host/' + host.id).
+                success(function (categories) {
+                  host.categories = categories.map(function (category) {
+                    return {name: category, plugins: []};
+                  });
+                });
+            });
+          };
 
-  window.graphCtrl = ['$scope', function ($scope) {
-    $scope.selected = 'daily';
-
-    $scope.$on('resChange', function (event, resolution) {
-      $scope.selected = resolution;
-    });
-
-    $scope.$on('displayHost', function (event, args) {
-      
-    });
-  }];
+          $scope.loadPlugins = function (categories, host_id) {
+            angular.forEach(categories, function (category) {
+              $http.get('hosttree/category/' + host_id, {params: {category: category.name}}).
+                success(function (plugins) {                  
+                  category.plugins = plugins;
+                });
+            });
+          };
+        }]
+      };
+    }]).
+    controller('resolutionCtrl', ['$scope', function ($scope) {
+      $scope.select = function (value) {
+        $scope.$emit('resChange', value);
+      };
+    }]);
 }(window, angular));
-
-    
-    

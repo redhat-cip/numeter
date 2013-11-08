@@ -8,58 +8,33 @@
 {% block body %}
 
 {% verbatim %}
-<div ng-controller="graphCtrl">
-<div  accordion class="span3 accordion" ng-controller="AccordionMenuCtrl" id="menu">  
-  <div accordion-group ng-repeat="group in groups">
-    <div accordion-heading>
-      <div ng-click="loadHost(group.hosts)" ng-bind="group.title">        
-      </div>
-    </div>
-    <div accordion>
-      <div accordion-group ng-repeat="host in group.hosts" is-open="host.open">
-        <div accordion-heading>
-          <div ng-click="displayHost(host)" ng-bind="host.name"></div>          
-        </div>
-        <ul>
-          <li ng-repeat="category in host.categories" ng-bind="category"></li>
-        </ul>        
-      </div>
-    </div>     
-  </div>  
-</div>  
+<div menu class="span3"></div>
 
-
-
-
-
- <div class="span9">
+<div class="span9">
+  
   <div class="row-fluid">
-   <ul id="resolution-pills" class="nav nav-pills" ng-controller="resolutionCtrl">
-    <li ng-click="select('daily')"   ng-class="{active: selected == 'daily'}">
-      <a href="#">Daily</a>
-    </li>
-    <li ng-click="select('weekly')"  ng-class="{active: selected == 'weekly'}">
-      <a href="#">Weekly</a>
-    </li>
-    <li ng-click="select('monthly')" ng-class="{active: selected == 'monthly'}">
-      <a href="#">Monthly</a>
-    </li>
-    <li ng-click="select('yearly')"  ng-class="{active: selected == 'yearly'}">
-      <a href="#">Yearly</a>
-    </li>
-   </ul>
+    <ul id="resolution-pills" class="nav nav-pills" ng-controller="resolutionCtrl">
+      <li ng-click="select('daily')"   ng-class="{active: selected == 'daily'}">
+        <a href="#">Daily</a>
+      </li>
+      <li ng-click="select('weekly')"  ng-class="{active: selected == 'weekly'}">
+        <a href="#">Weekly</a>
+      </li>
+      <li ng-click="select('monthly')" ng-class="{active: selected == 'monthly'}">
+        <a href="#">Monthly</a>
+      </li>
+      <li ng-click="select('yearly')"  ng-class="{active: selected == 'yearly'}">
+        <a href="#">Yearly</a>
+      </li>
+    </ul>
   </div>
-
-
-
   <div class="row-fluid">
-   <div id="graphs" class="span11"></div>
+    <div id="graphs" class="span11"></div>
   </div>
- </div>
 </div>
 {% endverbatim %}
 {% endblock %}
 
 {% block scripts %}
-  <script src="{{ STATIC_URL }}js/graph.js"></script>
+<script src="{{ STATIC_URL }}js/graph.js"></script>
 {% endblock %}
