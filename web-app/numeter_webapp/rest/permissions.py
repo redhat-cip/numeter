@@ -14,3 +14,13 @@ class IsOwnerOrForbidden(permissions.BasePermission):
         if request.user.is_superuser:
             return True
         return obj.user_has_perm(request.user)
+
+class IsSelfOrForbidden(permissions.BasePermission):
+    """
+    Permission is granted for superusers and the user himself.
+    Created to manage users updating.
+    """
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_superuser:
+            return True
+        return obj == request.user
