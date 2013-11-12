@@ -71,3 +71,61 @@ class User_GET_detail_Test(APITestCase):
         DETAIL_URL = reverse('user-detail', args=[self.user.pk])
         r = self.user_client.get(DETAIL_URL)
         self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+
+class User_POST_Test(APITestCase):
+    """
+    Test POST. Same as
+    ``curl -i -X POST http://127.0.0.1:8081/rest/users/1 -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        data = {'username':'NEW USER'}
+        r = self.client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'username':'NEW USER'}
+        r = self.admin_client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'username':'NEW USER'}
+        r = self.user_client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+
+class User_DELETE_Test(APITestCase):
+    """
+    Test DELETE. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/users/1 -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.client.delete(DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.admin_client.delete(DETAIL_URL)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.user_client.delete(DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
