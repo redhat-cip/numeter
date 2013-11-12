@@ -3,7 +3,7 @@ rest tests module. Allow to launch a single TestCase or all.
 """
 
 from login import Login_Test
-from user import User_GET_details_Test
+from user import User_GET_list_Test
 
 
 def suite():
