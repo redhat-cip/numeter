@@ -1,3 +1,7 @@
+"""
+configuration tests module. Allow to launch a single TestCase or all.
+"""
+
 from user import User_Test
 from group import Group_Test
 from storage import Storage_Test

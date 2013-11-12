@@ -1,3 +1,7 @@
+"""
+multiviews tests module. Allow to launch a single TestCase or all.
+"""
+
 from view import View_Test
 from skeleton import Skeleton_Test
 from event import Event_Test
@@ -8,6 +12,7 @@ from customize.event import Customize_Event_Test
 from commands.view import Cmd_View_List_Test, Cmd_View_Add_Test, Cmd_View_Del_Test, Cmd_View_Mod_Test
 from commands.multiview import Cmd_Multiview_List_Test, Cmd_Multiview_Add_Test, Cmd_Multiview_Del_Test, Cmd_Multiview_Mod_Test
 from commands.skeleton import Cmd_Skeleton_List_Test, Cmd_Skeleton_Add_Test, Cmd_Skeleton_Del_Test, Cmd_Skeleton_Mod_Test, Cmd_Skeleton_Create_View_Test
+
 
 def suite():
     import unittest

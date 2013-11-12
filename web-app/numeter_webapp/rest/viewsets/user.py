@@ -1,5 +1,5 @@
 """
-User ViewSet file.
+User ViewSet module.
 """
 
 from rest_framework import viewsets
@@ -13,6 +13,10 @@ from rest.permissions import IsSelfOrForbidden
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    User endpoint, only available for superusers, except details for user himself.
+    Contains a ``set_password`` method for manage password.
+    """
     model = User
     serializer_class = UserSerializer
 

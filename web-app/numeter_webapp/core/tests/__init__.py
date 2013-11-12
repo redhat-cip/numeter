@@ -1,3 +1,7 @@
+"""
+core tests module. Allow to launch a single TestCase or all.
+"""
+
 from login import Login_Test
 from perms import Perms_Test
 from storage import Storage_Test, Storage_Manager_Test, Storage_Error_Test
@@ -16,6 +20,7 @@ from profile import Profile_Test
 from hosttree import Hosttree_Test
 from group_restriction import Access_Test
 from mediafield import MediaField_Test
+
 
 def suite():
     import unittest
