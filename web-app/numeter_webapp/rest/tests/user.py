@@ -3,9 +3,8 @@ Tests for user REST management.
 """
 
 from django.core.urlresolvers import reverse
-from rest_framework.test import APILiveServerTestCase, APIClient, APITestCase
-from core.models import User, Group
-from core.management.commands.user import Command
+from rest_framework.test import APITestCase
+from core.models import User
 from core.tests.utils import set_users
 from rest.tests.utils import set_clients
 
