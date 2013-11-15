@@ -1,24 +1,25 @@
 """
-Tests for group REST management.
+Tests for host REST management.
 """
 
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
-from core.models import Group
-from core.tests.utils import set_users
+from core.models import Host
+from core.tests.utils import set_users, set_storage
 from rest.tests.utils import set_clients
 
-LIST_URL = reverse('group-list')
+LIST_URL = reverse('host-list')
 
-class Group_GET_list_Test(APITestCase):
+class Host_GET_list_Test(APITestCase):
     """
     Test GET list. Same as
-    ``curl -i -X GET http://127.0.0.1:8081/rest/groups/ -H 'Accept: application/json'``
+    ``curl -i -X GET http://127.0.0.1:8081/rest/hosts/ -H 'Accept: application/json'``
     """
+    @set_storage(extras=['host'])
     @set_users()
     @set_clients()
     def setUp(self):
-        self.DETAIL_URL = reverse('group-detail', args=[Group.objects.all()[0].pk])
+        pass
 
     def test_anonymous(self):
         """Forbidden access to anonymous."""
@@ -31,20 +32,24 @@ class Group_GET_list_Test(APITestCase):
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Forbidden access to simple user."""
+        """Granted access to simple user with filtered hosts."""
         r = self.user_client.get(LIST_URL)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
 
-class Group_GET_detail_Test(APITestCase):
+class Host_GET_detail_Test(APITestCase):
     """
     Test GET details. Same as
-    ``curl -i -X GET http://127.0.0.1:8081/rest/groups/1 -H 'Accept: application/json'``
+    ``curl -i -X GET http://127.0.0.1:8081/rest/hosts/1 -H 'Accept: application/json'``
     """
+    @set_storage(extras=['host'])
     @set_users()
     @set_clients()
     def setUp(self):
-        self.DETAIL_URL = reverse('group-detail', args=[Group.objects.all()[0].pk])
+        self.DETAIL_URL = reverse('host-detail', args=[self.host.pk])
+        self.host.group = self.group
+        self.host.save()
+        self.user.groups.add(self.group.pk)
 
     def test_anonymous(self):
         """Forbidden access to anonymous."""
@@ -57,20 +62,28 @@ class Group_GET_detail_Test(APITestCase):
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Forbidden access to simple group."""
+        """Granted access to simple user with his own."""
         r = self.user_client.get(self.DETAIL_URL)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_foreign_host(self):
+        """Forbidden access to simple user with foreign host."""
+        self.DETAIL_URL = reverse('host-detail', args=[Host.objects.exclude(pk=self.host.pk)[0].pk])
+        r = self.user_client.get(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
 
 
-class Group_POST_Test(APITestCase):
+class Host_POST_Test(APITestCase):
     """
     Test POST. Same as
-    ``curl -i -X POST http://127.0.0.1:8081/rest/groups/ -H 'Accept: application/json'``
+    ``curl -i -X POST http://127.0.0.1:8081/rest/hosts/ -H 'Accept: application/json'``
     """
+    @set_storage(extras=['host'])
     @set_users()
     @set_clients()
     def setUp(self):
-        self.DETAIL_URL = reverse('group-detail', args=[Group.objects.all()[0].pk])
+        self.hostid = self.host.hostid
+        Host.objects.all().delete()
 
     def test_anonymous(self):
         """Forbidden access to anonymous."""
@@ -79,26 +92,26 @@ class Group_POST_Test(APITestCase):
 
     def test_superuser(self):
         """Granted access for superuser."""
-        data = {'name':'NEW GROUP'}
+        data = {'hostid': self.hostid}
         r = self.admin_client.post(LIST_URL, data=data)
         self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
         """Forbidden access to simple user."""
-        data = {'name':'NEW GROUP'}
         r = self.user_client.post(LIST_URL)
         self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
 
 
-class Group_DELETE_Test(APITestCase):
+class Host_DELETE_Test(APITestCase):
     """
     Test DELETE. Same as
-    ``curl -i -X DELETE http://127.0.0.1:8081/rest/groups/1 -H 'Accept: application/json'``
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/hosts/1 -H 'Accept: application/json'``
     """
+    @set_storage(extras=['host'])
     @set_users()
     @set_clients()
     def setUp(self):
-        self.DETAIL_URL = reverse('group-detail', args=[Group.objects.all()[0].pk])
+        self.DETAIL_URL = reverse('host-detail', args=[self.host.pk])
 
     def test_anonymous(self):
         """Forbidden access to anonymous."""
@@ -111,20 +124,21 @@ class Group_DELETE_Test(APITestCase):
         self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Forbidden access to simple group."""
+        """Forbidden access to simple host."""
         r = self.user_client.delete(self.DETAIL_URL)
         self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
 
 
-class Group_PATCH_Test(APITestCase):
+class Host_PATCH_Test(APITestCase):
     """
     Test PATCH. Same as
-    ``curl -i -X PATCH http://127.0.0.1:8081/rest/groups/1 -H 'Accept: application/json'``
+    ``curl -i -X PATCH http://127.0.0.1:8081/rest/hosts/1 -H 'Accept: application/json'``
     """
+    @set_storage(extras=['host'])
     @set_users()
     @set_clients()
     def setUp(self):
-        self.DETAIL_URL = reverse('group-detail', args=[Group.objects.all()[0].pk])
+        self.DETAIL_URL = reverse('host-detail', args=[self.host.pk])
 
     def test_anonymous(self):
         """Forbidden access to anonymous."""
@@ -133,11 +147,11 @@ class Group_PATCH_Test(APITestCase):
 
     def test_superuser(self):
         """Granted access for superuser."""
-        data = {'name':'NEW GROUP'}
+        data = {'name':'NEW HOST'}
         r = self.admin_client.patch(self.DETAIL_URL, data=data)
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Forbidden access to simple group."""
+        """Forbidden access to simple host."""
         r = self.user_client.patch(self.DETAIL_URL)
         self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)

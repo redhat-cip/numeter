@@ -3,8 +3,16 @@ Host ViewSet module.
 """
 
 from rest_framework import viewsets
+from rest_framework import status
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED
+from rest_framework.permissions import IsAdminUser
+from rest_framework.decorators import action
+
 from core.models import Host
-from rest.permissions import IsOwnerOrForbidden
+from rest.permissions import IsOwnerOrForbidden, HostPermission
+from rest.serializers import HostCreationSerializer
 
 
 class HostViewSet(viewsets.ModelViewSet):
@@ -13,7 +21,17 @@ class HostViewSet(viewsets.ModelViewSet):
     and only display data for host in same the group of user.
     """
     model = Host
-    permission_classes = (IsOwnerOrForbidden,)
+    permission_classes = (HostPermission,)
 
     def get_queryset(self):
         return self.model.objects.user_filter(self.request.user)
+
+    def create(self, request):
+        serializer = HostCreationSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(JSONRenderer().render(serializer.data),
+                    status=HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)

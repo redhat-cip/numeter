@@ -64,6 +64,8 @@ def set_storage(extras=[]):
                 self.storage = Storage.objects.get(pk=1)
                 for model in extras:
                     call_command('loaddata', ('mock_%s.json' % model), database='default', verbosity=0)
+                    Model = eval(model.capitalize())
+                    setattr(self, model, Model.objects.all()[0])
             # Use settings_local
             elif settings.TEST_STORAGES:
                 # Skip if no conf
