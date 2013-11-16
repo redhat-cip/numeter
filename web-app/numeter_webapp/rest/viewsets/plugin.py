@@ -14,6 +14,7 @@ class PluginViewSet(viewsets.ModelViewSet):
     """
     model = Plugin
     permission_classes = (IsOwnerOrForbidden,)
+    allowed_methods = ('GET', 'PATCH', 'DELETE')
 
     def get_queryset(self):
         return self.model.objects.user_filter(self.request.user)

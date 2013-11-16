@@ -5,7 +5,7 @@ from django.core.management import call_command
 from django.conf import settings
 from django.utils.decorators import available_attrs
 
-from core.models import Storage, Host
+from core.models import Storage, Host, Plugin, Data_Source as Source
 from core.models import User, Group
 
 from functools import wraps

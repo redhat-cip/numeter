@@ -20,7 +20,7 @@ class HostUserSerializer(serializers.ModelSerializer):
 
 
 class HostCreationSerializer(serializers.ModelSerializer):
-    """User's password serializer."""
+    """Host creation serializer. Use only hostid to create instance."""
     class Meta:
         model = Host
         fields = ('hostid',)

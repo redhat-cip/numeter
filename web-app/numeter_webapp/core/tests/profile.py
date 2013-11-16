@@ -31,10 +31,10 @@ class Profile_Test(TestCase):
         """Test if a user try to change his password."""
         # Disconnect to login as simple user
         self.c.logout()
-        self.c.login(username='Client', password='pass')
+        self.c.login(username='Client', password='toto')
         # Sent POST
         url = self.user.get_update_password_url()
-        POST = {'old':'pass','new_1':'root','new_2':'root'}
+        POST = {'old':'toto', 'new_1':'root', 'new_2':'root'}
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         self.user = User.objects.get(pk=2)
@@ -43,7 +43,7 @@ class Profile_Test(TestCase):
     def test_admin_change_password(self):
         """Test if admin can change other user's password."""
         url = self.user.get_update_password_url()
-        POST = {'old':'pass','new_1':'root','new_2':'root'}
+        POST = {'old':'toto', 'new_1':'root', 'new_2':'root'}
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         self.user = User.objects.get(pk=2)
@@ -53,10 +53,10 @@ class Profile_Test(TestCase):
         """Test if user can change other user's password."""
         # Disconnect to login as simple user
         self.c.logout()
-        self.c.login(username='Client', password='pass')
+        self.c.login(username='Client', password='toto')
         # Sent POST
         url = self.admin.get_update_password_url()
-        POST = {'old':'toto','new_1':'root','new_2':'root'}
+        POST = {'old':'toto', 'new_1':'root', 'new_2':'root'}
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
         self.assertFalse(self.user.check_password('root'), "Third user can change password.")

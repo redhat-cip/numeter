@@ -10,6 +10,13 @@ class IsOwnerOrForbidden(permissions.IsAuthenticated):
     Permission is granted for superusers or users linked to obj.
     It uses ``model.user_has_perm``.
     """
+    def has_permission(self, request, view):
+        if not request.user.pk:
+            return False
+        if request.method in view.allowed_methods:
+            return True
+        return False
+
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             return True
