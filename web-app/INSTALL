@@ -15,22 +15,17 @@ Manual
 
 **Depends:**
     * python-django
-    * django-tastypie
-    * python-mimeparse
+    * django-rest-framework
 
-Django and tastypie setup
+Django and rest framework setup
 --------------------------
-
-
-You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. You also need ``Tastypie >= 0.10`` from Pypy.
 
 **From packages :** ::
 
-    echo 'deb http://ftp.fr.debian.org/debian wheezy-backports main' >> /etc/apt/sources.list.d/debian-backports.list
-    apt-get update
-    
-    apt-get install -t wheezy-backports python-django python-mimeparse
-    easy_install django-tastypie
+    easy_install django
+    easy_install djangorestframework
+    easy_intall markdown
+    easy_install django-filter
 
 Numeter Webapp setup
 -----------------------
