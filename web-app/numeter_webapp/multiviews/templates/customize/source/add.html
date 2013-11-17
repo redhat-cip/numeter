@@ -3,7 +3,7 @@
 
  <div class="span3">
   <h4>{% trans "Choose an host:" %}</h4>
-  <select id="chosen-host" class="span" size="10" data-url="{% url "wild_storage_list" %}">
+  <select id="chosen-host" class="span" size="10" data-url="{% url "wide-storage-list" %}">
   {% for host in Hosts %}
    <option value="{{ host.hostid }}">{{ host }}</option>
   {% endfor %}
@@ -12,7 +12,7 @@
 
  <div class="span3" style="display: none;">
   <h4>{% trans "Choose a plugin:" %}</h4>
-  <select id="chosen-plugin" class="span" size="10" data-url="{% url "wild_storage_info" %}"></select>
+  <select id="chosen-plugin" class="span" size="10" data-url="{% url "wide-storage-info" %}"></select>
  </div>
 
  <div class="span3" style="display: none;">

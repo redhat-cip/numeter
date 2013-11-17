@@ -66,7 +66,7 @@ class Wide_Storage_hinfo_Test(APILiveServerTestCase):
         """Forbidden access to simple user with foreign host."""
         data = {'host': self.host.hostid}
         r = self.user_client.get(self.URL, data)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
 
 
 class Wide_Storage_list_Test(APILiveServerTestCase):
@@ -101,7 +101,41 @@ class Wide_Storage_list_Test(APILiveServerTestCase):
         """Forbidden access to simple user with foreign plugin."""
         data = {'host': self.host.hostid}
         r = self.user_client.get(self.URL, data)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
+
+
+class Wide_Storage_info_Test(APILiveServerTestCase):
+    """
+    Test GET source data. Same as
+    ``curl -i -X GET http://127.0.0.1:8081/wide_storage/info -H 'Accept: application/json'``
+    """
+    @set_storage(extras=['host'])
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.URL = reverse('wide-storage-info')
+        plugin = self.host.get_plugin_list()[0]
+        self.data = {'host': self.host.hostid, 'plugin':plugin}
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.get(self.URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.get(self.URL, self.data)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Granted access to simple user with his plugin."""
+        r = self.admin_client.get(self.URL, self.data)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_foreign_host(self):
+        """Forbidden access to simple user with foreign plugin."""
+        r = self.user_client.get(self.URL, self.data)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
 
 
 class Wide_Storage_data_Test(APILiveServerTestCase):
@@ -136,10 +170,4 @@ class Wide_Storage_data_Test(APILiveServerTestCase):
     def test_foreign_host(self):
         """Forbidden access to simple user with foreign plugin."""
         r = self.user_client.get(self.URL, self.data)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
-# 
-#     def test_data(self):
-#         """Get sources data."""
-#         url = reverse('wide-storage-data')
-#         r = self.client.get(url, data)
-#         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
