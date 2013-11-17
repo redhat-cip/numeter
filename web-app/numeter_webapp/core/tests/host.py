@@ -8,9 +8,7 @@ from core.tests.utils import set_storage, set_users
 
 
 class Host_Manager_user_filter_Test(LiveServerTestCase):
-    """
-    Test filter host by his user attribute.
-    """
+    """ Test filter host by his user attribute.  """
     @set_storage(extras=['host'])
     @set_users()
     def setUp(self):
@@ -41,7 +39,7 @@ class Host_Manager_user_filter_Test(LiveServerTestCase):
 
 
 class Host_Test(LiveServerTestCase):
-
+    """Host model tests."""
     @set_storage(extras=['host'])
     def setUp(self):
         if not Host.objects.exists():
