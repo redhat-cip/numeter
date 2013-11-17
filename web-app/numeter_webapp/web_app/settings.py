@@ -81,6 +81,7 @@ INSTALLED_APPS = (
     'multiviews',
     'configuration',
     'rest',
+    'wide_storage',
 )
 
 LOGIN_URL = '/login'

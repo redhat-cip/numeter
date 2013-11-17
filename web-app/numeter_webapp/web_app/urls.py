@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^multiviews/', include('multiviews.urls')),
     url(r'^configuration/', include('configuration.urls')),
     url(r'^', include('rest.urls')),
+    url(r'^wide-storage/', include('wide_storage.urls')),
     # Files
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': s.STATIC_ROOT}),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': s.MEDIA_ROOT}),

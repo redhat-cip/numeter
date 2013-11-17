@@ -65,6 +65,15 @@ class Data_Source(models.Model):
     def __unicode__(self):
         return '%s - %s - %s' % (self.plugin.host.name, self.plugin.name, self.name)
 
+    def user_has_perm(self, user):
+        """
+        Return if a user is allowed to access an instance.
+        A user is allowed if super or in same host's group.
+        """
+        if user.is_superuser:
+            return True
+        return self.plugin.host.group in user.groups.all()
+
     def get_absolute_url(self):
         return reverse('source', args=[self.id])
 
