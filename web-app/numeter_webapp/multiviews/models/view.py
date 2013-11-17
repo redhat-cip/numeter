@@ -13,7 +13,10 @@ class View_QuerySetManager(QuerySet):
         """Filter views authorized for a given user."""
         if user.is_superuser:
             return self.all()
-        return self.filter(sources__plugin__host__group__in=user.groups.all()).distinct()
+        return self.filter(
+            Q(users__in=[user]) |
+            Q(groups__in=user.groups.all())
+        ).distinct()
 
     def web_filter(self, q):
         """Extended search from a string."""
@@ -27,7 +30,7 @@ class View_QuerySetManager(QuerySet):
         views = self.web_filter(q)
         if user.is_superuser:
             return views
-        return views.filter(sources__plugin__host__group__in=user.groups.all()).distinct()
+        return views.user_filter(user)
 
 
 class View(models.Model):
@@ -35,12 +38,13 @@ class View(models.Model):
     Graphic unit with assembled data sources.
     It mays include warning and critical line.
     """
-    name = models.CharField(_('name'), max_length=300)
+    name = models.CharField(_('name'), max_length=250)
     sources = models.ManyToManyField('core.Data_Source')
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
     warning = models.IntegerField(blank=True, null=True)
     critical = models.IntegerField(blank=True, null=True)
-    # groups = models.ManyToManyField('core.Group', null=True, blank=True)
+    users = models.ManyToManyField('core.User', null=True, blank=True)
+    groups = models.ManyToManyField('core.Group', null=True, blank=True)
 
     objects = View_QuerySetManager.as_manager()
     class Meta:
