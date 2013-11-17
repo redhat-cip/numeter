@@ -44,6 +44,15 @@ class Plugin(models.Model):
     def __unicode__(self):
         return self.host.name + ' - ' + self.name
 
+    def user_has_perm(self, user):
+        """
+        Return if a user is allowed to access an instance.
+        A user is allowed if super or in same host's group.
+        """
+        if user.is_superuser:
+            return True
+        return self.host.group in user.groups.all()
+
     def get_absolute_url(self):
         return reverse('plugin', args=[self.id])
 

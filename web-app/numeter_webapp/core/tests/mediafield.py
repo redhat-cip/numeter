@@ -36,9 +36,9 @@ class MediaField_Test(TestCase):
     def test_htmlize(self):
         """Make html tags to import folder."""
         m = MediaList('dygraph')
-        HTML = '<script src="/media/graphlib/dygraph/subfile2.js"></script>'
-        html = [ i for i in m.htmlize() ][0]
-        self.assertEqual(html, HTML, 'Not valid response "%s" should be "%s"' % (html, HTML))
+        HTML_TO_FIND = '<script src="/media/graphlib/dygraph/subfile2.js"></script>'
+        html = ''.join([ i for i in m.htmlize() ])
+        self.assertIn(HTML_TO_FIND, html, "Not find '%s' in '%s'." % (HTML_TO_FIND, html))
 
     # def test_deleted_files(self):
     #     pass

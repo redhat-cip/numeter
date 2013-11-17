@@ -1,97 +1,207 @@
-from tastypie.test import ResourceTestCase
-from core.tests.utils import set_users
+"""
+Tests for user REST management.
+"""
+
+from django.core.urlresolvers import reverse
+from rest_framework.test import APITestCase
 from core.models import User
+from core.tests.utils import set_users
+from rest.tests.utils import set_clients
 
+LIST_URL = reverse('user-list')
+LOGIN_URL = '/auth/login/'
+LOGOUT_URL = '/auth/logout/'
 
-class User_Test(ResourceTestCase):
+class User_GET_list_Test(APITestCase):
     """
-    Tests for user management API.
-    Only available for admins.
-    """
-    @set_users()
-    def setUp(self):
-        super(User_Test, self).setUp()
-
-    def get_credentials(self):
-        return self.create_basic('root', 'toto')
-
-    def test_get_list(self):
-        """Get list of users."""
-        url = '/api/user/'
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertValidJSONResponse(r)
-        # Get set of user
-        url = '/api/user/set/1;3/'
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertValidJSONResponse(r)
-
-    def test_get_detail(self):
-        """Get user's detail."""
-        url = '/api/user/%i/' % self.admin.pk
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertValidJSONResponse(r)
-
-    def test_post(self):
-        """Create a user."""
-        url = '/api/user/'
-        data = {
-          'username': 'new user',
-          'password': 'pass',
-        }
-        r = self.api_client.post(url, data=data, authentication=self.get_credentials())
-        self.assertHttpCreated(r)
-        self.assertTrue(User.objects.filter(username='new user').exists(), "User hasn't been created")
-
-    def test_patch(self):
-        """Update a user."""
-        url = '/api/user/%i/' % self.admin.pk
-        data = { 'username': 'roott' }
-        r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertEqual(User.objects.get(pk=1).username, 'roott', "Data are unchanged.")
-
-    def test_delete(self):
-        """Delete a user."""
-        url = '/api/user/%i/' % self.user.pk
-        r = self.api_client.delete(url, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertFalse(User.objects.filter(username='Client').exists(), "User hasn't been deleted.")
-
-    def test_delete_list(self):
-        """Delete a user list."""
-        url = '/api/user/'
-        data = {
-          'deleted_objects': [
-            '/api/user/%i/' % self.user.pk,
-            '/api/user/%i/' % self.user2.pk,
-          ],
-          'objects':[],
-        }
-        r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertFalse(User.objects.filter(pk__in=[self.user.pk,self.user2.pk]).exists(), "Users haven't been deleted.")
-        self.assertTrue(User.objects.filter(pk=self.admin.pk).exists(), "Wrong user hasn't been deleted.")
-
-
-class User_Forbidden_Test(ResourceTestCase):
-    """
-    Tests for unauthorized access.
+    Test GET list. Same as
+    ``curl -i -X GET http://127.0.0.1:8081/rest/users/ -H 'Accept: application/json'``
     """
     @set_users()
+    @set_clients()
     def setUp(self):
-        super(User_Forbidden_Test, self).setUp()
-
-    def get_credentials(self):
-        return self.create_basic('user', 'toto')
+        pass
 
     def test_anonymous(self):
-        """Ban anonymous."""
-        url = '/api/user/'
-        r = self.api_client.get(url)
-        self.assertHttpUnauthorized(r)
+        """Forbidden access to anonymous."""
+        r = self.client.get(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.get(LIST_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Ban non admin."""
-        url = '/api/user/'
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertHttpForbidden(r)
+        """Forbidden access to simple user."""
+        r = self.user_client.get(LIST_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class User_GET_detail_Test(APITestCase):
+    """
+    Test GET details. Same as
+    ``curl -i -X GET http://127.0.0.1:8081/rest/users/1 -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.client.get(DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.admin_client.get(DETAIL_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        DETAIL_URL = reverse('user-detail', args=[self.user2.pk])
+        r = self.user_client.get(DETAIL_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+    def test_user_himself(self):
+        """Granted access to user himself."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.user_client.get(DETAIL_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class User_POST_Test(APITestCase):
+    """
+    Test POST. Same as
+    ``curl -i -X POST http://127.0.0.1:8081/rest/users/ -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        data = {'username':'NEW USER'}
+        r = self.client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'username':'NEW USER'}
+        r = self.admin_client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'username':'NEW USER'}
+        r = self.user_client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class User_DELETE_Test(APITestCase):
+    """
+    Test DELETE. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/users/1 -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.client.delete(DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.admin_client.delete(DETAIL_URL)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.user_client.delete(DETAIL_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class User_PATCH_Test(APITestCase):
+    """
+    Test PATCH. Same as
+    ``curl -i -X PATCH http://127.0.0.1:8081/rest/users/1 -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        data = {'groups':[1,2]}
+        r = self.client.patch(DETAIL_URL, data=data)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        data = {'groups':[1,2]}
+        r = self.admin_client.patch(DETAIL_URL, data=data)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        DETAIL_URL = reverse('user-detail', args=[self.user2.pk])
+        data = {'groups':[1,2]}
+        r = self.user_client.patch(DETAIL_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class User_POST_set_password_Test(APITestCase):
+    """
+    Test POST. Same as
+    ``curl -i -X POST http://127.0.0.1:8081/rest/users/1/set_password -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        PASSWORD_URL = reverse('user-set-password', args=[self.user.pk])
+        data = {'password':'test'}
+        r = self.client.post(PASSWORD_URL, data=data)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        PASSWORD_URL = reverse('user-set-password', args=[self.user.pk])
+        data = {'password':'test'}
+        r = self.admin_client.post(PASSWORD_URL, data=data)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+        # Test user to log with new pass
+        self.client.post(LOGIN_URL, {'username':self.user.username, 'password':'test'})
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.user_client.get(DETAIL_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        PASSWORD_URL = reverse('user-set-password', args=[self.user2.pk])
+        data = {'password':'test'}
+        r = self.user_client.post(PASSWORD_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+    def test_user_himself(self):
+        """Granted access to user himself."""
+        PASSWORD_URL = reverse('user-set-password', args=[self.user.pk])
+        data = {'password':'test'}
+        r = self.user_client.post(PASSWORD_URL, data=data)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)

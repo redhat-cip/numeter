@@ -1,3 +1,8 @@
+"""
+Fast data insertion command module.
+Populate all hosts, plugin and storage.
+"""
+
 from django.core.management.base import BaseCommand, CommandError
 
 from core.models import Storage, Host, Plugin, Data_Source as Source
@@ -25,7 +30,7 @@ class Command(BaseCommand):
             storages = Storage.objects.filter(id__in=ids)
         else:
             self.stdout.write("Select a storage by id or 'all' for alm")
-            sys.exit(1)
+            return
             
         for s in storages:
             self.stdout.write('Creating hosts from storage %s' % s)

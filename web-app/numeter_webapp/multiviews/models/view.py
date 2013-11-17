@@ -70,6 +70,8 @@ class View(models.Model):
         return reverse('view list')
 
     def get_data_url(self):
+        if not self.pk:
+            return ''
         return reverse('view data', args=[self.id])
 
     def get_events(self):

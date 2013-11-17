@@ -1,93 +1,192 @@
-from tastypie.test import ResourceTestCase
-from core.tests.utils import set_storage, set_users
+"""
+Tests for plugin REST management.
+"""
+
+from django.core.urlresolvers import reverse
+from rest_framework.test import APILiveServerTestCase, APITestCase
 from core.models import Plugin
+from core.tests.utils import set_users, set_storage
+from rest.tests.utils import set_clients
 
+LIST_URL = reverse('plugin-list')
 
-class Plugin_Test(ResourceTestCase):
+class Plugin_GET_list_Test(APILiveServerTestCase):
     """
-    Tests for plugin management API.
+    Test GET list. Same as
+    ``curl -i -X GET http://127.0.0.1:8081/rest/plugins/ -H 'Accept: application/json'``
     """
-    @set_users()
     @set_storage(extras=['host','plugin'])
-    def setUp(self):
-        super(Plugin_Test, self).setUp()
-        self.plugin = Plugin.objects.all()[0]
-
-    def get_credentials(self):
-        return self.create_basic('root', 'toto')
-
-    def test_get_list(self):
-        """Get list of plugins."""
-        url = '/api/plugin/'
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertValidJSONResponse(r)
-
-    def test_get_detail(self):
-        """Get plugin's detail."""
-        url = '/api/plugin/%i/' % self.plugin.pk
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertValidJSONResponse(r)
-
-    def test_post(self):
-        """Create a plugin."""
-        url = '/api/plugin/'
-        data = {
-          'name': 'new plugin',
-          'host': 1,
-        }
-        r = self.api_client.post(url, data=data, authentication=self.get_credentials())
-        self.assertHttpCreated(r)
-        self.assertTrue(Plugin.objects.filter(name='new plugin').exists(), "Plugin hasn't been created")
-
-    def test_patch(self):
-        """Update a plugin."""
-        url = '/api/plugin/%i/' % self.plugin.pk
-        data = { 'comment': 'roott' }
-        r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertEqual(Plugin.objects.get(pk=self.plugin.pk).name, 'comment', "Data are unchanged.")
-
-    def test_delete(self):
-        """Delete a plugin."""
-        url = '/api/plugin/%i/' % self.plugin.pk
-        r = self.api_client.delete(url, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertFalse(Plugin.objects.filter(pk=self.plugin.pk).exists(), "Plugin hasn't been deleted.")
-
-    def test_delete_list(self):
-        """Delete a plugin list."""
-        url = '/api/plugin/'
-        data = {
-          'deleted_objects': [
-            '/api/plugin/%i/' % self.plugin.pk,
-          ],
-          'objects':[],
-        }
-        r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertFalse(Plugin.objects.filter(pk=self.plugin.pk).exists(), "Plugin hasn't been deleted.")
-
-
-class Plugin_Forbidden_Test(ResourceTestCase):
-    """
-    Tests for unauthorized access.
-    """
     @set_users()
+    @set_clients()
     def setUp(self):
-        super(Plugin_Forbidden_Test, self).setUp()
-
-    def get_credentials(self):
-        return self.create_basic('Client', 'toto')
+        pass
 
     def test_anonymous(self):
-        """Ban anonymous."""
-        url = '/api/plugin/'
-        r = self.api_client.get(url)
-        self.assertHttpUnauthorized(r)
+        """Forbidden access to anonymous."""
+        r = self.client.get(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.get(LIST_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Ban non admin."""
-        url = '/api/plugin/'
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertHttpForbidden(r)
+        """Granted access to simple user with filtered plugins."""
+        r = self.user_client.get(LIST_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
+
+class Plugin_GET_detail_Test(APILiveServerTestCase):
+    """
+    Test GET details. Same as
+    ``curl -i -X GET http://127.0.0.1:8081/rest/plugins/1 -H 'Accept: application/json'``
+    """
+    @set_storage(extras=['host', 'plugin'])
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.DETAIL_URL = reverse('plugin-detail', args=[self.plugin.pk])
+        self.host.group = self.group
+        self.host.save()
+        self.user.groups.add(self.group.pk)
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.get(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.get(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Granted access to simple user with his own."""
+        r = self.user_client.get(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_foreign_host(self):
+        """Forbidden access to simple user with foreign plugin."""
+        self.DETAIL_URL = reverse('plugin-detail', args=[Plugin.objects.exclude(pk=self.plugin.pk)[0].pk])
+        r = self.user_client.get(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
+
+
+class Plugin_POST_Test(APITestCase):
+    """
+    Test POST. Same as
+    ``curl -i -X POST http://127.0.0.1:8081/rest/plugins/ -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.post(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.post(LIST_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        r = self.user_client.post(LIST_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class Plugin_DELETE_Test(APILiveServerTestCase):
+    """
+    Test DELETE. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/plugins/1 -H 'Accept: application/json'``
+    """
+    @set_storage(extras=['host', 'plugin'])
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.DETAIL_URL = reverse('plugin-detail', args=[self.host.pk])
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.delete(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.delete(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        r = self.user_client.delete(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
+
+
+class Plugin_PATCH_Test(APILiveServerTestCase):
+    """
+    Test PATCH. Same as
+    ``curl -i -X PATCH http://127.0.0.1:8081/rest/plugins/1 -H 'Accept: application/json'``
+    """
+    @set_storage(extras=['host', 'plugin'])
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.DETAIL_URL = reverse('plugin-detail', args=[self.plugin.pk])
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.patch(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'name':'NEW PLUGIN'}
+        r = self.admin_client.patch(self.DETAIL_URL, data=data)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        r = self.user_client.patch(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
+
+
+class Plugin_POST_create_sources_Test(APILiveServerTestCase):
+    """
+    Test POST. Same as
+    ``curl -i -X POST http://127.0.0.1:8081/rest/plugins/1/create_sources/ -H 'Accept: application/json'``
+    """
+    @set_storage(extras=['host', 'plugin'])
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.SOURCE_URL = reverse('plugin-create-sources', args=[self.plugin.pk])
+        self.sources = self.plugin.get_data_sources()
+        self.host.group = self.group
+        self.host.save()
+        self.user.groups.add(self.group.pk)
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.post(self.SOURCE_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'sources': self.sources}
+        r = self.admin_client.post(self.SOURCE_URL, data=data)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'sources': self.sources}
+        r = self.user_client.post(self.SOURCE_URL, data=data)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+
+    def test_without_data(self):
+        """Create all plugin's sources if no one is specified."""
+        r = self.admin_client.post(self.SOURCE_URL)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)

@@ -1,94 +1,152 @@
-from tastypie.test import ResourceTestCase
-from core.tests.utils import set_storage, set_users
+"""
+Tests for storage REST management.
+"""
+
+from django.core.urlresolvers import reverse
+from rest_framework.test import APITestCase
 from core.models import Storage
+from core.tests.utils import set_users, set_storage
+from rest.tests.utils import set_clients
 
+LIST_URL = reverse('storage-list')
 
-class Storage_Test(ResourceTestCase):
+class Storage_GET_list_Test(APITestCase):
     """
-    Tests for storage management API.
-    Only available for admins.
+    Test GET list. Same as
+    ``curl -i -X GET http://127.0.0.1:8081/rest/storages/ -H 'Accept: application/json'``
     """
-    @set_users()
     @set_storage()
-    def setUp(self):
-        super(Storage_Test, self).setUp()
-        self.storage = Storage.objects.all()[0]
-
-    def get_credentials(self):
-        return self.create_basic('root', 'toto')
-
-    def test_get_list(self):
-        """Get list of storages."""
-        url = '/api/storage/'
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertValidJSONResponse(r)
-
-    def test_get_detail(self):
-        """Get storage's detail."""
-        url = '/api/storage/%i/' % self.storage.pk
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertValidJSONResponse(r)
-
-    def test_post(self):
-        """Create a storage."""
-        url = '/api/storage/'
-        data = {
-          'name': 'new storage',
-          'address': 'localhost',
-        }
-        r = self.api_client.post(url, data=data, authentication=self.get_credentials())
-        self.assertHttpCreated(r)
-        self.assertTrue(Storage.objects.filter(name='new storage').exists(), "Storage hasn't been created")
-
-    def test_patch(self):
-        """Update a storage."""
-        url = '/api/storage/%i/' % self.storage.pk
-        data = { 'name': 'roott' }
-        r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertEqual(Storage.objects.get(pk=1).name, 'roott', "Data are unchanged.")
-
-    def test_delete(self):
-        """Delete a storage."""
-        url = '/api/storage/%i/' % self.storage.pk
-        r = self.api_client.delete(url, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertFalse(Storage.objects.filter(pk=self.storage.pk).exists(), "Storage hasn't been deleted.")
-
-    def test_delete_list(self):
-        """Delete a storage list."""
-        url = '/api/storage/'
-        data = {
-          'deleted_objects': [
-            '/api/storage/%i/' % self.storage.pk,
-          ],
-          'objects':[],
-        }
-        r = self.api_client.patch(url, data=data, authentication=self.get_credentials())
-        self.assertHttpAccepted(r)
-        self.assertFalse(Storage.objects.filter(pk=self.storage.pk).exists(), "Storage hasn't been deleted.")
-
-
-class Storage_Forbidden_Test(ResourceTestCase):
-    """
-    Tests for unauthorized access.
-    """
     @set_users()
+    @set_clients()
     def setUp(self):
-        super(Storage_Forbidden_Test, self).setUp()
-
-    def get_credentials(self):
-        return self.create_basic('storage', 'toto')
+        self.DETAIL_URL = reverse('storage-detail', args=[self.storage.pk])
 
     def test_anonymous(self):
-        """Ban anonymous."""
-        url = '/api/storage/'
-        r = self.api_client.get(url)
-        self.assertHttpUnauthorized(r)
+        """Forbidden access to anonymous."""
+        r = self.client.get(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.get(LIST_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Ban non admin."""
-        url = '/api/storage/'
-        r = self.api_client.get(url, authentication=self.get_credentials())
-        self.assertHttpForbidden(r)
+        """Forbidden access to simple user."""
+        r = self.user_client.get(LIST_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
 
+
+class Storage_GET_detail_Test(APITestCase):
+    """
+    Test GET details. Same as
+    ``curl -i -X GET http://127.0.0.1:8081/rest/storages/1 -H 'Accept: application/json'``
+    """
+    @set_storage()
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.DETAIL_URL = reverse('storage-detail', args=[self.storage.pk])
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.get(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.get(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        r = self.user_client.get(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class Storage_POST_Test(APITestCase):
+    """
+    Test POST. Same as
+    ``curl -i -X POST http://127.0.0.1:8081/rest/storages/ -H 'Accept: application/json'``
+    """
+    @set_storage()
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.DETAIL_URL = reverse('storage-detail', args=[self.storage.pk])
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.post(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {
+            'name':'NEW STORAGE',
+            'address': 'localhost',
+        }
+        r = self.admin_client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        r = self.user_client.post(LIST_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class Storage_DELETE_Test(APITestCase):
+    """
+    Test DELETE. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/storages/1 -H 'Accept: application/json'``
+    """
+    @set_storage()
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.DETAIL_URL = reverse('storage-detail', args=[self.storage.pk])
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.delete(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        r = self.admin_client.delete(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        r = self.user_client.delete(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class Storage_PATCH_Test(APITestCase):
+    """
+    Test PATCH. Same as
+    ``curl -i -X PATCH http://127.0.0.1:8081/rest/storages/1 -H 'Accept: application/json'``
+    """
+    @set_storage()
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.DETAIL_URL = reverse('storage-detail', args=[self.storage.pk])
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        data = {'name':'NEW GROUP'}
+        r = self.client.patch(self.DETAIL_URL, data=data)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'name':'NEW GROUP'}
+        r = self.admin_client.patch(self.DETAIL_URL, data=data)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'name':'NEW STORAGE'}
+        r = self.user_client.patch(self.DETAIL_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)

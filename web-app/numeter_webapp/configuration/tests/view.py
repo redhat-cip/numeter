@@ -30,7 +30,7 @@ class View_Test(LiveServerTestCase):
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         # Test to add
-        POST = { 'name': 'test view', 'sources': [1]}
+        POST = { 'name': 'test view', 'sources': [self.source.pk]}
         r = self.c.post(url, POST)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
         # Test to get

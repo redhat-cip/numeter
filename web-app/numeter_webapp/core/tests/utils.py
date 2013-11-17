@@ -1,11 +1,12 @@
 from __future__ import print_function
 
 from django.test import LiveServerTestCase
+from django.test.client import Client
 from django.core.management import call_command
 from django.conf import settings
 from django.utils.decorators import available_attrs
 
-from core.models import Storage, Host
+from core.models import Storage, Host, Plugin, Data_Source as Source
 from core.models import User, Group
 
 from functools import wraps
@@ -64,6 +65,13 @@ def set_storage(extras=[]):
                 self.storage = Storage.objects.get(pk=1)
                 for model in extras:
                     call_command('loaddata', ('mock_%s.json' % model), database='default', verbosity=0)
+                # Set instance as attrs
+                if Host.objects.exists():
+                    self.host = Host.objects.all()[0]
+                    if Plugin.objects.exists():
+                        self.plugin = Plugin.objects.filter(host=self.host)[0]
+                        if Source.objects.exists():
+                            self.source = Source.objects.filter(plugin=self.plugin)[0]
             # Use settings_local
             elif settings.TEST_STORAGES:
                 # Skip if no conf
@@ -134,6 +142,24 @@ def set_users():
             for fi in [self.FILE1,self.SUBFILE1,self.SUBFILE2]:
                 with open(fi, 'w') as f:
                     print("test", file=f)
+            return func(self, *args, **kwargs)
+        return inner
+    return decorator
+
+
+def set_clients():
+    """ 
+    Set 3 ``Client``, admin, user and anonymous.
+    Use ``core.tests.utils.set_users`` before it.
+    """
+    def decorator(func):
+        @wraps(func, assigned=available_attrs(func))
+        def inner(self, *args, **kwargs):
+            self.admin_client = Client()
+            self.admin_client.login(username='root', password='toto')
+            self.user_client = Client()
+            self.user_client.login(username='Client', password='toto')
+            self.client = Client()
             return func(self, *args, **kwargs)
         return inner
     return decorator
