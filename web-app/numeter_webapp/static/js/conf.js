@@ -73,11 +73,12 @@ $(document).on('click', '.ajax-tab-add', function (e) {
 // SUBMIT FORM
 $(document).on('submit', '.ajax-form', function(e) {
   var form = $(this);
+  var method = form.attr('method');
   var url = $(this).attr('action');
   var cur_tab_container = $(this).parentsUntil('.tab-pane').parent()
   var cur_tab = $(this).parentsUntil('.tab-pane').parent().attr('id')
   $.ajax({
-    type: 'POST', url: url, async: true,
+    type: method, url: url, async: true,
     data: $(form).serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -108,7 +109,7 @@ $(document).on('click', 'input[name="delete"]', function() {
   var url = $(this).attr('data-url');
   var next_tab = $(this).attr('data-next-tab');
   $.ajax({
-    type: 'POST', url: url, async: true,
+    type: 'DELETE', url: url, async: true,
     data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {

@@ -8,9 +8,11 @@ from core.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     """Simple user serializer."""
+    groups = serializers.PrimaryKeyRelatedField(many=True)
+    url = serializers.HyperlinkedIdentityField(view_name='plugin-detail')
     class Meta:
         model = User
-        fields = ('username', 'email', 'is_superuser', 'groups', 'graph_lib')
+        fields = ('username', 'email', 'is_superuser', 'groups', 'graph_lib', 'url')
 
 
 class PasswordSerializer(serializers.ModelSerializer):

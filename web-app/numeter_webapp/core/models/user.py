@@ -92,6 +92,12 @@ class User(AbstractBaseUser):
     def get_delete_url(self):
         return reverse('user delete', args=[str(self.id)])
 
+    def get_rest_list_url(self):
+       return reverse('user-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('user-detail', args=[self.id]) 
+
     def get_list_url(self):
         if self.is_superuser:
             return reverse('superuser list')

@@ -1,3 +1,7 @@
+"""
+User Form module.
+"""
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from core.models import User
@@ -17,6 +21,20 @@ class User_Form(forms.ModelForm):
           'graph_lib': forms.Select({'class':'span'}),
           'groups': forms.SelectMultiple({'class':'span'}),
         }
+
+    def get_submit_url(self):
+        """Return url matching with creation or updating."""
+        if self.instance.id:
+            return self.instance.get_rest_detail_url()
+        else:
+            return self.instance.get_rest_list_url()
+
+    def get_submit_method(self):
+        """Return method matching with creation or updating."""
+        if self.instance.id:
+            return 'PATCH'
+        else:
+            return 'POST'
 
 
 class User_Admin_EditForm(User_Form):

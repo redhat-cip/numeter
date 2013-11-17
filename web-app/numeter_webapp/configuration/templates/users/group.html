@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="row-fluid"> <!-- group form --!>
- <form id="group-form" class="ajax-form" action="{{ Group_Form.instance.get_update_url }}" method="POST">
+    <form id="group-form" class="ajax-form" action="{{ Group_Form.get_submit_url }}" method="{{ Group_Form.get_submit_method }}">
   {% csrf_token %}
   <h4 align="center">{{ Group_Form.instance }}</h4>
 
@@ -18,7 +18,7 @@
     <p>
      {% if Group_Form.instance.id %}
       <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
-      <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Group_Form.instance.get_delete_url }}" data-next-tab="#group-list-tab">
+      <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Group_Form.get_submit_url }}" data-next-tab="#group-list-tab">
       <input type="button" name="cancel" class="btn" data-to="#user-list" data-url="{{ Group_Form.instance.get_list_url }}"style="display:none;" value="{% trans "Cancel" %}">
       <input type="button" name="back" class="btn" data-to="#group-list" data-url="{{ Group_Form.instance.get_list_url }}" value="{% trans "Back" %}">
      {% else %}

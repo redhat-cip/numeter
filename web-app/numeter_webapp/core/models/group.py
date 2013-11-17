@@ -43,3 +43,9 @@ class Group(models.Model):
 
     def get_list_url(self):
         return reverse('group list')
+
+    def get_rest_list_url(self):
+       return reverse('group-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('group-detail', args=[self.id]) 

@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 
 from core.models import Host
 from rest.permissions import IsOwnerOrForbidden, HostPermission
-from rest.serializers import HostCreationSerializer, PluginSerializer
+from rest.serializers import HostSerializer, HostCreationSerializer, PluginSerializer
 
 
 class HostViewSet(viewsets.ModelViewSet):
@@ -20,6 +20,7 @@ class HostViewSet(viewsets.ModelViewSet):
     """
     model = Host
     permission_classes = (HostPermission,)
+    serializer_class = HostSerializer
 
     def get_queryset(self):
         return self.model.objects.user_filter(self.request.user)

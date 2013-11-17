@@ -15,6 +15,7 @@ class View_Form(forms.ModelForm):
 
 class Extended_View_Form(forms.ModelForm):
     """Small View ModelForm."""
+    #is_private = forms.BooleanField()
     search_source = forms.CharField(
       required=False,
       widget=forms.TextInput({
@@ -64,8 +65,8 @@ class Extended_View_Form(forms.ModelForm):
             self.fields['available_sources'].queryset = Source.objects.all()
             self.fields['sources'].queryset = Source.objects.user_filter(self.user)
 
-        def get_submit_url(self):
-            """Get POST or PATCH url."""
-            if self.instance.id:
-                return '/api/source/%i' % self.instance.id
-            return '/api/source'
+    def get_submit_url(self):
+        """Get POST or PATCH url."""
+        if self.instance.id:
+            return '/api/source/%i' % self.instance.id
+        return '/api/source'

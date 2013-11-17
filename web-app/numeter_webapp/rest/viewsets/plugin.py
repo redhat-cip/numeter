@@ -9,7 +9,7 @@ from rest_framework.decorators import action
 
 from core.models import Plugin
 from rest.permissions import IsOwnerOrForbidden
-from rest.serializers import SourceSerializer
+from rest.serializers import PluginSerializer, SourceSerializer
 
 
 class PluginViewSet(viewsets.ModelViewSet):
@@ -20,6 +20,7 @@ class PluginViewSet(viewsets.ModelViewSet):
     model = Plugin
     permission_classes = (IsOwnerOrForbidden,)
     allowed_methods = ('GET', 'PATCH', 'DELETE')
+    serializer_class = PluginSerializer
 
     def get_queryset(self):
         return self.model.objects.user_filter(self.request.user)

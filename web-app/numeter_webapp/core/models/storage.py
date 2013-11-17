@@ -204,6 +204,12 @@ class Storage(models.Model):
     def get_create_hosts_url(self):
         return reverse('storage create hosts', args=[str(self.id)])
 
+    def get_rest_list_url(self):
+       return reverse('storage-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('storage-detail', args=[self.id]) 
+
     def get_external_url(self):
         """Return the storage's API url."""
         return "%(protocol)s://%(address)s:%(port)i%(url_prefix)s" % self.__dict__

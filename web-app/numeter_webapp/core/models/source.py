@@ -86,6 +86,12 @@ class Data_Source(models.Model):
     def get_list_url(self):
         return reverse('source list')
 
+    def get_rest_list_url(self):
+       return reverse('source-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('source-detail', args=[self.id]) 
+
     def get_info(self):
         """
         Return info for the instancied source.
