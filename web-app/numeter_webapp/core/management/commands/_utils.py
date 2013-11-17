@@ -1,6 +1,9 @@
-from optparse import OptionParser, IndentedHelpFormatter
+"""
+Commands common objects module.
+"""
 
-from django.core.management.base import BaseCommand, handle_default_options
+from optparse import IndentedHelpFormatter
+from django.core.management.base import BaseCommand
 
 
 class CommandDispatcher(BaseCommand):

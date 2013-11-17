@@ -1,7 +1,9 @@
 """
-wide_storage urls file.
+wide_storage urls module.
 """
-from django.conf.urls import patterns, include, url
+
+from django.conf.urls import patterns, url
+
 
 urlpatterns = patterns('',
     url(r'^hosts$', 'wide_storage.views.hosts', name='wide-storage-hosts'),

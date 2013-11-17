@@ -1,6 +1,7 @@
 """
-REST urls file.
+REST urls module.
 """
+
 from django.conf.urls import patterns, include, url
 from rest_framework import routers
 from rest.viewsets import *

@@ -64,7 +64,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
     'django.core.context_processors.request',
-    
 )
 
 INSTALLED_APPS = (
@@ -75,7 +74,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Django required extensions
-    'rest_framework', 
+    'rest_framework',
     # Numeter Apps
     'core',
     'multiviews',

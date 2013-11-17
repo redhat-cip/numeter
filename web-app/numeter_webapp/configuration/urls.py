@@ -1,3 +1,7 @@
+"""
+configuration urls module.
+"""
+
 # TODO: Use REST API
 from django.conf.urls import patterns, url
 

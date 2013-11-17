@@ -1,3 +1,7 @@
+"""
+Plugin management commands module.
+"""
+
 from django.core.management.base import BaseCommand, CommandError
 
 from core.models import Host, Plugin

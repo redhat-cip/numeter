@@ -1,3 +1,8 @@
+"""
+Fast data insertion command module.
+Populate all hosts, plugin and storage.
+"""
+
 from django.core.management.base import BaseCommand, CommandError
 
 from core.models import Storage, Host, Plugin, Data_Source as Source
