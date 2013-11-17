@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 from django.test import LiveServerTestCase
+from django.test.client import Client
 from django.core.management import call_command
 from django.conf import settings
 from django.utils.decorators import available_attrs
@@ -136,6 +137,24 @@ def set_users():
             for fi in [self.FILE1,self.SUBFILE1,self.SUBFILE2]:
                 with open(fi, 'w') as f:
                     print("test", file=f)
+            return func(self, *args, **kwargs)
+        return inner
+    return decorator
+
+
+def set_clients():
+    """ 
+    Set 3 ``Client``, admin, user and anonymous.
+    Use ``core.tests.utils.set_users`` before it.
+    """
+    def decorator(func):
+        @wraps(func, assigned=available_attrs(func))
+        def inner(self, *args, **kwargs):
+            self.admin_client = Client()
+            self.admin_client.login(username='root', password='toto')
+            self.user_client = Client()
+            self.user_client.login(username='Client', password='toto')
+            self.client = Client()
             return func(self, *args, **kwargs)
         return inner
     return decorator

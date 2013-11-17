@@ -35,7 +35,7 @@ class Skeleton(models.Model):
     After, use ``create_view`` method with a list of hosts and it will
     create a view with sources matching.
     """
-    name = models.CharField(_('name'), max_length=300, unique=True)
+    name = models.CharField(_('name'), max_length=255, unique=True)
     plugin_pattern = models.CharField(_('plugin pattern'), max_length=100)
     source_pattern = models.CharField(_('source pattern'), max_length=100)
     comment = models.TextField(_('Comment'), max_length=3000, null=True, blank=True)

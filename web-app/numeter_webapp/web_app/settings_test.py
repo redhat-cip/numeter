@@ -52,3 +52,10 @@ MEDIA_ROOT = config.get_d('test', 'media_root', '/tmp/numeter-media/')
 
 # Set Liveserver, usefull for mock storage
 os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8081'
+
+# Create temp media folder
+from os import mkdir
+try: mkdir(MEDIA_ROOT)
+except OSError: pass
+try: mkdir(MEDIA_ROOT + 'graphlib/')
+except OSError: pass

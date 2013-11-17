@@ -16,7 +16,7 @@ class Cmd_Populate_Test(CmdTestCase):
 
     def test_populate(self):
         """Add all hosts, plugins and sources."""
-        argv = ['', 'populate']
+        argv = ['', 'populate', '-i', str(self.storage.pk)]
         Command().run_from_argv(argv)
         # Test stdout
         out = self.stdout.getvalue()
