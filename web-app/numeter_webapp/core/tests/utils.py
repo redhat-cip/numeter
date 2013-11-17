@@ -1,3 +1,7 @@
+"""
+Tests common objects module.
+"""
+
 from __future__ import print_function
 
 from django.test import LiveServerTestCase

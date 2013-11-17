@@ -1,11 +1,20 @@
+"""
+multiviews tests common objects module.
+"""
+
 from django.utils.timezone import now
 from core.models import Host, Data_Source
 from multiviews.models import View, Multiview, Event
 
 
 def create_view(host=None, user=None, group=None):
-    """Fast create a view with the 2 first sources."""
-    host = host or Host.objects.all[0]
+    """
+    Fast create a view with the 2 first sources.
+    If ``host`` is specified, choose its sources.
+    If ``user`` is specified, set as his.
+    If ``group`` is specified, set as its.
+    """
+    host = host or Host.objects.all()[0]
     v = View(name="Test view")
     v.save()
     v.name = "Test view #%i" % v.id

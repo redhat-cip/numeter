@@ -1,3 +1,7 @@
+"""
+rest tests common objects module.
+"""
+
 from django.utils.decorators import available_attrs
 from rest_framework.test import APIClient
 from functools import wraps

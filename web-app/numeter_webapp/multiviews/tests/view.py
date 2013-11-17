@@ -1,3 +1,7 @@
+"""
+View model tests module.
+"""
+
 from django.test import LiveServerTestCase
 from django.core.urlresolvers import reverse
 
@@ -8,6 +12,9 @@ from multiviews.tests.utils import create_view, create_event
 
 
 class View_Manager_user_filter_Test(LiveServerTestCase):
+    """
+    Test filter view by his users and groups attributes.
+    """
     @set_storage(extras=['host','plugin','source'])
     @set_users()
     def setUp(self):
@@ -19,7 +26,7 @@ class View_Manager_user_filter_Test(LiveServerTestCase):
         views = View.objects.user_filter(self.admin)
         self.assertEqual(views.count(), 1, "Superuser can't access to a view")
 
-    def test_grant_super_simple_with_his_user_view(self):
+    def test_grant_to_simple_user_with_his_user_view(self):
         """User access to his own view."""
         self.view = create_view(self.host, self.user)
         views = View.objects.user_filter(self.user)
