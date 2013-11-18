@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import Host, Group
-from core.models.utils import MediaField
+from core.models.utils import MediaField, QuerySet
 
 
 class UserManager(_UserManager):
@@ -63,6 +63,9 @@ class UserManager(_UserManager):
     def all_simpleuser(self):
         """Return all simple users."""
         return self.filter(is_superuser=False)
+
+    def get_list_url(self):
+        return reverse('user list')
 
 
 class User(AbstractBaseUser):

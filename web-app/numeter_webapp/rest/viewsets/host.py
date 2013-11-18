@@ -38,7 +38,7 @@ class HostViewSet(viewsets.ModelViewSet):
     @action(permission_classes=[IsOwnerOrForbidden])
     def create_plugins(self, request, pk=None):
         host = self.get_object()
-        plugins = host.create_plugins(request.DATA.get('plugins',[]))
+        plugins = host.create_plugins(request.DATA.get('plugins', []))
         if plugins:
             serializer = PluginSerializer(plugins, many=True)
             return Response(serializer.data,

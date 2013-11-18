@@ -202,7 +202,7 @@ class Storage(models.Model):
         return reverse('storage delete', args=[str(self.id)])
 
     def get_create_hosts_url(self):
-        return reverse('storage create hosts', args=[str(self.id)])
+        return reverse('storage-create-hosts', args=[str(self.id)])
 
     def get_rest_list_url(self):
        return reverse('storage-list') 
