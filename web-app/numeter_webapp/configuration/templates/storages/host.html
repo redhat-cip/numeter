@@ -21,6 +21,7 @@
      <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Host_Form.instance.get_rest_detail_url }}" data-next-tab="#host-list-tab">
      <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
      <input type="button" name="plugins" class="btn" value="{% trans "Show plugins" %}" data-url="{{ Host_Form.instance.get_plugins_url }}" data-toggle="button">
+     <input type="button" name="create-plugins" class="btn btn-primary ajax-btn" data-method="POST" value="{% trans "Create plugins" %}" data-url="{{ Host_Form.instance.get_create_plugins_url }}">
      {% else %}
      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Add" %}">
      {% endif %}

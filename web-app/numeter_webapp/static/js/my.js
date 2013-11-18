@@ -138,6 +138,21 @@ $(document).ready(function () {
       },
     });
   });
+
+  // AJAX BTN
+  $(document).on('click', '.ajax-btn', function() {
+    e.preventDefault();
+    var btn = $(this)
+    var url = btn.data('url');
+    var method = btn.data('method');
+    var next_tab = btn.data('next-tab');
+    $.ajax({
+      type: method, url: url, async: true,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) { },
+    });
+  });
+
 });
 
   function getCookie(name) {

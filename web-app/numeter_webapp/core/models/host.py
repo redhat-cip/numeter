@@ -80,6 +80,9 @@ class Host(models.Model):
     def get_rest_detail_url(self):
        return reverse('host-detail', args=[self.id]) 
 
+    def get_create_plugins_url(self):
+        return reverse('host-create-plugins', args=[str(self.id)])
+
     def get_info(self):
         """
         Hard coding of self.storage.get_info.
