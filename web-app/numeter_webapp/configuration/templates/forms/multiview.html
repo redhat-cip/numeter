@@ -1,5 +1,5 @@
 {% load i18n %}
-<form class="multiview-form ajax-form" action="{{ Multiview_Form.instance.get_update_url }}" method="POST" data-id="{{ Multiview_Form.instance.id }}">
+<form class="multiview-form ajax-form" action="{{ Multiview_Form.get_submit_url }}" method="{{ Multiview_Form.get_submit_method }}" data-id="{{ Multiview_Form.instance.id }}">
  {% csrf_token %}
  <fieldset>
   <div class="span6">
@@ -36,7 +36,7 @@
   <div class="span6">
    {% if Multiview_Form.instance.id %}
     <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
-    <button id="btn-delete-multiview" class="btn btn-danger" data-into=".messages" data-id="{{ Multiview_Form.instance.id }}" data-url="{{ Multiview_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+    <button id="btn-delete-multiview" class="btn btn-danger" data-into=".messages" data-id="{{ Multiview_Form.instance.id }}" data-url="{{ Multiview_Form.get_submit_url }}">{% trans "Delete" %}</button>
    {% else %}
     <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
    {% endif %}

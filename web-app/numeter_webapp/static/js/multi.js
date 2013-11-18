@@ -234,7 +234,7 @@
     $("#list-view-tab a").tab('show');
     $('.get-view[data-id="'+id+'"]').hide(250);
     // SEND DEL REQUEST
-    $.ajax({type:'POST', url:url, async:true,
+    $.ajax({type:'DELETE', url:url, async:true,
       data: $(this).serialize()+'csrfmiddlewaretoken='+$('[name="csrfmiddlewaretoken"]').val(),
       error: function(data, status, xhr) { numeter.error_modal() },
       success: function(data, status, xhr) {
@@ -275,8 +275,9 @@
   // ADD OR UPDATE MULTIVIEW
   $(document).on('submit', ".multiview-form", function(e) {
     e.preventDefault();
-    var url = $(this).attr('action');
     var form = $(this);    
+    var url = form.attr('action');
+    var method = form.attr('method');
     var name = $(this).find('input[name="name"]').val();
     var into = '#edit-multiview-content';
     // RENDER
@@ -284,7 +285,7 @@
     $("#edit-multiview-tab a").show(250);
     $("#edit-multiview-tab a").tab('show');
     // POST FORM
-    $.ajax({type:'POST', url:url, async:true,
+    $.ajax({type:method, url:url, async:true,
       data: $(form).serialize(),
       error: function(data, status, xhr) { numeter.error_modal() },
       success: function(data, status, xhr) {
@@ -318,7 +319,7 @@
     $("#list-multiview-tab a").tab('show');
     $('.get-multiview[data-id="'+id+'"]').hide(250);
     // SEND DEL REQUEST
-    $.ajax({type:'POST', url:url, async:true,
+    $.ajax({type:'DELETE', url:url, async:true,
       data: $(this).serialize()+'csrfmiddlewaretoken='+$('[name="csrfmiddlewaretoken"]').val(),
       error: function(data, status, xhr) { numeter.error_modal() },
       success: function(data, status, xhr) {
@@ -360,6 +361,7 @@
   $(document).on('submit', ".event-form", function(e) {
     e.preventDefault();
     var url = $(this).attr('action');
+    var method = this.attr('method');
     var form = $(this);    
     var name = $(this).find('input[name="name"]').val();
     var into = '#edit-event-content';
@@ -368,7 +370,7 @@
     $("#edit-event-tab a").show(250);
     $("#edit-event-tab a").tab('show');
     // POST FORM
-    $.ajax({type:'POST', url:url, async:true,
+    $.ajax({type:method, url:url, async:true,
       data: $(form).serialize(),
       error: function(data, status, xhr) { numeter.error_modal() },
       success: function(data, status, xhr) {
@@ -402,7 +404,7 @@
     $("#list-event-tab a").tab('show');
     $('.get-event[data-id="'+id+'"]').hide(250);
     // SEND DEL REQUEST
-    $.ajax({type:'POST', url:url, async:true,
+    $.ajax({type:'DELETE', url:url, async:true,
       data: $(this).serialize()+'csrfmiddlewaretoken='+$('[name="csrfmiddlewaretoken"]').val(),
       error: function(data, status, xhr) { numeter.error_modal() },
       success: function(data, status, xhr) {

@@ -1,5 +1,5 @@
 {% load i18n %}
-<form class="view-form ajax-form" action="{{ View_Form.instance.get_update_url }}" method="POST" data-data-url="{{ View_Form.instance.get_data_url }}">
+<form class="view-form ajax-form" action="{{ View_Form.get_submit_url }}" method="{{ View_Form.get_submit_method }}" data-data-url="{{ View_Form.instance.get_data_url }}">
  {% csrf_token %}
  <fieldset>
   <div class="span6">
@@ -45,7 +45,7 @@
   <div class="span6">
   {% if View_Form.instance.id %}
    <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
-   <button id="btn-delete-view" class="btn btn-danger" data-id="{{ View_Form.instance.id }}" data-into=".messages" data-url="{{ View_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+   <button id="btn-delete-view" class="btn btn-danger" data-id="{{ View_Form.instance.id }}" data-into=".messages" data-url="{{ View_Form.get_submit_url }}">{% trans "Delete" %}</button>
   {% else %}
    <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
   {% endif %}

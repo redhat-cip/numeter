@@ -7,14 +7,29 @@ class Multiview_Form(forms.ModelForm):
     class Meta:
         model = Multiview
 
-class Extended_Multiview_Form(forms.ModelForm):
+    def get_submit_url(self):
+        """Return url matching with creation or updating."""
+        if self.instance.id:
+            return self.instance.get_rest_detail_url()
+        else:
+            return self.instance.get_rest_list_url()
+
+    def get_submit_method(self):
+        """Return method matching with creation or updating."""
+        if self.instance.id:
+            return 'PATCH'
+        else:
+            return 'POST'
+
+
+class Extended_Multiview_Form(Multiview_Form):
     """Small Multiview ModelForm."""
     search_view = forms.CharField(
       required=False,
       widget=forms.TextInput({
       'placeholder': _('Search for view'),
       'class': 'span q-opt',
-      'data-url': '/api/view/',
+      'data-url': '/rest/views/',
       'data-into': '#id_available_views',
       'data-chosen': '#id_views',
     }))
@@ -55,4 +70,3 @@ class Extended_Multiview_Form(forms.ModelForm):
         elif not self.instance.id and self.data:
             self.fields['available_views'].queryset = View.objects.all()
             self.fields['views'].queryset = View.objects.user_filter(self.user)
-

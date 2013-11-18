@@ -17,6 +17,8 @@ class SourceViewSet(viewsets.ModelViewSet):
     permission_classes = (IsOwnerOrForbidden,)
     allowed_methods = ('GET', 'PATCH', 'DELETE')
     serializer_class = SourceSerializer
+    filter_fields = ('name',)
 
     def get_queryset(self):
-        return self.model.objects.user_filter(self.request.user)
+        q = self.request.QUERY_PARAMS.get('q', '')
+        return self.model.objects.user_web_filter(q, self.request.user)

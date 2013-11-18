@@ -149,7 +149,14 @@ class Plugin_PATCH_Test(APILiveServerTestCase):
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Forbidden access to simple user."""
+        """Granted access to simple user."""
+        r = self.user_client.patch(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user_with_foreign_plugin(self):
+        """Forbidden access to simple user with a foreign plugin."""
+        self.plugin = Plugin.objects.exclude(host__group=self.group)[0]
+        self.DETAIL_URL = self.plugin.get_rest_detail_url()
         r = self.user_client.patch(self.DETAIL_URL)
         self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
 

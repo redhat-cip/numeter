@@ -87,10 +87,10 @@ class Data_Source(models.Model):
         return reverse('source list')
 
     def get_rest_list_url(self):
-       return reverse('source-list') 
+       return reverse('data_source-list') 
 
     def get_rest_detail_url(self):
-       return reverse('source-detail', args=[self.id]) 
+       return reverse('data_source-detail', args=[self.id]) 
 
     def get_info(self):
         """

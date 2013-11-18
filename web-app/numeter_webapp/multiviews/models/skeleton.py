@@ -70,6 +70,12 @@ class Skeleton(models.Model):
     def get_use_url(self):
         return reverse('skeleton use', args=[self.id])
 
+    def get_rest_list_url(self):
+       return reverse('skeleton-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('skeleton-detail', args=[self.id]) 
+
     def create_view(self, name, hosts):
         """Create a view with ``hosts``, skeleton plugin and source patterns."""
         PLUGIN_REG = r_compile(self.plugin_pattern)

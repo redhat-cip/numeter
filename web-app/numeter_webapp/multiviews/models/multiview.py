@@ -62,3 +62,8 @@ class Multiview(models.Model):
     def get_customize_edit_url(self):
         return reverse('multiviews customize multiview edit', args=[self.id])
 
+    def get_rest_list_url(self):
+       return reverse('multiview-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('multiview-detail', args=[self.id]) 

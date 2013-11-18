@@ -16,11 +16,20 @@ class Skeleton_Form(forms.ModelForm):
           'source_pattern': forms.TextInput({'placeholder':_('Filter by source with regex'),'class':'span'}),
         }
 
-        def get_submit_url(self):
-            """Get POST or PATCH url."""
-            if self.instance.id:
-                return '/api/skeleton/%i' % self.instance.id
-            return '/api/skeleton'
+    def get_submit_url(self):
+        """Return url matching with creation or updating."""
+        if self.instance.id:
+            return self.instance.get_rest_detail_url()
+        else:
+            return self.instance.get_rest_list_url()
+
+    def get_submit_method(self):
+        """Return method matching with creation or updating."""
+        if self.instance.id:
+            return 'PATCH'
+        else:
+            return 'POST'
+
 
 class Skeleton_To_View_Form(forms.ModelForm):
     search_host = forms.CharField(

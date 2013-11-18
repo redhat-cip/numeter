@@ -81,12 +81,12 @@ $(document).on('keypress', '.q-opt', function(e) {
     var into = $(this).next();
     var chosen = $(form).find( $(this).attr('data-chosen') );
     var exclude = $.map( $(chosen).children('option'), function(e) { return $(e).val(); });
-    var data = { 'name__icontains' : $(this).val() };
+    var data = { 'q' : $(this).val() };
     $.ajax({ url:url, async:true, data:data,
       error: function(data, status, xhr) { error_modal() },
       success: function(data) {
         $(into).empty();
-        $(data['objects']).each( function() {
+        $(data['results']).each( function() {
           if ( $.inArray(this['id'].toString(), exclude) == -1 ) {
             var opt = '<option value="'+this['id']+'">'+this['fullname']+'</option>';
             $(into).append(opt);

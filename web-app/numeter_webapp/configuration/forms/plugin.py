@@ -22,9 +22,11 @@ class Plugin_Form(forms.ModelForm):
         if self.instance.id:
             return self.instance.get_rest_detail_url()
         else:
-            return self.instance.get_rest_list_url()
+            return ''
 
     def get_submit_method(self):
         """Return method matching with creation or updating."""
         if self.instance.id:
             return 'PATCH'
+        else:
+            return ''

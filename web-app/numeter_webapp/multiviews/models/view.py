@@ -78,6 +78,12 @@ class View(models.Model):
             return ''
         return reverse('view data', args=[self.id])
 
+    def get_rest_list_url(self):
+       return reverse('view-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('view-detail', args=[self.id]) 
+
     def get_events(self):
         """Return QuerySet of Events of this view."""
         host_ids = self.sources.values_list('plugin__host')
