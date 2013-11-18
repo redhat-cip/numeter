@@ -12,6 +12,8 @@ from source import Source_GET_list_Test, Source_GET_detail_Test, Source_POST_Tes
 from view import View_GET_list_Test, View_GET_detail_Test, View_DELETE_Test#, Source_POST_Test, Source_DELETE_Test, Source_PATCH_Test
 from multiview import Multiview_GET_list_Test, Multiview_GET_detail_Test, Multiview_DELETE_Test#, Source_POST_Test, Source_DELETE_Test, Source_PATCH_Test
 
+from skeleton import Skeleton_GET_list_Test, Skeleton_GET_detail_Test, Skeleton_DELETE_Test, Skeleton_POST_Test, Skeleton_DELETE_Test, Skeleton_PATCH_Test
+
 
 def suite():
     import unittest
@@ -25,6 +27,7 @@ def suite():
         'rest.tests.source',
         'rest.tests.view',
         'rest.tests.multiview',
+        'rest.tests.skeleton',
     )
     suite = unittest.TestSuite()
     for t in TEST_CASES:

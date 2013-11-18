@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from core.models import User
 from rest.serializers import UserSerializer, PasswordSerializer
-from rest.permissions import IsSelfOrForbidden
+from rest.permissions import IsSelfOrForbidden, IsOwnerOrForbidden, HostPermission
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,6 +19,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     model = User
     serializer_class = UserSerializer
+    permission_classes = (IsOwnerOrForbidden, HostPermission)
 
     @action(permission_classes=[IsSelfOrForbidden])
     def set_password(self, request, pk=None):

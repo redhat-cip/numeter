@@ -12,12 +12,26 @@ from core.models.utils import MediaField
 
 class UserManager(_UserManager):
     """Custom Manager with extra methods."""
+    def user_filter(self, user):
+        """Filter user which is in the groups."""
+        if user.is_superuser:
+            return self.all()
+        return self.filter(groups__in=user.groups.all())
+
     def web_filter(self, q):
+        """Extended search from a string."""
         return self.filter(
             Q(username__icontains=q) |
             Q(email__icontains=q) |
             Q(groups__name__icontains=q)
         ).distinct()
+
+    def user_web_filter(self, q, user):
+        """Extended search from a string only on authorized users."""
+        users = self.web_filter(q)
+        if user.is_superuser:
+            return users
+        return users.user_filter(user)
 
     def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):
         """Base method to create user."""
@@ -108,6 +122,15 @@ class User(AbstractBaseUser):
 
     def get_short_name(self):
         return self.username
+
+    def user_has_perm(self, user):
+        """
+        Return if a user is allowed to access an instance.
+        A user is allowed if super or in same group.
+        """
+        if user.is_superuser:
+            return True
+        return bool( set(user.groups.all()) & set(self.groups.all()) )
 
     def has_perm(*args):
         return True
