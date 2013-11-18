@@ -5,7 +5,7 @@ View model tests module.
 from django.test import LiveServerTestCase
 from django.core.urlresolvers import reverse
 
-from core.models import Host, Plugin, Data_Source
+from core.models import Host
 from core.tests.utils import set_storage, set_users
 from multiviews.models import View, Event
 from multiviews.tests.utils import create_view, create_event

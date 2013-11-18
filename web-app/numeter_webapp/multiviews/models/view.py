@@ -56,6 +56,15 @@ class View(models.Model):
     def __unicode__(self):
         return self.name
 
+    def user_has_perm(self, user):
+        """
+        Return if a user is allowed to access an instance.
+        A user is allowed if super or in same group's group or owned by him.
+        """
+        if user.is_superuser:
+            return True
+        return user in self.users.all() or bool( set(user.groups.all()) & set(self.groups.all()) )
+
     def get_absolute_url(self):
         return reverse('view', args=[self.id])
 

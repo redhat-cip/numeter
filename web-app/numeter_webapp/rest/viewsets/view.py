@@ -5,6 +5,7 @@ View ViewSet module.
 from rest_framework import viewsets
 from multiviews.models import View
 from rest.serializers import ViewSerializer
+from rest.permissions import IsOwnerOrForbidden
 
 
 class ViewViewSet(viewsets.ModelViewSet):
@@ -13,6 +14,7 @@ class ViewViewSet(viewsets.ModelViewSet):
     groups.
     """
     model = View
+    permission_classes = (IsOwnerOrForbidden,)
     serializer_class = ViewSerializer
 
     def get_queryset(self):

@@ -9,6 +9,8 @@ from storage import Storage_GET_list_Test, Storage_GET_detail_Test, Storage_POST
 from host import Host_GET_list_Test, Host_GET_detail_Test, Host_POST_Test, Host_DELETE_Test, Host_PATCH_Test, Host_POST_create_plugins_Test
 from plugin import Plugin_GET_list_Test, Plugin_GET_detail_Test, Plugin_POST_Test, Plugin_DELETE_Test, Plugin_PATCH_Test, Plugin_POST_create_sources_Test
 from source import Source_GET_list_Test, Source_GET_detail_Test, Source_POST_Test, Source_DELETE_Test, Source_PATCH_Test
+from view import View_GET_list_Test, View_GET_detail_Test, View_DELETE_Test#, Source_POST_Test, Source_DELETE_Test, Source_PATCH_Test
+from multiview import Multiview_GET_list_Test, Multiview_GET_detail_Test, Multiview_DELETE_Test#, Source_POST_Test, Source_DELETE_Test, Source_PATCH_Test
 
 
 def suite():
@@ -21,6 +23,8 @@ def suite():
         'rest.tests.host',
         'rest.tests.plugin',
         'rest.tests.source',
+        'rest.tests.view',
+        'rest.tests.multiview',
     )
     suite = unittest.TestSuite()
     for t in TEST_CASES:

@@ -10,7 +10,10 @@ class Multiview_QuerySetManager(QuerySet):
         """Filter multiviews authorized for a given user."""
         if user.is_superuser:
             return self.all()
-        return self.filter(views__sources__plugin__host__group__in=user.groups.all()).distinct()
+        return self.filter(
+            Q(users__in=[user]) |
+            Q(groups__in=user.groups.all())
+        ).distinct()
 
     def web_filter(self, q):
         """Extended search from a string."""
@@ -21,16 +24,18 @@ class Multiview_QuerySetManager(QuerySet):
 
     def user_web_filter(self, q, user):
         """Extended search from a string only on authorized multiviews."""
-        views = self.web_filter(q)
+        multiviews = self.web_filter(q)
         if user.is_superuser:
-            return views
-        return views.filter(views__sources__plugin__host__group__in=user.groups.all()).distinct()
+            return multiviews
+        return multiviews.user_filter(user)
 
 
 class Multiview(models.Model):
     name = models.CharField(_('name'), max_length=300)
     views = models.ManyToManyField('multiviews.View')
     comment = models.TextField(_('comment'), max_length=3000, blank=True, null=True)
+    users = models.ManyToManyField('core.User', null=True, blank=True)
+    groups = models.ManyToManyField('core.Group', null=True, blank=True)
 
     objects = Multiview_QuerySetManager.as_manager()
     class Meta:
@@ -41,6 +46,15 @@ class Multiview(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def user_has_perm(self, user):
+        """
+        Return if a user is allowed to access an instance.
+        A user is allowed if super or in same group's group or owned by him.
+        """
+        if user.is_superuser:
+            return True
+        return user in self.users.all() or bool( set(user.groups.all()) & set(self.groups.all()) )
 
     def get_absolute_url(self):
         return reverse('multiview', args=[self.id])

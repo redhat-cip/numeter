@@ -3,6 +3,7 @@ multiviews tests module. Allow to launch a single TestCase or all.
 """
 
 from view import View_Test, View_Manager_user_filter_Test
+from multiview import Multiview_Test, Multiview_Manager_user_filter_Test
 from skeleton import Skeleton_Test
 from event import Event_Test
 from customize.source import Customize_Source_Test
