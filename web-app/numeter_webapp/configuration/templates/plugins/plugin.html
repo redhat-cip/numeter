@@ -16,7 +16,7 @@
    <div class="row-fluid">
     <p>
      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
-     <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Plugin_Form.get_submit_url }}" data-next-tab="#plugin-list-tab">
+     <input type="button" data-method="DELETE" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Plugin_Form.get_submit_url }}" data-next-tab="#plugin-list-tab">
      <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
      <input type="button" name="list-sources" class="btn" value="{% trans "List sources" %}" data-url="{{ Plugin_Form.instance.get_list_sources_url }}">
      <input type="button" id="btn-choose-sources" class="btn btn-primary" value="{% trans "Create sources" %}" data-url="{{ Plugin_Form.instance.get_create_sources_url }}">

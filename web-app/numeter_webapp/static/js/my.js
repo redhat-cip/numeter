@@ -140,18 +140,26 @@ $(document).ready(function () {
   });
 
   // AJAX BTN
-  $(document).on('click', '.ajax-btn', function() {
+  $(document).on('click', '.ajax-btn', function(e) {
     e.preventDefault();
     var btn = $(this)
     var url = btn.data('url');
     var method = btn.data('method');
-    var next_tab = btn.data('next-tab');
+    var name = btn.data('name');
+    var data = {} 
+    data[name] = $(btn.data('data')).val() || [];
     $.ajax({
-      type: method, url: url, async: true,
+      async: true,
+      type: method,
+      url: url,
+      data: JSON.stringify(data),
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
       error: function(data, status, xhr) { error_modal() },
       success: function(data, status, xhr) { },
     });
   });
+
 
 });
 

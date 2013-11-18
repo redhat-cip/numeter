@@ -120,20 +120,6 @@ $(document).on('click', 'input[name="delete"]', function() {
   return false;
 });
 
-// BTN CREATE HOST
-$(document).on('click', 'input[name="create-hosts"]', function() {
-  var url = $(this).attr('data-url');
-  $.ajax({
-    type: 'POST', url: url, async: true,
-    data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
-    },
-  });
-  return false;
-});
-
 // BUTTON REPAIR HOSTS
 $(document).on('click', '#repair-hosts', function() {
   var url = $(this).attr('data-url');
@@ -178,22 +164,6 @@ $(document).on('click', '#btn-choose-host', function() {
     },
   });
 });
-// BUTTON CREATE PLUGIN
-$(document).on('click', '#btn-create-plugins', function() {
-  var url = $(this).attr('data-url');
-  $.ajax({
-    type: 'POST', url: url, async: true,
-    data: {
-      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'plugins': $('#chosen-plugins').val(),
-      'host_id': $('select[name="host_id"]').val(),
-    },
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
-    },
-  });
-});
 
 // BUTTON CHOOSE SOURCE
 $(document).on('click', '#btn-choose-sources', function() {
@@ -204,21 +174,6 @@ $(document).on('click', '#btn-choose-sources', function() {
     success: function(data, status, xhr) {
       $('#myModal').html(data);
       $('#myModal').modal('show');
-    },
-  });
-});
-// BUTTON CREATE SOURCE
-$(document).on('click', '#btn-create-sources', function() {
-  var url = $(this).attr('data-url');
-  $.ajax({
-    type: 'POST', url: url, async: true,
-    data: { 
-      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'sources': $('#chosen-sources').val()
-    },
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
     },
   });
 });

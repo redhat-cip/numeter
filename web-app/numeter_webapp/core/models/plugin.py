@@ -74,6 +74,9 @@ class Plugin(models.Model):
     def get_rest_detail_url(self):
        return reverse('plugin-detail', args=[self.id]) 
 
+    def get_rest_create_sources_url(self):
+        return reverse('plugin-create-sources', args=[self.id])
+
     def create_data_sources(self, source_names=[]):
         """
         Create sources from the given sources list.

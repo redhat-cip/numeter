@@ -20,7 +20,7 @@
      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
      <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Storage_Form.instance.get_rest_detail_url }}" data-next-tab="#storage-list-tab">
      <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
-     <input type="submit" name="create-hosts" class="btn btn-primary" value="{% trans "Create hosts" %}" data-url="{{ Storage_Form.instance.get_create_hosts_url }}">
+     <input type="button" name="create-hosts" data-method="POST" class="btn btn-primary ajax-btn" value="{% trans "Create hosts" %}" data-url="{{ Storage_Form.instance.get_create_hosts_url }}">
      {% else %}
      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Add" %}">
      {% endif %}

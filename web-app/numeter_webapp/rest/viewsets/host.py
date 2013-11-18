@@ -35,7 +35,7 @@ class HostViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST)
 
-    @action(permission_classes=[IsOwnerOrForbidden])
+    @action(permission_classes=[IsOwnerOrForbidden], allowed_methods=['POST'])
     def create_plugins(self, request, pk=None):
         host = self.get_object()
         plugins = host.create_plugins(request.DATA.get('plugins', []))
