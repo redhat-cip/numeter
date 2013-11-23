@@ -2,13 +2,14 @@
 Source ViewSet module.
 """
 
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet 
 from core.models import Data_Source as Source
 from rest.permissions import IsOwnerOrForbidden
 from rest.serializers import SourceSerializer
+from rest.views import ModelListDelete
 
 
-class SourceViewSet(viewsets.ModelViewSet):
+class SourceViewSet(ModelListDelete, ModelViewSet):
     """
     Source endpoint, availaible for all users. It filters Sources by user
     and only display data for source in same the group of user.

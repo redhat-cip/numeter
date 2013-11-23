@@ -38,8 +38,8 @@
  <h5>{% trans "Action:" %}</h5>
  <div class="input-append">
   <select id="sources-action">
-   <option data-url="{% url "source bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+   <option data-method="DELETE" data-url="{% url "data_source-list" %}">{% trans "Delete" %}</option>
    <option data-method="GET" data-url="{% url "view add sources" %}" value="add-to-view">{% trans "Add to a view" %}</option>
   </select>
-  <button class="btn bulk-action" type="button" data-action-element="#sources-action" data-checkboxes=".source-checkbox">{% trans "Apply" %}</button>
+  <button class="btn bulk-action" type="button" data-select="#sources-action" data-checkbox-class=".source-checkbox">{% trans "Apply" %}</button>
 </div>
