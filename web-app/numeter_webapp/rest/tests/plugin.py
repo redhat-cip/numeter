@@ -197,3 +197,32 @@ class Plugin_POST_create_sources_Test(APILiveServerTestCase):
         """Create all plugin's sources if no one is specified."""
         r = self.admin_client.post(self.SOURCE_URL)
         self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+
+
+class Plugin_DELETE_list_Test(APILiveServerTestCase):
+    """
+    Test DELETE list. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/plugins/ -H 'Accept: application/json'``
+    """
+    @set_storage(extras=['host', 'plugin'])
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.delete(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'id': [self.plugin.id]}
+        r = self.admin_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'id': [self.plugin.id]}
+        r = self.user_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)

@@ -2,7 +2,7 @@
 Plugin ViewSet module.
 """
 
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet 
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -10,9 +10,10 @@ from rest_framework.decorators import action
 from core.models import Plugin
 from rest.permissions import IsOwnerOrForbidden
 from rest.serializers import PluginSerializer, SourceSerializer
+from rest.views import ModelListDelete
 
 
-class PluginViewSet(viewsets.ModelViewSet):
+class PluginViewSet(ModelListDelete, ModelViewSet):
     """
     Plugin endpoint, availaible for all users. It filters Plugins by user
     and only display data for plugin in same the group of user.
