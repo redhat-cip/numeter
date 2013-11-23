@@ -19,17 +19,13 @@ class Host_QuerySetManager(QuerySet):
         """Extended search from a string."""
         return self.filter(
             Q(name__icontains=q) |
-            Q(storage__name__icontains=q) |
-            Q(group__name__icontains=q) |
             Q(hostid__icontains=q)
         ).distinct()
 
     def user_web_filter(self, q, user):
         """Extended search from a string only on authorized sources."""
-        hosts = self.web_filter(q)
-        if user.is_superuser:
-            return hosts
-        return hosts.filter(plugin__host__group__in=user.groups.all())
+        return self.user_filter(user).web_filter(q)
+
 
 class Host(models.Model):
     """

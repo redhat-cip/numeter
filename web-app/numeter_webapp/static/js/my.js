@@ -160,6 +160,36 @@ $(document).ready(function () {
     });
   });
 
+  // BULK
+  $(document).on('click', '.bulk-action', function() {
+    var btn = $(this);
+    var use_modal = btn.data('use-modal')
+    var option = $( btn.data('select') + ' option:selected');
+    var url = option.data('url');
+    var method = option.data('method');
+
+    var checkbox_class = btn.data('checkbox-class');
+    var ids = [];
+    $(checkbox_class+':checked').each( function() {
+       ids.push( $(this).attr('name') );
+    });
+    var data = {id: ids}
+    $.ajax({
+      type: method,
+      url: url,
+      data: JSON.stringify(data),
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      async: true,
+      error: function(data, status, xhr) { error_modal() },
+      success: function(data, status, xhr) {
+        if ( use_modal == 'true' ) {
+          $('#myModal').html(data);
+          $('#myModal').modal('show');
+        }
+      }
+    })
+  })
 
 });
 
