@@ -18,7 +18,7 @@ class View_Form(forms.ModelForm):
         if self.instance.id:
             return self.instance.get_rest_detail_url()
         else:
-            return self.instance.get_rest_detail_url()
+            return self.instance.get_rest_list_url()
 
     def get_submit_method(self):
         """Return method matching with creation or updating."""
