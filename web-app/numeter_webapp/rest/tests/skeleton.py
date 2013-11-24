@@ -147,3 +147,31 @@ class Skeleton_PATCH_Test(APITestCase):
         """Forbidden access to simple user."""
         r = self.user_client.patch(self.DETAIL_URL, data=self.data)
         self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+
+class Skeleton_DELETE_list_Test(APITestCase):
+    """
+    Test DELETE list. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/skeleton/ -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        self.skeleton = Skeleton.objects.all()[0]
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.delete(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'id': [self.skeleton.id]}
+        r = self.admin_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'id': [self.skeleton.id]}
+        r = self.user_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
