@@ -2,13 +2,14 @@
 Multiview ViewSet module.
 """
 
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet
 from multiviews.models import Multiview
 from rest.serializers import MultiviewSerializer
 from rest.permissions import IsOwnerOrForbidden
+from rest.views import ModelListDelete
 
 
-class MultiviewViewSet(viewsets.ModelViewSet):
+class MultiviewViewSet(ModelListDelete, ModelViewSet):
     """
     Multiview endpoint, availaible for all users. It filters by its view's 
     user and groups.
@@ -16,6 +17,7 @@ class MultiviewViewSet(viewsets.ModelViewSet):
     model = Multiview
     permission_classes = (IsOwnerOrForbidden,)
     serializer_class = MultiviewSerializer
+    allowed_methods = ('POST', 'PATCH', 'DELETE', 'GET')
 
     def get_queryset(self):
         q = self.request.QUERY_PARAMS.get('q', '')

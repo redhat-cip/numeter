@@ -36,7 +36,7 @@
   <div class="span6">
    {% if Multiview_Form.instance.id %}
     <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
-    <button id="btn-delete-multiview" class="btn btn-danger" data-into=".messages" data-id="{{ Multiview_Form.instance.id }}" data-url="{{ Multiview_Form.get_submit_url }}">{% trans "Delete" %}</button>
+    <button class="btn btn-danger ajax-btn" data-method="DELETE" data-url="{{ Multiview_Form.get_submit_url }}">{% trans "Delete" %}</button>
    {% else %}
     <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
    {% endif %}
