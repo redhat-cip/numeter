@@ -206,7 +206,7 @@ setup_sourcelist
 apt-get update
 
 # Apt depends
-apt-get install -y devscripts reprepro rabbitmq-server python-dev git-core python-daemon python-setuptools
+apt-get install -y devscripts reprepro rabbitmq-server python-dev git-core python-daemon python-setuptools curl
 apt-get install -y nginx uwsgi uwsgi-plugin-python python-flask python-whisper redis-server python-redis
 apt-get install -y python-mysqldb mysql-client apache2 libapache2-mod-wsgi
 easy_install pip

@@ -331,7 +331,7 @@ check_webapp(){
 
 echo "Setup dependencies ..."
 # Apt depends
-apt-get install -y devscripts reprepro rabbitmq-server
+apt-get install -y devscripts reprepro rabbitmq-server curl
 apt-get install -y python-mysqldb mysql-client apache2 libapache2-mod-wsgi python-setuptools
 
 # gpg key depends
