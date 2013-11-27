@@ -161,7 +161,7 @@ setup_numeter(){
         apt-get install -y -t wheezy-backports python-django python-mimeparse
     fi
     
-    easy_install django-tastypie
+    pip install djangorestframework
 
     for package in {numeter-poller,numeter-storage,numeter-webapp}; do
         echo "# Setup $package"
@@ -244,6 +244,16 @@ EOF
     unlink /etc/nginx/sites-enabled/default
     NUMETER_DIR=$(dirname $(python -c 'import numeter_webapp;print numeter_webapp.__file__'))
 
+    # Apache
+    a2enmod wsgi
+    a2dissite default
+    cp /usr/share/doc/numeter-webapp/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
+    a2ensite numeter-webapp
+    sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/apache2/sites-available/numeter-webapp
+    sed -i "s/:80/:81/g" /etc/apache2/sites-available/numeter-webapp
+    sed -i "s/80/81/g" /etc/apache2/ports.conf
+    /etc/init.d/apache2 restart
+
     #cp /usr/share/doc/numeter-storage/numeter-storage-uwsgi.ini.example /etc/uwsgi/apps-available/numeter-storage-uwsgi.ini
     # Nginx
     cp /usr/share/doc/numeter-webapp/numeter-nginx.example /etc/nginx/sites-available/numeter-webapp
@@ -255,16 +265,6 @@ EOF
     ln -s /etc/uwsgi/apps-available/numeter_webapp.ini /etc/uwsgi/apps-enabled/
     sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/uwsgi/apps-available/numeter_webapp.ini
     /etc/init.d/uwsgi restart
-
-    # Apache
-    a2enmod wsgi
-    a2dissite default
-    cp /usr/share/doc/numeter-webapp/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
-    a2ensite numeter-webapp
-    sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/apache2/sites-available/numeter-webapp
-    sed -i "s/:80/:81/g" /etc/apache2/sites-available/numeter-webapp
-    sed -i "s/80/81/g" /etc/apache2/ports.conf
-    /etc/init.d/apache2 restart
 
 }
 
@@ -331,8 +331,9 @@ check_webapp(){
 
 echo "Setup dependencies ..."
 # Apt depends
-apt-get install -y devscripts reprepro rabbitmq-server curl
+apt-get install -y devscripts reprepro rabbitmq-server curl munin-node
 apt-get install -y python-mysqldb mysql-client apache2 libapache2-mod-wsgi python-setuptools
+easy_install pip
 
 # gpg key depends
 setup_gpg_key

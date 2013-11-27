@@ -25,7 +25,7 @@ setup_numeter(){
         apt-get install -y -t wheezy-backports python-django python-mimeparse
     fi
 
-    easy_install django-tastypie
+    pip install djangorestframework
     
     cd /opt && git clone https://github.com/enovance/numeter
 
@@ -117,6 +117,16 @@ EOF
     unlink /etc/nginx/sites-enabled/default
     NUMETER_DIR=$(dirname $(python -c 'import numeter_webapp;print numeter_webapp.__file__'))
 
+    # Apache
+    a2enmod wsgi
+    a2dissite default
+    cd /opt/numeter && cp web-app/extras/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
+    a2ensite numeter-webapp
+    sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/apache2/sites-available/numeter-webapp
+    sed -i "s/:80/:81/g" /etc/apache2/sites-available/numeter-webapp
+    sed -i "s/80/81/g" /etc/apache2/ports.conf
+    /etc/init.d/apache2 restart
+
     # Nginx
     cd /opt/numeter && cp web-app/extras/numeter-nginx.example /etc/nginx/sites-available/numeter-webapp
     ln -s /etc/nginx/sites-available/numeter-webapp /etc/nginx/sites-enabled/
@@ -127,16 +137,6 @@ EOF
     ln -s /etc/uwsgi/apps-available/numeter_webapp.ini /etc/uwsgi/apps-enabled/
     sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/uwsgi/apps-available/numeter_webapp.ini
     /etc/init.d/uwsgi restart
-
-    # Apache
-    a2enmod wsgi
-    a2dissite default
-    cd /opt/numeter && cp web-app/extras/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
-    a2ensite numeter-webapp
-    sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/apache2/sites-available/numeter-webapp
-    sed -i "s/:80/:81/g" /etc/apache2/sites-available/numeter-webapp
-    sed -i "s/80/81/g" /etc/apache2/ports.conf
-    /etc/init.d/apache2 restart
 
 }
 
@@ -206,7 +206,7 @@ setup_sourcelist
 apt-get update
 
 # Apt depends
-apt-get install -y devscripts reprepro rabbitmq-server python-dev git-core python-daemon python-setuptools curl
+apt-get install -y devscripts reprepro rabbitmq-server python-dev git-core python-daemon python-setuptools curl munin-node
 apt-get install -y nginx uwsgi uwsgi-plugin-python python-flask python-whisper redis-server python-redis
 apt-get install -y python-mysqldb mysql-client apache2 libapache2-mod-wsgi
 easy_install pip
