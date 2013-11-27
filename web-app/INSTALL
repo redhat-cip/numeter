@@ -20,12 +20,15 @@ Manual
 Django and rest framework setup
 --------------------------
 
+You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. You also need ``rest-framework``
+
 **From packages :** ::
 
-    easy_install django
-    easy_install djangorestframework
-    easy_intall markdown
-    easy_install django-filter
+    echo 'deb http://ftp.fr.debian.org/debian wheezy-backports main' >> /etc/apt/sources.list.d/debian-backports.list
+    apt-get update
+    apt-get install -t wheezy-backports python-django python-mimeparse
+ 
+    pip install djangorestframework
 
 Numeter Webapp setup
 -----------------------
