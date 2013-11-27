@@ -93,7 +93,7 @@ EOF
   "model": "core.user", 
   "fields": {                                                                                                                                                                                     
     "username": "admin",
-    "graph_lib": "[u'dygraph']",
+    "graph_lib": "dygraph",
     "is_active": true,
     "is_superuser": true,
     "is_staff": true,
