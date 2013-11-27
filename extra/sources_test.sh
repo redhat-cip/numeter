@@ -162,7 +162,7 @@ launch_numeter(){
     kill $storage_pid
 
     # Populate webapp db after storage launch one time
-    numeter-webapp populate
+    numeter-webapp populate -i all
 }
 
 check_wsp_file(){
@@ -185,12 +185,12 @@ check_storage_api(){
 
 check_webapp(){
     # By Nginx
-    if [ -z "$(curl 'http://127.0.0.1/wild_storage/list?host=poller' | grep load)" ];then
+    if [ -z "$(curl 'http://127.0.0.1/wide-storage/list?host=poller' -u admin:admin | grep load)" ];then
         echo ERROR webapp wild_storage info by Nginx
         exit 2
     fi
     # By Apache
-    if [ -z "$(curl 'http://127.0.0.1:81/wild_storage/list?host=poller' | grep load)" ];then
+    if [ -z "$(curl 'http://127.0.0.1:81/wide-storage/list?host=poller' -u admin:admin | grep load)" ];then
         echo ERROR webapp wild_storage info by Apache
         exit 2
     fi
