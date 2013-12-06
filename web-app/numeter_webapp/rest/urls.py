@@ -16,7 +16,7 @@ router.register(r'plugins', PluginViewSet)
 router.register(r'sources', SourceViewSet)
 router.register(r'views', ViewViewSet)
 router.register(r'multiviews', MultiviewViewSet)
-router.register(r'skeleton', SkeletonViewSet)
+router.register(r'skeletons', SkeletonViewSet)
 
 urlpatterns = patterns('',
     url(r'^rest/', include(router.urls)),

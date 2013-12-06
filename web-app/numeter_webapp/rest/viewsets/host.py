@@ -5,7 +5,7 @@ Host ViewSet module.
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 from rest_framework.decorators import action
 
 from core.models import Host
@@ -36,6 +36,9 @@ class HostViewSet(ModelListDelete, ModelViewSet):
             return Response(status=HTTP_204_NO_CONTENT)
 
     def create(self, request):
+        """
+        Base method replaced for use ``HostCreationSerialize``.
+        """
         serializer = HostCreationSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()

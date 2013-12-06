@@ -34,7 +34,7 @@ class Skeleton_GET_list_Test(APITestCase):
     def test_simple_user(self):
         """Granted access to simple user."""
         r = self.user_client.get(LIST_URL)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
 
 class Skeleton_GET_detail_Test(APITestCase):
@@ -61,7 +61,7 @@ class Skeleton_GET_detail_Test(APITestCase):
     def test_simple_user(self):
         """Forbidden access to simple user."""
         r = self.user_client.get(self.DETAIL_URL)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
 
 class Skeleton_POST_Test(APITestCase):
@@ -91,7 +91,7 @@ class Skeleton_POST_Test(APITestCase):
     def test_simple_user(self):
         """Forbidden access to simple user."""
         r = self.user_client.post(LIST_URL, self.data)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
 
 
 class Skeleton_DELETE_Test(APITestCase):
@@ -118,7 +118,7 @@ class Skeleton_DELETE_Test(APITestCase):
     def test_simple_user(self):
         """Forbidden access to simple user."""
         r = self.user_client.delete(self.DETAIL_URL)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
 
 
 class Skeleton_PATCH_Test(APITestCase):
@@ -146,7 +146,7 @@ class Skeleton_PATCH_Test(APITestCase):
     def test_simple_user(self):
         """Forbidden access to simple user."""
         r = self.user_client.patch(self.DETAIL_URL, data=self.data)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
 
 class Skeleton_DELETE_list_Test(APITestCase):
@@ -174,4 +174,4 @@ class Skeleton_DELETE_list_Test(APITestCase):
         """Forbidden access to simple user."""
         data = {'id': [self.skeleton.id]}
         r = self.user_client.delete(LIST_URL, data=data)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)

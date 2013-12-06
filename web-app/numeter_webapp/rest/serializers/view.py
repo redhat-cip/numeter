@@ -12,7 +12,6 @@ class ViewSerializer(serializers.ModelSerializer):
     groups = serializers.PrimaryKeyRelatedField(many=True)
     sources = serializers.PrimaryKeyRelatedField(many=True)
     url = serializers.HyperlinkedIdentityField(view_name='view-detail')
-    fullname = serializers.Field(source='__unicode__')
     class Meta:
         model = View
-        fields = ('name', 'sources', 'comment', 'warning', 'critical', 'users', 'groups', 'id', 'fullname')
+        fields = ('name', 'sources', 'comment', 'warning', 'critical', 'users', 'groups', 'id',)

@@ -1,5 +1,8 @@
+"""
+Profile modal tests module.
+"""
+
 from django.test import TestCase
-from django.test.client import Client
 from django.core.urlresolvers import reverse
 from core.models import User
 from core.tests.utils import set_users, set_clients
@@ -15,7 +18,7 @@ class Profile_Test(TestCase):
         pass
 
     def test_index(self):
-        """Simple get."""
+        """Get modal."""
         url = reverse('profile')
         r = self.admin_client.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
@@ -54,4 +57,3 @@ class Profile_Test(TestCase):
         r = self.user_client.post(url, POST)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
         self.assertFalse(self.user.check_password('root'), "Third user can change password.")
-

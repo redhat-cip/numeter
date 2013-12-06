@@ -79,36 +79,41 @@ class View_GET_detail_Test(APITestCase):
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
 
-# class View_POST_Test(APITestCase):
-#     """
-#     Test POST. Same as
-#     ``curl -i -X POST http://127.0.0.1:8081/rest/views/ -H 'Accept: application/json'``
-#     """
-#     @set_storage(extras=['host', 'plugin', 'source'])
-#     @set_users()
-#     @set_clients()
-#     @set_views()
-#     def setUp(self):
-#         pass
-# 
-#     def test_anonymous(self):
-#         """Forbidden access to anonymous."""
-#         r = self.client.post(LIST_URL)
-#         self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
-# 
-#     def test_superuser(self):
-#         """Granted access for superuser."""
-#         data = {
-#             'name':'NEW VIEW',
-#             'address': 'localhost',
-#         }
-#         r = self.admin_client.post(LIST_URL, data=data)
-#         self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
-# 
-#     def test_simple_user(self):
-#         """Forbidden access to simple user."""
-#         r = self.user_client.post(LIST_URL)
-#         self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+class View_POST_Test(APITestCase):
+    """
+    Test POST. Same as
+    ``curl -i -X POST http://127.0.0.1:8081/rest/views/ -H 'Accept: application/json'``
+    """
+    @set_storage(extras=['host', 'plugin', 'source'])
+    @set_users()
+    @set_clients()
+    @set_views()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.post(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {
+            'name':'NEW VIEW',
+            'address': 'localhost',
+        }
+        r = self.admin_client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {
+            'name':'NEW VIEW',
+            'address': 'localhost',
+        }
+        r = self.user_client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+        self.assertIn(self.group, r.content['groups'], "Group not automaticaly set.")
 
 
 class View_DELETE_Test(APITestCase):
