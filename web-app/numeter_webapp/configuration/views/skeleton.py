@@ -95,20 +95,16 @@ def use(request, skeleton_id):
             'Skeleton_To_View_Form': F,
         })
     else:
-        print request.POST
         F = Skeleton_To_View_Form(user=request.user, skeleton=S, data=request.POST)
         data = {}
         if F.is_valid():
-            print F.save()
             messages.success(request, _("View creatted with success."))
             data['response'] = 'ok'
             data['callback-url'] = S.get_absolute_url()
         else:
             for field,error in F.errors.items():
                 messages.error(request, '<b>%s</b>: %s' % (field,error))
-                print field,error
             data['response'] = 'error'
-        print data
         return render_HTML_JSON(request, data, 'base/messages.html', {})
 
 

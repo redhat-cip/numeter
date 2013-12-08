@@ -17,6 +17,7 @@
     },
     error_modal: function (err) {
       var my_modal = $('#myModal');
+      console.log(err)
       my_modal.modal('show');
       my_modal.html('<center><h4>Connection error !</h4></center>');
       my_modal.append('<div class="span"><pre>' + err + '</pre></div>');

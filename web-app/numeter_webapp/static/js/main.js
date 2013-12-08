@@ -106,12 +106,13 @@ $(document).ready(function () {
       var into = th.next();
       var chosen = form.find( th.data('chosen') );
       var exclude = $.map( chosen.children('option'), function(e) { return $(e).val(); });
-      var data = { 'name__icontains' : th.val() };
+      var data = { 'q' : th.val() };
       $.ajax({ url:url, async:true, data:data,
         error: function(data, status, xhr) { error_modal() },
         success: function(data) {
           $(into).empty();
-          $(data['objects']).each( function() {
+          $(data['results']).each( function() {
+            console.log(this)
             if ( $.inArray(this['id'].toString(), exclude) == -1 ) {
               var opt = '<option value="'+this['id']+'">'+this['fullname']+'</option>';
               $(into).append(opt);

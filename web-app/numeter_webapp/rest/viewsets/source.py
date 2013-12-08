@@ -18,7 +18,6 @@ class SourceViewSet(ModelListDelete, ModelViewSet):
     permission_classes = (IsOwnerOrForbidden,)
     allowed_methods = ('GET', 'PATCH', 'DELETE')
     serializer_class = SourceSerializer
-    filter_fields = ('name',)
 
     def get_queryset(self):
         q = self.request.QUERY_PARAMS.get('q', '')
