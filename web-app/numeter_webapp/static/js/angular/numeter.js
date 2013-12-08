@@ -44,9 +44,9 @@
       return {
         templateUrl: 'media/menu.html',
         link: function ($scope) {
-          $http.get('api/host').
+          $http.get('rest/hosts/').
             success(function (data) {
-              $scope.groups = parseGroups(data.objects);
+              $scope.groups = parseGroups(data.results);
             });
         },
         controller: ['$scope', '$http', function ($scope, $http) {
@@ -63,17 +63,17 @@
 
           $scope.loadPlugins = function () {
             // angular.forEach(categories, function (category) {
-              $http.get('api/host').
+              $http.get('rest/hosts/').
                 success(function (data) {
                   console.log(data);
+
+
+              $http.get('hosttree/category/' + id, {params: {category: name}}).
+                success(function (plugins) {
+                  category.plugins = plugins;
+                  console.log(plugins);
                 });
-
-
-              // $http.get('hosttree/category/' + id, {params: {category: name}}).
-              //   success(function (plugins) {
-                  // category.plugins = plugins;
-                //   console.log(plugins);
-                // });
+            });
 
             // });
           };

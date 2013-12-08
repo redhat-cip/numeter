@@ -13,7 +13,7 @@ class HostSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='host-detail')
     class Meta:
         model = Host
-        fields = ('name', 'hostid', 'group', 'storage', 'url')
+        fields = ('id', 'name', 'hostid', 'group', 'storage', 'url')
 
 
 class HostUserSerializer(serializers.ModelSerializer):
