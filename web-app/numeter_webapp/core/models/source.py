@@ -117,26 +117,28 @@ class Data_Source(models.Model):
         Set more options than simple storage API like time.
         """
         datas = []
-        data = {'res':res}
-        r_data = {
+        source_info = self.get_info()
+        response_data = {
             'labels': ['Date'],
             'colors': [],
             'name': self.name,
             'datas': [],
-            'infos': {self.name:self.get_info()}
+            'infos': {self.name: source_info}
         }
         # Get all data
-        r = self.get_data(**data)
-        r_data['labels'].append(self.name)
-        datas.append(r['DATAS'][self.name])
-        r_data['colors'].append("#%s" % md5(self.name).hexdigest()[:6])
+        source_data = self.get_data(res=res)
+        response_data['labels'].append(self.name)
+        datas.append(source_data['DATAS'][self.name])
+        # Use color key or set unique
+        color = "#%s" % source_info.get('colour', md5(self.name).hexdigest()[:6])
+        response_data['colors'].append(color)
         # Walk on date for mix datas
-        cur_date = r['TS_start']
-        step = r['TS_step']
+        cur_date = source_data['TS_start']
+        step = source_data['TS_step']
         for v in zip(*datas):
-            r_data['datas'].append((cur_date,) + v)
+            response_data['datas'].append((cur_date,) + v)
             cur_date += step
-        return r_data
+        return response_data
 
     def make_HTML_color(self):
         """Make a unique HTML color from source, plugin and host's names."""
