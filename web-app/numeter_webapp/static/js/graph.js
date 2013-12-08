@@ -137,18 +137,4 @@
     insert_graph(host, plugin, '#graphs');
   });
 
-  // SET RESOLUTION
-  $(document).on('click', '#resolution-pills li a', function () {
-    var i,
-      resolution = $(this).parent().attr('data-value'),
-      length = numeter.graphs.length;
-
-    $('#resolution-pills li').removeClass('active');
-    $(this).parent().addClass('active');
-
-    // Walk on graphs for update        
-    for (i = 0; i < length; i = i + 1) {
-      numeter.update_graph(numeter.graphs[i], resolution);
-    }
-  });
 }(jQuery, window, document));

@@ -1,0 +1,35 @@
+<div accordion>
+  <div accordion-group ng-repeat="group in groups">
+    <div accordion-heading>
+      <div ng-click="loadCategories(group.hosts)">
+        {{group.title}}
+      </div>
+    </div>
+
+    <div accordion>
+      <div accordion-group ng-repeat="host in group.hosts">
+        <div accordion-heading>
+          <div ng-click="loadPlugins()">
+            {{host.name}}
+          </div>
+        </div>
+        
+        <div accordion>
+          <div accordion-group ng-repeat="category in host.categories" is-open="category.open">
+            <div accordion-heading>
+              <div ng-click="displayGraph(host.id, category.plugins, category.open)">
+                {{category.name}}
+              </div>
+            </div>
+
+            <ul>
+              <li ng-repeat="plugin in category.plugins" ng-click="displayGraph(host.id, [plugin])">
+                {{plugin.title}}</li>
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

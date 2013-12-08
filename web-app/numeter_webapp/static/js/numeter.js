@@ -1,6 +1,7 @@
-/*global window, document, jQuery*/
-(function (window, $) {
+/*global window, document, jQuery, angular*/
+(function (window, $, angular) {
   'use strict';
+
   window.numeter = {
     graphs: [],
     load_requests: [],
@@ -46,4 +47,4 @@
       }
     }
   };
-}(window, jQuery));
+}(window, jQuery, angular));
