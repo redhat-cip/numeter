@@ -96,7 +96,7 @@ class Data_Source(models.Model):
         """
         Return info for the instancied source.
         """
-        for k,v in self.plugin.get_info().items():
+        for k, v in self.plugin.get_info().items():
             if k == self.name:
                 return v
 

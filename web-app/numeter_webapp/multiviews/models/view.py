@@ -117,8 +117,7 @@ class View(models.Model):
 
     def get_extended_data(self, res='Daily'):
         datas = []
-        data = {'res':res}
-        r_data = {
+        response_data = {
             'labels':['Date'],
             'colors':[],
             'name':self.name,
@@ -132,32 +131,38 @@ class View(models.Model):
         # Get All host and Events
         #host_pk = self.sources.all().values_list('plugin__host')
         #events = Event.objects.filter(hosts__pk__in=hosts_pk)
-        #r_data['event'] = events.values('name','date','comment')
+        #response_data['event'] = events.values('name','date','comment')
         # Set metadata
+
         # Set labels for warning lines
         if self.warning is not None:
-            r_data['labels'].append('warning')
-            r_data['colors'].append("#febf01")
+            response_data['labels'].append('warning')
+            response_data['colors'].append("#febf01")
         if self.critical is not None:
-            r_data['labels'].append('critical')
-            r_data['colors'].append("#FF3434")
-        ## Set datas
+            response_data['labels'].append('critical')
+            response_data['colors'].append("#FF3434")
+        ## Walk on sources and set data
         for s in self.sources.all():
-            r = s.get_data(**data) # Get data
-            # Make color
+            source_data = s.get_data(res=res) # Get data
+            source_info = s.get_info()
             unique_name = '%s %s' % (s.plugin.host.name, s.name)
-            r_data['labels'].append(unique_name)
-            r_data['colors'].append("#%s" % md5(unique_name).hexdigest()[:6])
-            # Add name
-            datas.append(r['DATAS'][s.name])
-            r_data['source_ids'].append(s.id)
             # Add infos
-            r_data['infos'][unique_name] = s.get_info()
+            response_data['infos'][unique_name] = source_info
+            # Add to labels
+            response_data['labels'].append(unique_name)
+            # Add color
+            color = "#%s" % source_info.get('colour', md5(unique_name).hexdigest()[:6])
+            if color in response_data['colors']:
+                color = '#' + md5(unique_name).hexdigest()[:6]
+            response_data['colors'].append(color)
+            # Add name
+            datas.append(source_data['DATAS'][s.name])
+            response_data['source_ids'].append(s.id)
         # Get Events
-        events = self.get_events()
+        # events = self.get_events()
         # Skip if there's no data
         if not datas:
-            return r_data
+            return response_data
         # Add warning and critical line
         if self.critical is not None:
             critical_data = [self.critical] * len(datas[0])
@@ -166,18 +171,18 @@ class View(models.Model):
             warning_data = [self.warning] * len(datas[0])
             datas.insert(0, warning_data)
         # Append empty datas if there's no
-        if not 'r' in locals():
-            r_data['datas'].append( (int(now().strftime('%s'))*1000,) )
+        if not 'source_data' in locals():
+            response_data['datas'].append( (int(now().strftime('%s'))*1000,) )
         # Add timestamp to data
         else:
-            cur_date = r['TS_start']
-            step = r['TS_step']
+            cur_date = source_data['TS_start']
+            step = source_data['TS_step']
             # Walk on data and add date by step
             for v in zip(*datas):
-                r_data['datas'].append((cur_date,) + v)
+                response_data['datas'].append((cur_date,) + v)
                 # Add events with step_date
                 #for e in events.in_step(cur_date, res).values('comment','short_text'):
                 #    e['date'] = cur_date
-                #    r_data['events'].append(e)
+                #    response_data['events'].append(e)
                 cur_date += step
-        return r_data
+        return response_data

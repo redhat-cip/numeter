@@ -98,15 +98,33 @@ class Source_Manager_Test(LiveServerTestCase):
 
 
 class Source_Test(LiveServerTestCase):
-
+    """Tests for ``Data_Source`` instance."""
     @set_storage(extras=['host','plugin','source'])
     def setUp(self):
-        self.host = Host.objects.all()[0]
-        self.plugin = Plugin.objects.all()[0]
-        self.source = Source.objects.all()[0]
+        pass
+
+    def test_get_info(self):
+        """Get info for a source."""
+        r = self.source.get_info()
+        self.assertIsInstance(r, dict, "Invalide response type, should be dict.")
 
     def test_get_data(self):
-        """Retrieve data."""
+        """Get data for a source."""
         data = {'res':'Daily'}
         r = self.source.get_data(**data)
         self.assertIsInstance(r, dict, "Invalide response type, should be dict.")
+
+    def test_get_extended_data(self):
+        """Get extented data for make a graph."""
+        source_info = self.source.get_info()
+        source_data = self.source.get_data()
+        r = self.source.get_extended_data(res='Daily')
+        self.assertIsInstance(r, dict, "Invalide response type, should be dict.")
+        # Test info
+        self.assertIn('Date', r['labels'], "First label is not 'Date'")
+        self.assertEqual(r['infos'][self.source.name], source_info, "Base info aren't present.")
+        self.assertEqual(self.source.name, r['name'],
+            "Bad name is return ('%s', should be '%s')." % (r['name'], self.source.name)
+        )
+        # Test data
+        self.assertEqual(r['datas'][0][1], source_data['DATAS'][self.source.name][0])
