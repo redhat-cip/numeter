@@ -9,7 +9,7 @@
     <div accordion>
       <div accordion-group ng-repeat="host in group.hosts">
         <div accordion-heading>
-          <div ng-click="loadPlugins()">
+          <div ng-click="loadPlugins(host)">
             {{host.name}}
           </div>
         </div>

@@ -7,7 +7,7 @@
   numeter.preview_request = null;
 
   // GET SIMPLE GRAPH
-  numeter.get_simple_graph = function (url, into_id) {
+  numeter.get_simple_graph = function (url, into) {
     numeter.preview_request = $.getJSON(url, function (data) {
       // Convert time to Date obj
       var g, i, length = data.datas.length;
@@ -36,7 +36,7 @@
       }
 
       g = new Dygraph(
-        document.getElementById(into_id),
+        into,
         data.datas,
         { labels: data.labels,
           colors: data.colors,
@@ -52,11 +52,15 @@
 
   // GET ADVANCED GRAPH
   numeter.get_graph = function (url, into, res) {
-    $.getJSON(url + '?res=' + res, function (data) {
+    $.getJSON(url + '?res=' + 'Daily', function (data) {
       // Compute width
+      var graph_div = $(into);
+      var graph_container = graph_div.find('.graph-container');
+      var label_container = graph_div.find('.label-container');
       var i, g,
         length = data.datas.length,
-        width = $('.collapse').css('width').replace('px', '') / 2 - 50;
+        width = graph_container.css('width').replace('px', '');
+        // heigth = graph_container.css('height').replace('px', '') / 2 - 50;
       // Make date
       for (i = 0; i < length; i = i + 1) {
         data.datas[i][0] = new Date(data.datas[i][0] * 1000);
@@ -90,13 +94,13 @@
       }
 
       g = new Dygraph(
-        document.getElementById(into),
+        graph_container[0],
         data.datas,
         {
           title: data.name,
           series: series,
-          height: 220,
-          //width: width,
+          //height: 220,
+          width: width,
           legend: 'always',
           //fillGraph: true,
           pixelsPerLabel: 60,
@@ -107,7 +111,7 @@
           highlightCircleSize: 4.0,
           stackedGraph: is_stacked,
           labels: data.labels,
-          labelsDiv: document.getElementById('graph-labels-' + data.name),
+          labelsDiv: label_container[0],
           labelsKMG2: true,
           labelsSeparateLines: true,
           //labelsDivWidth: 300,
@@ -124,7 +128,7 @@
         }
       );
       g.url = url;
-      numeter.graphs.push(g);
+      return g;
     });
   };
 

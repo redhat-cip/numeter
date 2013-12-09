@@ -29,11 +29,12 @@
       return {
         scope: {
           selected: '=',
-          url: '@'
+          url: '=',
         },
         templateUrl: 'media/graph.html',
-        link: function ($scope) {
-
+        link: function ($scope, $element) {
+          console.log($scope, $element);
+         var graph = numeter.get_graph($scope.url, $element[0], $scope.selected);
         },
         controller: ['$scope', '$http', function ($scope, $http) {
           console.log($scope.url);
@@ -61,14 +62,14 @@
             });
           };
 
-          $scope.loadPlugins = function () {
-            // angular.forEach(categories, function (category) {
-              $http.get('rest/hosts/').
-                success(function (data) {
-                  console.log(data);
+          $scope.loadPlugins = function (host) {
+            angular.forEach(host.categories, function (category) {
+            //  $http.get('rest/hosts/').
+            //    success(function (data) {
+            //      console.log(data);
+            //        debugger;
 
-
-              $http.get('hosttree/category/' + id, {params: {category: name}}).
+              $http.get('hosttree/category/' + host.id, {params: {category: category.name}}).
                 success(function (plugins) {
                   category.plugins = plugins;
                   console.log(plugins);
