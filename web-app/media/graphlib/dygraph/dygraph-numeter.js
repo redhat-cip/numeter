@@ -52,7 +52,7 @@
 
   // GET ADVANCED GRAPH
   numeter.get_graph = function (url, into, res) {
-    $.getJSON(url + '?res=' + 'Daily', function (data) {
+    $.getJSON(url + '?res=' + res, function (data) {
       // Compute width
       var graph_div = $(into);
       var graph_container = graph_div.find('.graph-container');

@@ -28,13 +28,13 @@
     directive('graph', ['$http', function ($http) {
       return {
         scope: {
-          selected: '=',
+          resolution: '=',
           url: '=',
         },
         templateUrl: 'media/graph.html',
         link: function ($scope, $element) {
           console.log($scope, $element);
-         var graph = numeter.get_graph($scope.url, $element[0], $scope.selected);
+          numeter.get_graph($scope.url, $element[0], $scope.resolution);
         },
         controller: ['$scope', '$http', function ($scope, $http) {
           console.log($scope.url);
@@ -95,8 +95,7 @@
       };
     }]).
     controller('graphCtrl', ['$scope', function ($scope) {
-      $scope.selected = 'daily';      
-
+      $scope.selected = 'Daily';
       $scope.$on('resChange', function (event, resolution) {
         $scope.selected = resolution;
       });
@@ -104,8 +103,9 @@
       $scope.$on('displayGraph', function (event, host_id, plugins) {
         $scope.graphs = [];
         plugins.map(function (plugin) {          
-          this.push({url: "get/graph/" + host_id + "/" + plugin.plugin});
+          this.push({url: "get/graph/" + host_id + "/" + plugin.plugin, resolution: $scope.selected });
         }, $scope.graphs);
+        console.log($scope.selected,111);
       });
     }]);
 

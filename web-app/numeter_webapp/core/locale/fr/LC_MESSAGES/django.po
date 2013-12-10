@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-23 20:38+0200\n"
+"POT-Creation-Date: 2013-12-10 01:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: MONTHE Anthony anthony.monthe@enovance.com\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,8 +18,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: models/group.py:18 models/host.py:38 models/plugin.py:32
-#: models/source.py:52 models/storage.py:113
+#: models/group.py:18 models/host.py:34 models/plugin.py:32
+#: models/source.py:52 models/storage.py:123
 msgid "name"
 msgstr "nom"
 
@@ -33,132 +33,111 @@ msgstr "groupe(s)"
 msgid "groups"
 msgstr "groupe(s)"
 
-#: models/host.py:39
+#: models/host.py:35
 msgid "ID on storage"
 msgstr "ID sur le storage"
 
-#: models/host.py:47
+#: models/host.py:43
 msgid "host"
 msgstr "hote"
 
-#: models/host.py:48
+#: models/host.py:44
 msgid "hosts"
 msgstr "hotes"
 
-#: models/plugin.py:34 models/source.py:54
+#: models/plugin.py:34 models/source.py:55
 #, fuzzy
 msgid "Comment"
 msgstr "Commentaire"
 
 #: models/plugin.py:40
 msgid "plugin"
-msgstr ""
+msgstr "plugin"
 
 #: models/plugin.py:41
 msgid "plugins"
-msgstr ""
+msgstr "plugins"
 
-#: models/source.py:60
+#: models/source.py:62
 msgid "data source"
-msgstr ""
+msgstr "data source"
 
-#: models/source.py:61
+#: models/source.py:63
 msgid "data_sources"
-msgstr ""
+msgstr "data_sources"
 
-#: models/storage.py:114
+#: models/storage.py:124
 msgid "address"
 msgstr "adresse"
 
-#: models/storage.py:115
+#: models/storage.py:125
 msgid "port"
 msgstr "port"
 
-#: models/storage.py:116
+#: models/storage.py:126
 msgid "URL prefix"
 msgstr "Préfixe d'URL"
 
-#: models/storage.py:116
+#: models/storage.py:126
 msgid "Start point of API"
-msgstr "Point d'entr�e"
+msgstr "Point d'entrée"
 
-#: models/storage.py:117
+#: models/storage.py:127
 msgid "protocol"
 msgstr "protocole"
 
-#: models/storage.py:118
+#: models/storage.py:128
 msgid "login"
 msgstr "identifiant"
 
-#: models/storage.py:119
+#: models/storage.py:129
 msgid "password"
 msgstr "mot de passe"
 
-#: models/storage.py:125
+#: models/storage.py:135
 msgid "storage"
 msgstr "storage"
 
-#: models/storage.py:126
+#: models/storage.py:136
 msgid "storages"
 msgstr "storages"
 
-#: models/user.py:47
+#: models/user.py:73
 msgid "username"
 msgstr "Nom d'utilisateur"
 
-#: models/user.py:48
+#: models/user.py:74
 msgid "email address"
 msgstr "Adresse email"
 
-#: models/user.py:49
+#: models/user.py:75
 #, fuzzy
 msgid "superuser status"
 msgstr "super-utilisateur(s)"
 
-#: models/user.py:50
+#: models/user.py:76
 msgid "staff status"
 msgstr "membre du staff"
 
-#: models/user.py:51
+#: models/user.py:77
 msgid "active"
 msgstr "actif"
 
-#: models/user.py:52
+#: models/user.py:78
 msgid "date joined"
 msgstr "date d'adhésion"
 
-#: models/user.py:63
+#: models/user.py:89
 msgid "user"
 msgstr "utilisateur"
 
-#: models/user.py:64
+#: models/user.py:90
 msgid "users"
 msgstr "utilisateurs"
 
-#: templates/apropos.html:13
+#: templates/apropos.html:13 templates/modals/profile.html:75
 msgid "Close"
 msgstr "Fermer"
-
-#: templates/index.html:17
-#, fuzzy
-msgid "No group"
-msgstr "Ajouter un groupe"
-
-#: templates/index.html:33
-msgid "Daily"
-msgstr "Journalier"
-
-#: templates/index.html:34
-msgid "Weekly"
-msgstr "Hebdomadaire"
-
-#: templates/index.html:35
-msgid "Monthly"
-msgstr "Mensuel"
-
-#: templates/index.html:36
-msgid "Yearly"
-msgstr "Annuel"
 
 #: templates/login.html:8
 msgid "Numeter - Authentification"
@@ -168,15 +147,15 @@ msgstr "Numeter - Authentification"
 msgid "Please Log In"
 msgstr "Veuillez vous connecter"
 
-#: templates/login.html:34
+#: templates/login.html:35
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
-#: templates/login.html:35
+#: templates/login.html:36 templates/modals/profile.html:8
 msgid "Password"
 msgstr "Mot de passe"
 
-#: templates/login.html:37
+#: templates/login.html:38
 msgid "Log in"
 msgstr "Se connecter"
 
@@ -185,16 +164,53 @@ msgid "Home"
 msgstr "Accueil"
 
 #: templates/base/nav-bar.html:24
+#, fuzzy
+msgid "Profile settings"
+msgstr "Profil"
+
+#: templates/base/nav-bar.html:26
 msgid "Configuration"
 msgstr "Configuration"
 
-#: templates/base/nav-bar.html:26
+#: templates/base/nav-bar.html:29
 msgid "Logout"
 msgstr "Se déconnecter"
+
+#: templates/modals/profile.html:7
+msgid "Profile"
+msgstr "Profil"
+
+#: templates/modals/profile.html:34 templates/modals/profile.html.py:61
+msgid "Update"
+msgstr "Mise àjour"
 
 #: views/auth.py:16 views/auth.py:18
 msgid "Incorrect login name or password !"
 msgstr "Identifiant ou mot de passe incorrect !"
+
+#: views/profile.py:27
+msgid "Profile updated with success."
+msgstr "Profil mis à jour avec succès."
+
+#: views/profile.py:46
+msgid "Password updated with success."
+msgstr "Mot de passe mis à jour avec succès."
+
+#, fuzzy
+#~ msgid "No group"
+#~ msgstr "Ajouter un groupe"
+
+#~ msgid "Daily"
+#~ msgstr "Journalier"
+
+#~ msgid "Weekly"
+#~ msgstr "Hebdomadaire"
+
+#~ msgid "Monthly"
+#~ msgstr "Mensuel"
+
+#~ msgid "Yearly"
+#~ msgstr "Annuel"
 
 #~ msgid "Name"
 #~ msgstr "Nom"
@@ -241,9 +257,6 @@ msgstr "Identifiant ou mot de passe incorrect !"
 #~ msgid "graph librairies"
 #~ msgstr "bibliotheques de graphique"
 
-#~ msgid "Profile"
-#~ msgstr "Profil"
-
 #~ msgid "Users"
 #~ msgstr "Utilisateurs"
 
@@ -252,9 +265,6 @@ msgstr "Identifiant ou mot de passe incorrect !"
 
 #~ msgid "General"
 #~ msgstr "Générale"
-
-#~ msgid "Update"
-#~ msgstr "Mise àjour"
 
 #~ msgid "Name or address"
 #~ msgstr "Nom ou adresse"
@@ -291,12 +301,6 @@ msgstr "Identifiant ou mot de passe incorrect !"
 
 #~ msgid "Groups"
 #~ msgstr "Groupes"
-
-#~ msgid "Profile updated with success."
-#~ msgstr "Profil mis à jour avec succès."
-
-#~ msgid "Password updated with success."
-#~ msgstr "Mot de passe mis à jour avec succès."
 
 #~ msgid "User added with success."
 #~ msgstr "Utilisateur ajouté avec succès."
