@@ -33,7 +33,6 @@
         },
         templateUrl: 'media/graph.html',
         link: function ($scope, $element) {
-          console.log($scope, $element);
           numeter.get_graph($scope.url, $element[0], $scope.resolution);
         },
         controller: ['$scope', '$http', function ($scope, $http) {
@@ -72,7 +71,6 @@
               $http.get('hosttree/category/' + host.id, {params: {category: category.name}}).
                 success(function (plugins) {
                   category.plugins = plugins;
-                  console.log(plugins);
                 });
             });
 
@@ -105,7 +103,13 @@
         plugins.map(function (plugin) {          
           this.push({url: "get/graph/" + host_id + "/" + plugin.plugin, resolution: $scope.selected });
         }, $scope.graphs);
-        console.log($scope.selected,111);
+      });
+      $scope.$on('resChange', function (event) {
+        var old_graphs = $scope.graphs;
+        $scope.graphs = []
+        old_graphs.map(function (graph) {          
+          this.push({url: graph.url, resolution: $scope.selected });
+        }, $scope.graphs);
       });
     }]);
 
