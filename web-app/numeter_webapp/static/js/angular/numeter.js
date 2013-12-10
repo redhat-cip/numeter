@@ -2,28 +2,6 @@
 (function (angular) {
   'use strict';
 
-  function parseGroups(hosts) {
-    var group, host, title = '', groups = [];
-
-    while (host = hosts.shift()) {
-
-      if (host.group !== title) {
-        group = {
-          title: host.group || 'No group',
-          hosts: []
-        };
-        groups.push(group);
-        title = host.group;
-      }
-      group.hosts.push({
-        id: host.id,
-        name: host.name,
-        categories: []
-      });
-    }
-    return groups;
-  }
-
   angular.module('numeter', ['ui.bootstrap']).
     directive('graph', ['$http', function ($http) {
       return {
@@ -46,7 +24,7 @@
         link: function ($scope) {
           $http.get('rest/hosts/').
             success(function (data) {
-              $scope.groups = parseGroups(data.results);
+              $scope.hosts = data.results;
             });
         },
         controller: ['$scope', '$http', function ($scope, $http) {
@@ -61,20 +39,16 @@
             });
           };
 
-          $scope.loadPlugins = function (host) {
+          $scope.loadPlugins = function (host, chosen_category) {
             angular.forEach(host.categories, function (category) {
-            //  $http.get('rest/hosts/').
-            //    success(function (data) {
-            //      console.log(data);
-            //        debugger;
-
+                  if ( chosen_category == category ) {
               $http.get('hosttree/category/' + host.id, {params: {category: category.name}}).
                 success(function (plugins) {
                   category.plugins = plugins;
+                    $scope.displayGraph(host.id, plugins, true);
                 });
+                  }
             });
-
-            // });
           };
 
           $scope.displayGraph = function (host_id, plugins, open) {
