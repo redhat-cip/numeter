@@ -4,7 +4,7 @@
 
   angular.module('numeter', ['ui.bootstrap']).
     directive('graph', ['$http', function ($http) {
-      return {
+      return{
         scope: {
           resolution: '=',
           url: '=',
@@ -85,6 +85,6 @@
           this.push({url: graph.url, resolution: $scope.selected });
         }, $scope.graphs);
       });
-    }]);
+    }]).
 
 }(angular));
