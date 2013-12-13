@@ -25,6 +25,21 @@
   }
 
   angular.module('numeter', ['ui.bootstrap']).
+    directive('graph', ['$http', function ($http) {
+      return {
+        scope: {
+          selected: '=',
+          url: '@'
+        },
+        templateUrl: 'media/graph.html',
+        link: function ($scope) {
+
+        },
+        controller: ['$scope', '$http', function ($scope, $http) {
+          console.log($scope.url);
+        }]
+      };
+    }]).
     directive('menu', ['$http', function ($http) {
       return {
         templateUrl: 'media/menu.html',
@@ -46,19 +61,27 @@
             });
           };
 
-          $scope.loadPlugins = function (categories, host_id) {
-            angular.forEach(categories, function (category) {
-              $http.get('hosttree/category/' + host_id, {params: {category: category.name}}).
-                success(function (plugins) {
-                  category.plugins = plugins;
+          $scope.loadPlugins = function () {
+            // angular.forEach(categories, function (category) {
+              $http.get('api/host').
+                success(function (data) {
+                  console.log(data);
                 });
-            });
+
+
+              // $http.get('hosttree/category/' + id, {params: {category: name}}).
+              //   success(function (plugins) {
+                  // category.plugins = plugins;
+                //   console.log(plugins);
+                // });
+
+            // });
           };
 
           $scope.displayGraph = function (host_id, plugins, open) {
             if (open) {
               return;
-            }            
+            }
             $scope.$emit('displayGraph', host_id, plugins);
           };
 
@@ -71,15 +94,17 @@
       };
     }]).
     controller('graphCtrl', ['$scope', function ($scope) {
-      $scope.selected = 'daily';
-      $scope.graphs = [];
+      $scope.selected = 'daily';      
 
       $scope.$on('resChange', function (event, resolution) {
         $scope.selected = resolution;
       });
 
       $scope.$on('displayGraph', function (event, host_id, plugins) {
-        console.log(host_id, plugins);
+        $scope.graphs = [];
+        plugins.map(function (plugin) {          
+          this.push({url: "get/graph/" + host_id + "/" + plugin.plugin});
+        }, $scope.graphs);
       });
     }]);
 
