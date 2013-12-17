@@ -1,3 +1,10 @@
+numeter (0.2.3.13) numeter-wheezy; urgency=low
+
+  * Remove tastypie
+  * Add django rest 
+
+ -- Gael Lambert <gael.lambert@enovance.com>  Tue, 17 Dec 2013 09:49:24 +0100
+
 numeter (0.2.3.12) numeter-wheezy; urgency=low
 
   * Numeter with rabbitmq
