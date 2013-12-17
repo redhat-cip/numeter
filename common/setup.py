@@ -25,7 +25,7 @@ from setuptools import setup
 if __name__ == '__main__':
 
     setup(name='numeter-queue',
-          version='0.2.3.12',
+          version='0.2.3.13',
           description='Numeter Queue',
           long_description="""Numeter is a new and dynamic graphing solution \
 made by some of the folks at eNovance. We use it as part of our cloud \

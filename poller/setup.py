@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     setup(name='numeter-poller',
           cmdclass={"install_data": my_install},
-          version='0.2.3.12',
+          version='0.2.3.13',
           description='Numeter Poller',
           long_description="""Numeter is a new and dynamic graphing solution \
 made by some of the folks at eNovance. We use it as part of our cloud \
