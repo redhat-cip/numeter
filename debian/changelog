@@ -1,3 +1,10 @@
+numeter (0.2.3.13) numeter-squeeze; urgency=low
+
+  * Remove tastypie
+  * Add django rest
+
+ -- Gael Lambert <gael.lambert@enovance.com>  Tue, 17 Dec 2013 09:45:14 +0100
+
 numeter (0.2.3.12) numeter-squeeze; urgency=low
 
   * Numeter with rabbitmq
