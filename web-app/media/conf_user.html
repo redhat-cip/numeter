@@ -1,0 +1,12 @@
+    <tabset>
+     <tab ng-repeat="tab in tabs" select="showTab(tab)" heading="{{tab.title}}">
+
+      <tabset>
+       <tab ng-repeat="subtab in tab.subtabs" select="showSubTab(subtab)" heading="{{subtab.title}}">
+       </tab>
+      </tabset>
+
+     </tab>
+    </tabset>
+
+

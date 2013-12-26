@@ -10,13 +10,10 @@
 <div ng-controller="configurationMainTabCtrl">
 
   {% verbatim %}
-  <tabset maintabs>
+  <tabset>
    <tab ng-repeat="maintab in maintabs" select="showMainTab(maintab)" heading="{{maintab.title}}">
-
-    <tabset tabs>
-     {{maintab.content}}
-    </tabset>
-
+  <div configuration>
+  </div>
    </tab>
   </tabset>
   {% endverbatim %}
