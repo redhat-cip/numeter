@@ -23,7 +23,7 @@ def index(request):
 @login_required()
 @superuser_only()
 def user_list(request):
-    """List  users and filter by request."""
+    """List users and filter by request."""
     q = request.GET.get('q','')
     Users = User.objects.web_filter(q).filter(is_superuser=False)
     Users = make_page(Users, int(request.GET.get('page',1)), 20)

@@ -1,12 +1,14 @@
-    <tabset>
-     <tab ng-repeat="tab in tabs" select="showTab(tab)" heading="{{tab.title}}">
+<div ng-controller="configurationTabCtrl">
+ <div class="tabbable tabs-left">
+  <ul class="nav nav-tabs">
+      <li ng-repeat="tab in tabs" ng-class="{'active': tab.active == true}"><a href="" ng-click="showTab(tab)">{{tab.title}}</a></li>
+  </ul> 
 
-      <tabset>
-       <tab ng-repeat="subtab in tab.subtabs" select="showSubTab(subtab)" heading="{{subtab.title}}">
-       </tab>
-      </tabset>
-
-     </tab>
-    </tabset>
-
-
+  <div class="tab-content">
+      <div class="tab-pane" ng-repeat="tab in tabs" ng-class="{'active': tab.active == true}">
+         <div tab> </div>
+      </div>
+  </div>
+  
+ </div>
+</div>

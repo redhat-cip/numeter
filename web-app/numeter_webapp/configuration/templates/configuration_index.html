@@ -9,13 +9,19 @@
 {% block body %}
 <div ng-controller="configurationMainTabCtrl">
 
-  {% verbatim %}
-  <tabset>
-   <tab ng-repeat="maintab in maintabs" select="showMainTab(maintab)" heading="{{maintab.title}}">
-  <div configuration>
+ {% verbatim %}
+  <div class="tabbable">
+   <ul class="nav nav-tabs">
+    <li ng-repeat="maintab in maintabs" ng-class="{'active': maintab.active == true}"><a href="" ng-click="showMainTab(maintab)">{{maintab.title}}</a></li>
+   </ul> 
+
+   <div class="tab-content">
+       <div class="tab-pane" ng-repeat="maintab in maintabs" ng-class="{'active': maintab.active == true}">
+           <div maintab> </div>
+       </div>
+   </div>
+   
   </div>
-   </tab>
-  </tabset>
   {% endverbatim %}
 
 </div>
