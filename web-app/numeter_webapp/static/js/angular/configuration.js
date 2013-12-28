@@ -30,7 +30,7 @@
             };
         }]).
         // TABS
-        directive('tab', function () {
+        directive('mytab', function () {
             return {
                 restrict: 'A',
                 replace: false,
@@ -42,9 +42,9 @@
             $scope.usertabs = [
                 {title: "Users", content: "1", url: "/configuration/user/list", active: true},
                 {title: "Superusers", content: "2", url: "/configuration/superuser/list", active:false},
-                {title: "Groups", content: "3", url: "/configuration/plugin", active:false},
-                {title: "Add user", content: "4", url: "/configuration/view", active:false},
-                {title: "Add group", content: "4", url: "/configuration/view", active:false},
+                {title: "Groups", content: "3", url: "/configuration/group/list", active:false},
+                {title: "Add user", content: "4", url: "/configuration/user/add", active:false},
+                {title: "Add group", content: "4", url: "/configuration/group/add", active:false},
             ];
             $scope.tabs = $scope.usertabs;
             $scope.tabIndex = $scope.usertabs[0];
