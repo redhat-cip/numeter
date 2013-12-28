@@ -96,6 +96,14 @@
             $scope.getTemplateUrl = function () {
                 return $scope.tabIndex.url;
             };
+
+            $scope.openTab = function (title, url) {
+                var new_tab = {title: title, url: url};
+                $scope.usertabs.push(new_tab);
+                $scope.tabIndex.active = false;
+                $scope.tabIndex = new_tab;
+                $scope.tabIndex.active = true;
+            };
         }]);
 
 }(angular));
