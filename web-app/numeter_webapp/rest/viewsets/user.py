@@ -21,6 +21,10 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = (IsOwnerOrForbidden, HostPermission)
 
+    def get_queryset(self):
+        q = self.request.QUERY_PARAMS.get('q', '')
+        return self.model.objects.user_web_filter(q, self.request.user)
+
     @action(permission_classes=[IsSelfOrForbidden])
     def set_password(self, request, pk=None):
         user = self.get_object()

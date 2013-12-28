@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='plugin-detail')
     class Meta:
         model = User
-        fields = ('username', 'email', 'is_superuser', 'groups', 'graph_lib', 'url')
+        fields = ('username', 'email', 'is_superuser', 'groups', 'graph_lib', 'url', 'id')
 
 
 class PasswordSerializer(serializers.ModelSerializer):

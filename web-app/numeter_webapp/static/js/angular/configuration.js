@@ -30,17 +30,55 @@
             };
         }]).
         // TABS
-        directive('mytab', function () {
+        controller('InputFilterCtrl', ['$scope', '$http', function ($scope, $http) {
+            $scope.q = 'root';
+            $scope.updateInstances = function (q) {
+                $scope.$emit('qChange', q);
+            };
+        }]).
+        directive('ngEnter', function () {
+            return function (scope, element, attrs) {
+                element.bind("keydown keypress", function (event) {
+                    if(event.which === 13) {
+                        scope.$apply(function (){
+                            scope.$eval(attrs.ngEnter);
+                        });
+                        event.preventDefault();
+                    }
+                });
+            };
+        }).
+        directive('mytab', function ($http) {
             return {
                 restrict: 'A',
                 replace: false,
                 transclude: true,
-                template: '<div ng-include="getTemplateUrl()"></div>'
+                template: '<div ng-include="getTemplateUrl()"></div>',
+                link: function ($scope) {
+                    $http.get('/rest/users/', {params: {q: ''}}).
+                        success(function (data) {
+                            $scope.users = data.results;
+                            $scope.next = data.next;
+                            $scope.previous = data.previous;
+                        });
+                },
+                controller: ['$scope', '$http', function ($scope, $http) {
+                    console.log($scope.q);
+                    $scope.$on('qChange', function (event, q) {
+                        $http.get('/rest/users/', {params: {q: q}}).
+                            success(function (data) {
+                                $scope.users = data.results;
+                                $scope.next = data.next;
+                                $scope.previous = data.previous;
+                            });
+                        });
+                }]
+                    
             };
         }).
         controller('configurationTabCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.usertabs = [
-                {title: "Users", content: "1", url: "/configuration/user/list", active: true},
+                {title: "Users", content: "1", url: "/media/user_list.html", active: true},
                 {title: "Superusers", content: "2", url: "/configuration/superuser/list", active:false},
                 {title: "Groups", content: "3", url: "/configuration/group/list", active:false},
                 {title: "Add user", content: "4", url: "/configuration/user/add", active:false},
