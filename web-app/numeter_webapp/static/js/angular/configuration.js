@@ -94,11 +94,20 @@
             };
 
             $scope.getTemplateUrl = function () {
+                if ($scope.tabIndex.instance) {
+                    $scope.form = $scope.tabIndex.instance;
+                    return $scope.tabIndex.templateUrl;
+                }
                 return $scope.tabIndex.url;
             };
 
             $scope.openTab = function (user) {
-                var new_tab = {title: user.username, url: user.url, instance: user, templateUrl: '/media/user_forl.html'};
+                var new_tab = {
+                    title: user.username,
+                    url: user.url,
+                    instance: user,
+                    templateUrl: '/configuration/user/' + user.id
+                };
                 $scope.usertabs.push(new_tab);
                 $scope.tabIndex.active = false;
                 $scope.tabIndex = new_tab;
@@ -111,7 +120,6 @@
             };
         }]).
         controller('MyFormCtrl', ['$scope', '$http', function ($scope, $http) {
-            $scope.form = {};
             if (! $scope.tabIndex.instance) {
                 $scope.method = 'POST';
                 $scope.url = '/rest/users/';
@@ -119,14 +127,13 @@
                 $scope.method = 'PATCH';
             }
             $scope.submit = function() {
-                        debugger;
                 $http({
                     method: $scope.method,
                     url: $scope.url,
                     data: $scope.form
                 }).
-                    success(function () {
-                        debugger;
+                    success(function (data) {
+                        $scope.openTab(data)
                     });
             };
         }]);
