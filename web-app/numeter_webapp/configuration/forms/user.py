@@ -4,10 +4,11 @@ User Form module.
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from djangular.forms.angular_model import NgModelFormMixin
 from core.models import User
 
 
-class User_Form(forms.ModelForm):
+class User_Form(NgModelFormMixin, forms.ModelForm):
     """
     Base User Form. Subclassed for make custom User Form.
     """
@@ -21,6 +22,10 @@ class User_Form(forms.ModelForm):
           'graph_lib': forms.Select({'class':'span'}),
           'groups': forms.SelectMultiple({'class':'span'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        kwargs['scope_prefix'] = 'form'
+        super(User_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
         """Return url matching with creation or updating."""

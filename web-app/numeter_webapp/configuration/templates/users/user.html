@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="row-fluid"> <!-- user form --!>
-    <form id="user-form" class="ajax-form" action="{{ User_Form.get_submit_url }}" method="{{ User_Form.get_submit_method }}">
+ <form ng-controller="MyFormCtrl" ng-submit="submit()">
   {% csrf_token %}
 
   <div class="span5 fields" style="margin-left: 50px;">
@@ -22,7 +22,7 @@
       <input type="button" name="cancel" class="btn" data-url="{{ User_Form.get_submit_url }}" style="display:none;" value="{% trans "Cancel" %}">
       <input type="button" name="back" class="btn" data-to="#user-list" data-url="{{ User_Form.instance.get_list_url }}" value="{% trans "Back" %}">
      {% else %}
-      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Add" %}">
+     <button class="btn btn-primary">{% trans "Add" %}</button>
      {% endif %}
     </p>
    </div>

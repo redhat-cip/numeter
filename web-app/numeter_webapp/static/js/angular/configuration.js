@@ -15,7 +15,7 @@
             $scope.maintabs = [
                 {title: "Users", content: "1", url: "/media/conf_user.html", active: true},
                 {title: "Storage", content: "2", url: "/configuration/storage", active:false},
-                {title: "Plugin", content: "3", url: "/configuration/plugin", active:false},
+                {title: "Plugin", content: "3", url: "/configuration/elugin", active:false},
                 {title: "View", content: "4", url: "/configuration/view", active:false},
             ];
             $scope.maintabIndex = $scope.maintabs[0];
@@ -29,9 +29,8 @@
                 return $scope.maintabIndex.url;
             };
         }]).
-        // TABS
         controller('InputFilterCtrl', ['$scope', '$http', function ($scope, $http) {
-            $scope.q = 'root';
+            $scope.q = '';
             $scope.updateInstances = function (q) {
                 $scope.$emit('qChange', q);
             };
@@ -48,6 +47,7 @@
                 });
             };
         }).
+        // TABS
         directive('mytab', function ($http) {
             return {
                 restrict: 'A',
@@ -63,7 +63,7 @@
                         });
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
-                    console.log($scope.q);
+                    console.log($scope);
                     $scope.$on('qChange', function (event, q) {
                         $http.get('/rest/users/', {params: {q: q}}).
                             success(function (data) {
@@ -78,11 +78,11 @@
         }).
         controller('configurationTabCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.usertabs = [
-                {title: "Users", content: "1", url: "/media/user_list.html", active: true},
-                {title: "Superusers", content: "2", url: "/configuration/superuser/list", active:false},
-                {title: "Groups", content: "3", url: "/configuration/group/list", active:false},
-                {title: "Add user", content: "4", url: "/configuration/user/add", active:false},
-                {title: "Add group", content: "4", url: "/configuration/group/add", active:false},
+                {title: "Users", content: "1", url: "/media/user_list.html", active: true, static: true},
+                {title: "Superusers", content: "2", url: "/configuration/superuser/list", static: true, active:false},
+                {title: "Groups", content: "3", url: "/configuration/group/list", static: true, active:false},
+                {title: "Add user", content: "4", url: "/configuration/user/add", static: true, active:false},
+                {title: "Add group", content: "4", url: "/configuration/group/add", static: true, active:false},
             ];
             $scope.tabs = $scope.usertabs;
             $scope.tabIndex = $scope.usertabs[0];
@@ -97,13 +97,39 @@
                 return $scope.tabIndex.url;
             };
 
-            $scope.openTab = function (title, url) {
-                var new_tab = {title: title, url: url};
+            $scope.openTab = function (user) {
+                var new_tab = {title: user.username, url: user.url, instance: user, templateUrl: '/media/user_forl.html'};
                 $scope.usertabs.push(new_tab);
                 $scope.tabIndex.active = false;
                 $scope.tabIndex = new_tab;
                 $scope.tabIndex.active = true;
             };
+            $scope.closeTab = function (tab) {
+                var index = $scope.tabs.indexOf(tab);
+                if(tab.active) $scope.tabs[0].active = true;
+                $scope.tabs.splice(index, 1);
+            };
+        }]).
+        controller('MyFormCtrl', ['$scope', '$http', function ($scope, $http) {
+            $scope.form = {};
+            if (! $scope.tabIndex.instance) {
+                $scope.method = 'POST';
+                $scope.url = '/rest/users/';
+            } else {
+                $scope.method = 'PATCH';
+            }
+            $scope.submit = function() {
+                        debugger;
+                $http({
+                    method: $scope.method,
+                    url: $scope.url,
+                    data: $scope.form
+                }).
+                    success(function () {
+                        debugger;
+                    });
+            };
         }]);
+
 
 }(angular));
