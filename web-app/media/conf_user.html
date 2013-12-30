@@ -2,9 +2,9 @@
  <div class="tabbable tabs-left">
   <ul class="nav nav-tabs">
    <li ng-repeat="tab in tabs" ng-class="{'active': tab.active == true}">
-    <a href="" ng-click="showTab(tab)">
+    <a href="#" ng-click="showTab(tab)">
     <div>
-     <button ng-class="{'hidden': tab.static == true}" ng-click="closeTab(tab)" type="button" class="close">×</button>
+     <button ng-class="{'hidden': tab.static == true}" ng-click="closeTab(tab)" class="close">×</button>
      {{tab.title}}
     </div>
     </a>

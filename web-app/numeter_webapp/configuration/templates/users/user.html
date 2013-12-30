@@ -17,10 +17,8 @@
    <div class="row-fluid">
     <p>
      {% if User_Form.instance.id %}
-      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
+      <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
       <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ User_Form.get_submit_url }}" data-next-tab="#user-list-tab">
-      <input type="button" name="cancel" class="btn" data-url="{{ User_Form.get_submit_url }}" style="display:none;" value="{% trans "Cancel" %}">
-      <input type="button" name="back" class="btn" data-to="#user-list" data-url="{{ User_Form.instance.get_list_url }}" value="{% trans "Back" %}">
      {% else %}
      <button class="btn btn-primary">{% trans "Add" %}</button>
      {% endif %}

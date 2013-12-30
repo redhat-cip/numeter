@@ -55,21 +55,15 @@
                 transclude: true,
                 template: '<div ng-include="getTemplateUrl()"></div>',
                 link: function ($scope) {
-                    $http.get('/rest/users/', {params: {q: ''}}).
-                        success(function (data) {
-                            $scope.users = data.results;
-                            $scope.next = data.next;
-                            $scope.previous = data.previous;
-                        });
+                    $http.get('/rest/users/').success(function (data) { $scope.users = data; });
+                    $http.get('/rest/groups/').success(function (data) { $scope.groups = data; });
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
                     console.log($scope);
                     $scope.$on('qChange', function (event, q) {
                         $http.get('/rest/users/', {params: {q: q}}).
                             success(function (data) {
-                                $scope.users = data.results;
-                                $scope.next = data.next;
-                                $scope.previous = data.previous;
+                                $scope.users = data
                             });
                         });
                 }]
@@ -101,7 +95,7 @@
                 return $scope.tabIndex.url;
             };
 
-            $scope.openTab = function (user) {
+            $scope.createTab = function (user) {
                 var new_tab = {
                     title: user.username,
                     url: user.url,
@@ -115,25 +109,33 @@
             };
             $scope.closeTab = function (tab) {
                 var index = $scope.tabs.indexOf(tab);
-                if(tab.active) $scope.tabs[0].active = true;
+                if(tab.active) {
+                    $scope.tabIndex = $scope.tabs[0];
+                    $scope.tabIndex.active = true;
+                }
                 $scope.tabs.splice(index, 1);
             };
         }]).
         controller('MyFormCtrl', ['$scope', '$http', function ($scope, $http) {
+            // Set form metal-data
             if (! $scope.tabIndex.instance) {
                 $scope.method = 'POST';
                 $scope.url = '/rest/users/';
             } else {
                 $scope.method = 'PATCH';
+                $scope.url = $scope.form.url;
             }
+            // Form submit
             $scope.submit = function() {
                 $http({
                     method: $scope.method,
                     url: $scope.url,
-                    data: $scope.form
+                    data: $scope.form,
+                    headers: {"Content-Type": "application/json"}
                 }).
                     success(function (data) {
-                        $scope.openTab(data)
+                        // Create tab for new
+                        if ($scope.method == 'POST') $scope.createTab(data);
                     });
             };
         }]);
