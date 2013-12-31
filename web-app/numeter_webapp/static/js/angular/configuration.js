@@ -67,6 +67,16 @@
                                 $scope[model] = data;
                             });
                         });
+                    // SWITCH BETWEEN PAGES
+                    $scope.$on('pageChange', function (event, url, model) {
+                        $http.get(url).
+                            success(function (data) {
+                                $scope[model] = data;
+                            });
+                        });
+                    $scope.changePage = function (url, model) {
+                        if(url) $scope.$emit('pageChange', url, model);
+                    };
                 }]
                     
             };

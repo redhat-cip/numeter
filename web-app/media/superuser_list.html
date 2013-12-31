@@ -20,7 +20,7 @@
     <td>{{ user.email }}</td>
     <td>{{ user.graph_lib }}</td>
     <td>
-     <a ng-repeat="group_id in user.groups">{{ groups.results[group_id].name }} </a>
+     <a ng-repeat="group_id in user.groups" ng-click="createTab(group_id, 'group')">{{ groups.results[group_id].name }}</a>
     </td>
    </tr>
   </tbody>
@@ -28,8 +28,8 @@
  
  <div>
   <ul class="pager">
-   <li ng-class="{'disabled': users.previous == null}" class="previous"><a>&larr; Previous</a></li>
-   <li ng-class="{'disabled': users.next == null}" class="next"><a>&rarr; Next</a></li>
+   <li ng-class="{'disabled': superusers.previous == null}" class="previous"><a ng-click="changePage(superusers.previous, 'superusers')">&larr; Previous</a></li>
+   <li ng-class="{'disabled': superusers.next == null}" class="next"><a ng-click="changePage(superusers.previous, 'superusers')">&rarr; Next</a></li>
   </ul>
  </div>
 </div>
