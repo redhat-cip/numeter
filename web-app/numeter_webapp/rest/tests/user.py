@@ -216,3 +216,31 @@ class User_POST_set_password_Test(APITestCase):
         data = {'password':'test'}
         r = self.user_client.post(PASSWORD_URL, data=data)
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+
+class User_DELETE_list_Test(APITestCase):
+    """
+    Test DELETE list. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/users/ -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.delete(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'id': [self.user.id]}
+        r = self.admin_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'id': [self.user.id]}
+        r = self.user_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
