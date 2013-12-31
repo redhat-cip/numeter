@@ -32,7 +32,7 @@
         controller('InputFilterCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.q = '';
             $scope.updateInstances = function (q) {
-                $scope.$emit('qChange', q);
+                $scope.$emit('qChange', q, $scope.tab.model);
             };
         }]).
         directive('ngEnter', function () {
@@ -60,10 +60,10 @@
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
                     console.log($scope);
-                    $scope.$on('qChange', function (event, q) {
+                    $scope.$on('qChange', function (event, q, model) {
                         $http.get($scope.tab.list_url, {params: {q: q}}).
                             success(function (data) {
-                                $scope.users = data;
+                                $scope[model] = data;
                             });
                         });
                 }]
@@ -72,9 +72,9 @@
         }).
         controller('configurationTabCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.usertabs = [
-                {title: "Users", content: "1", url: "/media/user_list.html", active: true, static: true, list_url:'/rest/users/'},
+                {title: "Users", content: "1", url: "/media/user_list.html", active: true, static: true, list_url:'/rest/users/', model: 'users'},
                 {title: "Superusers", content: "2", url: "/configuration/superuser/list", static: true, active:false},
-                {title: "Groups", content: "3", url: "/media/group_list.html", static: true, active:false, list_url:'/rest/groups/'},
+                {title: "Groups", content: "3", url: "/media/group_list.html", static: true, active:false, list_url:'/rest/groups/', model: 'groups'},
                 {title: "Add user", content: "4", url: "/configuration/user/add", static: true, active: false, data_url: '/rest/users/', model: 'user'},
                 {title: "Add group", content: "5", url: "/configuration/group/add", static: true, active: false, data_url: '/rest/groups/', model: 'group'},
             ];

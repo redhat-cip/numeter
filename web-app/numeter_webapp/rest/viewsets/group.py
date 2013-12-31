@@ -13,3 +13,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     model = Group
     serializer_class = GroupSerializer
+
+    def get_queryset(self):
+        q = self.request.QUERY_PARAMS.get('q', '')
+        return self.model.objects.web_filter(q)
