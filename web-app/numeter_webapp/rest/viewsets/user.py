@@ -23,7 +23,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         q = self.request.QUERY_PARAMS.get('q', '')
-        return self.model.objects.user_web_filter(q, self.request.user)
+        return self.model.objects.user_web_filter(q, self.request.user).filter(is_superuser=False)
 
     @action(permission_classes=[IsSelfOrForbidden])
     def set_password(self, request, pk=None):
@@ -36,3 +36,10 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST)
+
+
+class SuperuserViewSet(UserViewSet):
+    """User endpoint, only available for superusers."""
+    def get_queryset(self):
+        q = self.request.QUERY_PARAMS.get('q', '')
+        return self.model.objects.user_web_filter(q, self.request.user).filter(is_superuser=True)

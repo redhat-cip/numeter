@@ -2,7 +2,7 @@
 Shortcut module to fastly import all ViewSets.
 """
 
-from user import UserViewSet
+from user import UserViewSet, SuperuserViewSet
 from group import GroupViewSet
 from storage import StorageViewSet
 from host import HostViewSet

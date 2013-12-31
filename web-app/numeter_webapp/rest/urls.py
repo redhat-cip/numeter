@@ -9,6 +9,7 @@ from rest.viewsets import *
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
+router.register(r'superusers', SuperuserViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'storages', StorageViewSet)
 router.register(r'hosts', HostViewSet)
