@@ -1,10 +1,10 @@
 {% load i18n %}
 <div class="row-fluid"> <!-- group form --!>
-    <form id="group-form" class="ajax-form" action="{{ Group_Form.get_submit_url }}" method="{{ Group_Form.get_submit_method }}">
+ <form ng-controller="MyFormCtrl" ng-submit="submit()">
   {% csrf_token %}
-  <h4 align="center">{{ Group_Form.instance }}</h4>
 
   <div class="span5 fields" style="margin-left: 50px;">
+   <h4 align="center">{{ Group_Form.instance }}</h4>
    <dl>
     {% for field in Group_Form %}
     <dt>{{ field.label }}:</dt>
@@ -17,12 +17,10 @@
    <div class="row-fluid">
     <p>
      {% if Group_Form.instance.id %}
-      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
-      <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Group_Form.get_submit_url }}" data-next-tab="#group-list-tab">
-      <input type="button" name="cancel" class="btn" data-to="#user-list" data-url="{{ Group_Form.instance.get_list_url }}"style="display:none;" value="{% trans "Cancel" %}">
-      <input type="button" name="back" class="btn" data-to="#group-list" data-url="{{ Group_Form.instance.get_list_url }}" value="{% trans "Back" %}">
+      <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
+      <input type="button" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Group_Form.get_submit_url }}">
      {% else %}
-      <input type="submit" name="update" class="btn btn-primary" value="{% trans "Add" %}">
+      <button class="btn btn-primary">{% trans "Add" %}</button>
      {% endif %}
     </p>
    </div>

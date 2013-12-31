@@ -12,4 +12,4 @@ class GroupViewSet(viewsets.ModelViewSet):
     Group endpoint, only available for superusers.
     """
     model = Group
-    serializer_model = GroupSerializer
+    serializer_class = GroupSerializer

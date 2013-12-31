@@ -7,8 +7,8 @@ from core.models import Group
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    """Simple Source Serializer."""
+    """Simple Group Serializer."""
     url = serializers.HyperlinkedIdentityField(view_name='group-detail')
     class Meta:
         model = Group
-        fields = ('name', 'url')
+        fields = ('name', 'url', 'id',)

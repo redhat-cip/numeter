@@ -61,9 +61,9 @@
                 controller: ['$scope', '$http', function ($scope, $http) {
                     console.log($scope);
                     $scope.$on('qChange', function (event, q) {
-                        $http.get('/rest/users/', {params: {q: q}}).
+                        $http.get($scope.tab.list_url, {params: {q: q}}).
                             success(function (data) {
-                                $scope.users = data
+                                $scope.users = data;
                             });
                         });
                 }]
@@ -72,11 +72,11 @@
         }).
         controller('configurationTabCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.usertabs = [
-                {title: "Users", content: "1", url: "/media/user_list.html", active: true, static: true},
+                {title: "Users", content: "1", url: "/media/user_list.html", active: true, static: true, list_url:'/rest/users/'},
                 {title: "Superusers", content: "2", url: "/configuration/superuser/list", static: true, active:false},
-                {title: "Groups", content: "3", url: "/configuration/group/list", static: true, active:false},
-                {title: "Add user", content: "4", url: "/configuration/user/add", static: true, active:false},
-                {title: "Add group", content: "4", url: "/configuration/group/add", static: true, active:false},
+                {title: "Groups", content: "3", url: "/media/group_list.html", static: true, active:false, list_url:'/rest/groups/'},
+                {title: "Add user", content: "4", url: "/configuration/user/add", static: true, active: false, data_url: '/rest/users/', model: 'user'},
+                {title: "Add group", content: "5", url: "/configuration/group/add", static: true, active: false, data_url: '/rest/groups/', model: 'group'},
             ];
             $scope.tabs = $scope.usertabs;
             $scope.tabIndex = $scope.usertabs[0];
@@ -95,18 +95,20 @@
                 return $scope.tabIndex.url;
             };
 
-            $scope.createTab = function (user) {
+            // CREATE A CLOSABLE DYNAMIC TAB FOR INSTANCES
+            $scope.createTab = function (instance, type) {
                 var new_tab = {
-                    title: user.username,
-                    url: user.url,
-                    instance: user,
-                    templateUrl: '/configuration/user/' + user.id
+                    title: instance.name || instance.username,
+                    url: instance.url,
+                    instance: instance,
+                    templateUrl: '/configuration/' + type + '/' + instance.id
                 };
                 $scope.usertabs.push(new_tab);
                 $scope.tabIndex.active = false;
                 $scope.tabIndex = new_tab;
                 $scope.tabIndex.active = true;
             };
+            // CLOSE TABS
             $scope.closeTab = function (tab) {
                 var index = $scope.tabs.indexOf(tab);
                 if(tab.active) {
@@ -120,7 +122,7 @@
             // Set form metal-data
             if (! $scope.tabIndex.instance) {
                 $scope.method = 'POST';
-                $scope.url = '/rest/users/';
+                $scope.url = $scope.tabIndex.data_url;
             } else {
                 $scope.method = 'PATCH';
                 $scope.url = $scope.form.url;
@@ -135,7 +137,7 @@
                 }).
                     success(function (data) {
                         // Create tab for new
-                        if ($scope.method == 'POST') $scope.createTab(data);
+                        if ($scope.method == 'POST') $scope.createTab(data, $scope.tab.model);
                     });
             };
         }]);

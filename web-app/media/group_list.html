@@ -1,0 +1,37 @@
+<div ng-controller="InputFilterCtrl">
+    <input ng-enter="updateInstances(q)" ng-model="q" class="span12" type="text" placeholder="Filter groups by name">
+</div>
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>Name</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr ng-repeat="group in groups.results">
+    <td><input class="user-checkbox" type="checkbox" name="{{ group.id }}"></td>
+    <td><a ng-click="createTab(group, 'group')">{{ group.name }}</a></td>
+   </tr>
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   <li ng-class="{'disabled': previous == null}" class="previous"><a>&larr; Previous</a></li>
+   <li ng-class="{'disabled': next == null}" class="next"><a>&rarr; Next</a></li>
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>Action</h5>
+ <div class="input-append">
+  <select id="users-action">
+   <option data-url="" value="delete">Delete</option>
+  </select>
+  <button class="btn bulk-action" type="button" data-action-element="#users-action" data-checkboxes=".user-checkbox">Apply</button>
+ </div>
+</div>
