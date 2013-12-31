@@ -97,13 +97,23 @@
 
             // CREATE A CLOSABLE DYNAMIC TAB FOR INSTANCES
             $scope.createTab = function (instance, type) {
-                var new_tab = {
-                    title: instance.name || instance.username,
-                    url: instance.url,
-                    instance: instance,
-                    templateUrl: '/configuration/' + type + '/' + instance.id
-                };
-                $scope.usertabs.push(new_tab);
+                var new_tab;
+                // SERACH IF TAB IS ALREADY CREATED
+                for (var i = 0, len = $scope.usertabs.length; i < len; ++i) {
+                    if ($scope.usertabs[i].instance == instance) {
+                        new_tab = $scope.usertabs[i];
+                        break;
+                    }
+                }
+                if(!new_tab) {
+                  new_tab = {
+                      title: instance.name || instance.username,
+                      url: instance.url,
+                      instance: instance,
+                      templateUrl: '/configuration/' + type + '/' + instance.id
+                  };
+                  $scope.usertabs.push(new_tab);
+                }
                 $scope.tabIndex.active = false;
                 $scope.tabIndex = new_tab;
                 $scope.tabIndex.active = true;
