@@ -237,7 +237,7 @@ class User_DELETE_list_Test(APITestCase):
         """Granted access for superuser."""
         data = {'id': [self.user.id]}
         r = self.admin_client.delete(LIST_URL, data=data)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
         """Forbidden access to simple user."""

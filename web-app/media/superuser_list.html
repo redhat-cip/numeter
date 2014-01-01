@@ -1,5 +1,5 @@
 <div ng-controller="InputFilterCtrl">
-    <input ng-enter="updateInstances(q)" ng-model="q" class="span12" type="text" placeholder="Filter superusers by name, email or group">
+ <input ng-enter="updateInstances(q)" ng-model="q" class="span12" type="text" placeholder="Filter superusers by name, email or group">
 </div>
 
 <div class="span8">
@@ -15,7 +15,7 @@
   </thead>
   <tbody>
    <tr ng-repeat="user in superusers.results">
-    <td><input class="user-checkbox" type="checkbox" name="{{ user.id }}"></td>
+    <td><input class="superuser-checkbox" type="checkbox" name="{{ user.id }}"></td>
     <td><a ng-click="createTab(user, 'user')">{{ user.username }}</a></td>
     <td>{{ user.email }}</td>
     <td>{{ user.graph_lib }}</td>
@@ -36,11 +36,9 @@
 
 <div class="span3">
  <h5>Action</h5>
- <div class="input-append">
-  <select id="users-action">
-   <option data-url="" value="delete">Delete</option>
-  </select>
-  <button class="btn bulk-action" type="button" data-action-element="#users-action" data-checkboxes=".user-checkbox">Apply</button>
+ <div ng-controller="ListActionCtrl" class="input-append">
+  <select ng-model="selected_list_action" ng-options="action.name for action in list_actions"></select>
+  <button class="btn" type="button" ng-click="launch_action()">Apply</button>
  </div>
 </div>
 
