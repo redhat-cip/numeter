@@ -9,7 +9,7 @@
                     resolution: '=',
                     url: '=',
                 },
-                templateUrl: 'media/graph.html',
+                templateUrl: 'media/templates/graph.html',
                 link: function ($scope, $element) {
                     numeter.get_graph($scope.url, $element[0], $scope.resolution);
                 },
@@ -20,7 +20,7 @@
         }]).
         directive('menu', ['$http', function ($http) {
             return {
-                templateUrl: 'media/menu.html',
+                templateUrl: '/media/templates/hosttree.html',
                 link: function ($scope) {
                     $http.get('rest/hosts/').
                         success(function (data) {
@@ -28,27 +28,22 @@
                         });
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
-                    $scope.loadCategories = function (hosts) {
-                        angular.forEach(hosts, function (host) {
-                            $http.get('hosttree/host/' + host.id).
-                                success(function (categories) {
-                                    host.categories = categories.map(function (category) {
-                                        return {name: category, plugins: [], open: false};
+                    // LOAD HOST'S PLUGINS AND SORT BY CATEGORY
+                    $scope.loadCategories = function (host) {
+                            $http.get('/wide-storage/list?host=' + host.hostid).
+                                success(function (data) {
+                                    host.categories = {};
+                                    angular.forEach(data, function (plugin) {
+                                        var category = plugin.Category;
+                                        if (! host.categories[category]) host.categories[category] = {plugins: [], open: false, name: category};
+                                        host.categories[category].plugins.push(plugin);
                                     });
                                 });
-                        });
                     };
 
                     $scope.loadPlugins = function (host, chosen_category) {
-                        angular.forEach(host.categories, function (category) {
-                            if (chosen_category == category) {
-                                $http.get('hosttree/category/' + host.id, {params: {category: category.name}}).
-                                    success(function (plugins) {
-                                        category.plugins = plugins;
-                                        $scope.displayGraph(host.id, plugins, true);
-                                    });
-                            }
-                        });
+                        var plugins = angular.forEach(host.categories[chosen_category.name].plugins, function () {});
+                        $scope.$emit('displayGraph', host.id, plugins);
                     };
 
                     $scope.displayGraph = function (host_id, plugins, open) {
@@ -75,7 +70,7 @@
             $scope.$on('displayGraph', function (event, host_id, plugins) {
                 $scope.graphs = [];
                 plugins.map(function (plugin) {          
-                  this.push({url: "get/graph/" + host_id + "/" + plugin.plugin, resolution: $scope.selected });
+                  this.push({url: "/get/graph/" + host_id + "/" + plugin.Plugin, resolution: $scope.selected });
                 }, $scope.graphs);
              });
              $scope.$on('resChange', function (event) {

@@ -1,7 +1,7 @@
     <div accordion>
       <div accordion-group ng-repeat="host in hosts">
         <div accordion-heading>
-          <div ng-click="loadCategories(hosts)">
+          <div ng-click="loadCategories(host)">
             {{host.name}}
           </div>
         </div>
@@ -16,7 +16,7 @@
 
             <ul>
               <li ng-repeat="plugin in category.plugins" ng-click="displayGraph(host.id, [plugin])">
-               {{plugin.title}}
+               {{plugin.Title}}
               </li>
             </ul>
             

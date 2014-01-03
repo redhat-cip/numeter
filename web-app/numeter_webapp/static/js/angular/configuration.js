@@ -59,10 +59,16 @@
                     $http.get('/rest/users/').success(function (data) { $scope.users = data; });
                     $http.get('/rest/groups/').success(function (data) { $scope.groups = data; });
                     $http.get('/rest/superusers/').success(function (data) { $scope.superusers = data; });
+                    $http.get('/rest/storages/').success(function (data) { $scope.storages = data; });
+                    $http.get('/rest/hosts/').success(function (data) { $scope.hosts = data; });
+                    $http.get('/rest/plugins/').success(function (data) { $scope.plugins = data; });
+                    $http.get('/rest/sources/').success(function (data) { $scope.sources = data; });
+                    $http.get('/rest/views/').success(function (data) { $scope.views = data; });
+                    $http.get('/rest/multiviews/').success(function (data) { $scope.multiviews = data; });
+                    $http.get('/rest/skeletons/').success(function (data) { $scope.skeletons = data; });
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
                     $scope.$on('qChange', function (event, model) {
-                        debugger;
                         var q = $scope[model].q;
                         $http.get($scope.tab.rest_url, {params: {q: q}}).
                             success(function (data) {
