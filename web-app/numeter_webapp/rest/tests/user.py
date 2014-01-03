@@ -91,7 +91,7 @@ class User_POST_Test(APITestCase):
 
     def test_superuser(self):
         """Granted access for superuser."""
-        data = {'username':'NEW USER'}
+        data = {'username':'NEW USER', 'password':'pass'}
         r = self.admin_client.post(LIST_URL, data=data)
         self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
 

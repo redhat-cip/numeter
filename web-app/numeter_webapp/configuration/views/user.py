@@ -50,26 +50,11 @@ def superuser_list(request):
 @superuser_only()
 def add(request):
     """
-    GET: User Form.
-    POST: Create user.
+    Get User_Form.
     """
-    if request.method == 'POST':
-        F = User_CreationForm(request.POST)
-        data = {}
-        if F.is_valid():
-            U = F.save()
-            messages.success(request, _("User added with success."))
-            data['response'] = 'ok'
-            data['callback-url'] = U.get_absolute_url()
-        else:
-            for field,error in F.errors.items():
-                messages.error(request, '<b>%s</b>: %s' % (field,error))
-            data['response'] = 'error'
-        return render_HTML_JSON(request, data, 'base/messages.html', {})
-    else:
-        return render(request, 'users/user.html', {
-            'User_Form': User_CreationForm(),
-        })
+    return render(request, 'users/user.html', {
+        'User_Form': User_CreationForm(),
+    })
 
 
 @login_required()

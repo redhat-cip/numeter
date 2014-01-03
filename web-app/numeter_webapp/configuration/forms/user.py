@@ -49,12 +49,17 @@ class User_Admin_EditForm(User_Form):
     class Meta(User_Form.Meta):
         exclude = ('password','last_login','is_staff','date_joined')
 
+    def __init__(self, *args, **kwargs):
+        kwargs['scope_prefix'] = 'form'
+        super(User_Admin_EditForm, self).__init__(*args, **kwargs)
+
+
 
 class User_CreationForm(User_Form):
     """
     Form with sensitive fields.
     """
-    password1 = forms.CharField(label=_('Password'), widget=forms.PasswordInput(attrs={
+    password = forms.CharField(label=_('Password'), widget=forms.PasswordInput(attrs={
       'placeholder': _('Password'),
       'class': 'span'
     }))
@@ -63,19 +68,19 @@ class User_CreationForm(User_Form):
       'class': 'span'
     }))
     class Meta(User_Form.Meta):
-        exclude = ('last_login','is_staff','date_joined','is_active','password')
+        exclude = ('last_login', 'is_staff', 'date_joined', 'is_active')
 
     def clean_password2(self):
         """Check that the two password entries match."""
-        password1 = self.cleaned_data.get("password1")
+        password = self.cleaned_data.get("password")
         password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
+        if password and password2 and password != password2:
             raise forms.ValidationError(_('Password and confirmation are not the same.'))
         return password2
 
     def save(self, commit=True):
         user = super(User_CreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
+        user.set_password(self.cleaned_data["password"])
         if commit:
             user.save()
         return user

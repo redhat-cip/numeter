@@ -29,6 +29,30 @@ class UserViewSet(ModelListDelete, viewsets.ModelViewSet):
             return self.model.objects.user_web_filter(q, self.request.user)
         return self.model.objects.user_web_filter(q, self.request.user).filter(is_superuser=False)
 
+    def create(self, request, *args, **kwargs):
+        """
+        Custom create method. It uses ``UserSerializer`` and ``PasswordSerializer``
+        to valid request.
+        """
+        user_serializer = self.get_serializer(data=request.DATA, files=request.FILES)
+        if user_serializer.is_valid():
+            pass_serializer = PasswordSerializer(data=request.DATA)
+            # Only create if fields and password are valid
+            if pass_serializer.is_valid():
+                self.pre_save(user_serializer.object)
+                self.object = user_serializer.save(force_insert=True)
+                self.post_save(self.object, created=True)
+                headers = self.get_success_headers(user_serializer.data)
+                # Set password
+                self.object.set_password(pass_serializer.data['password'])
+                self.object.save()
+                return Response(user_serializer.data, status=status.HTTP_201_CREATED,
+                                 headers=headers)
+            # Compute user and password serializer errors
+            else:
+                user_serializer.errors.update(pass_serializer.errors)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
     @action(permission_classes=[IsSelfOrForbidden])
     def set_password(self, request, pk=None):
         user = self.get_object()

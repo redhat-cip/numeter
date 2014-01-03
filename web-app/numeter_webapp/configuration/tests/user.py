@@ -48,19 +48,6 @@ class User_Test(TestCase):
         url = reverse('user add')
         r = self.c.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-        # Test to add
-        POST = { 'username': 'new test', 'password1': 'toto', 'password2': 'toto', 'graph_lib': 'dygraph' }
-        r = self.c.post(url, POST)
-        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-        # Test to get
-        u = User.objects.get(username='new test')
-        url = reverse('user', args=[u.id])
-        r = self.c.get(url)
-        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-        # Test to login
-        self.c.logout()
-        r = self.c.login(username='new test', password='toto')
-        self.assertTrue(r, "New user can't login.")
 
     def test_update(self):
         """
