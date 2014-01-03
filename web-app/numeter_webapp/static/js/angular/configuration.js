@@ -13,7 +13,7 @@
         }).
         controller('configurationMainTabCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.maintabs = [
-                {title: "Users", content: "1", url: "/media/conf_user.html", active: true},
+                {title: "Users", content: "1", url: "/media/templates/configuration/maintab.html", active: true},
                 {title: "Storage", content: "2", url: "/configuration/storage", active:false},
                 {title: "Plugin", content: "3", url: "/configuration/elugin", active:false},
                 {title: "View", content: "4", url: "/configuration/view", active:false},
@@ -64,7 +64,7 @@
                     $scope.$on('qChange', function (event, model) {
                         debugger;
                         var q = $scope[model].q;
-                        $http.get($scope.tab.list_url, {params: {q: q}}).
+                        $http.get($scope.tab.rest_url, {params: {q: q}}).
                             success(function (data) {
                                 $scope[model] = data;
                                 $scope[model].q = q;
@@ -91,10 +91,10 @@
             $scope.usertabs = [
                 { title: "Users",
                   content: "1",
-                  url: "/media/user_list.html",
+                  url: "/media/templates/configuration/user_list.html",
                   active: true,
                   static: true,
-                  list_url:'/rest/users/',
+                  rest_url:'/rest/users/',
                   model: 'users',
                   list_actions: [
                     {name:'Delete', value:'', url:'/rest/users/', method:'DELETE', model:'user'}
@@ -102,10 +102,10 @@
                 },
                 { title: "Superusers",
                   content: "2",
-                  url: "/media/superuser_list.html",
+                  url: "/media/templates/configuration/superuser_list.html",
                   static: true,
                   active: false,
-                  list_url: '/rest/superusers/',
+                  rest_url: '/rest/superusers/',
                   model: 'superusers',
                   list_actions: [
                     {name:'Delete', value:'', url:'/rest/users/', method:'DELETE', model:'superuser'}
@@ -113,10 +113,10 @@
                 },
                 { title: "Groups",
                   content: "3",
-                  url: "/media/group_list.html",
+                  url: "/media/templates/configuration/group_list.html",
                   static: true,
                   active: false,
-                  list_url:'/rest/groups/',
+                  rest_url:'/rest/groups/',
                   model: 'groups',
                   list_actions: [
                     {name:'Delete', value:'', url:'/rest/groups/', method:'DELETE', model:'group'}
@@ -146,7 +146,7 @@
             $scope.showTab = function (tab) {
               $scope.tabIndex.active = false;
               $scope.tabIndex = tab;
-              if (tab.static === true) $scope.$emit('qChange', tab.model);
+              // if (tab.static === true) $scope.$emit('qChange', tab.model);
               $scope.tabIndex.active = true;
             };
 
