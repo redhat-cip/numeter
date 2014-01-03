@@ -18,7 +18,7 @@
     <p>
      {% if Group_Form.instance.id %}
       <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
-      <input type="button" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Group_Form.get_submit_url }}">
+      <input ng-click="delete_instance()" type="button" class="btn btn-danger" value="{% trans "Delete" %}">
      {% else %}
       <button class="btn btn-primary">{% trans "Add" %}</button>
      {% endif %}

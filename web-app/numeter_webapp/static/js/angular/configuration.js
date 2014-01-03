@@ -32,7 +32,8 @@
         controller('InputFilterCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.q = '';
             $scope.updateInstances = function (q) {
-                $scope.$emit('qChange', q, $scope.tab.model);
+                $scope[$scope.tab.model].q = q;
+                $scope.$emit('qChange', $scope.tab.model);
             };
         }]).
         directive('ngEnter', function () {
@@ -60,8 +61,9 @@
                     $http.get('/rest/superusers/').success(function (data) { $scope.superusers = data; });
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
-                    $scope.$on('qChange', function (event, q, model) {
-                        q = q || $scope[model].q;
+                    $scope.$on('qChange', function (event, model) {
+                        debugger;
+                        var q = $scope[model].q;
                         $http.get($scope.tab.list_url, {params: {q: q}}).
                             success(function (data) {
                                 $scope[model] = data;
@@ -144,6 +146,7 @@
             $scope.showTab = function (tab) {
               $scope.tabIndex.active = false;
               $scope.tabIndex = tab;
+              if (tab.static === true) $scope.$emit('qChange', tab.model);
               $scope.tabIndex.active = true;
             };
 
@@ -182,10 +185,7 @@
             // CLOSE TABS
             $scope.closeTab = function (tab) {
                 var index = $scope.tabs.indexOf(tab);
-                if(tab.active) {
-                    $scope.tabIndex = $scope.tabs[0];
-                    $scope.tabIndex.active = true;
-                }
+                $scope.showTab($scope.tabs[0]);
                 $scope.tabs.splice(index, 1);
             };
         }]).
@@ -211,6 +211,16 @@
                         if ($scope.method == 'POST') $scope.createTab(data, $scope.tab.model);
                     });
             };
+            // DELETE BTN
+            $scope.delete_instance = function() {
+                $http({
+                    method: 'DELETE',
+                    url: $scope.url
+                }).
+                    success(function (data) {
+                        $scope.closeTab($scope.tab);
+                    });
+            };
         }]).
         controller('ListActionCtrl', ['$scope', '$http', function ($scope, $http) {
             // SET OPTIONS
@@ -234,7 +244,7 @@
                         if ($scope.selected_list_action.method == 'DELETE') {
                             $.each($scope[model+'s'].results, function(i,v) {
                                 if ( $.inArray(String(v.id), ids) === 0 ) {
-                                    $scope.$emit('qChange', null, model+'s');
+                                    $scope.$emit('qChange', model+'s');
                                 }
                             });
                         }
