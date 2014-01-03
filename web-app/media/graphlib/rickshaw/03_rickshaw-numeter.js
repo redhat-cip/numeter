@@ -85,20 +85,20 @@
   }
 
   function createRickshaw(into, series) {
+    var graph_div = $(into);
+    var graph_container = graph_div.find('.span9')[0];
     var minimap, minimapC, legend, legendC, chart, chartC, yaxis, yaxisC,
       hoverDetail, shelving, xaxis, ticksTreatment, chart_display,
       chart_minimap, width, height;
 
-    into = $(document.getElementById(into).parentNode);
-    into.addClass('graph');
-    into.empty();
+    // into = $(document.getElementById(into).parentNode);
+    // into.addClass('graph');
+    // into.empty();
 
-    legendC = document.createElement('div');
-    legendC.className = 'legend_container';
+    legendC = graph_div.find('.label-container')[0];
     legendC.style.overflow = "auto";
 
-    chartC = document.createElement('div');
-    chartC.className = 'chart_container';
+    chartC = graph_div.find('.graph-container')[0];
 
     minimapC = document.createElement('div');
     minimapC.className = 'minimap_container';
@@ -109,7 +109,6 @@
     chart_display = document.createElement('div');
     chart_display.className = 'chart_display';
 
-
     chart_minimap = document.createElement('div');
     chart_minimap.className = 'chart_minimap';
 
@@ -118,10 +117,10 @@
 
     chart_display.appendChild(yaxisC);
     chart_display.appendChild(chart_minimap);
-    into.append(legendC, chart_display);
+    graph_container.appendChild(chart_display);
 
-    width = into.width() - $(legendC).width();
-    height = into.height();
+    width = graph_div.width() - $(legendC).width();
+    height = graph_div.height() - 50;
 
     chart_display.style.width = width + "px";
     chart_display.style.height = height + "px";
@@ -156,7 +155,6 @@
     legend = new Rickshaw.Graph.Legend({
       graph: chart,
       element: legendC
-
     });
 
     shelving = new Rickshaw.Graph.Behavior.Series.Toggle({

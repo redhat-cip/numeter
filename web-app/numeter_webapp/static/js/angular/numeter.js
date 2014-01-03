@@ -30,15 +30,15 @@
                 controller: ['$scope', '$http', function ($scope, $http) {
                     // LOAD HOST'S PLUGINS AND SORT BY CATEGORY
                     $scope.loadCategories = function (host) {
-                            $http.get('/wide-storage/list?host=' + host.hostid).
-                                success(function (data) {
-                                    host.categories = {};
-                                    angular.forEach(data, function (plugin) {
-                                        var category = plugin.Category;
-                                        if (! host.categories[category]) host.categories[category] = {plugins: [], open: false, name: category};
-                                        host.categories[category].plugins.push(plugin);
-                                    });
+                        $http.get('/wide-storage/list?host=' + host.hostid).
+                            success(function (data) {
+                                host.categories = {};
+                                angular.forEach(data, function (plugin) {
+                                    var category = plugin.Category;
+                                    if (! host.categories[category]) host.categories[category] = {plugins: [], open: false, name: category};
+                                    host.categories[category].plugins.push(plugin);
                                 });
+                            });
                     };
 
                     $scope.loadPlugins = function (host, chosen_category) {

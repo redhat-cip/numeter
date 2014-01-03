@@ -63,7 +63,7 @@ class MediaList(unicode):
 
     def sources(self):
         """Return list of files' URL."""
-        return [ s for s in self._walk() ] 
+        return [ s for s in self._walk() ][::-1]
 
     def file_names(self):
         """List files."""
