@@ -62,7 +62,6 @@
                 controller: ['$scope', '$http', function ($scope, $http) {
                     $scope.$on('qChange', function (event, q, model) {
                         q = q || $scope[model].q;
-                        debugger;
                         $http.get($scope.tab.list_url, {params: {q: q}}).
                             success(function (data) {
                                 $scope[model] = data;
@@ -86,13 +85,59 @@
             };
         }).
         controller('configurationTabCtrl', ['$scope', '$http', function ($scope, $http) {
+            // DEFINE USER TABS
             $scope.usertabs = [
-                {title: "Users", content: "1", url: "/media/user_list.html", active: true, static: true, list_url:'/rest/users/', model: 'users'},
-                {title: "Superusers", content: "2", url: "/media/superuser_list.html", static: true, active:false, list_url: '/rest/superusers/', model: 'superusers'},
-                {title: "Groups", content: "3", url: "/media/group_list.html", static: true, active:false, list_url:'/rest/groups/', model: 'groups'},
-                {title: "Add user", content: "4", url: "/configuration/user/add", static: true, active: false, data_url: '/rest/users/', model: 'user'},
-                {title: "Add group", content: "5", url: "/configuration/group/add", static: true, active: false, data_url: '/rest/groups/', model: 'group'},
+                { title: "Users",
+                  content: "1",
+                  url: "/media/user_list.html",
+                  active: true,
+                  static: true,
+                  list_url:'/rest/users/',
+                  model: 'users',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/users/', method:'DELETE', model:'user'}
+                  ]
+                },
+                { title: "Superusers",
+                  content: "2",
+                  url: "/media/superuser_list.html",
+                  static: true,
+                  active: false,
+                  list_url: '/rest/superusers/',
+                  model: 'superusers',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/users/', method:'DELETE', model:'superuser'}
+                  ]
+                },
+                { title: "Groups",
+                  content: "3",
+                  url: "/media/group_list.html",
+                  static: true,
+                  active: false,
+                  list_url:'/rest/groups/',
+                  model: 'groups',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/groups/', method:'DELETE', model:'group'}
+                  ]
+                },
+                { title: "Add user",
+                  content: "4",
+                  url: "/configuration/user/add",
+                  static: true,
+                  active: false,
+                  data_url: '/rest/users/',
+                  model: 'user'
+                },
+                { title: "Add group",
+                  content: "5",
+                  url: "/configuration/group/add",
+                  static: true,
+                  active: false,
+                  data_url: '/rest/groups/',
+                  model: 'group'
+                },
             ];
+            // DEFINE TAB
             $scope.tabs = $scope.usertabs;
             $scope.tabIndex = $scope.usertabs[0];
 
@@ -103,6 +148,7 @@
             };
 
             $scope.getTemplateUrl = function () {
+                // RETURN APPROPIRATE TO STATIC OR DYNAMIC TAB
                 if ($scope.tabIndex.instance) {
                     $scope.form = $scope.tabIndex.instance;
                     return $scope.tabIndex.templateUrl;
@@ -168,9 +214,7 @@
         }]).
         controller('ListActionCtrl', ['$scope', '$http', function ($scope, $http) {
             // SET OPTIONS
-            $scope.list_actions = [
-                {name:'Delete', value:'', url:'/rest/users/', method:'DELETE', model: 'superuser'}
-            ];
+            $scope.list_actions = $scope.tabIndex.list_actions;
             $scope.selected_list_action = $scope.list_actions[0];
             // LAUNCH ACTION
             $scope.launch_action = function() {

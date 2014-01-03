@@ -31,7 +31,11 @@ class UserManager(_UserManager):
         users = self.web_filter(q)
         if user.is_superuser:
             return users
-        return users.user_filter(user)
+        return users.filter(
+            Q(username__icontains=q) |
+            Q(email__icontains=q) |
+            Q(groups__name__icontains=q)
+        )
 
     def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):
         """Base method to create user."""

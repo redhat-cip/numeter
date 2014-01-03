@@ -36,10 +36,8 @@
 
 <div class="span3">
  <h5>Action</h5>
- <div class="input-append">
-  <select id="users-action">
-   <option data-url="" value="delete">Delete</option>
-  </select>
-  <button class="btn bulk-action" type="button" data-action-element="#users-action" data-checkboxes=".user-checkbox">Apply</button>
+ <div ng-controller="ListActionCtrl" class="input-append">
+  <select ng-model="selected_list_action" ng-options="action.name for action in list_actions"></select>
+  <button class="btn" type="button" ng-click="launch_action()">Apply</button>
  </div>
 </div>
