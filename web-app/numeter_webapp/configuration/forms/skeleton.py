@@ -1,12 +1,21 @@
+"""
+Skeleton Form module.
+"""
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from djangular.forms.angular_model import NgModelFormMixin
+
 from core.models import Host
 from configuration.forms.base import Base_ModelForm
 from multiviews.models import Skeleton, View
 
 
-class Skeleton_Form(forms.ModelForm):
-    """Skeleton ModelForm."""
+class Skeleton_Form(NgModelFormMixin, forms.ModelForm):
+    """
+    `NgModelFormMixin` & ``ModelForm`` for ``Skeleton``.
+    It uses also provide ``get_submit_url`` and ``get_submit_method``.
+    """
     class Meta:
         model = Skeleton
         widgets = {
@@ -15,6 +24,10 @@ class Skeleton_Form(forms.ModelForm):
           'plugin_pattern': forms.TextInput({'placeholder':_("Filter by plugin with regex ('.*' for all)"),'class':'span'}),
           'source_pattern': forms.TextInput({'placeholder':_('Filter by source with regex'),'class':'span'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        kwargs['scope_prefix'] = 'form'
+        super(Skeleton_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
         """Return url matching with creation or updating."""

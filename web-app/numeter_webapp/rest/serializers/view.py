@@ -16,4 +16,4 @@ class ViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = View
-        fields = ('name', 'sources', 'comment', 'warning', 'critical', 'users', 'groups', 'id', 'fullname')
+        fields = ('name', 'sources', 'comment', 'warning', 'critical', 'users', 'groups', 'id', 'fullname', 'url')

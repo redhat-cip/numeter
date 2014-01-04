@@ -15,8 +15,8 @@
             $scope.maintabs = [
                 {title: "Users", content: "1", url: "/media/templates/configuration/maintab.html", active: true},
                 {title: "Storage", content: "2", url: "/media/templates/configuration/maintab.html", active:false},
-                {title: "Plugin", content: "3", url: "/configuration/plugin", active:false},
-                {title: "View", content: "4", url: "/configuration/view", active:false},
+                {title: "Plugin", content: "3", url: "/media/templates/configuration/maintab.html", active:false},
+                {title: "View", content: "4", url: "/media/templates/configuration/maintab.html", active:false},
             ];
             $scope.maintabIndex = $scope.maintabs[0];
 
@@ -180,6 +180,93 @@
                 },
             ];
             $scope.maintabs[1].tabs = $scope.storagetabs;
+            // Plugins TABS
+            $scope.plugintabs = [
+                { title: "Plugins",
+                  content: "1",
+                  url: "/media/templates/configuration/plugin_list.html",
+                  active: true,
+                  static: true,
+                  rest_url:'/rest/plugins/',
+                  model: 'plugins',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/plugins/', method:'DELETE', model:'plugin'}
+                  ]
+                },
+                { title: "Sources",
+                  content: "2",
+                  url: "/media/templates/configuration/source_list.html",
+                  active: false,
+                  static: true,
+                  rest_url:'/rest/sources/',
+                  model: 'plugins',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/sources/', method:'DELETE', model:'source'}
+                  ]
+                },
+            ];
+            $scope.maintabs[2].tabs = $scope.plugintabs;
+            // VIEW TABS
+            $scope.viewtabs = [
+                { title: "Views",
+                  content: "1",
+                  url: "/media/templates/configuration/view_list.html",
+                  active: true,
+                  static: true,
+                  rest_url:'/rest/views/',
+                  model: 'views',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/views/', method:'DELETE', model:'view'}
+                  ]
+                },
+                { title: "Multiviews",
+                  content: "2",
+                  url: "/media/templates/configuration/multiview_list.html",
+                  active: false,
+                  static: true,
+                  rest_url:'/rest/multiviews/',
+                  model: 'multivews',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/multiviews/', method:'DELETE', model:'multiview'}
+                  ]
+                },
+                { title: "Skeletons",
+                  content: "3",
+                  url: "/media/templates/configuration/skeleton_list.html",
+                  active: false,
+                  static: true,
+                  rest_url:'/rest/skeletons/',
+                  model: 'multivews',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/skeletons/', method:'DELETE', model:'skeleton'}
+                  ]
+                },
+                { title: "Add view",
+                  content: "4",
+                  url: "/configuration/view/add",
+                  active: false,
+                  static: true,
+                  rest_url:'/rest/views/',
+                  model: 'view',
+                },
+                { title: "Add multiview",
+                  content: "5",
+                  url: "/configuration/multiview/add",
+                  active: false,
+                  static: true,
+                  rest_url:'/rest/multiviews/',
+                  model: 'multiview',
+                },
+                { title: "Add skeleton",
+                  content: "6",
+                  url: "/configuration/skeleton/add",
+                  active: false,
+                  static: true,
+                  rest_url:'/rest/skeletons/',
+                  model: 'skeleton',
+                },
+            ];
+            $scope.maintabs[3].tabs = $scope.viewtabs;
             // DEFINE TAB
             $scope.tabs = $scope.maintab.tabs;
             $scope.tabIndex = $scope.maintab.tabs[0];

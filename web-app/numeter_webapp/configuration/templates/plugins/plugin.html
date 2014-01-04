@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="row-fluid"> <!-- plugin form --!>
- <form id="plugin-form" class="ajax-form" action="{{ Plugin_Form.get_submit_url }}" method="{{ Plugin_Form.get_submit_method }}">
+ <form ng-controller="MyFormCtrl" ng-submit="submit()">
   {% csrf_token %}
 
   <div class="span5 fields" style="margin-left: 50px;">
@@ -15,10 +15,8 @@
   <div class="span4">
    <div class="row-fluid">
     <p>
-     <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
-     <input type="button" data-method="DELETE" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Plugin_Form.get_submit_url }}" data-next-tab="#plugin-list-tab">
-     <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
-     <input type="button" name="list-sources" class="btn" value="{% trans "List sources" %}" data-url="{{ Plugin_Form.instance.get_list_sources_url }}">
+     <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
+     <input ng-click="delete_instance()" type="button" class="btn btn-danger" value="{% trans "Delete" %}">
      <input type="button" id="btn-choose-sources" class="btn btn-primary" value="{% trans "Create sources" %}" data-url="{{ Plugin_Form.instance.get_create_sources_url }}">
     </p>
    </div>

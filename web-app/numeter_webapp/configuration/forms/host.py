@@ -4,10 +4,11 @@ Host Form module.
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from djangular.forms.angular_model import NgModelFormMixin
 from core.models import Host
 
 
-class Host_Form(forms.ModelForm):
+class Host_Form(NgModelFormMixin, forms.ModelForm):
     """Basic Host ModelForm."""
     class Meta:
         model = Host
@@ -17,6 +18,10 @@ class Host_Form(forms.ModelForm):
             'storage': forms.Select({'class':'span'}),
             'group': forms.Select({'class':'span'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        kwargs['scope_prefix'] = 'form'
+        super(Host_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
         """Return url matching with creation or updating."""

@@ -1,17 +1,27 @@
+"""
+View Form module.
+"""
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from djangular.forms.angular_model import NgModelFormMixin
+
 from configuration.forms.base import Base_ModelForm
 from core.models import Data_Source as Source
 from multiviews.models import View
 
-# TODO:
-# View_Form with search field
-# When have API
 
-class View_Form(forms.ModelForm):
+class View_Form(NgModelFormMixin, forms.ModelForm):
+    """
+    ``NgModelFormMixin`` & ``ModelForm`` for ``View``.
+    It uses also provide ``get_submit_url`` and ``get_submit_method``.
+    """
     class Meta:
         model = View
+
+    def __init__(self, *args, **kwargs):
+        kwargs['scope_prefix'] = 'form'
+        super(View_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
         """Return url matching with creation or updating."""

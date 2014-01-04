@@ -24,6 +24,9 @@ class PluginViewSet(ModelListDelete, ModelViewSet):
     serializer_class = PluginSerializer
 
     def get_queryset(self):
+        q = self.request.QUERY_PARAMS.get('q', '')
+        if self.request.method != 'GET':
+            return self.model.objects.user_web_filter(q, self.request.user)
         return self.model.objects.user_filter(self.request.user)
 
     @action(permission_classes=[IsOwnerOrForbidden], allowed_methods=['POST'])

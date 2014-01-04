@@ -1,11 +1,24 @@
+"""
+Multiview Form module.
+"""
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from djangular.forms.angular_model import NgModelFormMixin
 from multiviews.models import View, Multiview
 
 
-class Multiview_Form(forms.ModelForm):
+class Multiview_Form(NgModelFormMixin, forms.ModelForm):
+    """
+    ``NgModelFormMixin`` & ``ModelForm`` for ``Multiview``.
+    It uses also provide ``get_submit_url`` and ``get_submit_method``.
+    """
     class Meta:
         model = Multiview
+
+    def __init__(self, *args, **kwargs):
+        kwargs['scope_prefix'] = 'form'
+        super(Multiview_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
         """Return url matching with creation or updating."""
@@ -23,7 +36,6 @@ class Multiview_Form(forms.ModelForm):
 
 
 class Extended_Multiview_Form(Multiview_Form):
-    """Small Multiview ModelForm."""
     search_view = forms.CharField(
       required=False,
       widget=forms.TextInput({

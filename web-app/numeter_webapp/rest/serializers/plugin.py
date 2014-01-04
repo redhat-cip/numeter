@@ -10,6 +10,7 @@ class PluginSerializer(serializers.ModelSerializer):
     """Simple Plugin Serializer."""
     host = serializers.PrimaryKeyRelatedField()
     url = serializers.HyperlinkedIdentityField(view_name='plugin-detail')
+
     class Meta:
         model = Plugin
-        fields = ('name', 'host', 'comment','url')
+        fields = ('name', 'host', 'comment', 'url', 'id')

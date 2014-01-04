@@ -12,7 +12,7 @@ class MultiviewSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='multiview-detail')
     class Meta:
         model = Multiview
-        fields = ('name', 'views', 'comment', 'id',)
+        fields = ('name', 'views', 'comment', 'id', 'url')
 
     def get_queryset(self):
         q = self.request.QUERY_PARAMS.get('q', '')
