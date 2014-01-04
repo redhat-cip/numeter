@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+  $(".pretty-select").select2();
   // GET APROPOS
   $(document).on('click', '[href="/apropos"]', function () {
     $.ajax({

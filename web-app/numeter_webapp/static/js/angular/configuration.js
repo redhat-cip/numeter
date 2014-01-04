@@ -1,7 +1,7 @@
 /*global window, angular, console*/
 (function (angular) {
     'use strict';
-    angular.module('numeter', ['ui.bootstrap']).
+    angular.module('numeter', ['ui.bootstrap', 'ui.select2']).
         // MAINTABS
         directive('maintab', function () {
             return {
@@ -376,7 +376,6 @@
                                 }
                             });
                         }
-                        console.log(data);
                     });
             };
         }]);
