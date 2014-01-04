@@ -1,0 +1,37 @@
+<div ng-controller="InputFilterCtrl">
+ <input ng-enter="updateInstances(q)" ng-model="q" class="span12" type="text" placeholder="Filter storage by name">
+</div>
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>Storage</th>
+    <th>URL</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr ng-repeat="storage in storages.results">
+    <td><input class="storage-checkbox" type="checkbox" name="{{ storage.id }}"></td>
+    <td><a ng-click="createTab(storage, 'storage')">{{ storage.name }}</a></td>
+    <td>{{ storage.protocol }}://{{ storage.address }}{{ storage.url_prefix }}</td>
+   </tr>
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   <li ng-class="{'disabled': storages.previous == null}" class="previous"><a ng-click="changePage(storages.previous, 'storages')">&larr; Previous</a></li>
+   <li ng-class="{'disabled': storages.next == null}" class="next"><a ng-click="changePage(storages.previous, 'storages')">&rarr; Next</a></li>
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>Action</h5>
+ <div ng-controller="ListActionCtrl" class="input-append">
+  <select ng-model="selected_list_action" ng-options="action.name for action in list_actions"></select>
+  <button class="btn" type="button" ng-click="launch_action()">Apply</button>
+ </div>
+</div>

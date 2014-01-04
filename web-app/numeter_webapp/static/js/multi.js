@@ -27,7 +27,7 @@
       var data_url = $(this).attr('data-url');
       if ( $('#'+view_div).html() == '' ) numeter.print_loading_gif(this, '200px', '200px');
       numeter.graphs = [];
-      numeter.get_graph(data_url, view_div, res);
+      numeter.get_graph(data_url, $(this)[0], res);
     })
   });
 

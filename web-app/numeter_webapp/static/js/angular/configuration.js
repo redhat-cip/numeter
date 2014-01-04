@@ -14,8 +14,8 @@
         controller('configurationMainTabCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.maintabs = [
                 {title: "Users", content: "1", url: "/media/templates/configuration/maintab.html", active: true},
-                {title: "Storage", content: "2", url: "/configuration/storage", active:false},
-                {title: "Plugin", content: "3", url: "/configuration/elugin", active:false},
+                {title: "Storage", content: "2", url: "/media/templates/configuration/maintab.html", active:false},
+                {title: "Plugin", content: "3", url: "/configuration/plugin", active:false},
                 {title: "View", content: "4", url: "/configuration/view", active:false},
             ];
             $scope.maintabIndex = $scope.maintabs[0];
@@ -133,7 +133,7 @@
                   url: "/configuration/user/add",
                   static: true,
                   active: false,
-                  data_url: '/rest/users/',
+                  rest_url: '/rest/users/',
                   model: 'user'
                 },
                 { title: "Add group",
@@ -141,13 +141,48 @@
                   url: "/configuration/group/add",
                   static: true,
                   active: false,
-                  data_url: '/rest/groups/',
+                  rest_url: '/rest/groups/',
                   model: 'group'
                 },
             ];
+            $scope.maintabs[0].tabs = $scope.usertabs;
+            // STORAGE TABS
+            $scope.storagetabs = [
+                { title: "Storages",
+                  content: "1",
+                  url: "/media/templates/configuration/storage_list.html",
+                  active: true,
+                  static: true,
+                  rest_url:'/rest/storages/',
+                  model: 'storages',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/storages/', method:'DELETE', model:'storage'}
+                  ]
+                },
+                { title: "Hosts",
+                  content: "2",
+                  url: "/media/templates/configuration/host_list.html",
+                  active: false,
+                  static: true,
+                  rest_url:'/rest/hosts/',
+                  model: 'hosts',
+                  list_actions: [
+                    {name:'Delete', value:'', url:'/rest/hosts/', method:'DELETE', model:'host'}
+                  ]
+                },
+                { title: "Add storage",
+                  content: "3",
+                  url: "/configuration/storage/add",
+                  active: false,
+                  static: true,
+                  rest_url:'/rest/storages/',
+                  model: 'storage',
+                },
+            ];
+            $scope.maintabs[1].tabs = $scope.storagetabs;
             // DEFINE TAB
-            $scope.tabs = $scope.usertabs;
-            $scope.tabIndex = $scope.usertabs[0];
+            $scope.tabs = $scope.maintab.tabs;
+            $scope.tabIndex = $scope.maintab.tabs[0];
 
             $scope.showTab = function (tab) {
               $scope.tabIndex.active = false;
@@ -169,9 +204,9 @@
             $scope.createTab = function (instance, type) {
                 var new_tab;
                 // SERACH IF TAB IS ALREADY CREATED
-                for (var i = 0, len = $scope.usertabs.length; i < len; ++i) {
-                    if ($scope.usertabs[i].instance == instance) {
-                        new_tab = $scope.usertabs[i];
+                for (var i = 0, len = $scope.tabs.length; i < len; ++i) {
+                    if ($scope.tabs[i].instance == instance) {
+                        new_tab = $scope.tabs[i];
                         break;
                     }
                 }
@@ -182,7 +217,7 @@
                       instance: instance,
                       templateUrl: '/configuration/' + type + '/' + instance.id
                   };
-                  $scope.usertabs.push(new_tab);
+                  $scope.tabs.push(new_tab);
                 }
                 $scope.tabIndex.active = false;
                 $scope.tabIndex = new_tab;
@@ -199,7 +234,7 @@
             // Set form metal-data
             if (! $scope.tabIndex.instance) {
                 $scope.method = 'POST';
-                $scope.url = $scope.tabIndex.data_url;
+                $scope.url = $scope.tabIndex.rest_url;
             } else {
                 $scope.method = 'PATCH';
                 $scope.url = $scope.form.url;
