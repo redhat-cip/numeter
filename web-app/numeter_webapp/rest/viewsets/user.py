@@ -25,9 +25,14 @@ class UserViewSet(ModelListDelete, viewsets.ModelViewSet):
 
     def get_queryset(self):
         q = self.request.QUERY_PARAMS.get('q', '')
+        objects = self.model.objects.user_web_filter(q, self.request.user)
+        # ID filter
+        ids = self.request.QUERY_PARAMS.get('id', [])
+        objects = objects.filter(id__in=ids) if ids else objects
+        # Change can be made on super and simple users
         if self.request.method != 'GET':
-            return self.model.objects.user_web_filter(q, self.request.user)
-        return self.model.objects.user_web_filter(q, self.request.user).filter(is_superuser=False)
+            return objects
+        return objects.filter(is_superuser=False)
 
     def create(self, request, *args, **kwargs):
         """

@@ -13,10 +13,44 @@
         }).
         controller('configurationMainTabCtrl', ['$scope', '$http', function ($scope, $http) {
             $scope.maintabs = [
-                {title: "Users", content: "1", url: "/media/templates/configuration/maintab.html", active: true},
-                {title: "Storage", content: "2", url: "/media/templates/configuration/maintab.html", active:false},
-                {title: "Plugin", content: "3", url: "/media/templates/configuration/maintab.html", active:false},
-                {title: "View", content: "4", url: "/media/templates/configuration/maintab.html", active:false},
+                { title: "Users",
+                  content: "1",
+                  url: "/media/templates/configuration/maintab.html",
+                  active: true,
+                  rest_urls: [
+                    ['/rest/users/', 'users'],
+                    ['/rest/superusers/', 'superusers'],
+                    ['/rest/groups/', 'groups']
+                  ]
+                },
+                { title: "Storage",
+                  content: "2",
+                  url: "/media/templates/configuration/maintab.html",
+                  active:false,
+                  rest_urls: [
+                    ['/rest/storages/', 'storages'],
+                    ['/rest/hosts/', 'hosts'],
+                  ]
+                },
+                { title: "Plugin",
+                  content: "3",
+                  url: "/media/templates/configuration/maintab.html",
+                  active:false,
+                  rest_urls: [
+                    ['/rest/plugins/', 'plugins'],
+                    ['/rest/sources/', 'sources'],
+                  ]
+                },
+                { title: "View",
+                  content: "4",
+                  url: "/media/templates/configuration/maintab.html",
+                  active: false,
+                  rest_urls: [
+                    ['/rest/views/', 'views'],
+                    ['/rest/multiviews/', 'multiviews'],
+                    ['/rest/skeletons/', 'skeletons'],
+                  ]
+                },
             ];
             $scope.maintabIndex = $scope.maintabs[0];
 
@@ -56,16 +90,9 @@
                 transclude: true,
                 template: '<div ng-include="getTemplateUrl()"></div>',
                 link: function ($scope) {
-                    $http.get('/rest/users/').success(function (data) { $scope.users = data; });
-                    $http.get('/rest/groups/').success(function (data) { $scope.groups = data; });
-                    $http.get('/rest/superusers/').success(function (data) { $scope.superusers = data; });
-                    $http.get('/rest/storages/').success(function (data) { $scope.storages = data; });
-                    $http.get('/rest/hosts/').success(function (data) { $scope.hosts = data; });
-                    $http.get('/rest/plugins/').success(function (data) { $scope.plugins = data; });
-                    $http.get('/rest/sources/').success(function (data) { $scope.sources = data; });
-                    $http.get('/rest/views/').success(function (data) { $scope.views = data; });
-                    $http.get('/rest/multiviews/').success(function (data) { $scope.multiviews = data; });
-                    $http.get('/rest/skeletons/').success(function (data) { $scope.skeletons = data; });
+                    $.each($scope.maintab.rest_urls, function(i, rest_url) {
+                      $http.get(rest_url[0]).success(function (data) { $scope[rest_url[1]] = data; });
+                    });
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
                     $scope.$on('qChange', function (event, model) {
@@ -328,6 +355,7 @@
             }
             // Form submit
             $scope.submit = function() {
+                debugger;
                 $http({
                     method: $scope.method,
                     url: $scope.url,
@@ -348,6 +376,29 @@
                     success(function (data) {
                         $scope.closeTab($scope.tab);
                     });
+            };
+            // SELECT2
+            $scope.remote_select = $scope.remote_select || {
+                ajax: {
+                    url: '/rest/groups/',
+                    dataType: 'json',
+                    data: function (term, page) { return { q: term }; },
+                    results: function (data, page) { return {results: data.results}; },
+                },
+                initSelection: function(element, callback) {
+                    var ids = $(element).val().split(',');
+                    if (ids!==[]) {
+                        $http({
+                            method: 'GET',
+                            url: '/rest/groups/',
+                            params: {'id': ids}
+                        }).success(function(data) {
+                            callback(data.results);
+                        });
+                    }
+                },
+                formatSelection: function (instance) { return instance.text; },
+                formatResult: function (instance) { return instance.text; },
             };
         }]).
         controller('ListActionCtrl', ['$scope', '$http', function ($scope, $http) {
@@ -379,6 +430,5 @@
                     });
             };
         }]);
-
 
 }(angular));

@@ -17,4 +17,15 @@ class GroupViewSet(ModelListDelete, viewsets.ModelViewSet):
 
     def get_queryset(self):
         q = self.request.QUERY_PARAMS.get('q', '')
-        return self.model.objects.web_filter(q)
+        objects = self.model.objects.web_filter(q)
+        # ID filter
+        ids = self.request.QUERY_PARAMS.get('id', [])
+        # TODO: Clarify why could be not JSON ??
+        try:
+            objects = objects.filter(id__in=ids) if ids else objects
+        except ValueError:
+            from json import loads
+            print ids
+            ids = loads(ids)
+            objects = objects.filter(id__in=ids) if ids else objects
+        return objects

@@ -20,7 +20,7 @@ class User_Form(NgModelFormMixin, forms.ModelForm):
           'email': forms.TextInput({'placeholder':_('Email'),'class':'span'}),
           'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span'}),
           'graph_lib': forms.Select({'class':'span'}),
-          'groups': forms.SelectMultiple({'class':'span', 'ui-select2': ''}),
+          'groups': forms.TextInput({'class':'span', 'ui-select2': 'remote_select', 'multiple': ''})
         }
 
     def __init__(self, *args, **kwargs):
