@@ -4,11 +4,12 @@ User Serializer module.
 
 from rest_framework import serializers
 from core.models import User
+from rest.serializers.fields import NestedSerializerField
 
 
 class UserSerializer(serializers.ModelSerializer):
     """Simple user serializer."""
-    groups = serializers.PrimaryKeyRelatedField(many=True)
+    groups = NestedSerializerField(many=True)
     url = serializers.HyperlinkedIdentityField(view_name='user-detail')
     class Meta:
         model = User

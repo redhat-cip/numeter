@@ -25,7 +25,6 @@ class GroupViewSet(ModelListDelete, viewsets.ModelViewSet):
             objects = objects.filter(id__in=ids) if ids else objects
         except ValueError:
             from json import loads
-            print ids
             ids = loads(ids)
             objects = objects.filter(id__in=ids) if ids else objects
         return objects

@@ -308,7 +308,7 @@
             $scope.getTemplateUrl = function () {
                 // RETURN APPROPIRATE TO STATIC OR DYNAMIC TAB
                 if ($scope.tabIndex.instance) {
-                    $scope.form = $scope.tabIndex.instance;
+                    $scope.tabIndex.form = $scope.tabIndex.instance;
                     return $scope.tabIndex.templateUrl;
                 }
                 return $scope.tabIndex.url;
@@ -351,15 +351,14 @@
                 $scope.url = $scope.tabIndex.rest_url;
             } else {
                 $scope.method = 'PATCH';
-                $scope.url = $scope.form.url;
+                $scope.url = $scope.tabIndex.form.url;
             }
             // Form submit
             $scope.submit = function() {
-                debugger;
                 $http({
                     method: $scope.method,
                     url: $scope.url,
-                    data: $scope.form,
+                    data: $scope.tabIndex.form,
                     headers: {"Content-Type": "application/json"}
                 }).
                     success(function (data) {
@@ -378,7 +377,7 @@
                     });
             };
             // SELECT2
-            $scope.remote_select = $scope.remote_select || {
+            $scope.remote_select = {
                 ajax: {
                     url: '/rest/groups/',
                     dataType: 'json',
@@ -386,19 +385,16 @@
                     results: function (data, page) { return {results: data.results}; },
                 },
                 initSelection: function(element, callback) {
-                    var ids = $(element).val().split(',');
-                    if (ids!==[]) {
+                    if ($scope.tabIndex.form.groups!==[]) {
                         $http({
                             method: 'GET',
                             url: '/rest/groups/',
-                            params: {'id': ids}
+                            params: {'id': $scope.tabIndex.form.groups }
                         }).success(function(data) {
                             callback(data.results);
                         });
                     }
                 },
-                formatSelection: function (instance) { return instance.text; },
-                formatResult: function (instance) { return instance.text; },
             };
         }]).
         controller('ListActionCtrl', ['$scope', '$http', function ($scope, $http) {

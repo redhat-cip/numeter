@@ -14,7 +14,7 @@ class User_Form(NgModelFormMixin, forms.ModelForm):
     """
     class Meta:
         model = User
-        fields = ('username','email','password','graph_lib','is_superuser','groups')
+        fields = ('username', 'email', 'password', 'graph_lib', 'is_superuser', 'groups')
         widgets = {
           'username': forms.TextInput({'placeholder':_('Username'),'class':'span'}),
           'email': forms.TextInput({'placeholder':_('Email'),'class':'span'}),
@@ -24,7 +24,7 @@ class User_Form(NgModelFormMixin, forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'form'
+        kwargs['scope_prefix'] = 'tabIndex.form'
         super(User_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
