@@ -17,7 +17,7 @@ class Multiview_Form(NgModelFormMixin, forms.ModelForm):
         model = Multiview
 
     def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'form'
+        kwargs['scope_prefix'] = 'tabIndex.form'
         super(Multiview_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):

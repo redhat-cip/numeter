@@ -20,7 +20,7 @@ class User_Form(NgModelFormMixin, forms.ModelForm):
           'email': forms.TextInput({'placeholder':_('Email'),'class':'span'}),
           'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span'}),
           'graph_lib': forms.Select({'class':'span'}),
-          'groups': forms.TextInput({'class':'span', 'ui-select2': 'remote_select', 'multiple': ''})
+          'groups': forms.TextInput({'class':'span', 'ui-select2': 'remote_select.groups', 'multiple': '', 'data-model': 'groups'})
         }
 
     def __init__(self, *args, **kwargs):
@@ -47,10 +47,10 @@ class User_Admin_EditForm(User_Form):
     Form with sensitive fields.
     """
     class Meta(User_Form.Meta):
-        exclude = ('password','last_login','is_staff','date_joined')
+        exclude = ('password', 'last_login', 'is_staff' ,'date_joined')
 
     def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'form'
+        kwargs['scope_prefix'] = 'tabIndex.form'
         super(User_Admin_EditForm, self).__init__(*args, **kwargs)
 
 
@@ -91,7 +91,7 @@ class User_EditForm(User_Admin_EditForm):
     Form with fewer fields.
     """
     class Meta(User_Form.Meta):
-        fields = ('username','email','graph_lib')
+        fields = ('username', 'email', 'graph_lib')
 
 
 class User_PasswordForm(User_Form):

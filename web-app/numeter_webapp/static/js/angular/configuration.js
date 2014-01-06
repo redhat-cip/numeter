@@ -161,7 +161,8 @@
                   static: true,
                   active: false,
                   rest_url: '/rest/users/',
-                  model: 'user'
+                  model: 'user',
+                  multiple_fields: {'groups': [] }
                 },
                 { title: "Add group",
                   content: "5",
@@ -324,11 +325,18 @@
                         break;
                     }
                 }
-                if(!new_tab) {
+                if (!new_tab) {
+                  var multiple_fields = {};
+                  angular.forEach(instance, function(v, k){
+                    if( Object.prototype.toString.call(v) === '[object Array]' ) {
+                      this[k] = v;
+                    } 
+                  }, multiple_fields);
                   new_tab = {
                       title: instance.name || instance.username,
                       url: instance.url,
                       instance: instance,
+                      multiple_fields: multiple_fields,
                       templateUrl: '/configuration/' + type + '/' + instance.id
                   };
                   $scope.tabs.push(new_tab);
@@ -377,25 +385,30 @@
                     });
             };
             // SELECT2
-            $scope.remote_select = {
-                ajax: {
-                    url: '/rest/groups/',
-                    dataType: 'json',
-                    data: function (term, page) { return { q: term }; },
-                    results: function (data, page) { return {results: data.results}; },
-                },
-                initSelection: function(element, callback) {
-                    if ($scope.tabIndex.form.groups!==[]) {
-                        $http({
-                            method: 'GET',
-                            url: '/rest/groups/',
-                            params: {'id': $scope.tabIndex.form.groups }
-                        }).success(function(data) {
-                            callback(data.results);
-                        });
-                    }
-                },
-            };
+            $scope.remote_select = {};
+            angular.forEach($scope.tabIndex.multiple_fields, function(v, model){
+              $scope.remote_select[model] = {
+                  ajax: {
+                      url: '/rest/' + model + '/',
+                      dataType: 'json',
+                      data: function (term, page) { return { q: term }; },
+                      results: function (data, page) { return {results: data.results}; },
+                  },
+                  initSelection: function(element, callback) {
+                      if ($scope.tabIndex.form[model]!==[]) {
+                          $http({
+                              method: 'GET',
+                              url: '/rest/groups/',
+                              params: {'id': $scope.tabIndex.form[model] }
+                          }).success(function(data) {
+                              callback(data.results);
+                          });
+                      } else {
+                          callback({});
+                      } 
+                  },
+              };
+            });
         }]).
         controller('ListActionCtrl', ['$scope', '$http', function ($scope, $http) {
             // SET OPTIONS

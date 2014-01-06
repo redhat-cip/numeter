@@ -20,7 +20,7 @@ class Host_Form(NgModelFormMixin, forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'form'
+        kwargs['scope_prefix'] = 'tabIndex.form'
         super(Host_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
