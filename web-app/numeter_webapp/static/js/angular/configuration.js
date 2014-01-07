@@ -396,16 +396,19 @@
                   },
                   initSelection: function(element, callback) {
                       if ($scope.tabIndex.form[model]!==[]) {
-                          $http({
-                              method: 'GET',
-                              url: '/rest/groups/',
-                              params: {'id': $scope.tabIndex.form[model] }
-                          }).success(function(data) {
-                              callback(data.results);
-                          });
-                      } else {
-                          callback({});
-                      } 
+                          // IF ALREADY INIT OR NOT
+                          if ( Object.prototype.toString.call($scope.tabIndex.form[model][0]) !== '[object Number]') { 
+                              callback($scope.tabIndex.form[model]); 
+                          } else {
+                            $http({
+                                method: 'GET',
+                                url: '/rest/' + model + '/',
+                                params: {'id': $scope.tabIndex.form[model] }
+                            }).success(function(data) {
+                                callback(data.results);
+                            });
+                          }
+                      }
                   },
               };
             });
