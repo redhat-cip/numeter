@@ -1,0 +1,8 @@
+<div accordion>
+ <div accordion-group ng-repeat="multiview in multiviews">
+   <div accordion-heading>
+    <a ng-click="displayViews(multiview)" data-toggle="collapse">{{ multiview.text }}</a>
+   </div>
+   <div view data-id="view_id" data-resolution="resolution" ng-repeat="view_id in multiview.views"></div>
+ </div>
+</div>

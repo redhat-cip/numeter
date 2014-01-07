@@ -27,7 +27,7 @@
       // Make series
       var series = {}
       for ( var source in data.infos ) {
-        series[source] = {}
+        series[source] = {};
         if ( data.infos[source].draw !== undefined ) {
           if ( data.infos[source].draw.indexOf("AREA") != -1 ) { 
               series[source]['fillGraph'] = true;

@@ -11,6 +11,7 @@
                 },
                 templateUrl: 'media/templates/graph.html',
                 link: function ($scope, $element) {
+                    debugger;
                     numeter.get_graph($scope.url, $element[0], $scope.resolution);
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {

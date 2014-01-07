@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST 
+from rest_framework.decorators import link
 
 from multiviews.models import View
 from rest.serializers import ViewSerializer
@@ -35,6 +36,11 @@ class ViewViewSet(ModelListDelete, ModelViewSet):
             ids = loads(ids)
             objects = objects.filter(id__in=ids) if ids else objects
         return objects
+
+    @link()
+    def extended_data(self, request, pk=None):
+        view = self.get_object()
+        return Response(view.get_extended_data(res=request.GET.get('res', 'Daily')))
 
     # def create(self, request):
     #     """
