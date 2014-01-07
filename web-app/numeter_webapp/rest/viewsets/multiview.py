@@ -21,5 +21,8 @@ class MultiviewViewSet(ModelListDelete, ModelViewSet):
 
     def get_queryset(self):
         q = self.request.QUERY_PARAMS.get('q', '')
-        return self.model.objects.user_web_filter(q, self.request.user)
-
+        objects = self.model.objects.user_web_filter(q, self.request.user)
+        # ID filter
+        ids = self.request.QUERY_PARAMS.get('id', [])
+        objects = objects.filter(id__in=ids) if ids else objects
+        return objects

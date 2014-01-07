@@ -8,7 +8,7 @@ from djangular.forms.angular_model import NgModelFormMixin
 from core.models import User
 
 
-class User_Form(NgModelFormMixin, forms.ModelForm):
+class User_Form(forms.ModelForm):
     """
     Base User Form. Subclassed for make custom User Form.
     """
@@ -16,15 +16,15 @@ class User_Form(NgModelFormMixin, forms.ModelForm):
         model = User
         fields = ('username', 'email', 'password', 'graph_lib', 'is_superuser', 'groups')
         widgets = {
-          'username': forms.TextInput({'placeholder':_('Username'),'class':'span'}),
-          'email': forms.TextInput({'placeholder':_('Email'),'class':'span'}),
-          'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span'}),
-          'graph_lib': forms.Select({'class':'span'}),
-          'groups': forms.TextInput({'class':'span', 'ui-select2': 'remote_select.groups', 'multiple': '', 'data-model': 'groups'})
+          'username': forms.TextInput({'placeholder':_('Username'),'class':'span', 'ng-model': 'tabIndex.form.username'}),
+          'email': forms.TextInput({'placeholder':_('Email'),'class':'span', 'ng-model': 'tabIndex.form.email'}),
+          'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span', 'ng-model': 'tabIndex.form.password'}),
+          'graph_lib': forms.Select({'class':'span', 'ng-model': 'tabIndex.form.graph_lib'}),
+          'groups': forms.TextInput({'class':'span', 'ui-select2': 'remote_select.groups', 'multiple': '', 'data-model': 'groups', 'ng-model': 'tabIndex.form.groups', 'data-placeholder': _('Search groups')})
         }
 
     def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'tabIndex.form'
+        #kwargs['scope_prefix'] = 'tabIndex.form'
         super(User_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
@@ -50,7 +50,7 @@ class User_Admin_EditForm(User_Form):
         exclude = ('password', 'last_login', 'is_staff' ,'date_joined')
 
     def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'tabIndex.form'
+        #kwargs['scope_prefix'] = 'tabIndex.form'
         super(User_Admin_EditForm, self).__init__(*args, **kwargs)
 
 
@@ -61,11 +61,13 @@ class User_CreationForm(User_Form):
     """
     password = forms.CharField(label=_('Password'), widget=forms.PasswordInput(attrs={
       'placeholder': _('Password'),
-      'class': 'span'
+      'class': 'span',
+      'ng-model': 'tabIndex.form.password'
     }))
     password2 = forms.CharField(label=_('Confirmation'), widget=forms.PasswordInput(attrs={
       'placeholder': _('Confirmation'),
-      'class': 'span'
+      'class': 'span',
+      'ng-model': 'tabIndex.form.password2'
     }))
     class Meta(User_Form.Meta):
         exclude = ('last_login', 'is_staff', 'date_joined', 'is_active')

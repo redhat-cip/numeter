@@ -1,6 +1,7 @@
 {% load i18n %}
 <form ng-controller="MyFormCtrl" ng-submit="submit()">
  {% csrf_token %}
+
  <fieldset>
   <div class="span6">
    <div class="control-group condensed">
@@ -10,21 +11,7 @@
 
    <div class="control-group condensed">
     <label for="id_sources" class="control-label">{{ View_Form.sources.label }}</label>
-    <div class="controls">
-     <div class="row-fluid">
-      <div class="span5">
-       {{ View_Form.search_source }}
-       {{ View_Form.available_sources }}
-      </div>
-      <div class="span2" style="text-align: center;">
-       <button class="btn btn-mini move-option" data-from="#id_available_sources" data-to=".span5 #id_sources"><i class="icon-chevron-right"></i></button>
-       <br>
-       <br>
-       <button class="btn btn-mini move-option" data-from=".span5 #id_sources" data-to="#id_available_sources"><i class="icon-chevron-left"></i></button>
-      </div>
-      <div class="span5">{{ View_Form.sources }}</div>
-     </div>
-    </div>
+    <div class="controls">{{ View_Form.sources }}</div>
    </div> 
 
    <div class="control-group condensed">

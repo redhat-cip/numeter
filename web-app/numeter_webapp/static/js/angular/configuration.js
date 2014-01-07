@@ -276,6 +276,7 @@
                   static: true,
                   rest_url:'/rest/views/',
                   model: 'view',
+                  multiple_fields: {'sources': [] }
                 },
                 { title: "Add multiview",
                   content: "5",
@@ -284,6 +285,7 @@
                   static: true,
                   rest_url:'/rest/multiviews/',
                   model: 'multiview',
+                  multiple_fields: {'views': [] }
                 },
                 { title: "Add skeleton",
                   content: "6",
@@ -367,6 +369,8 @@
                     method: $scope.method,
                     url: $scope.url,
                     data: $scope.tabIndex.form,
+                    dataType: 'json',
+                    responseType: 'json',
                     headers: {"Content-Type": "application/json"}
                 }).
                     success(function (data) {
@@ -385,7 +389,8 @@
                     });
             };
             // SELECT2
-            $scope.remote_select = {};
+            var $setPristine = function(input){ return 1;};
+            $scope.remote_select = $scope.remote_select || {};
             angular.forEach($scope.tabIndex.multiple_fields, function(v, model){
               $scope.remote_select[model] = {
                   ajax: {
@@ -393,9 +398,9 @@
                       dataType: 'json',
                       data: function (term, page) { return { q: term }; },
                       results: function (data, page) { return {results: data.results}; },
+                      headers: {"Content-Type": "application/json"}
                   },
                   initSelection: function(element, callback) {
-                      if ($scope.tabIndex.form[model]!==[]) {
                           // IF ALREADY INIT OR NOT
                           if ( Object.prototype.toString.call($scope.tabIndex.form[model][0]) !== '[object Number]') { 
                               callback($scope.tabIndex.form[model]); 
@@ -403,12 +408,12 @@
                             $http({
                                 method: 'GET',
                                 url: '/rest/' + model + '/',
-                                params: {'id': $scope.tabIndex.form[model] }
+                                params: {'id': $scope.tabIndex.form[model] },
+                                responseType: 'json',
                             }).success(function(data) {
                                 callback(data.results);
                             });
                           }
-                      }
                   },
               };
             });

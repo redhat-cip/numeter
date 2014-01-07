@@ -40,7 +40,6 @@ class View_Form(NgModelFormMixin, forms.ModelForm):
 
 class Extended_View_Form(View_Form):
     """Small View ModelForm."""
-    #is_private = forms.BooleanField()
     class Meta:
         model = View
         widgets = {
@@ -48,7 +47,7 @@ class Extended_View_Form(View_Form):
           'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'2'}),
           'warning': forms.TextInput({'placeholder':_('Warning threshold (optional)'),'class':'span'}),
           'critical': forms.TextInput({'placeholder':_('Critical threshold (optional)'),'class':'span'}),
-          'sources': forms.TextInput({'class':'span', 'ui-select2': 'remote_select', 'type': 'hidden'}),
+          'sources': forms.TextInput({'class':'span', 'ui-select2': 'remote_select.sources', 'multiple': '', 'type': 'hidden'}),
         }
 
     def __init__(self, *args, **kwargs):
