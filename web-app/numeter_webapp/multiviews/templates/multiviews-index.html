@@ -32,9 +32,9 @@
 
      <li class="divider-vertical"></li>
 
-     <form id="main-q" method="GET" action="{% url "multiviews search" %}" data-into="#multiviews-list" class="navbar-search">
-      <input type="text" placeholder="{% trans "Search a multiview or a view" %}" class="search-query span2" style="width: 400px">
-     </form>
+     <div ng-controller="InputFilterCtrl" class="navbar-search">
+      <input ng-enter="updateInstances(q)" ng-model="q" type="text" placeholder="{% trans "Search a multiview or a view" %}" class="search-query span2" style="width: 400px">
+     </div>
 
     </ul>
     <ul class="nav pull-right">

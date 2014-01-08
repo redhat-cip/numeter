@@ -11,6 +11,8 @@
                         success(function (data) { $scope.multiviews = data.results; });
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
+                    $scope.resolution = 'Daily';
+
                     $http.get('/rest/multiviews/').
                         success(function (data) { $scope.multiviews = data.results; });
 
@@ -19,27 +21,52 @@
                           $scope.$emit('displayView', view_id);
                         });
                     };
+                    $scope.$on('qChange', function (event, q) {
+                        $http.get('/rest/multiviews/', {params: {q: q}}).
+                            success(function (data) {
+                                $scope.multiviews = data.results;
+                            });
+                        });
                 }]
             };
         }]).
+        // SEARCH INPUT
+        controller('InputFilterCtrl', ['$scope', '$http', function ($scope, $http) {
+            $scope.q = '';
+            $scope.updateInstances = function (q) {
+                $scope.$emit('qChange', q);
+            };
+        }]).
+        directive('ngEnter', function () {
+            return function (scope, element, attrs) {
+                element.bind("keydown keypress", function (event) {
+                    if(event.which === 13) {
+                        scope.$apply(function (){
+                            scope.$eval(attrs.ngEnter);
+                        });
+                        event.preventDefault();
+                    }
+                });
+            };
+        }).
+        // RESOLUTION INPUTS
         controller('resolutionCtrl', ['$scope', function ($scope) {
             $scope.select = function (value) {
                 $scope.$emit('resChange', value);
             };
         }]).
         controller('viewCtrl', ['$scope', function ($scope) {
-            $scope.selected = 'Daily';
             $scope.$on('resChange', function (event, resolution) {
-                $scope.selected = resolution;
+                $scope.resolution = resolution;
             });
 
-             $scope.$on('resChange', function (event) {
-                var old_graphs = $scope.graphs;
-                $scope.graphs = [];
-                old_graphs.map(function (graph) {
-                    this.push({url: graph.url, resolution: $scope.selected });
-                }, $scope.graphs);
-             });
+            $scope.$on('resChange', function (event) {
+                var old_views = $scope.views;
+                $scope.views = [];
+                old_views.map(function (view) {
+                    this.push({url: view.url, resolution: $scope.resolution });
+                }, $scope.views);
+            });
         }]).
         directive('view', ['$http', function ($http) {
             return {
@@ -57,10 +84,7 @@
                     }
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
-                    // DISPLAY VIEWS
-                    $scope.$on('displayView', function (event, view_id) {
-                        debugger;
-                    });
+                    console.log($scope.url);
                 }]
             };
         }]);

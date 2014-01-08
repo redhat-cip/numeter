@@ -11,7 +11,6 @@
                 },
                 templateUrl: 'media/templates/graph.html',
                 link: function ($scope, $element) {
-                    debugger;
                     numeter.get_graph($scope.url, $element[0], $scope.resolution);
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
@@ -77,6 +76,7 @@
              $scope.$on('resChange', function (event) {
                 var old_graphs = $scope.graphs;
                 $scope.graphs = [];
+                    debugger;
                 old_graphs.map(function (graph) {
                     this.push({url: graph.url, resolution: $scope.selected });
                 }, $scope.graphs);
