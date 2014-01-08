@@ -76,7 +76,6 @@
              $scope.$on('resChange', function (event) {
                 var old_graphs = $scope.graphs;
                 $scope.graphs = [];
-                    debugger;
                 old_graphs.map(function (graph) {
                     this.push({url: graph.url, resolution: $scope.selected });
                 }, $scope.graphs);

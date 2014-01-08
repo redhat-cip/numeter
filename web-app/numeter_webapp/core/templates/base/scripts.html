@@ -17,4 +17,9 @@
 <script src="{{ STATIC_URL }}js/my.js"></script>
 
 <!-- Your graph lib -->
-{% for import in request.user.graph_lib.sources %}<script src="{{ import }}"></script>{% endfor %}
+{% for source in request.user.graph_lib.get_js %}
+<script src="{{ source }}"></script>
+{% endfor %}
+{% for source in request.user.graph_lib.get_css %}
+<link href="{{ source }}" rel="stylesheet">
+{% endfor %}

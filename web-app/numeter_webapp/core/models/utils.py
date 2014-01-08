@@ -41,11 +41,6 @@ class MediaList(unicode):
         self.dir = s.MEDIA_ROOT+'graphlib/'
         self.lib = lib
 
-    def _make_html_import(self, full_src):
-        """Create HTML <script> tag."""
-        IMPORT_TEMP = '<script src="%s"></script>'
-        return IMPORT_TEMP % full_src
-
     def _walk(self):
         """
         Walk on chosen files and return a generator of chosen files.
@@ -61,25 +56,14 @@ class MediaList(unicode):
             elif path.exists(sf):
                 yield media_src + '/' + subfile_name
 
-    def sources(self):
-        """Return list of files' URL."""
-        return [ s for s in self._walk() ][::-1]
+    def get_js(self):
+        sources = [ s for s in self._walk() if s.endswith('.js') ]
+        sources.sort()
+        return sources
 
-    def file_names(self):
-        """List files."""
-        return [ path.basename(s) for s in self._walk() ] 
-
-    def get_source_and_name(self):
-        """List files with tuples : (full_dir, dir)."""
-        return [ (s,path.basename(s)) for s in self._walk() ] 
-
-    def htmlize(self):
-        """
-        Return an generator of HTML <script> tag of all of
-        files chosen.
-        Can search files in one subdirectory.
-        """
-        return [ self._make_html_import(s) for s in self._walk() ]
+    def get_css(self):
+        print [ s for s in self._walk() if s.endswith('.css')]
+        return [ s for s in self._walk() if s.endswith('.css')]
 
 
 class MediaField(CharField):

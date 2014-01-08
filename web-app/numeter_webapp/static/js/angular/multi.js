@@ -11,22 +11,27 @@
                         success(function (data) { $scope.multiviews = data.results; });
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
+                    // SET RES
                     $scope.resolution = 'Daily';
-
-                    $http.get('/rest/multiviews/').
-                        success(function (data) { $scope.multiviews = data.results; });
 
                     $scope.displayViews = function (multiview) {
                         angular.forEach(multiview.views, function (view_id) {
                           $scope.$emit('displayView', view_id);
                         });
                     };
+                    // FILTER MVIEWS
                     $scope.$on('qChange', function (event, q) {
                         $http.get('/rest/multiviews/', {params: {q: q}}).
                             success(function (data) {
                                 $scope.multiviews = data.results;
                             });
                         });
+                    // UPDATE RES OF OPENED MVIEW
+                    $scope.$on('resChange', function (event) {
+                        angular.forEach($scope.multiviews, function (multiview) {
+                            if (!multiview.opened) $scope.displayViews(multiview);
+                        });
+                    });
                 }]
             };
         }]).
@@ -51,6 +56,7 @@
         }).
         // RESOLUTION INPUTS
         controller('resolutionCtrl', ['$scope', function ($scope) {
+            $scope.resolution = 'Daily';
             $scope.select = function (value) {
                 $scope.$emit('resChange', value);
             };
@@ -59,31 +65,29 @@
             $scope.$on('resChange', function (event, resolution) {
                 $scope.resolution = resolution;
             });
-
-            $scope.$on('resChange', function (event) {
-                var old_views = $scope.views;
-                $scope.views = [];
-                old_views.map(function (view) {
-                    this.push({url: view.url, resolution: $scope.resolution });
-                }, $scope.views);
-            });
         }]).
         directive('view', ['$http', function ($http) {
             return {
                 scope: {
                     resolution: '=',
                     url: '=',
+                    multiview: '=',
                     id: '=',
                 },
                 templateUrl: '/media/templates/graph.html',
                 link: function ($scope, $element) {
                     if ($scope.id) {
-                        var res = 'Daily';
+                        var res = $scope.resolution;
                         var url = '/rest/views/' + $scope.id + '/extended_data/';
                         numeter.get_graph(url, $element[0], res);
                     }
                 },
                 controller: ['$scope', '$http', function ($scope, $http) {
+                    $scope.$on('displayView', function (event) {
+                        angular.forEach($scope.multiviews, function (multiview) {
+                            if (multiview.opened) $scope.displayViews(multiview);
+                        });
+                    });
                     console.log($scope.url);
                 }]
             };

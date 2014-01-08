@@ -4,7 +4,7 @@
     <a ng-click="displayViews(multiview)" data-toggle="collapse">{{ multiview.text }}</a>
    </div>
    <div class="row-fluid">
-    <div class="span" view data-id="view_id" data-resolution="resolution" ng-repeat="view_id in multiview.views" style="width: 45%; margin-left: 20px; margin-right: 20px"></div>
+    <div class="span" view data-multiview="multiview" data-id="view_id" data-resolution="resolution" ng-repeat="view_id in multiview.views" style="width: 45%; margin-left: 20px; margin-right: 20px"></div>
  </div>
  </div>
 </div>
