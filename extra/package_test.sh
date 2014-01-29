@@ -158,7 +158,7 @@ setup_deb_in_repo(){
 setup_numeter(){
     # Force django backports
     if [ "$DIST" == "wheezy" ]; then
-        apt-get install -y -t wheezy-backports python-django python-mimeparse
+        apt-get install --force-yes -q -y -t wheezy-backports python-django python-mimeparse
     fi
     
     pip install djangorestframework
@@ -166,7 +166,7 @@ setup_numeter(){
     for package in {numeter-poller,numeter-storage,numeter-webapp}; do
         echo "# Setup $package"
     
-        apt-get install -y $package
+        apt-get install --force-yes -q -y $package
     
         if [ "$?" -ne "0" ]; then
           echo "ERROR : Unable to setup package $package"
@@ -331,8 +331,8 @@ check_webapp(){
 
 echo "Setup dependencies ..."
 # Apt depends
-apt-get install -y devscripts reprepro rabbitmq-server curl munin-node
-apt-get install -y python-mysqldb mysql-client apache2 libapache2-mod-wsgi python-setuptools
+apt-get install --force-yes -q -y devscripts reprepro rabbitmq-server curl munin-node
+apt-get install --force-yes -q -y python-mysqldb mysql-client apache2 libapache2-mod-wsgi python-setuptools
 easy_install pip
 
 # gpg key depends
@@ -347,7 +347,7 @@ setup_deb_in_repo
 apt-get update
 
 export DEBIAN_FRONTEND=noninteractive
-apt-get -q -y install mysql-server
+apt-get --force-yes -q -y install mysql-server
 unset DEBIAN_FRONTEND
 
 # Install numeter
