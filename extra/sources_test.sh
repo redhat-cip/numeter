@@ -44,7 +44,7 @@ setup_oslo_messaging(){
     # Depends
     apt-get install -y python-kombu 
     cd /opt && git clone https://github.com/openstack/oslo.messaging
-    cd /opt/oslo.messaging && git checkout 7914181398630cbcbc25543d72871ccf812df517
+    cd /opt/oslo.messaging && git checkout $OSLO_MESSAGING_FREEZE
     cd /opt/oslo.messaging && python setup.py install
 }
 
