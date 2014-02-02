@@ -29,7 +29,7 @@ setup_numeter(){
     pip install djangorestframework
     
     cd /opt && git clone https://github.com/enovance/numeter
-    cd /opt && git checkout $BRANCH
+    cd /opt/numeter && git checkout $BRANCH
 
     for package in {common,poller,storage,web-app}; do
         echo "# Setup $package"
