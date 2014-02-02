@@ -111,11 +111,13 @@ class StorageTestCase(test_base.TestCase):
                     'HOST_ID': {'foo': 'ac'},
                     'WSP_PATH': {'foo': '/opt/numeter/wsp/ac/foo'},
                     'HOSTS': {
-                        'foo': '{"Plugin": "MyInfo", "hostIDHash": "ac",'' "ID": "foo", "HostIDFiltredName": "foo", "Name": "bar"}'
+                        'foo': {"Plugin": "MyInfo", "hostIDHash": "ac",'' "ID": "foo", "HostIDFiltredName": "foo", "Name": "bar"}
                         }
                     }
         result = self.storage._redis_connexion.get_and_flush_hset()
-        self.assertEqual(result, excepted)
+        self.assertEqual(result['HOST_ID'], excepted['HOST_ID'])
+        self.assertEqual(result['WSP_PATH'], excepted['WSP_PATH'])
+        self.assertEqual(json.loads(result['HOSTS']['foo']), excepted['HOSTS']['foo'])
         ## Info with no Infos
         info_json = json.dumps({'Plugin': 'foo'})
         result = self.storage._write_info('foo', info_json)
@@ -124,9 +126,9 @@ class StorageTestCase(test_base.TestCase):
         info_json = json.dumps({'Plugin': 'foo', 'Infos': { 'bar': 'somethings'}})
         result = self.storage._write_info('foo', info_json)
         self.assertTrue(result)
-        excepted = {'INFOS@foo': {u'foo': '{"Infos": {"bar": "somethings"}, "Plugin": "foo"}'}}
+        excepted = {'INFOS@foo': {u'foo': {"Infos": {"bar": "somethings"}, "Plugin": "foo"}}}
         result = self.storage._redis_connexion.get_and_flush_hset()
-        self.assertEqual(result, excepted)
+        self.assertEqual(json.loads(result['INFOS@foo']['foo']), excepted['INFOS@foo']['foo'])
 
     def test_storage_write_data(self):
         # No WSP_PATH in info

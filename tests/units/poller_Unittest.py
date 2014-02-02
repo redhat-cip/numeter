@@ -6,6 +6,7 @@ import sys
 import time
 import socket
 import mock
+import json
 from mock import call
 import logging
 
@@ -124,9 +125,9 @@ class PollerTestCase(test_base.TestCase):
         result = self.poller._sendInfo([{'Plugin':"foo", 'Infos':{} },{'Plugin':"bar"}])
         self.assertEquals(result,['foo', 'bar'])
         calls = [
-                 call(msgContent='{"Infos": {}, "Plugin": "foo"}',
+                 call(msgContent=json.dumps({"Infos": {}, "Plugin": "foo"}),
                       msgType='info', plugin='foo'),
-                 call(msgContent='{"Plugin": "bar"}',
+                 call(msgContent=json.dumps({"Plugin": "bar"}),
                       msgType='info', plugin='bar')
                 ]
         self.poller._sendMsg.assert_has_calls(calls)
@@ -167,8 +168,8 @@ class PollerTestCase(test_base.TestCase):
             # send good value
             faker.poller._sendData([{"TimeStamp": "1328624580", "Values": {"entropy": "146"}, "Plugin": "entropy"},
                                     {"TimeStamp": "1328624760", "Values": {"load": "0.00"}, "Plugin": "load"}])
-            calls = [call(msgContent='{"TimeStamp": "1328624580", "Values": {"entropy": "146"}, "Plugin": "entropy"}', msgType='data', plugin='entropy'),
-                     call(msgContent='{"TimeStamp": "1328624760", "Values": {"load": "0.00"}, "Plugin": "load"}', msgType='data', plugin='load')]
+            calls = [call(msgContent=json.dumps({"TimeStamp": "1328624580", "Values": {"entropy": "146"}, "Plugin": "entropy"}), msgType='data', plugin='entropy'),
+                     call(msgContent=json.dumps({"TimeStamp": "1328624760", "Values": {"load": "0.00"}, "Plugin": "load"}), msgType='data', plugin='load')]
             faker.poller._store_and_forward_sendMsg.assert_has_calls(calls)
         # set Empty value
         with fake_message(self.poller) as faker:
