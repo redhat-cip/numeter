@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 export DIST=${1:-"wheezy"}
 export ARCH=${2:-"amd64"}
 

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # Config
 OSLO_MESSAGING_FREEZE=7914181398630cbcbc25543d72871ccf812df517
 DIST=wheezy
@@ -27,7 +29,7 @@ setup_numeter(){
     fi
 
     pip install djangorestframework
-    
+
     cd /opt && git clone https://github.com/enovance/numeter
     cd /opt/numeter && git checkout $BRANCH
 
@@ -44,7 +46,7 @@ setup_numeter(){
 
 setup_oslo_messaging(){
     # Depends
-    apt-get install -y python-kombu 
+    apt-get install -y python-kombu
     cd /opt && git clone https://github.com/openstack/oslo.messaging
     cd /opt/oslo.messaging && git checkout $OSLO_MESSAGING_FREEZE
     cd /opt/oslo.messaging && python setup.py install
@@ -91,9 +93,9 @@ EOF
     cat > /tmp/user.json <<EOF
 [
 {
-  "pk": 1, 
-  "model": "core.user", 
-  "fields": {                                                                                                                                                                                     
+  "pk": 1,
+  "model": "core.user",
+  "fields": {
     "username": "admin",
     "graph_lib": "dygraph",
     "is_active": true,

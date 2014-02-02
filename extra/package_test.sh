@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # Config
 REPO_PATH=/opt/apt
 DIST=wheezy
@@ -19,7 +21,7 @@ Origin: Numeter
 Label: eNovance
 Suite: oldstable
 Codename: numeter-squeeze
-Version: 6.0 
+Version: 6.0
 Architectures: i386 amd64 source
 Components: main contrib non-free
 Description: Numeter package test
@@ -29,7 +31,7 @@ Origin: Numeter
 Label: eNovance
 Suite: stable
 Codename: numeter-wheezy
-Version: 7.0 
+Version: 7.0
 Architectures: i386 amd64 source
 Components: main contrib non-free
 Description: Numeter package test
@@ -48,7 +50,7 @@ setup_gpg_key(){
     # Extra
     REPO_KEY_PUB="-----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v1.4.14 (GNU/Linux)
-    
+
     mQENBFJtHqkBCACyFUkv9PKNScVJ/iye4hKabidmEo72JUxG1j5ntewATfqydd96
     IY+9EfJrqYsiuoxQ/iG4chFKrVWqdaR3VHk1GoyyMNEWa2u/7ZillDqchSeQbFrh
     6RWqUT3mwMflsvlJMQ1x6xgIMoEif7sY5+udInqVfm5R1OF4rLPcehmrsYnkHg5F
@@ -76,10 +78,10 @@ setup_gpg_key(){
     wwo1QIoH6xq5CeGe4Drqtp+muQ==
     =M2Cu
     -----END PGP PUBLIC KEY BLOCK-----"
-    
+
     REPO_KEY_PRV="-----BEGIN PGP PRIVATE KEY BLOCK-----
     Version: GnuPG v1.4.14 (GNU/Linux)
-    
+
     lQOYBFJtHqkBCACyFUkv9PKNScVJ/iye4hKabidmEo72JUxG1j5ntewATfqydd96
     IY+9EfJrqYsiuoxQ/iG4chFKrVWqdaR3VHk1GoyyMNEWa2u/7ZillDqchSeQbFrh
     6RWqUT3mwMflsvlJMQ1x6xgIMoEif7sY5+udInqVfm5R1OF4rLPcehmrsYnkHg5F
@@ -160,14 +162,14 @@ setup_numeter(){
     if [ "$DIST" == "wheezy" ]; then
         apt-get install --force-yes -q -y -t wheezy-backports python-django python-mimeparse
     fi
-    
+
     pip install djangorestframework
 
     for package in {numeter-poller,numeter-storage,numeter-webapp}; do
         echo "# Setup $package"
-    
+
         apt-get install --force-yes -q -y $package
-    
+
         if [ "$?" -ne "0" ]; then
           echo "ERROR : Unable to setup package $package"
           exit 2
@@ -216,9 +218,9 @@ EOF
     cat > /tmp/user.json <<EOF
 [
 {
-  "pk": 1, 
-  "model": "core.user", 
-  "fields": {                                                                                                                                                                                     
+  "pk": 1,
+  "model": "core.user",
+  "fields": {
     "username": "admin",
     "graph_lib": "dygraph",
     "is_active": true,
