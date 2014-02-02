@@ -3,6 +3,7 @@
 # Config
 OSLO_MESSAGING_FREEZE=7914181398630cbcbc25543d72871ccf812df517
 DIST=wheezy
+BRANCH=${BRANCH:-"master"}
 
 # Force --go just in case :p
 if ! [ "$1" == "--go" ];then
@@ -28,6 +29,7 @@ setup_numeter(){
     pip install djangorestframework
     
     cd /opt && git clone https://github.com/enovance/numeter
+    cd /opt && git checkout $BRANCH
 
     for package in {common,poller,storage,web-app}; do
         echo "# Setup $package"
