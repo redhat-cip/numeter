@@ -8,17 +8,13 @@ from djangular.forms.angular_model import NgModelFormMixin
 from core.models import Group
 
 
-class Group_Form(NgModelFormMixin, forms.ModelForm):
+class Group_Form(forms.ModelForm):
     """Simple Group Form"""
     class Meta:
         model = Group
         widgets = {
-            'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
+          'name': forms.TextInput({'placeholder':_('Name'), 'class':'span', 'ng-model': 'tabIndex.form.name'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'tabIndex.form'
-        super(Group_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
         """Return url matching with creation or updating."""

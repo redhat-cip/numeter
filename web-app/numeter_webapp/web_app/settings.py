@@ -75,7 +75,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Django required extensions
     'rest_framework',
-    'djangular',
     # Numeter Apps
     'core',
     'multiviews',

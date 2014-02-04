@@ -4,24 +4,19 @@ Host Form module.
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from djangular.forms.angular_model import NgModelFormMixin
 from core.models import Host
 
 
-class Host_Form(NgModelFormMixin, forms.ModelForm):
+class Host_Form(forms.ModelForm):
     """Basic Host ModelForm."""
     class Meta:
         model = Host
         widgets = {
-            'name': forms.TextInput({'placeholder':_("Host's name"), 'class':'span'}),
-            'hostid': forms.TextInput({'placeholder':'ID', 'class':'span'}),
-            'storage': forms.Select({'class':'span'}),
-            'group': forms.Select({'class':'span'}),
+            'name': forms.TextInput({'placeholder':_("Host's name"), 'class':'span', 'ng-model': 'tabIndex.form.name'}),
+            'hostid': forms.TextInput({'placeholder':'ID', 'class':'span', 'ng-model': 'tabIndex.form.hostid'}),
+            'storage': forms.Select({'class':'span', 'ng-model': 'tabIndex.form.storage'}),
+            'group': forms.Select({'class':'span', 'ng-model': 'tabIndex.form.group'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'tabIndex.form'
-        super(Host_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
         """Return url matching with creation or updating."""

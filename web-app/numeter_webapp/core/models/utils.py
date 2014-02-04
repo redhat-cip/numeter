@@ -42,9 +42,7 @@ class MediaList(unicode):
         self.lib = lib
 
     def _walk(self):
-        """
-        Walk on chosen files and return a generator of chosen files.
-        """
+        """Walk on chosen files and return a generator of chosen files."""
         # TODO: Make it with os.walk()
         full_src = self.dir + self.lib
         media_src = s.MEDIA_URL+'graphlib/' + self.lib
@@ -57,12 +55,13 @@ class MediaList(unicode):
                 yield media_src + '/' + subfile_name
 
     def get_js(self):
+        """Return a list of JavaScript files."""
         sources = [ s for s in self._walk() if s.endswith('.js') ]
         sources.sort()
         return sources
 
     def get_css(self):
-        print [ s for s in self._walk() if s.endswith('.css')]
+        """Return a list of CSS files."""
         return [ s for s in self._walk() if s.endswith('.css')]
 
 
@@ -71,7 +70,6 @@ class MediaField(CharField):
     Custom Field which saves chosen from MEDIA_ROOT.
     Choices are media files and stored as splited string.
     """
-    
     description = "A choice of graphic plugin library."
     __metaclass__ = SubfieldBase
 

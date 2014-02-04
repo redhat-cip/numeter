@@ -4,14 +4,13 @@ Skeleton Form module.
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from djangular.forms.angular_model import NgModelFormMixin
 
 from core.models import Host
 from configuration.forms.base import Base_ModelForm
 from multiviews.models import Skeleton, View
 
 
-class Skeleton_Form(NgModelFormMixin, forms.ModelForm):
+class Skeleton_Form(forms.ModelForm):
     """
     `NgModelFormMixin` & ``ModelForm`` for ``Skeleton``.
     It uses also provide ``get_submit_url`` and ``get_submit_method``.
@@ -19,15 +18,11 @@ class Skeleton_Form(NgModelFormMixin, forms.ModelForm):
     class Meta:
         model = Skeleton
         widgets = {
-          'name': forms.TextInput({'placeholder':_('Name'),'class':'span'}),
-          'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'2'}),
-          'plugin_pattern': forms.TextInput({'placeholder':_("Filter by plugin with regex ('.*' for all)"),'class':'span'}),
-          'source_pattern': forms.TextInput({'placeholder':_('Filter by source with regex'),'class':'span'}),
+          'name': forms.TextInput({'placeholder':_('Name'),'class':'span', 'ng-model': 'tabIndex.form.name'}),
+          'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'2', 'ng-model': 'tabIndex.form.comment'}),
+          'plugin_pattern': forms.TextInput({'placeholder':_("Filter by plugin with regex ('.*' for all)"),'class':'span', 'ng-model': 'tabIndex.form.plugin_pattern'}),
+          'source_pattern': forms.TextInput({'placeholder':_('Filter by source with regex'),'class':'span', 'ng-model': 'tabIndex.form.source_pattern'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        kwargs['scope_prefix'] = 'tabIndex.form'
-        super(Skeleton_Form, self).__init__(*args, **kwargs)
 
     def get_submit_url(self):
         """Return url matching with creation or updating."""
@@ -66,7 +61,7 @@ class Skeleton_To_View_Form(forms.ModelForm):
 
     class Meta:
         model = View
-        exclude = ('warning','critical','sources')
+        exclude = ('warning', 'critical', 'sources')
         widgets = {
           'name': forms.TextInput({'placeholder':_('New view name'),'class':'span'}),
           'comment': forms.Textarea({'placeholder':_('Write a comment about'),'class':'span','rows':'2'}),
@@ -87,7 +82,6 @@ class Skeleton_To_View_Form(forms.ModelForm):
         # Creating
         elif not self.instance.id and self.data:
             self.fields['hosts'].queryset = Host.objects.user_filter(self.user)
-
 
     def save(self):
         hosts = Host.objects.filter(pk__in=self.data.getlist('hosts'))
