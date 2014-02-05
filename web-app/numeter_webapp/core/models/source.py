@@ -96,7 +96,7 @@ class Data_Source(models.Model):
         """
         Return info for the instancied source.
         """
-        for k, v in self.plugin.get_info().items():
+        for k, v in self.plugin.get_info()['Infos'].items():
             if k == self.name:
                 return v
 
@@ -111,27 +111,33 @@ class Data_Source(models.Model):
         data['ds'] = self.name
         return self.plugin.host.get_data(**data)
 
+    def _create_source_info(self):
+        info = self.get_info()
+        return {
+            'Describ': self.comment,
+            'Plugin': self.plugin.name,
+            'Title': self.name,
+            'Infos': {self.name: info},
+        }
+
     def get_extended_data(self, res='Daily'):
         """
         Make extended data for graphic library.
         Set more options than simple storage API like time.
         """
         datas = []
-        source_info = self.get_info()
+        source_info = self._create_source_info()
+
         response_data = {
-            'labels': ['Date'],
-            'colors': [],
+            'labels': ['Date', self.name],
+            'colors': source_info['Infos'][self.name].get('colour', ("#%s" % md5(self.name).hexdigest()[:6])),
             'name': self.name,
             'datas': [],
-            'infos': {self.name: source_info}
+            'infos': source_info,
         }
         # Get all data
         source_data = self.get_data(res=res)
-        response_data['labels'].append(self.name)
         datas.append(source_data['DATAS'][self.name])
-        # Use color key or set unique
-        color = "#%s" % source_info.get('colour', md5(self.name).hexdigest()[:6])
-        response_data['colors'].append(color)
         # Walk on date for mix datas
         cur_date = source_data['TS_start']
         step = source_data['TS_step']
@@ -139,7 +145,3 @@ class Data_Source(models.Model):
             response_data['datas'].append((cur_date,) + v)
             cur_date += step
         return response_data
-
-    def make_HTML_color(self):
-        """Make a unique HTML color from source, plugin and host's names."""
-        return md5(self.name+self.plugin.name+self.plugin.host.name).hexdigest()[:6]

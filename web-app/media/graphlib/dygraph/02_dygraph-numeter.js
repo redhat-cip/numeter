@@ -16,24 +16,23 @@
       }
       // Make series
       var source_name = data.labels[1];
-      var series = {};
       // Stacked or not
       var is_stacked = false;
-      for ( var i in data.infos ) {
-        if ( data.infos[i].draw !== undefined ) {
-          if ( data.infos[i].draw.indexOf('STACK') != -1 ) is_stacked = true;
+      $.each(data.infos.Infos, function(k, v) {
+        if ( v.draw !== undefined ) {
+          if ( v.draw.indexOf('STACK') != -1 ) is_stacked = true;
         }
-      }
+      });
       // Make series
-      var series = {}
-      for ( var source in data.infos ) {
+      var series = {};
+      $.each(data.infos.Infos, function(source, v) {
         series[source] = {};
-        if ( data.infos[source].draw !== undefined ) {
-          if ( data.infos[source].draw.indexOf("AREA") != -1 ) { 
-              series[source]['fillGraph'] = true;
+        if ( v.draw !== undefined ) {
+          if ( v.draw.indexOf("AREA") != -1 ) { 
+              series[source].fillGraph = true;
           }
         }
-      }
+      });
 
       g = new Dygraph(
         into,
@@ -67,31 +66,31 @@
       }
       // Stacked or not
       var is_stacked = false;
-      for ( var i in data.infos ) {
-        if ( data.infos[i].draw !== undefined ) {
-          if ( data.infos[i].draw.indexOf('STACK') != -1 ) is_stacked = true;
+      $.each(data.infos.Infos, function(k, v) {
+        if ( v.draw !== undefined ) {
+          if ( v.draw.indexOf('STACK') != -1 ) is_stacked = true;
         }
-      }
+      });
       // Make series
-      var series = {}
-      for ( var source in data.infos ) {
-        series[source] = {}
-        if ( data.infos[source].draw !== undefined ) {
-          if ( data.infos[source].draw.indexOf("AREA") != -1 ) { 
-              series[source]['fillGraph'] = true;
+      var series = {};
+      $.each(data.infos.Infos, function(source, v) {
+        series[source] = {};
+        if ( v.draw !== undefined ) {
+          if ( v.draw.indexOf("AREA") != -1 ) { 
+              series[source].fillGraph = true;
           }
         }
-      }
+      });
       series.warning = {
         fillGraph: false,
         strokeWidth: 1.0,
         highlightCircleSize: 0.0
-      }
+      };
       series.critical = {
         fillGraph: false,
         strokeWidth: 1.0,
         highlightCircleSize: 0.0
-      }
+      };
 
       g = new Dygraph(
         graph_container[0],

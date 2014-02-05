@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
-from rest_framework.decorators import action
+from rest_framework.decorators import action, link
 
 from core.models import Host
 from rest.permissions import IsOwnerOrForbidden, HostPermission
@@ -47,3 +47,10 @@ class HostViewSet(ModelListDelete, ModelViewSet):
         else:
             return Response(serializer.errors,
                         status=HTTP_400_BAD_REQUEST)
+
+    @link()
+    def plugin_extended_data(self, request, pk=None):
+        host = self.get_object()
+        plugin = request.GET['plugin']
+        res = request.GET.get('res', 'Daily')
+        return Response(host.get_extended_data(plugin=plugin, res=res))

@@ -3,6 +3,9 @@ Source ViewSet module.
 """
 
 from rest_framework.viewsets import ModelViewSet 
+from rest_framework.decorators import link
+from rest_framework.response import Response
+
 from core.models import Data_Source as Source
 from rest.permissions import IsOwnerOrForbidden
 from rest.serializers import SourceSerializer
@@ -31,3 +34,8 @@ class SourceViewSet(ModelListDelete, ModelViewSet):
             ids = loads(ids)
             objects = objects.filter(id__in=ids) if ids else objects
         return objects
+
+    @link()
+    def extended_data(self, request, pk=None):
+        source = self.get_object()
+        return Response(source.get_extended_data(res=request.GET.get('res', 'Daily')))

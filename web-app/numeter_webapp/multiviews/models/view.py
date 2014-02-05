@@ -115,8 +115,22 @@ class View(models.Model):
             datas.append(source.get_data())
         return zip(*datas)
 
+    def _create_view_info(self):
+        view_info = {
+            'Describ': self.comment,
+            'Plugin': self.name,
+            'Title': self.name,
+            'Infos': {},
+        }
+        for s in self.sources.all():
+            source_info = s.get_info()
+            source_info['label'] = s.__unicode__()
+            view_info['Infos'][s.__unicode__()] = source_info
+        return view_info
+
     def get_extended_data(self, res='Daily'):
         datas = []
+        view_info = self._create_view_info()
         response_data = {
             'labels':['Date'],
             'colors':[],
@@ -126,7 +140,7 @@ class View(models.Model):
             'id':self.id,
             'source_ids':[],
             'events':[],
-            'infos':{},
+            'infos': view_info,
         }
         # Get All host and Events
         #host_pk = self.sources.all().values_list('plugin__host')
@@ -145,13 +159,12 @@ class View(models.Model):
         for s in self.sources.all():
             source_data = s.get_data(res=res) # Get data
             source_info = s.get_info()
+            # Make unique name
             unique_name = '%s %s' % (s.plugin.host.name, s.name)
-            # Add infos
-            response_data['infos'][unique_name] = source_info
             # Add to labels
             response_data['labels'].append(unique_name)
             # Add color
-            color = "#%s" % source_info.get('colour', md5(unique_name).hexdigest()[:6])
+            color = "#%s" % view_info['Infos'].get('colour', md5(unique_name).hexdigest()[:6])
             if color in response_data['colors']:
                 color = '#' + md5(unique_name).hexdigest()[:6]
             response_data['colors'].append(color)

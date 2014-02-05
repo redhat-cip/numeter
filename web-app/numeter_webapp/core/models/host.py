@@ -137,16 +137,17 @@ class Host(models.Model):
 
     def get_plugin_info(self, plugin):
         """Get sources infos."""
-        for p in  self.get_plugins():
+        for p in self.get_plugins():
             if p['Plugin'] == plugin:
-                return p['Infos']
+                return p
         
     def get_extended_data(self, **data):
         data['hostid'] = self.hostid
-        # Get data sources name
+        # Get sources name
         data['ds'] = ','.join(self.get_plugin_data_sources(data['plugin']))
+        # Get data
         r = self.get_data(**data)
-        # Dict sent in AJAX
+        # Create JSON Response
         r_data = {
             'labels': ['Date'],
             'name': data['plugin'].lower(),
@@ -154,7 +155,7 @@ class Host(models.Model):
             'infos': self.get_plugin_info(data['plugin'])
         }
         r_data['labels'].extend(self.get_plugin_data_sources(data['plugin']))
-
+        # Compute time & data in same list of list
         step = timedelta(seconds=r.get('TS_step', 60))
         cur_date = datetime.fromtimestamp(r['TS_start'])
         for v in zip(*r['DATAS'].values()):
