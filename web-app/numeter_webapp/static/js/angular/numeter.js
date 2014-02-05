@@ -9,7 +9,7 @@
                     resolution: '=',
                     url: '=',
                 },
-                templateUrl: 'media/templates/graph.html',
+                templateUrl: '/media/templates/graph.html',
                 link: function ($scope, $element) {
                     numeter.get_graph($scope.url, $element[0], $scope.resolution);
                 },
@@ -70,7 +70,7 @@
             $scope.$on('displayGraph', function (event, host_id, plugins) {
                 $scope.graphs = [];
                 plugins.map(function (plugin) {          
-                  this.push({url: "/get/graph/" + host_id + "/" + plugin.Plugin, resolution: $scope.selected });
+                  this.push({url: "/rest/hosts/" + host_id + "/plugin_extended_data/?plugin=" + plugin.Plugin, resolution: $scope.selected });
                 }, $scope.graphs);
              });
              $scope.$on('resChange', function (event) {

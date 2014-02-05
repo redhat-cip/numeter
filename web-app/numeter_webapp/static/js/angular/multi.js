@@ -78,7 +78,7 @@
                 link: function ($scope, $element) {
                     if ($scope.id) {
                         var res = $scope.resolution;
-                        var url = '/rest/views/' + $scope.id + '/extended_data/';
+                        var url = '/rest/views/' + $scope.id + '/extended_data/?';
                         numeter.get_graph(url, $element[0], res);
                     }
                 },

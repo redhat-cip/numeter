@@ -51,7 +51,7 @@
 
   // GET ADVANCED GRAPH
   numeter.get_graph = function (url, into, res) {
-    $.getJSON(url + '?res=' + res, function (data) {
+    $.getJSON(url + '&res=' + res, function (data) {
       // Compute width
       var graph_div = $(into);
       var graph_container = graph_div.find('.graph-container');
@@ -133,7 +133,7 @@
 
   // UPDATE GRAPH
   numeter.update_graph = function (graph, res) {
-    $.getJSON(graph.url + '?res=' + res, function (data) {
+    $.getJSON(graph.url + '&res=' + res, function (data) {
       var i, length = data.datas.length;
       // MAKE DATES
       for (i = 0; i < length; i = i + 1) {
