@@ -104,8 +104,8 @@ class User(AbstractBaseUser):
 
     def get_update_url(self):
         if not self.id:
-            return self.get_add_url()
-        return reverse('user update', args=[str(self.id)])
+            return reverse('user add')
+        return reverse('user-detail', args=[str(self.id)])
 
     def get_update_password_url(self):
         return reverse('profile password', args=[str(self.id)])

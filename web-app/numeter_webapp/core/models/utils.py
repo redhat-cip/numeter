@@ -54,6 +54,10 @@ class MediaList(unicode):
             elif path.exists(sf):
                 yield media_src + '/' + subfile_name
 
+    def get_files(self):
+        """Return a list of all files."""
+        return [ s for s in self._walk() ]
+
     def get_js(self):
         """Return a list of JavaScript files."""
         sources = [ s for s in self._walk() if s.endswith('.js') ]
