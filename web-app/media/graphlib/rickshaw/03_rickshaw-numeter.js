@@ -7,6 +7,7 @@
   numeter.preview_request = null;
 
   renderer = {
+    "LINE": "line",
     "LINE2": "line",
     "AREASTACK": "stack",
     "STACK": "stack",
@@ -33,8 +34,7 @@
     ];
 
     infos = rawData.infos;
-    for (elt in infos) {
-      if (infos.hasOwnProperty(elt)) {
+    $.each(infos.Infos, function(source, v) {
         color = palette.shift() ||
           [
             Math.floor(Math.random()*255),
@@ -42,13 +42,12 @@
             Math.floor(Math.random()*255)
           ];
         series.push({
-          name: infos[elt].label,
-          renderer: renderer[infos[elt].draw] || "line",
+          name: v.label,
+          renderer: renderer[v.draw] || "line",
           data: [],
           color: 'rgba(' + color.join() + ', ' + opacity + ')'
         });
-      }
-    }
+    });
     datas = series.map(function(elt){
       return elt.data;
     });
@@ -187,10 +186,9 @@
 
 
   // GET SIMPLE GRAPH
-  numeter.get_simple_graph = function (url, into_id) {
+  numeter.get_simple_graph = function (url, element) {
     numeter.preview_request = $.getJSON(url, function (data) {
-      var element, chart, xaxis, yaxis;
-      element = document.getElementById(into_id);
+      var chart, xaxis, yaxis;
       chart = new Rickshaw.Graph({
         element: element,
         width: parseInt(window.getComputedStyle(element).width),
@@ -224,7 +222,7 @@
 
   // GET ADVANCED GRAPH
   numeter.get_graph = function (url, into, res) {
-    $.getJSON(url + '?res=' + res, function (data) {
+    $.getJSON(url + '&res=' + res, function (data) {
       var g, series, result;
       result = parseData(data);
       g = createRickshaw(into, result.series);
@@ -236,7 +234,7 @@
 
   // UPDATE GRAPH
   numeter.update_graph = function (graph, res) {
-    $.getJSON(graph.url + '?res=' + res, function (rawData) {
+    $.getJSON(graph.url + '&res=' + res, function (rawData) {
       fillDatas(rawData.datas, graph.datas);
       graph.update();
     });
