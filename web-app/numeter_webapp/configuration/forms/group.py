@@ -4,7 +4,6 @@ Group Form module.
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from djangular.forms.angular_model import NgModelFormMixin
 from core.models import Group
 
 
