@@ -320,9 +320,17 @@ check_webapp(){
         echo ERROR webapp wild_storage info by Nginx
         exit 2
     fi
+    if [ -z "$(curl 'http://127.0.0.1/login' | grep '<title>Numeter - Authentification</title>')" ];then
+        echo ERROR webapp login page by Nginx
+        exit 2
+    fi
     # By Apache
     if [ -z "$(curl 'http://127.0.0.1:81/wide-storage/list?host=poller' -u admin:admin | grep load)" ];then
         echo ERROR webapp wild_storage info by Apache
+        exit 2
+    fi
+    if [ -z "$(curl 'http://127.0.0.1:81/login' | grep '<title>Numeter - Authentification</title>')" ];then
+        echo ERROR webapp login page by Apache
         exit 2
     fi
 }
