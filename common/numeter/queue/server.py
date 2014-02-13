@@ -10,17 +10,14 @@ class OverrideMessageHandlingServer(messaging.server.MessageHandlingServer):
     def start(self):
         if self._executor is not None:
             return
-
         try:
-            listener = self.transport._listen(self.target)
+            listener = self.dispatcher._listen(self.transport)
+            for target in self.dispatcher._target.targets:
+                listener.conn.declare_topic_consumer(target.topic,
+                                       listener,
+                                       queue_name=self.dispatcher._target.topic)
         except driver_base.TransportDriverError as ex:
             raise ServerListenError(self.target, ex)
-
-        for target in self.target.targets:
-            listener.conn.declare_topic_consumer(target.topic,
-                                                 listener,
-                                                 ack_on_error=False,
-                                                 queue_name=self.target.topic)
 
         self._executor = self._executor_cls(self.conf, listener,
                                             self.dispatcher)
@@ -40,9 +37,8 @@ class Targets(messaging.Target):
 
 def _get_rpc_server(transport, target, endpoints,
                    executor='blocking', serializer=None):
-    dispatcher = messaging.rpc.dispatcher.RPCDispatcher(endpoints, serializer)
-    return OverrideMessageHandlingServer(transport, target,
-                                            dispatcher, executor)
+    dispatcher = messaging.rpc.dispatcher.RPCDispatcher(target, endpoints, serializer)
+    return OverrideMessageHandlingServer(transport, dispatcher, executor)
 
 
 def get_rpc_server(topics, server, hosts, endpoints, password='guest'):
