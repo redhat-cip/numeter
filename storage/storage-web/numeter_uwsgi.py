@@ -181,7 +181,7 @@ def data():
                 if os.path.isfile(str(path+'/'+plugin+'/'+ds+'.wsp')):
                    result_wsp = whisper.fetch(str(path+'/'+plugin+'/'+ds+'.wsp'), time.time() - startPoint, time.time())
                 else:
-                    return "{}"
+                    continue
 
                 # Get info
                 TS_START = result_wsp[0][0]
