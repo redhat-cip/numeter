@@ -51,7 +51,7 @@ class MuninConnection(object):
             sock.sendall("fetch %s\n" % key)
             ret = {}
             for line in self._iterline():
-                match = re.match("^([^\.]+)\.value", line)
+                match = re.match("^(.+)\.value", line)
                 if match is None: continue
                 key = match.group(1)
                 match = re.match("^[^ ]+\s+([0-9\.U-]+)$", line)
