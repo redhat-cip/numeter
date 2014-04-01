@@ -149,18 +149,10 @@ class Host(models.Model):
         r = self.get_data(**data)
         # Create JSON Response
         r_data = {
-            'labels': ['Date'],
             'name': data['plugin'].lower(),
-            'datas': [],
+            'datas': r,
             'infos': self.get_plugin_info(data['plugin'])
         }
-        r_data['labels'].extend(self.get_plugin_data_sources(data['plugin']))
-        # Compute time & data in same list of list
-        step = timedelta(seconds=r.get('TS_step', 60))
-        cur_date = datetime.fromtimestamp(r['TS_start'])
-        for v in zip(*r['DATAS'].values()):
-            r_data['datas'].append( (mktime(cur_date.timetuple()),) + v )
-            cur_date += step
         return r_data
 
     def create_plugins(self, plugin_names=[], commit=True):

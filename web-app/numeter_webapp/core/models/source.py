@@ -128,20 +128,13 @@ class Data_Source(models.Model):
         datas = []
         source_info = self._create_source_info()
 
-        response_data = {
-            'labels': ['Date', self.name],
-            'colors': source_info['Infos'][self.name].get('colour', ("#%s" % md5(self.name).hexdigest()[:6])),
-            'name': self.name,
-            'datas': [],
-            'infos': source_info,
-        }
         # Get all data
         source_data = self.get_data(res=res)
-        datas.append(source_data['DATAS'][self.name])
-        # Walk on date for mix datas
-        cur_date = source_data['TS_start']
-        step = source_data['TS_step']
-        for v in zip(*datas):
-            response_data['datas'].append((cur_date,) + v)
-            cur_date += step
+
+        response_data = {
+            'colors': source_info['Infos'][self.name].get('colour', ("#%s" % md5(self.name).hexdigest()[:6])),
+            'name': self.name,
+            'datas': source_data,
+            'infos': source_info,
+        }
         return response_data
