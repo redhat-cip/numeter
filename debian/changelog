@@ -1,3 +1,9 @@
+numeter (0.2.3.14) numeter-squeeze; urgency=medium
+
+  * bugfix
+
+ -- Gael Lambert <gael.lambert@enovance.com>  Mon, 02 Jun 2014 13:45:09 +0200
+
 numeter (0.2.3.13) numeter-squeeze; urgency=low
 
   * Remove tastypie
