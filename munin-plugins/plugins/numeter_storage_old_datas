@@ -139,7 +139,7 @@ if __name__ == '__main__':
         if ARGV[1] == 'config':
             print_config()
         elif ARGV[1] == 'autoconf':
-            if not IMPORT_REDIS and IMPORT_STORAGE:
+            if not (IMPORT_REDIS and IMPORT_STORAGE):
                 print 'no (failed import redis or storage module)'
                 sys.exit(0)
             print 'yes'

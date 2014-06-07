@@ -114,8 +114,8 @@ if __name__ == '__main__':
             if IMPORT_STORAGE:
                 print "storage"
         elif ARGV[1] == 'autoconf':
-            if not IMPORT_REDIS and IMPORT_STORAGE:
-                print 'no (failed import redis and collector or storage module)'
+            if not (IMPORT_REDIS and IMPORT_STORAGE):
+                print 'no (failed import redis or storage module)'
                 sys.exit(0)
             print 'yes'
 
