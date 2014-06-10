@@ -136,7 +136,7 @@
           $("#edit-source-tab a").attr('data-url', url);
           // ADD PREVIEW
           numeter.print_loading_gif('#source-preview', '10%', '10%');
-          numeter.get_simple_graph(data_url, 'source-preview');
+          numeter.get_simple_graph(data_url, '#source-preview');
         },
       });
     }
@@ -177,7 +177,7 @@
         $(into).html(data);
         // ADD PREVIEW
         numeter.print_loading_gif('#view-preview', '10%', '10%');
-        numeter.get_simple_graph(data_url, 'view-preview');
+        numeter.get_simple_graph(data_url, '#view-preview');
       },
     });
   });
@@ -214,7 +214,7 @@
               // ADD PREVIEW
               numeter.print_loading_gif('#view-preview', '10%', '10%');
               data_url = data_url || '/multiviews/view/'+view_id+'/data';
-              numeter.get_simple_graph(data_url, 'view-preview');
+              numeter.get_simple_graph(data_url, '#view-preview');
             },
           });
         } 

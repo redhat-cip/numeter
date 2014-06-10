@@ -21,10 +21,11 @@ div[id="body"] {
     cursor: pointer;  
 }
 
+/* use in multiview config menu for graph preview */
 .popover {
-    height: 200px;
-    width: 400px;
+    min-width: 500px;
     max-width: 1000px;
+    max-height: 800px;
 }
 
 .accordion-group .accordion-heading {

@@ -50,9 +50,8 @@
           }
         }
       });
-
       var g = new Dygraph(
-        into,
+        $(into)[0],
         formated_datas,
         { labels: formated_labels,
           colors: data.colors,

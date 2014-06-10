@@ -26,6 +26,7 @@
     print_loading_gif: function (into, heigth, width) {
       if (heigth === 'undefined') { heigth = '100%'; }
       if (width === 'undefined') { width = '100%'; }
+
       $(into).append([
         '<div class="loader" style="text-align:center;">',
         '<img src="/static/img/ajax-loader.gif" height="',

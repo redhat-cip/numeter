@@ -2,8 +2,8 @@
 (function (angular) {
     'use strict';
 
-    angular.module('numeter', ['ui.bootstrap']).
-        directive('multiviews', ['$http', function ($http) {
+    angular.module('numeter', ['ui.bootstrap'])
+        .directive('multiviews', ['$http', function ($http) {
             return {
                 templateUrl: '/media/templates/multiview.html',
                 link: function ($scope, $element) {
@@ -55,16 +55,14 @@
             };
         }).
         // RESOLUTION INPUTS
-        controller('resolutionCtrl', ['$scope', function ($scope) {
-            $scope.resolution = 'Daily';
-            $scope.select = function (value) {
-                $scope.$emit('resChange', value);
-            };
-        }]).
         controller('viewCtrl', ['$scope', function ($scope) {
-            $scope.$on('resChange', function (event, resolution) {
+            $scope.resolution = 'Daily';
+            $scope.select = function (resolution) {
                 $scope.resolution = resolution;
-            });
+                var old_multiviews = angular.copy($scope.multiviews);
+                $scope.multiviews.length = 0;
+                $scope.multiviews = old_multiviews;
+            };
         }]).
         directive('view', ['$http', function ($http) {
             return {
@@ -74,7 +72,7 @@
                     multiview: '=',
                     id: '=',
                 },
-                templateUrl: '/media/templates/graph.html',
+                templateUrl: '/media/templates/multiview_graph.html',
                 link: function ($scope, $element) {
                     if ($scope.id) {
                         var res = $scope.resolution;

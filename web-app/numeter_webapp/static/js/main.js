@@ -61,12 +61,13 @@ $(document).ready(function () {
 
     $(pop).popover('show');
     numeter.print_loading_gif('#preview-graph', 150, 150);
-    numeter.get_simple_graph(url, 'preview-graph');
+    numeter.get_simple_graph(url, '#preview-graph');
   });
   $(document).on('mouseout', "a:regex(class, preview-(source|view))", function () {
     $(this).popover('hide');
     $(this).popover('destroy');
-    numeter.preview_request.abort();
+    // Disable abort causing graph not display in multiview source edit and view edit
+    //numeter.preview_request.abort();
   });
 
   // MOVE OPTIONS BETWEEN SELECT INPUT
@@ -150,7 +151,7 @@ $(document).ready(function () {
   
     pop.popover('show');
     numeter.print_loading_gif('#preview-graph', 150, 150);
-    numeter.get_simple_graph(url, 'preview-graph');
+    numeter.get_simple_graph(url, '#preview-graph');
   });
   $(document).on('mouseout', "a:regex(class, preview-(source|view))", function() {
     $(this).popover('hide');

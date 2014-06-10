@@ -1,9 +1,14 @@
 /*global window, angular, console*/
 (function (angular) {
     'use strict';
-    angular.module('numeter', ['ui.bootstrap', 'ui.select2']).
+    angular.module('numeter', ['ui.bootstrap', 'ui.select2', 'ngCookies'])
+	.run( function run( $http, $cookies ){
+	    // For CSRF token compatibility with Django
+	    $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+	    $http.defaults.headers.common['X-CSRFToken'] = $cookies.csrftoken;
+	})
         // MAINTABS
-        directive('maintab', function () {
+        .directive('maintab', function () {
             return {
                 restrict: 'A',
                 replace: false,

@@ -115,87 +115,55 @@ class View(models.Model):
             datas.append(source.get_data())
         return zip(*datas)
 
-    def _create_view_info(self):
+    def _create_view_infos_and_datas(self, res='Daily'):
         view_info = {
             'Describ': self.comment,
             'Plugin': self.name,
             'Title': self.name,
             'Infos': {},
         }
-        for s in self.sources.all():
-            source_info = s.get_info()
-            source_info['label'] = s.__unicode__()
-            view_info['Infos'][s.__unicode__()] = source_info
-        return view_info
-
-    def get_extended_data(self, res='Daily'):
-        datas = []
-        view_info = self._create_view_info()
-        response_data = {
-            'labels':['Date'],
-            'colors':[],
-            'name':self.name,
-            'datas':[],
-            'type':'view',
-            'id':self.id,
-            'source_ids':[],
-            'events':[],
-            'infos': view_info,
-        }
-        # Get All host and Events
-        #host_pk = self.sources.all().values_list('plugin__host')
-        #events = Event.objects.filter(hosts__pk__in=hosts_pk)
-        #response_data['event'] = events.values('name','date','comment')
-        # Set metadata
-
-        # Set labels for warning lines
-        if self.warning is not None:
-            response_data['labels'].append('warning')
-            response_data['colors'].append("#febf01")
-        if self.critical is not None:
-            response_data['labels'].append('critical')
-            response_data['colors'].append("#FF3434")
+        all_colors = []
+        source_ids = []
+        view_datas = {'DATAS':{}}
         ## Walk on sources and set data
         for s in self.sources.all():
-            source_data = s.get_data(res=res) # Get data
+            source_ids.append(s.id)
+            ## Make unique name for label and id
+            #unique_name = '%s %s' % (s.plugin.host.name, s.name)
             source_info = s.get_info()
-            # Make unique name
-            unique_name = '%s %s' % (s.plugin.host.name, s.name)
-            # Add to labels
-            response_data['labels'].append(unique_name)
-            # Add color
-            color = "#%s" % view_info['Infos'].get('colour', md5(unique_name).hexdigest()[:6])
-            if color in response_data['colors']:
-                color = '#' + md5(unique_name).hexdigest()[:6]
-            response_data['colors'].append(color)
-            # Add name
-            datas.append(source_data['DATAS'][s.name])
-            response_data['source_ids'].append(s.id)
-        # Get Events
-        # events = self.get_events()
-        # Skip if there's no data
-        if not datas:
-            return response_data
-        # Add warning and critical line
-        if self.critical is not None:
-            critical_data = [self.critical] * len(datas[0])
-            datas.insert(0, critical_data)
-        if self.warning is not None:
-            warning_data = [self.warning] * len(datas[0])
-            datas.insert(0, warning_data)
-        # Append empty datas if there's no
-        if not 'source_data' in locals():
-            response_data['datas'].append( (int(now().strftime('%s'))*1000,) )
-        # Add timestamp to data
-        else:
-            cur_date = source_data['TS_start']
-            step = source_data['TS_step']
-            # Walk on data and add date by step
-            for v in zip(*datas):
-                response_data['datas'].append((cur_date,) + v)
-                # Add events with step_date
-                #for e in events.in_step(cur_date, res).values('comment','short_text'):
-                #    e['date'] = cur_date
-                #    response_data['events'].append(e)
-                cur_date += step
+            source_info['label'] = s.__unicode__()
+            source_info['id'] = s.__unicode__()
+            # Get color
+            color = source_info.get('color')
+            # Make color uniq
+            if color is not None:
+                if color in all_colors :
+                    color = '#' + md5(source_info['id']).hexdigest()[:6]
+                    source_info['color'] = color
+                all_colors.append(color)
+            view_info['Infos'][s.__unicode__()] = source_info
+            # Get datas
+            source_data = s.get_data(res=res)
+            view_datas['DATAS'][s.__unicode__()] = source_data['DATAS'][s.name]
+            # Get first start Timestamp and step
+            if view_datas.get('TS_start') is None:
+                view_datas['TS_start'] = source_data['TS_start']
+            if view_datas.get('TS_step') is None:
+                view_datas['TS_step'] = source_data['TS_step']
+        return source_ids, view_info, view_datas
+
+
+    def get_extended_data(self, res='Daily'):
+        (source_ids, view_infos, view_datas) = self._create_view_infos_and_datas(res=res)
+        response_data = {
+            'name': self.name,
+            'datas': view_datas,
+            'type': 'view',
+            'id': self.id,
+            'source_ids': source_ids,
+            'infos': view_infos,
+            'warning': self.warning,
+            'critical': self.critical,
+        }
+
         return response_data
