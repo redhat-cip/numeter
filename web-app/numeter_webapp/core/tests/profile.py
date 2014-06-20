@@ -1,5 +1,8 @@
+"""
+Profile modal tests module.
+"""
+
 from django.test import TestCase
-from django.test.client import Client
 from django.core.urlresolvers import reverse
 from core.models import User
 from core.tests.utils import set_users, set_clients
@@ -7,25 +10,16 @@ from core.tests.utils import set_users, set_clients
 
 class Profile_Test(TestCase):
     """Tests user's profile modal."""
-    fixtures = ['test_users.json']
-
     @set_users()
     @set_clients()
     def setUp(self):
         pass
 
     def test_index(self):
-        """Simple get."""
+        """Get modal."""
         url = reverse('profile')
         r = self.admin_client.get(url)
         self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-
-    def test_change_username(self):
-        """Change username and test if changed."""
-        url = self.admin.get_update_url()
-        r = self.admin_client.post(url, {'username': 'toto', 'graph_lib': 'dygraph'})
-        self.assertEqual(r.status_code, 200, "Bad response code (%i)." % r.status_code)
-        self.assertTrue(User.objects.filter(username='toto').exists(), "New username not foundable.")
 
     def test_change_own_password(self):
         """Test if a user try to change his password."""
@@ -54,4 +48,3 @@ class Profile_Test(TestCase):
         r = self.user_client.post(url, POST)
         self.assertEqual(r.status_code, 404, "Bad response code (%i)." % r.status_code)
         self.assertFalse(self.user.check_password('root'), "Third user can change password.")
-

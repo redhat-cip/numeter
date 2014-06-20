@@ -3,6 +3,9 @@ Base urls file.
 """
 from django.conf import settings as s
 from django.conf.urls import patterns, include, url
+from django.contrib import admin
+import os
+ADMIN_DIR = os.path.dirname(os.path.abspath(admin.__file__))
 
 
 urlpatterns = patterns('',
@@ -18,8 +21,8 @@ urlpatterns = patterns('',
     url(r'^get/graph/(?P<host_id>\d+)/(?P<plugin>.+)$', 'core.views.hosttree.get_data', name='plugin'),
     # Hosttree
     url(r'^hosttree/group/(?P<group_id>\d+)?$', 'core.views.hosttree.group', name= 'hosttree group'),
-    url(r'^hosttree/host/(?P<host_id>\d+)$', 'core.views.hosttree.host', name='hosttree host'),
-    url(r'^hosttree/category/(?P<host_id>\d+)$', 'core.views.hosttree.category', name='hosttree category'),
+    url(r'^hosttree/host/(?P<host_id>[\w\d-]+)$', 'core.views.hosttree.host', name='hosttree host'),
+    url(r'^hosttree/category/(?P<host_id>[\w\d-]+)$', 'core.views.hosttree.category', name='hosttree category'),
     # Includes
     url(r'^multiviews/', include('multiviews.urls')),
     url(r'^configuration/', include('configuration.urls')),
@@ -27,6 +30,7 @@ urlpatterns = patterns('',
     url(r'^wide-storage/', include('wide_storage.urls')),
     # Files
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': s.STATIC_ROOT}),
+    url(r'^admin/js/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ADMIN_DIR + '/static/admin/js/'}),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': s.MEDIA_ROOT}),
 )
 

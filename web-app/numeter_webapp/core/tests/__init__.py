@@ -4,10 +4,11 @@ core tests module. Allow to launch a single TestCase or all.
 
 from login import Login_Test
 from perms import Perms_Test
+from user import User_Manager_user_filter_Test, User_Test
 from storage import Storage_Test, Storage_Manager_Test, Storage_Error_Test
-from host import Host_Test
-from plugin import Plugin_Manager_Test, Plugin_Test
-from source import Source_Manager_Test, Source_Test
+from host import Host_Test, Host_Manager_user_filter_Test
+from plugin import Plugin_Manager_Test, Plugin_Test, Plugin_Manager_user_filter_Test
+from source import Source_Manager_Test, Source_Test, Source_Manager_user_filter_Test
 from browsing import Index_Test
 from commands.group import Cmd_Group_List_Test, Cmd_Group_Add_Test, Cmd_Group_Del_Test, Cmd_Group_Mod_Test, Cmd_Group_Hosts_Test
 from commands.user import Cmd_User_List_Test, Cmd_User_Add_Test, Cmd_User_Del_Test, Cmd_User_Mod_Test
@@ -38,6 +39,7 @@ def suite():
         'core.tests.browsing',
         'core.tests.profile',
         'core.tests.hosttree',
+        'core.tests.user',
         'core.tests.storage',
         'core.tests.host',
         'core.tests.plugin',

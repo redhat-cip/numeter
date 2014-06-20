@@ -1,5 +1,5 @@
 {% load i18n %}
-<form class="skeleton-form ajax-form" action="{{ Skeleton_Form.instance.get_update_url }}" method="POST" data-id="{{ Skeleton_Form.instance.id }}">
+ <form ng-controller="MyFormCtrl" ng-submit="submit()">
  {% csrf_token %}
  <fieldset>
   <div class="span6">
@@ -21,11 +21,11 @@
 
   <div class="span6">
    {% if Skeleton_Form.instance.id %}
-    <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
+    <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
     <button id="btn-use-skeleton" class="btn btn-primary" data-url="{{ Skeleton_Form.instance.get_use_url }}">{% trans "Create a View" %}</button>
-    <button id="btn-delete-skeleton" class="btn btn-danger" data-into=".messages" data-id="{{ Skeleton_Form.instance.id }}" data-url="{{ Skeleton_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+    <input ng-click="delete_instance()" type="button" class="btn btn-danger" value="{% trans "Delete" %}">
    {% else %}
-    <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
+    <input type="submit" class="btn btn-primary" value="{% trans "Add" %}">
    {% endif %}
   </div> 
  

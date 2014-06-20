@@ -20,7 +20,7 @@
 
 <div class="modal-footer">
  {% if plugins %}
-  <button id="btn-create-plugins" class="btn btn-primary" data-url="{% url "plugin create" %}" data-dismiss="modal">{% trans 'Add' %}</button>
+  <button class="btn btn-primary ajax-btn" data-name="plugins" data-data="#chosen-plugins" data-method="POST" data-url="{{ host.get_create_plugins_url }}" data-dismiss="modal">{% trans 'Add' %}</button>
  {% endif %}
  <button class="btn" data-dismiss="modal">{% trans 'Close' %}</button>
 </div>

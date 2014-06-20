@@ -1,5 +1,5 @@
 {% load i18n %}
-<form class="multiview-form ajax-form" action="{{ Multiview_Form.instance.get_update_url }}" method="POST" data-id="{{ Multiview_Form.instance.id }}">
+ <form ng-controller="MyFormCtrl" ng-submit="submit()">
  {% csrf_token %}
  <fieldset>
   <div class="span6">
@@ -10,35 +10,22 @@
    </div> 
 
    <div class="control-group condensed">
-    <label for="id_sources" class="control-label">{{ Multiview_Form.views.label }}</label>
-    <div class="controls">
-     <div class="row-fluid">
-      <div class="span5">
-       {{ Multiview_Form.search_view }}
-       {{ Multiview_Form.available_views }}
-      </div>
-      <div class="span2" style="text-align: center;">
-       <button class="btn btn-mini move-option" data-from="#id_available_views" data-to=".span5 #id_views"><i class="icon-chevron-right"></i></button>
-       <br>
-       <br>
-       <button class="btn btn-mini move-option" data-from=".span5 #id_views" data-to="#id_available_views"><i class="icon-chevron-left"></i></button>
-      </div>
-      <div class="span5">{{ Multiview_Form.views }}</div>
-     </div>
-    </div>
+    <label for="id_views" class="control-label">{{ Multiview_Form.views.label }}</label>
+    <div class="controls">{{ Multiview_Form.views }}</div>
    </div> 
 
    <div class="control-group condensed">
+    <label for="id_comment" class="control-label">{{ Multiview_Form.comment.label }}</label>
     <div class="controls">{{ Multiview_Form.comment }}</div>
    </div> 
   </div> 
 
   <div class="span6">
    {% if Multiview_Form.instance.id %}
-    <input class="btn btn-primary" type="submit" value="{% trans "Update" %}">
-    <button id="btn-delete-multiview" class="btn btn-danger" data-into=".messages" data-id="{{ Multiview_Form.instance.id }}" data-url="{{ Multiview_Form.instance.get_delete_url }}">{% trans "Delete" %}</button>
+    <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
+    <input ng-click="delete_instance()" type="button" class="btn btn-danger" value="{% trans "Delete" %}">
    {% else %}
-    <input class="btn btn-primary" type="submit" value="{% trans "Add" %}">
+    <input type="submit" class="btn btn-primary" value="{% trans "Add" %}">
    {% endif %}
   </div> 
  

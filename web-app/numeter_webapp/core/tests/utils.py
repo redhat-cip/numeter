@@ -1,3 +1,7 @@
+"""
+Tests common objects module.
+"""
+
 from __future__ import print_function
 
 from django.test import LiveServerTestCase
@@ -127,6 +131,10 @@ def set_users():
             self.user = User.objects.get(pk=2)
             self.user2 = User.objects.get(pk=3)
             self.group = Group.objects.get(pk=1)
+            # Add host to user group
+            if hasattr(self, 'host'):
+                self.host.group = self.group
+                self.host.save()
             # Create false graphlib
             self.TEST_DIR = settings.MEDIA_ROOT + 'graphlib/'
             self.FILE1 = self.TEST_DIR + 'file1.js'

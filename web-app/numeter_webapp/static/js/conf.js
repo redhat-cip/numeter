@@ -73,11 +73,12 @@ $(document).on('click', '.ajax-tab-add', function (e) {
 // SUBMIT FORM
 $(document).on('submit', '.ajax-form', function(e) {
   var form = $(this);
+  var method = form.attr('method');
   var url = $(this).attr('action');
   var cur_tab_container = $(this).parentsUntil('.tab-pane').parent()
   var cur_tab = $(this).parentsUntil('.tab-pane').parent().attr('id')
   $.ajax({
-    type: 'POST', url: url, async: true,
+    type: method, url: url, async: true,
     data: $(form).serialize(),
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
@@ -108,26 +109,12 @@ $(document).on('click', 'input[name="delete"]', function() {
   var url = $(this).attr('data-url');
   var next_tab = $(this).attr('data-next-tab');
   $.ajax({
-    type: 'POST', url: url, async: true,
+    type: 'DELETE', url: url, async: true,
     data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
     error: function(data, status, xhr) { error_modal() },
     success: function(data, status, xhr) {
       $('.messages').append(data);
       $(next_tab).tab('show');
-    },
-  });
-  return false;
-});
-
-// BTN CREATE HOST
-$(document).on('click', 'input[name="create-hosts"]', function() {
-  var url = $(this).attr('data-url');
-  $.ajax({
-    type: 'POST', url: url, async: true,
-    data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
     },
   });
   return false;
@@ -177,22 +164,6 @@ $(document).on('click', '#btn-choose-host', function() {
     },
   });
 });
-// BUTTON CREATE PLUGIN
-$(document).on('click', '#btn-create-plugins', function() {
-  var url = $(this).attr('data-url');
-  $.ajax({
-    type: 'POST', url: url, async: true,
-    data: {
-      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'plugins': $('#chosen-plugins').val(),
-      'host_id': $('select[name="host_id"]').val(),
-    },
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
-    },
-  });
-});
 
 // BUTTON CHOOSE SOURCE
 $(document).on('click', '#btn-choose-sources', function() {
@@ -203,21 +174,6 @@ $(document).on('click', '#btn-choose-sources', function() {
     success: function(data, status, xhr) {
       $('#myModal').html(data);
       $('#myModal').modal('show');
-    },
-  });
-});
-// BUTTON CREATE SOURCE
-$(document).on('click', '#btn-create-sources', function() {
-  var url = $(this).attr('data-url');
-  $.ajax({
-    type: 'POST', url: url, async: true,
-    data: { 
-      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'sources': $('#chosen-sources').val()
-    },
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      $('.messages').append(data);
     },
   });
 });
@@ -249,36 +205,6 @@ $(document).on('click', '#btn-use-skeleton_2', function() {
   });
 });
 
-// USE BULK ACTION
-$(document).on('click', '.bulk-action', function() {
-  var action_element_id = $(this).attr('data-action-element');
-  var checkboxes_class = $(this).attr('data-checkboxes');
-  var action = $(action_element_id).val();
-  var url = $(action_element_id+' option:selected').attr('data-url');
-  var method = $(action_element_id+' option:selected').attr('data-method') || 'POST';
-  var ids = [];
-  $(checkboxes_class+':checked').each( function() {
-    ids.push( $(this).attr('name') );
-  });
-  $.ajax({
-    type: method, url: url, async: true,
-    data: { 
-      'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-      'ids': ids
-    },
-    error: function(data, status, xhr) { error_modal() },
-    success: function(data, status, xhr) {
-      if ( action == 'delete' ) {
-        $('.messages').append(data['html']);
-        $(checkboxes_class+':checked').parent().parent().hide(250);
-        $(checkboxes_class+':checked').parent().parent().remove();
-      } else if ( action == 'add-to-view' ) {
-        $('#myModal').html(data);
-        $('#myModal').modal('show');
-      }
-    },
-  });
-});
 
 // BTN ADD SOURCE TO VIEW
 $(document).on('click', '#btn-add-sources-to-view', function() {

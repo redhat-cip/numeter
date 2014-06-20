@@ -1,6 +1,7 @@
-/*global window, document, jQuery*/
-(function (window, $) {
+/*global window, document, jQuery, angular*/
+(function (window, $, angular) {
   'use strict';
+
   window.numeter = {
     graphs: [],
     load_requests: [],
@@ -17,6 +18,7 @@
     },
     error_modal: function (err) {
       var my_modal = $('#myModal');
+      console.log(err)
       my_modal.modal('show');
       my_modal.html('<center><h4>Connection error !</h4></center>');
       my_modal.append('<div class="span"><pre>' + err + '</pre></div>');
@@ -24,6 +26,7 @@
     print_loading_gif: function (into, heigth, width) {
       if (heigth === 'undefined') { heigth = '100%'; }
       if (width === 'undefined') { width = '100%'; }
+
       $(into).append([
         '<div class="loader" style="text-align:center;">',
         '<img src="/static/img/ajax-loader.gif" height="',
@@ -45,4 +48,4 @@
       }
     }
   };
-}(window, jQuery));
+}(window, jQuery, angular));

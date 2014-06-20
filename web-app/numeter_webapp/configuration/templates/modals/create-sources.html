@@ -20,7 +20,7 @@
 
 <div class="modal-footer">
  {% if sources %}
- <button id="btn-create-sources" class="btn btn-primary" data-url="{% url "plugin create sources" plugin.id %}" data-dismiss="modal">{% trans 'Add' %}</button>
+ <button class="btn btn-primary ajax-btn" data-name="sources" data-method="POST" data-data="#chosen-sources" data-url="{{ plugin.get_rest_create_sources_url }}" data-dismiss="modal">{% trans 'Add' %}</button>
  {% endif %}
  <button class="btn" data-dismiss="modal">{% trans 'Close' %}</button>
 </div>

@@ -1,10 +1,10 @@
 {% load i18n %}
 <div class="row-fluid"> <!-- storage form --!>
- <form id="storage-form" class="ajax-form" action="{{ Storage_Form.instance.get_update_url }}" method="POST">
+ <form ng-controller="MyFormCtrl" ng-submit="submit()">
   {% csrf_token %}
-  <h4 align="center">{{ storage }}</h4>
 
   <div class="span5 fields" style="margin-left: 50px;">
+   <h4 align="center">{{ storage }}</h4>
    <dl>
     {% for field in Storage_Form %}
     <dt>{{ field.label }}:</dt>
@@ -17,17 +17,14 @@
    <div class="row-fluid">
     <p>
      {% if Storage_Form.instance.id %}
-     <input type="submit" name="update" class="btn btn-primary" value="{% trans "Update" %}">
-     <input type="button" name="delete" class="btn btn-danger" value="{% trans "Delete" %}" data-url="{{ Storage_Form.instance.get_delete_url }}" data-next-tab="#storage-list-tab">
-     <input type="button" name="cancel" class="btn" style="display:none;" value="{% trans "Cancel" %}">
-     <input type="submit" name="create-hosts" class="btn btn-primary" value="{% trans "Create hosts" %}" data-url="{{ Storage_Form.instance.get_create_hosts_url }}">
+      <input type="submit" class="btn btn-primary" value="{% trans "Update" %}">
+      <input ng-click="delete_instance()" type="button" class="btn btn-danger" value="{% trans "Delete" %}">
+      <input type="button" name="create-hosts" data-method="POST" class="btn btn-primary ajax-btn" value="{% trans "Create hosts" %}" data-url="{{ Storage_Form.instance.get_create_hosts_url }}">
      {% else %}
-     <input type="submit" name="update" class="btn btn-primary" value="{% trans "Add" %}">
+      <button class="btn btn-primary">{% trans "Add" %}</button>
      {% endif %}
     </p>
    </div>
   </div>
-
-
  </form>
 </div>

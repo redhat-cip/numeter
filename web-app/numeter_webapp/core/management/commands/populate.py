@@ -30,6 +30,7 @@ class Command(BaseCommand):
             storages = Storage.objects.filter(id__in=ids)
         else:
             self.stdout.write("Select a storage by id or 'all' for alm")
+            self.print_help('populate', '')
             return
             
         for s in storages:

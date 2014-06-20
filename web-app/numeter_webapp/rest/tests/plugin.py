@@ -149,7 +149,14 @@ class Plugin_PATCH_Test(APILiveServerTestCase):
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Forbidden access to simple user."""
+        """Granted access to simple user."""
+        r = self.user_client.patch(self.DETAIL_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user_with_foreign_plugin(self):
+        """Forbidden access to simple user with a foreign plugin."""
+        self.plugin = Plugin.objects.exclude(host__group=self.group)[0]
+        self.DETAIL_URL = self.plugin.get_rest_detail_url()
         r = self.user_client.patch(self.DETAIL_URL)
         self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)
 
@@ -190,3 +197,32 @@ class Plugin_POST_create_sources_Test(APILiveServerTestCase):
         """Create all plugin's sources if no one is specified."""
         r = self.admin_client.post(self.SOURCE_URL)
         self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
+
+
+class Plugin_DELETE_list_Test(APILiveServerTestCase):
+    """
+    Test DELETE list. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/plugins/ -H 'Accept: application/json'``
+    """
+    @set_storage(extras=['host', 'plugin'])
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.delete(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'id': [self.plugin.id]}
+        r = self.admin_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'id': [self.plugin.id]}
+        r = self.user_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 404, 'Bad response (%i)' % r.status_code)

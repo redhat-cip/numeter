@@ -8,8 +8,12 @@ from core.models import Storage, Host
 
 class HostSerializer(serializers.ModelSerializer):
     """Simple host serializer."""
+    storage = serializers.PrimaryKeyRelatedField()
+    group = serializers.PrimaryKeyRelatedField()
+    url = serializers.HyperlinkedIdentityField(view_name='host-detail')
     class Meta:
         model = Host
+        fields = ('id', 'name', 'hostid', 'group', 'storage', 'url')
 
 
 class HostUserSerializer(serializers.ModelSerializer):

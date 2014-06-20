@@ -1,0 +1,41 @@
+<div ng-controller="InputFilterCtrl">
+ <input ng-enter="updateInstances(q)" ng-model="q" class="span12" type="text" placeholder="Filter view by name or sources' name">
+</div>
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>Name</th>
+    <th>Sources</th>
+    <th>Users</th>
+    <th>Groups</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr ng-repeat="view in views.results">
+    <td><input class="view-checkbox" type="checkbox" name="{{ view.id }}"></td>
+    <td><a ng-click="createTab(view, 'view')">{{ view.name }}</a></td>
+    <td><a ng-repeat="source in view.sources">{{ source.name }}</a></td>
+    <td><a ng-repeat="user in view.users">{{ user.username }}</a></td>
+    <td><a ng-repeat="group in view.groups">{{ group.name }}</a></td>
+   </tr>
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   <li ng-class="{'disabled': views.previous == null}" class="previous"><a ng-click="changePage(views.previous, 'views')">&larr; Previous</a></li>
+   <li ng-class="{'disabled': views.next == null}" class="next"><a ng-click="changePage(views.next, 'views')">&rarr; Next</a></li>
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>Action</h5>
+ <div ng-controller="ListActionCtrl" class="input-append">
+  <select ng-model="selected_list_action" ng-options="action.name for action in list_actions"></select>
+  <button class="btn" type="button" ng-click="launch_action()">Apply</button>
+ </div>
+</div>

@@ -37,9 +37,9 @@
  <h5>{% trans "Action:" %}</h5>
  <div class="input-append">
   <select id="plugins-action">
-   <option data-url="{% url "plugin bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+   <option data-method="DELETE" data-url="{% url "plugin-list" %}">{% trans "Delete" %}</option>
   </select>
-  <button class="btn bulk-action" type="button" data-action-element="#plugins-action" data-checkboxes=".plugin-checkbox">{% trans "Apply" %}</button>
+  <button class="btn bulk-action" type="button" data-select="#plugins-action" data-checkbox-class=".plugin-checkbox">{% trans "Apply" %}</button>
  </div>
 
  <hr>

@@ -3,22 +3,39 @@
 
 {% block header %}
 <script>var csrf = "{{ csrf_token }}";</script>
+<script src="{{ STATIC_URL }}js/angular/multi.js"></script>
+
 
 {% endblock %}
 
 {% block body %}
+<div ng-controller="viewCtrl">
  <div class="navbar navbar-static">
   <div class="navbar-inner">
    <div style="width: auto;" class="container">
-    <ul id="resolution-pills" class="nav nav-pills nav">
-     <li data-value="Daily" class="active"><a >{% trans "Daily" %}</a></li>
-     <li data-value="Weekly"><a >{% trans "Weekly" %}</a></li>
-     <li data-value="Monthly"><a >{% trans "Monthly" %}</a></li>
-     <li data-value="Yearly"><a >{% trans "Yearly" %}</a></li>
+
+{% verbatim %}
+      <ul id="resolution-pills" class="nav nav-pills">
+        <li ng-click="select('Daily')"   ng-class="{active: selected == 'Daily'}">
+          <a href="#">Daily</a>
+        </li>
+        <li ng-click="select('Weekly')"  ng-class="{active: selected == 'Weekly'}">
+          <a href="#">Weekly</a>
+        </li>
+        <li ng-click="select('Monthly')" ng-class="{active: selected == 'Monthly'}">
+          <a href="#">Monthly</a>
+        </li>
+        <li ng-click="select('Yearly')"  ng-class="{active: selected == 'Yearly'}">
+          <a href="#">Yearly</a>
+        </li>
+{% endverbatim %}
+
      <li class="divider-vertical"></li>
-     <form id="main-q" method="GET" action="{% url "multiviews search" %}" data-into="#multiviews-list" class="navbar-search">
-      <input type="text" placeholder="{% trans "Search a multiview or a view" %}" class="search-query span2" style="width: 400px">
-     </form>
+
+     <div ng-controller="InputFilterCtrl" class="navbar-search">
+      <input ng-enter="updateInstances(q)" ng-model="q" type="text" placeholder="{% trans "Search a multiview or a view" %}" class="search-query span2" style="width: 400px">
+     </div>
+
     </ul>
     <ul class="nav pull-right">
      <li class="divider-vertical"></li>
@@ -34,11 +51,8 @@
   <div id="multiview-index" class="span12 well" style="display: none;"></div>
  </div>
 
- <div id="accordion" class="accordion">
-  <div class="accordion-group" id="multiviews-list">
-   {% include "multiviews-list.html" %}
-  </div>
- </div>
+ <div data-resolution="multiviews.resolution" multiviews></div>
+</div>
 {% endblock %}
 
 {% block scripts %}

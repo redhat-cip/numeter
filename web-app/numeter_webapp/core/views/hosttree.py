@@ -25,20 +25,25 @@ def host(request, host_id=None):
     H = get_object_or_404(Host.objects.filter(id=host_id))
     if not has_perm(request.user, Host, host_id):
         raise Http404
-    return render(request, 'hosttree/host.html', {
-        'host': H.get_categories(),
-    }) 
+    # return render(request, 'hosttree/host.html', {
+    #     'host': H.get_categories(),
+    # }) 
+
+    return HttpResponse(jdumps(H.get_categories()), content_type="application/json")
 
 
 @login_required()
 def category(request, host_id):
     """Get list of plugins of a category."""
-    H = get_object_or_404(Host.objects.filter(id=host_id))
+    # H = get_object_or_404(Host.objects.filter(id=host_id))
+    H = [{'plugin': plugin['Plugin'], 'title': plugin['Title']} for plugin in get_object_or_404(Host.objects.filter(id=host_id)).get_plugins_by_category(request.GET['category'])]
     if not has_perm(request.user, Host, host_id):
         raise Http404
-    return render(request, 'hosttree/category.html', {
-        'category': H.get_plugins_by_category(request.GET['category']),
-    }) 
+    # return render(request, 'hosttree/category.html', {
+    #     'category': H.get_plugins_by_category(request.GET['category']),
+    # }) 
+    return HttpResponse(jdumps(H), content_type="application/json")
+
 
 
 @login_required()

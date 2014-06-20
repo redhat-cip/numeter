@@ -87,11 +87,12 @@ if __name__ == '__main__':
           scripts = ['extras/numeter-webapp'],
           data_files = [
               ('/etc/numeter', ['numeter_webapp.cfg']),
-              ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-combined.js']),
-              ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/dygraph-numeter.js']),
-              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/d3.js']),
-              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/rickshaw-combined.js']),
-              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/rickshaw-numeter.js']),
+              ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/01_dygraph-combined.js']),
+              ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/02_dygraph-numeter.js']),
+              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/01_d3.js']),
+              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/02_rickshaw-combined.js']),
+              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/03_rickshaw-numeter.js']),
+              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/rickshaw.css']),
               ('/var/log/numeter/webapp', ''),
           ],
           classifiers=[

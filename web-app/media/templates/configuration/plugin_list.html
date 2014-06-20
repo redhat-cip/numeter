@@ -1,0 +1,37 @@
+<div ng-controller="InputFilterCtrl">
+ <input ng-enter="updateInstances(q)" ng-model="q" class="span12" type="text" placeholder="Filter plugin by name or host's name">
+</div>
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>Name</th>
+    <th>Host</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr ng-repeat="plugin in plugins.results">
+    <td><input class="plugin-checkbox" type="checkbox" name="{{ plugin.id }}"></td>
+    <td><a ng-click="createTab(plugin, 'plugin')">{{ plugin.name }}</a></td>
+    <td><a ng-click="createTab(plugin.host, 'host')">{{ plugin.host }}</a></td>
+   </tr>
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   <li ng-class="{'disabled': plugins.previous == null}" class="previous"><a ng-click="changePage(plugins.previous, 'plugins')">&larr; Previous</a></li>
+   <li ng-class="{'disabled': plugins.next == null}" class="next"><a ng-click="changePage(plugins.next, 'plugins')">&rarr; Next</a></li>
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>Action</h5>
+ <div ng-controller="ListActionCtrl" class="input-append">
+  <select ng-model="selected_list_action" ng-options="action.name for action in list_actions"></select>
+  <button class="btn" type="button" ng-click="launch_action()">Apply</button>
+ </div>
+</div>

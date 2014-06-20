@@ -122,7 +122,7 @@ class Storage(models.Model):
 
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
     address = models.CharField(_('address'), max_length=200)
-    port = models.IntegerField(_('port'), blank=True, null=True,default=80)
+    port = models.IntegerField(_('port'), blank=True, null=True, default=80)
     url_prefix = models.CharField(_('URL prefix'), max_length=100, default='', blank=True, help_text=_('Start point of API'))
     protocol = models.CharField(_('protocol'), max_length=5, default='http', choices=HTTP_PROTOCOLS)
     login = models.CharField(_('login'), max_length=100, blank=True, null=True, help_text=('Used for HTTP authentification'))
@@ -202,7 +202,13 @@ class Storage(models.Model):
         return reverse('storage delete', args=[str(self.id)])
 
     def get_create_hosts_url(self):
-        return reverse('storage create hosts', args=[str(self.id)])
+        return reverse('storage-create-hosts', args=[str(self.id)])
+
+    def get_rest_list_url(self):
+       return reverse('storage-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('storage-detail', args=[self.id]) 
 
     def get_external_url(self):
         """Return the storage's API url."""

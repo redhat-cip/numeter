@@ -1,10 +1,45 @@
+"""
+Host model tests module.
+"""
+
 from django.test import LiveServerTestCase
-from core.models import Host, Plugin
-from core.tests.utils import set_storage
+from core.models import Host, Plugin, Group
+from core.tests.utils import set_storage, set_users
+
+
+class Host_Manager_user_filter_Test(LiveServerTestCase):
+    """ Test filter host by his user attribute.  """
+    @set_storage(extras=['host'])
+    @set_users()
+    def setUp(self):
+        pass
+
+    def test_grant_to_super_user(self):
+        """Superuser access to every hosts."""
+        hosts = Host.objects.user_filter(self.admin)
+        self.assertEqual(hosts.count(), Host.objects.count(), "Superuser can't access to all hosts")
+
+    def test_grant_super_simple_with_his_host(self):
+        """User access to his group host."""
+        hosts = Host.objects.user_filter(self.user)
+        self.assertEqual(hosts.count(), 1, "User can't access to his host")
+
+    def test_forbid_to_simple_user_with_not_owned_host(self):
+        """User doesn't access to a not owned host."""
+        hosts = Host.objects.user_filter(self.user2)
+        self.assertEqual(hosts.count(), 0, "User can access to a not owned host.")
+
+    def test_forbid_to_simple_user_with_foreign_host(self):
+        """User doesn't access to a host owned by other group."""
+        new_group = Group.objects.create(name='NEW GROUP')
+        self.host.group = new_group
+        self.host.save()
+        hosts = Host.objects.user_filter(self.user2)
+        self.assertEqual(hosts.count(), 0, "User can access to a user owned by other group.")
 
 
 class Host_Test(LiveServerTestCase):
-
+    """Host model tests."""
     @set_storage(extras=['host'])
     def setUp(self):
         if not Host.objects.exists():

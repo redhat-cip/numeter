@@ -86,11 +86,17 @@ class Data_Source(models.Model):
     def get_list_url(self):
         return reverse('source list')
 
+    def get_rest_list_url(self):
+       return reverse('data_source-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('data_source-detail', args=[self.id]) 
+
     def get_info(self):
         """
         Return info for the instancied source.
         """
-        for k,v in self.plugin.get_info().items():
+        for k, v in self.plugin.get_info()['Infos'].items():
             if k == self.name:
                 return v
 
@@ -105,33 +111,30 @@ class Data_Source(models.Model):
         data['ds'] = self.name
         return self.plugin.host.get_data(**data)
 
+    def _create_source_info(self):
+        info = self.get_info()
+        return {
+            'Describ': self.comment,
+            'Plugin': self.plugin.name,
+            'Title': self.name,
+            'Infos': {self.name: info},
+        }
+
     def get_extended_data(self, res='Daily'):
         """
         Make extended data for graphic library.
         Set more options than simple storage API like time.
         """
         datas = []
-        data = {'res':res}
-        r_data = {
-            'labels': ['Date'],
-            'colors': [],
-            'name': self.name,
-            'datas': [],
-            'infos': {self.name:self.get_info()}
-        }
-        # Get all data
-        r = self.get_data(**data)
-        r_data['labels'].append(self.name)
-        datas.append(r['DATAS'][self.name])
-        r_data['colors'].append("#%s" % md5(self.name).hexdigest()[:6])
-        # Walk on date for mix datas
-        cur_date = r['TS_start']
-        step = r['TS_step']
-        for v in zip(*datas):
-            r_data['datas'].append((cur_date,) + v)
-            cur_date += step
-        return r_data
+        source_info = self._create_source_info()
 
-    def make_HTML_color(self):
-        """Make a unique HTML color from source, plugin and host's names."""
-        return md5(self.name+self.plugin.name+self.plugin.host.name).hexdigest()[:6]
+        # Get all data
+        source_data = self.get_data(res=res)
+
+        response_data = {
+            'colors': source_info['Infos'][self.name].get('colour', ("#%s" % md5(self.name).hexdigest()[:6])),
+            'name': self.name,
+            'datas': source_data,
+            'infos': source_info,
+        }
+        return response_data

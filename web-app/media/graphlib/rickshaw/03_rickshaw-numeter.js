@@ -7,6 +7,7 @@
   numeter.preview_request = null;
 
   renderer = {
+    "LINE": "line",
     "LINE2": "line",
     "AREASTACK": "stack",
     "STACK": "stack",
@@ -33,8 +34,7 @@
     ];
 
     infos = rawData.infos;
-    for (elt in infos) {
-      if (infos.hasOwnProperty(elt)) {
+    $.each(infos.Infos, function(source, v) {
         color = palette.shift() ||
           [
             Math.floor(Math.random()*255),
@@ -42,13 +42,12 @@
             Math.floor(Math.random()*255)
           ];
         series.push({
-          name: infos[elt].label,
-          renderer: renderer[infos[elt].draw] || "line",
+          name: v.label,
+          renderer: renderer[v.draw] || "line",
           data: [],
           color: 'rgba(' + color.join() + ', ' + opacity + ')'
         });
-      }
-    }
+    });
     datas = series.map(function(elt){
       return elt.data;
     });
@@ -85,20 +84,20 @@
   }
 
   function createRickshaw(into, series) {
+    var graph_div = $(into);
+    var graph_container = graph_div.find('.span9')[0];
     var minimap, minimapC, legend, legendC, chart, chartC, yaxis, yaxisC,
       hoverDetail, shelving, xaxis, ticksTreatment, chart_display,
       chart_minimap, width, height;
 
-    into = $(document.getElementById(into).parentNode);
-    into.addClass('graph');
-    into.empty();
+    // into = $(document.getElementById(into).parentNode);
+    // into.addClass('graph');
+    // into.empty();
 
-    legendC = document.createElement('div');
-    legendC.className = 'legend_container';
+    legendC = graph_div.find('.label-container')[0];
     legendC.style.overflow = "auto";
 
-    chartC = document.createElement('div');
-    chartC.className = 'chart_container';
+    chartC = graph_div.find('.graph-container')[0];
 
     minimapC = document.createElement('div');
     minimapC.className = 'minimap_container';
@@ -109,7 +108,6 @@
     chart_display = document.createElement('div');
     chart_display.className = 'chart_display';
 
-
     chart_minimap = document.createElement('div');
     chart_minimap.className = 'chart_minimap';
 
@@ -118,10 +116,10 @@
 
     chart_display.appendChild(yaxisC);
     chart_display.appendChild(chart_minimap);
-    into.append(legendC, chart_display);
+    graph_container.appendChild(chart_display);
 
-    width = into.width() - $(legendC).width();
-    height = into.height();
+    width = graph_div.width() - $(legendC).width();
+    height = graph_div.height() - 50;
 
     chart_display.style.width = width + "px";
     chart_display.style.height = height + "px";
@@ -156,7 +154,6 @@
     legend = new Rickshaw.Graph.Legend({
       graph: chart,
       element: legendC
-
     });
 
     shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
@@ -189,10 +186,9 @@
 
 
   // GET SIMPLE GRAPH
-  numeter.get_simple_graph = function (url, into_id) {
+  numeter.get_simple_graph = function (url, element) {
     numeter.preview_request = $.getJSON(url, function (data) {
-      var element, chart, xaxis, yaxis;
-      element = document.getElementById(into_id);
+      var chart, xaxis, yaxis;
       chart = new Rickshaw.Graph({
         element: element,
         width: parseInt(window.getComputedStyle(element).width),
@@ -226,7 +222,7 @@
 
   // GET ADVANCED GRAPH
   numeter.get_graph = function (url, into, res) {
-    $.getJSON(url + '?res=' + res, function (data) {
+    $.getJSON(url + '&res=' + res, function (data) {
       var g, series, result;
       result = parseData(data);
       g = createRickshaw(into, result.series);
@@ -238,7 +234,7 @@
 
   // UPDATE GRAPH
   numeter.update_graph = function (graph, res) {
-    $.getJSON(graph.url + '?res=' + res, function (rawData) {
+    $.getJSON(graph.url + '&res=' + res, function (rawData) {
       fillDatas(rawData.datas, graph.datas);
       graph.update();
     });

@@ -1,0 +1,39 @@
+<div ng-controller="InputFilterCtrl">
+ <input ng-enter="updateInstances(q)" ng-model="q" class="span12" type="text" placeholder="Filter skeleton by name, plugin pattern or source pattern">
+</div>
+
+<div class="span8">
+ <table class="table table-condensed table-striped">
+  <thead>
+   <tr>
+    <th></th>
+    <th>Name</th>
+    <th>Plugin pattern</th>
+    <th>Source pattern</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr ng-repeat="skeleton in skeletons.results">
+    <td><input class="skeleton-checkbox" type="checkbox" name="{{ skeleton.id }}"></td>
+    <td><a ng-click="createTab(skeleton, 'skeleton')">{{ skeleton.name }}</a></td>
+    <td>{{ skeleton.plugin_pattern }}</td>
+    <td>{{ skeleton.source_pattern }}</td>
+   </tr>
+  </tbody>
+ </table>
+ 
+ <div>
+  <ul class="pager">
+   <li ng-class="{'disabled': skeletons.previous == null}" class="previous"><a ng-click="changePage(skeletons.previous, 'skeletons')">&larr; Previous</a></li>
+   <li ng-class="{'disabled': skeletons.next == null}" class="next"><a ng-click="changePage(skeletons.next, 'skeletons')">&rarr; Next</a></li>
+  </ul>
+ </div>
+</div>
+
+<div class="span3">
+ <h5>Action</h5>
+ <div ng-controller="ListActionCtrl" class="input-append">
+  <select ng-model="selected_list_action" ng-options="action.name for action in list_actions"></select>
+  <button class="btn" type="button" ng-click="launch_action()">Apply</button>
+ </div>
+</div>

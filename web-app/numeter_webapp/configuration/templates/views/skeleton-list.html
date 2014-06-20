@@ -39,8 +39,8 @@
  <h5>{% trans "Action:" %}</h5>
  <div class="input-append">
   <select id="skeletons-action">
-   <option data-url="{% url "skeleton bulk delete" %}" value="delete">{% trans "Delete" %}</option>
+   <option data-method="DELETE" data-url="{% url "skeleton-list" %}">{% trans "Delete" %}</option>
   </select>
-  <button class="btn bulk-action" type="button" data-action-element="#skeletons-action" data-checkboxes=".skeleton-checkbox">{% trans "Apply" %}</button>
+  <button class="btn bulk-action" type="button" data-select="#skeletons-action" data-checkbox-class=".skeleton-checkbox">{% trans "Apply" %}</button>
  </div>
 </div>

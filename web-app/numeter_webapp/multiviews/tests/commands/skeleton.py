@@ -17,7 +17,7 @@ class Cmd_Skeleton_List_Test(CmdTestCase):
         # Test stdout
         out = self.stdout.getvalue()
         self.assertTrue(out, "No output.")
-        self.assertIn("Count: 0", out, "Output isn't showing total count.")
+        self.assertIn("Count: ", out, "Output isn't showing total count.")
 
     def test_list(self):
         """Get listing."""
@@ -27,7 +27,7 @@ class Cmd_Skeleton_List_Test(CmdTestCase):
         # Test stdout
         out = self.stdout.getvalue()
         self.assertTrue(out, "No output.")
-        self.assertIn("Count: 1", out, "Output isn't showing total count.")
+        self.assertIn("Count: ", out, "Output isn't showing total count.")
 
 
 class Cmd_Skeleton_Add_Test(CmdTestCase):
@@ -50,27 +50,29 @@ class Cmd_Skeleton_Add_Test(CmdTestCase):
 
     def test_add_already_existing(self):
         """Try to add an existing skeleton."""
+        DEFAULT_COUNT = Skeleton.objects.count()
         skeleton = Skeleton.objects.create(name='TEST SKELETON', plugin_pattern='.', source_pattern='.')
         argv = ['', 'skeleton', 'add', '-n', 'TEST SKELETON', '-p', '.', '-s', '.']
         Command().run_from_argv(argv)
         # Test creation
         new_count = Skeleton.objects.count()
-        self.assertEqual(new_count, 1, "Skeleton was created again.")
+        self.assertEqual(new_count, DEFAULT_COUNT+1, "Skeleton was created again.")
 
 
 class Cmd_Skeleton_Del_Test(CmdTestCase):
     """Test ``manage.py skeleton del``."""
     def test_delete(self):
         """Delete a skeleton."""
+        DEFAULT_COUNT = Skeleton.objects.count()
         skeleton = Skeleton.objects.create(name='TEST SKELETON', plugin_pattern='.', source_pattern='.')
         argv = ['', 'skeleton', 'del', '-i', str(skeleton.id)]
         Command().run_from_argv(argv)
         # Test deletion
         new_count = Skeleton.objects.count()
-        self.assertEqual(new_count, 0, "Skeleton wasn't deleted.")
+        self.assertEqual(new_count, DEFAULT_COUNT, "Skeleton wasn't deleted.")
 
     def test_delete_several(self):
-        """Delete a several skeletons."""
+        """Delete several skeletons."""
         skeleton = Skeleton.objects.create(name='TEST SKELETON', plugin_pattern='.', source_pattern='.')
         skeleton = Skeleton.objects.create(name='TEST SKELETON2', plugin_pattern='.', source_pattern='.')
         IDS  = ','.join([ str(s.id) for s in Skeleton.objects.all() ])

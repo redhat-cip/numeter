@@ -4,12 +4,12 @@ from django.conf import settings
 BASEDIR = settings.BASEDIR
 
 from mock_storage.models import Host
-from mock_storage.sources import full_random, sinus, linear, random_func
+from mock_storage.sources import full_random, sinus, linear, random_func, delta_of
 from mock_storage.utils import get_hosts_json, get_host_json, get_list_json
 from mock_storage.utils import get_start_date
 
 from json import load as jload, loads as jloads, dumps as jdumps
-from random import random, randrange
+from random import random, randrange, randint
 
 
 res = {
@@ -54,8 +54,14 @@ def data(request, id):
       "TS_step": step*60,
       "DATAS": dict([ (k,[]) for k in sources ])
     }
-    for s in sources:
-        for val in random_func(step_num):
-            r['DATAS'][s].append( val )
+    if len(sources) == 2:
+        for val in random_func(step_num, offset_y=randint(0, 100), min_y=0):
+            r['DATAS'][sources[0]].append(val)
+        for val in delta_of(r['DATAS'][sources[0]]):
+            r['DATAS'][sources[1]].append(val)
+    else:        
+        for s in sources:
+            for val in random_func(step_num):
+                r['DATAS'][s].append( val )
     r = jdumps(r)
     return HttpResponse(r)

@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "multiviews.skeleton", "fields": {"comment": "", "source_pattern": "load", "plugin_pattern": "load", "name": "Load average"}}]

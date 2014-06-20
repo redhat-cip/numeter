@@ -1,0 +1,26 @@
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/angular/angular.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/angular/angular-cookies.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/angular/ui-bootstrap-tpls-0.6.0.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/angular/numeter.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/select2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/angular/select2.js"></script>
+
+<script src="{{ STATIC_URL }}js/bootstrap-dropdown.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-collapse.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-alert.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-tooltip.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-popover.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-tab.js"></script>
+<script src="{{ STATIC_URL }}js/numeter.js"></script>
+<script src="{{ STATIC_URL }}js/main.js"></script>
+<script src="{{ STATIC_URL }}js/my.js"></script>
+
+<!-- Your graph lib -->
+{% for source in request.user.graph_lib.get_js %}
+<script src="{{ source }}"></script>
+{% endfor %}
+{% for source in request.user.graph_lib.get_css %}
+<link href="{{ source }}" rel="stylesheet">
+{% endfor %}

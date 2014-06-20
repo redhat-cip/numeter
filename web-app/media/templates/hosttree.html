@@ -1,0 +1,28 @@
+<div accordion close-others="false">
+  <div accordion-group ng-repeat="host in hosts">
+    <div accordion-heading>
+      <div ng-click="loadCategories(host)">
+        {{host.name}}
+      </div>
+    </div>
+    
+    <div accordion close-others="false">
+      <div accordion-group ng-repeat="category in host.categories" is-open="category.open">
+        <div accordion-heading>
+            <div ng-click="loadPlugins(host, category)">
+            {{category.name}}
+          </div>
+        </div>
+
+        <ul>
+          <li ng-repeat="plugin in category.plugins" ng-click="displayGraph(host.id, [plugin])">
+           {{plugin.Title}}
+          </li>
+        </ul>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- load graph in case of static url like ?plugins=cpu&host=1 -->
+<!--<div loadstaticlink />-->

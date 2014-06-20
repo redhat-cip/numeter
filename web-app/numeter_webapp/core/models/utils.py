@@ -41,15 +41,8 @@ class MediaList(unicode):
         self.dir = s.MEDIA_ROOT+'graphlib/'
         self.lib = lib
 
-    def _make_html_import(self, full_src):
-        """Create HTML <script> tag."""
-        IMPORT_TEMP = '<script src="%s"></script>'
-        return IMPORT_TEMP % full_src
-
     def _walk(self):
-        """
-        Walk on chosen files and return a generator of chosen files.
-        """
+        """Walk on chosen files and return a generator of chosen files."""
         # TODO: Make it with os.walk()
         full_src = self.dir + self.lib
         media_src = s.MEDIA_URL+'graphlib/' + self.lib
@@ -61,25 +54,19 @@ class MediaList(unicode):
             elif path.exists(sf):
                 yield media_src + '/' + subfile_name
 
-    def sources(self):
-        """Return list of files' URL."""
-        return [ s for s in self._walk() ] 
+    def get_files(self):
+        """Return a list of all files."""
+        return [ s for s in self._walk() ]
 
-    def file_names(self):
-        """List files."""
-        return [ path.basename(s) for s in self._walk() ] 
+    def get_js(self):
+        """Return a list of JavaScript files."""
+        sources = [ s for s in self._walk() if s.endswith('.js') ]
+        sources.sort()
+        return sources
 
-    def get_source_and_name(self):
-        """List files with tuples : (full_dir, dir)."""
-        return [ (s,path.basename(s)) for s in self._walk() ] 
-
-    def htmlize(self):
-        """
-        Return an generator of HTML <script> tag of all of
-        files chosen.
-        Can search files in one subdirectory.
-        """
-        return [ self._make_html_import(s) for s in self._walk() ]
+    def get_css(self):
+        """Return a list of CSS files."""
+        return [ s for s in self._walk() if s.endswith('.css')]
 
 
 class MediaField(CharField):
@@ -87,7 +74,6 @@ class MediaField(CharField):
     Custom Field which saves chosen from MEDIA_ROOT.
     Choices are media files and stored as splited string.
     """
-    
     description = "A choice of graphic plugin library."
     __metaclass__ = SubfieldBase
 

@@ -7,17 +7,35 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import Host, Group
-from core.models.utils import MediaField
+from core.models.utils import MediaField, QuerySet
 
 
 class UserManager(_UserManager):
     """Custom Manager with extra methods."""
+    def user_filter(self, user):
+        """Filter user which is in the groups."""
+        if user.is_superuser:
+            return self.all()
+        return self.filter(groups__in=user.groups.all())
+
     def web_filter(self, q):
+        """Extended search from a string."""
         return self.filter(
             Q(username__icontains=q) |
             Q(email__icontains=q) |
             Q(groups__name__icontains=q)
         ).distinct()
+
+    def user_web_filter(self, q, user):
+        """Extended search from a string only on authorized users."""
+        users = self.web_filter(q)
+        if user.is_superuser:
+            return users
+        return users.filter(
+            Q(username__icontains=q) |
+            Q(email__icontains=q) |
+            Q(groups__name__icontains=q)
+        )
 
     def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):
         """Base method to create user."""
@@ -49,6 +67,9 @@ class UserManager(_UserManager):
     def all_simpleuser(self):
         """Return all simple users."""
         return self.filter(is_superuser=False)
+
+    def get_list_url(self):
+        return reverse('user list')
 
 
 class User(AbstractBaseUser):
@@ -83,14 +104,20 @@ class User(AbstractBaseUser):
 
     def get_update_url(self):
         if not self.id:
-            return self.get_add_url()
-        return reverse('user update', args=[str(self.id)])
+            return reverse('user add')
+        return reverse('user-detail', args=[str(self.id)])
 
     def get_update_password_url(self):
         return reverse('profile password', args=[str(self.id)])
 
     def get_delete_url(self):
         return reverse('user delete', args=[str(self.id)])
+
+    def get_rest_list_url(self):
+       return reverse('user-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('user-detail', args=[self.id]) 
 
     def get_list_url(self):
         if self.is_superuser:
@@ -102,6 +129,15 @@ class User(AbstractBaseUser):
 
     def get_short_name(self):
         return self.username
+
+    def user_has_perm(self, user):
+        """
+        Return if a user is allowed to access an instance.
+        A user is allowed if super or in same group.
+        """
+        if user.is_superuser:
+            return True
+        return bool( set(user.groups.all()) & set(self.groups.all()) )
 
     def has_perm(*args):
         return True

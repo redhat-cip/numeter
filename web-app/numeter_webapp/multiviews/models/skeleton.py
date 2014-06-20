@@ -22,10 +22,8 @@ class Skeleton_QuerySetManager(QuerySet):
         ).distinct()
 
     def user_web_filter(self, q, user):
-        """Extended search from a string only on authorized views."""
-        views = self.web_filter(q)
-        if user.is_superuser:
-            return views
+        """Extended search from a string only on authorized skeletons."""
+        return self.user_filter(user).web_filter(q)
 
 
 class Skeleton(models.Model):
@@ -50,6 +48,13 @@ class Skeleton(models.Model):
     def __unicode__(self):
         return self.name
 
+    def user_has_perm(self, user):
+        """
+        Return if a user is allowed to access an instance.
+        A user is allowed if super or in same host's group.
+        """
+        return True
+
     def get_absolute_url(self):
         return reverse('skeleton', args=[self.id])
 
@@ -69,6 +74,12 @@ class Skeleton(models.Model):
 
     def get_use_url(self):
         return reverse('skeleton use', args=[self.id])
+
+    def get_rest_list_url(self):
+       return reverse('skeleton-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('skeleton-detail', args=[self.id]) 
 
     def create_view(self, name, hosts):
         """Create a view with ``hosts``, skeleton plugin and source patterns."""

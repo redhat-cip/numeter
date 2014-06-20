@@ -33,9 +33,9 @@ class User_GET_list_Test(APITestCase):
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
-        """Forbidden access to simple user."""
+        """Granted access to simple user."""
         r = self.user_client.get(LIST_URL)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
 
 class User_GET_detail_Test(APITestCase):
@@ -60,15 +60,15 @@ class User_GET_detail_Test(APITestCase):
         r = self.admin_client.get(DETAIL_URL)
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
-    def test_simple_user(self):
-        """Forbidden access to simple user."""
-        DETAIL_URL = reverse('user-detail', args=[self.user2.pk])
-        r = self.user_client.get(DETAIL_URL)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
-
     def test_user_himself(self):
         """Granted access to user himself."""
         DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.user_client.get(DETAIL_URL)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user_with_foreign_user(self):
+        """Forbidden access to simple user with foreign."""
+        DETAIL_URL = reverse('user-detail', args=[self.user2.pk])
         r = self.user_client.get(DETAIL_URL)
         self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
 
@@ -91,12 +91,18 @@ class User_POST_Test(APITestCase):
 
     def test_superuser(self):
         """Granted access for superuser."""
-        data = {'username':'NEW USER'}
+        data = {'username':'NEW USER', 'password':'pass'}
         r = self.admin_client.post(LIST_URL, data=data)
         self.assertEqual(r.status_code, 201, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
         """Forbidden access to simple user."""
+        data = {'username':'NEW USER'}
+        r = self.user_client.post(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user_with_foreign_user(self):
+        """Forbidden access to simple user with foreign."""
         data = {'username':'NEW USER'}
         r = self.user_client.post(LIST_URL, data=data)
         self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
@@ -157,9 +163,14 @@ class User_PATCH_Test(APITestCase):
 
     def test_simple_user(self):
         """Forbidden access to simple user."""
+        DETAIL_URL = reverse('user-detail', args=[self.user.pk])
+        r = self.user_client.patch(DETAIL_URL)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user_with_foreign_user(self):
+        """Forbidden access to simple user with simple user."""
         DETAIL_URL = reverse('user-detail', args=[self.user2.pk])
-        data = {'groups':[1,2]}
-        r = self.user_client.patch(DETAIL_URL, data=data)
+        r = self.user_client.patch(DETAIL_URL)
         self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
 
 
@@ -190,7 +201,7 @@ class User_POST_set_password_Test(APITestCase):
         self.client.post(LOGIN_URL, {'username':self.user.username, 'password':'test'})
         DETAIL_URL = reverse('user-detail', args=[self.user.pk])
         r = self.user_client.get(DETAIL_URL)
-        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)
+        self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
 
     def test_simple_user(self):
         """Forbidden access to simple user."""
@@ -205,3 +216,31 @@ class User_POST_set_password_Test(APITestCase):
         data = {'password':'test'}
         r = self.user_client.post(PASSWORD_URL, data=data)
         self.assertEqual(r.status_code, 200, 'Bad response (%i)' % r.status_code)
+
+
+class User_DELETE_list_Test(APITestCase):
+    """
+    Test DELETE list. Same as
+    ``curl -i -X DELETE http://127.0.0.1:8081/rest/users/ -H 'Accept: application/json'``
+    """
+    @set_users()
+    @set_clients()
+    def setUp(self):
+        pass
+
+    def test_anonymous(self):
+        """Forbidden access to anonymous."""
+        r = self.client.delete(LIST_URL)
+        self.assertEqual(r.status_code, 401, 'Bad response (%i)' % r.status_code)
+
+    def test_superuser(self):
+        """Granted access for superuser."""
+        data = {'id': [self.user.id]}
+        r = self.admin_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 204, 'Bad response (%i)' % r.status_code)
+
+    def test_simple_user(self):
+        """Forbidden access to simple user."""
+        data = {'id': [self.user.id]}
+        r = self.user_client.delete(LIST_URL, data=data)
+        self.assertEqual(r.status_code, 403, 'Bad response (%i)' % r.status_code)

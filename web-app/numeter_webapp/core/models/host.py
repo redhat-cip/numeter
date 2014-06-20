@@ -19,17 +19,13 @@ class Host_QuerySetManager(QuerySet):
         """Extended search from a string."""
         return self.filter(
             Q(name__icontains=q) |
-            Q(storage__name__icontains=q) |
-            Q(group__name__icontains=q) |
             Q(hostid__icontains=q)
         ).distinct()
 
     def user_web_filter(self, q, user):
         """Extended search from a string only on authorized sources."""
-        hosts = self.web_filter(q)
-        if user.is_superuser:
-            return hosts
-        return hosts.filter(plugin__host__group__in=user.groups.all())
+        return self.user_filter(user).web_filter(q)
+
 
 class Host(models.Model):
     """
@@ -73,6 +69,15 @@ class Host(models.Model):
 
     def get_plugins_url(self):
         return reverse('host plugins', args=[str(self.id)])
+
+    def get_rest_list_url(self):
+       return reverse('host-list') 
+
+    def get_rest_detail_url(self):
+       return reverse('host-detail', args=[self.id]) 
+
+    def get_create_plugins_url(self):
+        return reverse('host-create-plugins', args=[str(self.id)])
 
     def get_info(self):
         """
@@ -132,29 +137,22 @@ class Host(models.Model):
 
     def get_plugin_info(self, plugin):
         """Get sources infos."""
-        for p in  self.get_plugins():
+        for p in self.get_plugins():
             if p['Plugin'] == plugin:
-                return p['Infos']
+                return p
         
     def get_extended_data(self, **data):
         data['hostid'] = self.hostid
-        # Get data sources name
+        # Get sources name
         data['ds'] = ','.join(self.get_plugin_data_sources(data['plugin']))
+        # Get data
         r = self.get_data(**data)
-        # Dict sent in AJAX
+        # Create JSON Response
         r_data = {
-            'labels': ['Date'],
             'name': data['plugin'].lower(),
-            'datas': [],
+            'datas': r,
             'infos': self.get_plugin_info(data['plugin'])
         }
-        r_data['labels'].extend(self.get_plugin_data_sources(data['plugin']))
-
-        step = timedelta(seconds=r.get('TS_step', 60))
-        cur_date = datetime.fromtimestamp(r['TS_start'])
-        for v in zip(*r['DATAS'].values()):
-            r_data['datas'].append( (mktime(cur_date.timetuple()),) + v )
-            cur_date += step
         return r_data
 
     def create_plugins(self, plugin_names=[], commit=True):

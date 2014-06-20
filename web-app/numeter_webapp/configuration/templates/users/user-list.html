@@ -1,5 +1,5 @@
 {% load i18n %}
-<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by username" %}" data-into="#{% if Users.0.is_superuser %}super{% endif %}user-list" data-url="{{ Users.0.get_list_url }}?page=1&q={{ q }}">
+<input class="span12 q" type="text" name="q" value="{{ q }}" placeholder="{% trans "Search by username" %}" data-into="#{% if Users.0.is_superuser %}super{% endif %}user-list" data-url="{% url 'user list' %}?page=1&q={{ q }}">
 
 <div class="span8">
  <table class="table table-condensed table-striped">
