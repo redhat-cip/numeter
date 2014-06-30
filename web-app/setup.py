@@ -29,7 +29,7 @@ from random import choice
 
 # Compile the list of packages available, because distutils doesn't have
 # an easy way to do this.
-packages, data_files = [], []
+packages, data_files, package_data = [], [], []
 root_dir = os.path.dirname(__file__)
 if root_dir != '':
     os.chdir(root_dir)
@@ -46,11 +46,16 @@ for dirpath, dirnames, filenames in os.walk(django_dir):
     elif filenames:
         prefix = dirpath[len('numeter_webapp')+1:]
         for f in filenames:
-            data_files.append(os.path.join(prefix, f))
+            package_data.append(os.path.join(prefix, f))
 # Add non-python files which are in a module
-data_files.extend([
+package_data.extend([
     'LICENSE',
 ])
+
+for dirpath, dirnames, filenames in os.walk('media'):
+    _files = [os.path.join(dirpath, f) for f in filenames]
+    if _files:
+        data_files.append((os.path.join('/var/www', dirpath), _files))
 
 class my_install(install_data):
     def run(self):
@@ -83,18 +88,12 @@ if __name__ == '__main__':
           include_package_data = True,
           packages = packages,
           package_dir = {'numeter_webapp': 'numeter_webapp'},
-          package_data = {'numeter_webapp': data_files},
+          package_data = {'numeter_webapp': package_data},
           scripts = ['extras/numeter-webapp'],
           data_files = [
               ('/etc/numeter', ['numeter_webapp.cfg']),
-              ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/01_dygraph-combined.js']),
-              ('/var/www/numeter/media/graphlib/dygraph', ['media/graphlib/dygraph/02_dygraph-numeter.js']),
-              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/01_d3.js']),
-              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/02_rickshaw-combined.js']),
-              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/03_rickshaw-numeter.js']),
-              ('/var/www/numeter/media/graphlib/rickshaw', ['media/graphlib/rickshaw/rickshaw.css']),
               ('/var/log/numeter/webapp', ''),
-          ],
+          ] + data_files,
           classifiers=[
               'Development Status :: 4 - Beta',
               'Environment :: Console',
