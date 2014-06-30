@@ -55,7 +55,7 @@ package_data.extend([
 for dirpath, dirnames, filenames in os.walk('media'):
     _files = [os.path.join(dirpath, f) for f in filenames]
     if _files:
-        data_files.append((os.path.join('/var/www', dirpath), _files))
+        data_files.append((os.path.join('/var/www/numeter', dirpath), _files))
 
 class my_install(install_data):
     def run(self):
