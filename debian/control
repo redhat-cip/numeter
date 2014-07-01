@@ -37,7 +37,7 @@ Description: Numeter is a new and dynamic graphing solution.
 Package: numeter-webapp
 Architecture: all
 Homepage: https://github.com/enovance/numeter
-Depends: ${misc:Depends}, python-django (>= 1.5), python-tastypie, python-mimeparse
+Depends: ${misc:Depends}, python-django (>= 1.5), python-mimeparse
 Recommends: apache2 | httpd | nginx
 XB-Python-Version: ${python:Versions}
 Description: Numeter is a new and dynamic graphing solution.
