@@ -164,6 +164,7 @@ setup_numeter(){
     fi
 
     pip install djangorestframework
+    pip install django-filter
 
     for package in {numeter-poller,numeter-storage,numeter-webapp}; do
         echo "# Setup $package"

@@ -29,6 +29,7 @@ setup_numeter(){
     fi
 
     pip install djangorestframework
+    pip install django-filter
 
     cd /opt && git clone https://github.com/enovance/numeter
     cd /opt/numeter && git checkout $BRANCH

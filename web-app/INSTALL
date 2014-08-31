@@ -16,11 +16,12 @@ Manual
 **Depends:**
     * python-django
     * django-rest-framework
+    * django-filter
 
 Django and rest framework setup
 --------------------------
 
-You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. You also need ``rest-framework``
+You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. You also need ``rest-framework`` and ``django-filter``
 
 **From packages :** ::
 
@@ -29,6 +30,7 @@ You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. Yo
     apt-get install -t wheezy-backports python-django python-mimeparse
  
     pip install djangorestframework
+    pip install django-filter
 
 Numeter Webapp setup
 -----------------------
