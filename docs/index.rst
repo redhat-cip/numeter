@@ -17,7 +17,7 @@ Contents:
     webapp.rst
     roadmap.rst
     about.rst
-
+    api.rst
 
 Indices and tables
 ==================
