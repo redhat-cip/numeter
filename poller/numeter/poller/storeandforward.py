@@ -7,21 +7,21 @@ class StoreAndForward(object):
     """
     Use case exemple :
 
-    # Init logging level with debug stream handler
-    logging.getLogger('StoreAndForward').setLevel(logging.CRITICAL)
-    logging.getLogger('StoreAndForward').setLevel(logging.INFO)
-    logging.getLogger('StoreAndForward').addHandler(logging.StreamHandler())
+    Init logging level with debug stream handler::
 
-    from time import time
+        logging.getLogger('StoreAndForward').setLevel(logging.INFO)
+        logging.getLogger('StoreAndForward').addHandler(logging.StreamHandler())
 
-    with StoreAndForward(cache_file='./sandbox/cache_storeandforward.json') as cache :
+        from time import time
 
-        # Add stored message
-        cache.add_message('DATA', 'munin.if_eth0.up', '{%s content}' % time())
+        with StoreAndForward(cache_file='./sandbox/cache_storeandforward.json') as cache :
 
-        Read stored message
-        for message in cache.consume():
-            print message
+            # Add stored message
+            cache.add_message('DATA', 'munin.if_eth0.up', '{%s content}' % time())
+
+            Read stored message
+            for message in cache.consume():
+                print message
     """
 
     def __init__(self, cache_file='/dev/shm/store_and_forward.json', logger=__name__):
