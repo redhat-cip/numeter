@@ -19,7 +19,7 @@ Manual
     * django-filter
 
 Django and rest framework setup
---------------------------
+--------------------------------
 
 You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. You also need ``rest-framework`` and ``django-filter``
 
