@@ -13,6 +13,8 @@ numeter
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.queue.client
 ---------------------
@@ -21,6 +23,8 @@ numeter.queue.client
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.queue
 --------------
@@ -29,6 +33,8 @@ numeter.queue
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.queue.server
 ---------------------
@@ -37,6 +43,8 @@ numeter.queue.server
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.redis
 --------------
@@ -45,6 +53,8 @@ numeter.redis
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.storage.numeter_storage_endpoints
 ------------------------------------------
@@ -53,6 +63,8 @@ numeter.storage.numeter_storage_endpoints
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.storage
 ================
@@ -61,6 +73,8 @@ numeter.storage
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.storage.numeter_storage
 ---------------------------------
@@ -69,6 +83,8 @@ numeter.storage.numeter_storage
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.poller
 ==============
@@ -77,6 +93,8 @@ numeter.poller
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.poller.munin_connect
 ----------------------------
@@ -85,6 +103,8 @@ numeter.poller.munin_connect
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.poller.storeandforward
 ------------------------------
@@ -93,6 +113,8 @@ numeter.poller.storeandforward
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.poller.muninModule
 ---------------------------
@@ -101,6 +123,8 @@ numeter.poller.muninModule
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.poller.cachelastvalue
 ------------------------------
@@ -109,6 +133,8 @@ numeter.poller.cachelastvalue
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.poller.numeter_poller
 -----------------------------
@@ -117,6 +143,8 @@ numeter.poller.numeter_poller
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
 numeter.poller.modulesGeneric
 -----------------------------
@@ -125,4 +153,6 @@ numeter.poller.modulesGeneric
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+   :special-members:
 
