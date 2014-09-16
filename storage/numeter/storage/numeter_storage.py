@@ -287,18 +287,21 @@ class Storage(object):
 
 
     def _write_info(self, hostID, info_json):
-        """info = {    'Plugin': plugin,
-                       'Base': '1000',
-                       'ClientHash': 'md5(client)', <---- add by this function (in MyInfo)
-                       'Describ': '',
-                       'Title': plugin,
-                       'Vlabel': '',
-                       'Order': '',
-                       'Infos': {
-                            "down" : {"type": "COUNTER", "id": "down", "label": "received"},
-                             "up" : {"type": "COUNTER", "id": "up", "label": "upload"},
-                        }
-                  }"""
+        """
+            .. ::
+
+              info = {    'Plugin': plugin,
+                         'Base': '1000',
+                         'ClientHash': 'md5(client)', <---- add by this function (in MyInfo)
+                         'Describ': '',
+                         'Title': plugin,
+                         'Vlabel': '',
+                         'Order': '',
+                         'Infos': {
+                              "down" : {"type": "COUNTER", "id": "down", "label": "received"},
+                               "up" : {"type": "COUNTER", "id": "up", "label": "upload"},
+                          }
+                    }"""
         info =  self.jsonToPython(info_json)
         plugin = info.get('Plugin', None)
 
