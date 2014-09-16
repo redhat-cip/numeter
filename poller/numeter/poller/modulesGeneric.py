@@ -8,7 +8,9 @@ class ModulesGeneric(object):
     """
 
     def  __init__(self, configParser=None):
-        "Load configuration and start connexion"
+        """When numeter load a module, the only one parameter is the config
+           parser. It's allow you to add section in numeter config file for your
+           own module."""
         raise NotImplementedError
 
     def getInfo(self):
