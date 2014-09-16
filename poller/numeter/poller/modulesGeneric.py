@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 class ModulesGeneric(object):
-    "Module generic"
+    """Module generic is the skeleton to build your own numeter module.
+        If you want to write your own numeter module, you can take this
+        class and build your own with it.
+    """
 
     def  __init__(self, configParser=None):
         "Load configuration and start connexion"
