@@ -14,20 +14,27 @@ class ModulesGeneric(object):
         raise NotImplementedError
 
     def getInfo(self):
-        "Return plugins info for refresh"
+        """Return for all datas you have collected. The output must be formated
+           like that : ::
+
+             infos=   [{    'Plugin': plugin,
+                           'Base': '1000',
+                           'Describ': '',
+                           'Title': plugin,
+                           'Vlabel': '',
+                           'Order': '',
+                           'Infos': {
+                                 "id":{"type": "COUNTER", "id": "down", "label": "received"},
+                                 "id":{"type": "COUNTER", "id": "up", "label": "upload"},
+                      }]
+
+           .. warning::
+
+             Each DataSource (each datas) you define in getData must have at
+             least an entry in getInfo return like ``"id":{"id": "up"}``
+        """
         raise NotImplementedError
-#        infos=   [{    'Plugin': plugin,
-#                      'Base': '1000',
-#                      'Describ': '',
-#                      'Title': plugin,
-#                      'Vlabel': '',
-#                      'Order': '',
-#                      'Infos': {
-#                            "id":{"type": "COUNTER", "id": "down", "label": "received"},
-#                            "id":{"type": "COUNTER", "id": "up", "label": "upload"},
-#
-#                 }]
-# /!\ Attention chaque DS doit avoir une entré dans Infos pour ne pas étre ignoré. par exemple "id":{"id": "up"} au moins !
+
 
 
     def getData(self):
