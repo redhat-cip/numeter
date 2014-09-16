@@ -38,16 +38,18 @@ class ModulesGeneric(object):
 
 
     def getData(self):
-        "get and return all data collected"
+        """Get and return all collected datas. The output must be formated
+           like that : ::
+
+             data=   [{      'TimeStamp': 1410907894,
+                             'Plugin': 'df',
+                             'Values': {
+                                         'dev_sda' : 40,
+                                         'dev_sdb' : 15,
+                                       }
+                     }]
+
+        """
         raise NotImplementedError
-#        data=   [{      'TimeStamp': nowTimestamp,
-#                        'Plugin': 'df',
-#                        'Values': {
-#                                    'dev_sda' : 40,
-#                                    'dev_sdb' : 15,
-#                                  }
-#                }]
-#        now              = time.strftime("%Y %m %d %H:%M", time.localtime())
-#        nowTimestamp     = "%.0f" % time.mktime(time.strptime(now, '%Y %m %d %H:%M')) # "%.0f" % supprime le .0 aprés le
 
 
