@@ -17,15 +17,15 @@ class ModulesGeneric(object):
         """Return for all datas you have collected. The output must be formated
            like that : ::
 
-             infos=   [{    'Plugin': plugin,
+             infos=   [{   'Plugin': 'if',
                            'Base': '1000',
                            'Describ': '',
-                           'Title': plugin,
+                           'Title': 'if eth0',
                            'Vlabel': '',
                            'Order': '',
                            'Infos': {
-                                 "id":{"type": "COUNTER", "id": "down", "label": "received"},
-                                 "id":{"type": "COUNTER", "id": "up", "label": "upload"},
+                                 "down":{"type": "COUNTER", "id": "down", "label": "received"},
+                                 "up":{"type": "COUNTER", "id": "up", "label": "upload"},
                            }
                       }]
 
@@ -43,10 +43,10 @@ class ModulesGeneric(object):
            like that : ::
 
              data=   [{      'TimeStamp': 1410907894,
-                             'Plugin': 'df',
+                             'Plugin': 'if',
                              'Values': {
-                                         'dev_sda' : 40,
-                                         'dev_sdb' : 15,
+                                         'up' : 40,
+                                         'down' : 15,
                                        }
                      }]
 
