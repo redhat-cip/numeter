@@ -26,6 +26,7 @@ class ModulesGeneric(object):
                            'Infos': {
                                  "id":{"type": "COUNTER", "id": "down", "label": "received"},
                                  "id":{"type": "COUNTER", "id": "up", "label": "upload"},
+                           }
                       }]
 
            .. warning::
