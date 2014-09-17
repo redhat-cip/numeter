@@ -50,7 +50,10 @@ class MuninModule(ModulesGeneric):
 
     def getData(self):
         '''get and return all datas collected from munin-node.
-           See modulesGeneric return format'''
+           See modulesGeneric return format
+
+           For each plugins matching ``plugins_enable`` regex in the config file,
+           launch ``formatFetchData`` and append result to getData output'''
 
         # Get list of all plugins
         pluginList = self.munin_connection.munin_list()
@@ -68,7 +71,10 @@ class MuninModule(ModulesGeneric):
 
     def getInfo(self):
         '''get and return all infos collected from munin-node.
-           See modulesGeneric return format'''
+           See modulesGeneric return format
+
+           For each plugins matching ``plugins_enable`` regex in the config file,
+           launch ``formatFetchInfo`` and append result to getInfo output'''
 
         pluginList = self.munin_connection.munin_list()
 
@@ -176,7 +182,7 @@ class MuninModule(ModulesGeneric):
 
 
     def getParserConfig(self):
-        "Read configuration file"
+        "Read MuninModule from configparser"
         # plugins_enable
         if self._configParser.has_option('MuninModule', 'plugins_enable') \
         and self._configParser.get('MuninModule', 'plugins_enable'):
