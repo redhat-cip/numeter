@@ -38,7 +38,7 @@ Current Numeter architecture :
 
 .. image:: img/storage.png
 
-**Webapp :** A Django webapp displays data using the dygraphs library
+**Webapp :** A Django webapp displays data using the js library like dygraphs
 
     * http://dygraphs.com/
 
