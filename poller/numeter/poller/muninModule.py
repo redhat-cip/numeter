@@ -52,8 +52,8 @@ class MuninModule(ModulesGeneric):
         '''get and return all datas collected from munin-node.
            See modulesGeneric return format
 
-           For each plugins matching ``plugins_enable`` regex in the config file,
-           launch ``formatFetchData`` and append result to getData output'''
+           For each plugin matching ``plugins_enable`` regex in the config file,
+           launch ``formatFetchData`` and append result to ``getData`` output'''
 
         # Get list of all plugins
         pluginList = self.munin_connection.munin_list()
@@ -73,8 +73,8 @@ class MuninModule(ModulesGeneric):
         '''get and return all infos collected from munin-node.
            See modulesGeneric return format
 
-           For each plugins matching ``plugins_enable`` regex in the config file,
-           launch ``formatFetchInfo`` and append result to getInfo output'''
+           For each plugin matching ``plugins_enable`` regex in the config file,
+           launch ``formatFetchInfo`` and append result to ``getInfo`` output'''
 
         pluginList = self.munin_connection.munin_list()
 
@@ -92,9 +92,15 @@ class MuninModule(ModulesGeneric):
 
 
     def formatFetchData(self, plugin):
-        "Execute fetch() and format data"
-        # Fetch munin
+        '''Execute a ``munin fetch`` for a given plugin name. Get the result
+           and format the raw result for ``getData`` : ::
 
+             data = {  'TimeStamp': nowTimestamp,
+                        'Plugin': plugin,
+                        'Values': pluginData
+             }'''
+
+        # Fetch munin
         pluginData = self.munin_connection.munin_fetch(plugin)
 
         # If empty
@@ -112,8 +118,18 @@ class MuninModule(ModulesGeneric):
 
 
     def formatFetchInfo(self, plugin):
+        '''Execute a ``munin config`` for a given plugin name. Get the result
+           and format the raw result for ``getInfo`` : ::
 
-        "Execute config() and format infos"
+             infos =  {    'Plugin': plugin,
+                           'Base': '1000',
+                           'Describ': '',
+                           'Title': plugin,
+                           'Vlabel': '',
+                           'Order': '',
+                           'Infos': {}
+                      }'''
+
         # Config munin
         pluginInfo = self.munin_connection.munin_config(plugin)
 
@@ -182,7 +198,7 @@ class MuninModule(ModulesGeneric):
 
 
     def getParserConfig(self):
-        "Read MuninModule from configparser"
+        "Read MuninModule from configParser"
         # plugins_enable
         if self._configParser.has_option('MuninModule', 'plugins_enable') \
         and self._configParser.get('MuninModule', 'plugins_enable'):
