@@ -1,4 +1,5 @@
-# Numeter
+![ScreenShot](https://raw.githubusercontent.com/enovance/numeter/master/docs/img/numeter_banner.png)
+
 Numeter is a new and dynamic graphing solution made by some of the 
 folks at eNovance. We use it as part of our cloud solutions. It is 
 based on Python, sexy and highly scalable.
