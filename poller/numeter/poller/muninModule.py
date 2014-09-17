@@ -25,6 +25,10 @@ class MuninModule(ModulesGeneric):
        '''
 
     def __init__(self, configParser=None):
+        '''When numeter load a module, the only one parameter is the config
+           parser. It’s allow you to add section in numeter config file for
+           your own module.'''
+
         self._logger = getLogger(__name__)
         self._logger.info("Plugin Munin start")
         self._configParser = configParser
@@ -45,7 +49,8 @@ class MuninModule(ModulesGeneric):
                                                               self._munin_port)
 
     def getData(self):
-        "get and return all data collected"
+        '''get and return all datas collected from munin-node.
+           See modulesGeneric return format'''
 
         # Get list of all plugins
         pluginList = self.munin_connection.munin_list()
@@ -62,7 +67,8 @@ class MuninModule(ModulesGeneric):
 
 
     def getInfo(self):
-        "Return plugins info for refresh"
+        '''get and return all infos collected from munin-node.
+           See modulesGeneric return format'''
 
         pluginList = self.munin_connection.munin_list()
 
