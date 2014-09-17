@@ -14,6 +14,15 @@ import munin_connect
 # Munin module
 #
 class MuninModule(ModulesGeneric):
+    '''This poller module fetch configs and datas from a munin-node daemon.
+
+       Configuration section for this module : ::
+
+         [MuninModule]
+         plugins_enable = ^.*$    ; Regexp matching plugins to fetch
+         munin_host = 127.0.0.1   ; Munin Host
+         munin_port = 4949        ; Munin Port
+       '''
 
     def __init__(self, configParser=None):
         self._logger = getLogger(__name__)
