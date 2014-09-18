@@ -5,23 +5,40 @@ import re
 from logging import getLogger
 
 class MuninSock(object):
+    '''Open and close a socket with munin-node socket. This class allow you
+       to use ``with`` statement (for python < 3).
+
+       ::
+
+          with MuninSock(self.munin_host, self.munin_port) as sock:
+            ...'''
 
     def __init__(self, host, port):
+        ''' * ``host`` : munin-node host
+            * ``port`` : munin-node port'''
         self.host = host
         self.port = port
 
     def __enter__(self):
+        "Open socket with munin-node"
         self.munin_sock = socket.create_connection((self.host, self.port))
         _s = self.munin_sock.makefile()
         hello_string = _s.readline().strip()
         return self.munin_sock
 
     def __exit__(self, type, value, traceback):
+        "Close socket with munin-node"
         self.munin_sock.shutdown(socket.SHUT_RDWR)
         self.munin_sock.close()
 
 
 class MuninConnection(object):
+    '''Read lines from ``MuninSock``. Provide also basic munin-node commandes :
+
+       * Config
+       * Fetch
+       * List
+       * Nodes'''
 
     def __init__(self, munin_host="127.0.0.1", munin_port=4949):
         self.watchdog = 1000 # watchdog for munin socket error
