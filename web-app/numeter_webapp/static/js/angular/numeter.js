@@ -54,8 +54,13 @@
                     };
 
                     $scope.loadPlugins = function (host, chosen_category) {
-                        var plugins = angular.forEach(host.categories[chosen_category.name].plugins, function () {});
-                        // $scope.$emit('displayGraph', host.id, plugins);
+                        var plugins;
+                        if (chosen_category.open) {
+                            //console.log('Close remove all graphs');
+                            plugins = [];
+                        } else {
+                            plugins = angular.forEach(host.categories[chosen_category.name].plugins, function () {});
+                        }
                         $scope.showGraphs({id: host.id, plugins: plugins});
                     };
 
