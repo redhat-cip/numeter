@@ -197,3 +197,6 @@ Try to launch numeter-storage : ::
 
     numeter-storage
 
+Start numeter-storage daemon : ::
+
+    /etc/init.d/numeter-storage start
