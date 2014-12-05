@@ -187,7 +187,7 @@ Enable numeter storage: ::
     vim /etc/numeter/numeter_storage.cfg
     enable = false -> true
 
-Add a poller in poller-list file: ::
+Add a poller in host-list file: ::
 
     vim /etc/numeter/host-list
     #Poller <hostID>
