@@ -187,13 +187,13 @@ Enable numeter storage: ::
     vim /etc/numeter/numeter_storage.cfg
     enable = false -> true
 
-Add a collector in collector-list file: ::
+Add a poller in poller-list file: ::
 
     vim /etc/numeter/host-list
     #Poller <hostID>
     myhost-123456
 
-Try to launch numeter-collector : ::
+Try to launch numeter-storage : ::
 
     numeter-storage
 
