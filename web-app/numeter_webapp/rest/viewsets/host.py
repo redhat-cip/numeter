@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
-from rest_framework.decorators import action, link
+from rest_framework.decorators import detail_route, list_route
 
 from core.models import Host
 from rest.permissions import IsOwnerOrForbidden, HostPermission
@@ -24,7 +24,7 @@ class HostViewSet(ModelListDelete, ModelViewSet):
     serializer_class = HostSerializer
     allowed_methods = ('POST', 'PATCH', 'DELETE', 'GET')
 
-    @action(permission_classes=[IsOwnerOrForbidden])
+    @detail_route(permission_classes=[IsOwnerOrForbidden])
     def create_plugins(self, request, pk=None):
         host = self.get_object()
         plugins = host.create_plugins(request.DATA.get('plugins', []))
@@ -48,7 +48,7 @@ class HostViewSet(ModelListDelete, ModelViewSet):
             return Response(serializer.errors,
                         status=HTTP_400_BAD_REQUEST)
 
-    @link()
+    @list_route()
     def plugin_extended_data(self, request, pk=None):
         host = self.get_object()
         plugin = request.GET['plugin']
