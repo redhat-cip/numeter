@@ -5,7 +5,7 @@ Storage ViewSet module.
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
-from rest_framework.decorators import action
+from rest_framework.decorators import detail_route
 
 from core.models import Storage
 from rest.serializers import StorageSerializer, HostSerializer
@@ -24,7 +24,7 @@ class StorageViewSet(ModelListDelete, viewsets.ModelViewSet):
         q = self.request.QUERY_PARAMS.get('q', '')
         return self.model.objects.web_filter(q)
 
-    @action()
+    @detail_route()
     def create_hosts(self, request, pk=None):
         storage = self.get_object()
         hosts = storage.create_hosts(request.DATA.get('hosts', []))
