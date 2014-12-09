@@ -5,7 +5,7 @@ Plugin ViewSet module.
 from rest_framework.viewsets import ModelViewSet 
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from rest_framework.response import Response
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 
 from core.models import Plugin
 from rest.permissions import IsOwnerOrForbidden
@@ -29,7 +29,7 @@ class PluginViewSet(ModelListDelete, ModelViewSet):
             return self.model.objects.user_web_filter(q, self.request.user)
         return self.model.objects.user_filter(self.request.user)
 
-    @detail_route(permission_classes=[IsOwnerOrForbidden], allowed_methods=['POST'])
+    @action(permission_classes=[IsOwnerOrForbidden], allowed_methods=['POST'])
     def create_sources(self, request, pk=None):
         plugin = self.get_object()
         sources = plugin.create_data_sources(request.DATA.get('sources',[]))
