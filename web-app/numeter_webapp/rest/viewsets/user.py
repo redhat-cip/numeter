@@ -4,7 +4,7 @@ User ViewSet module.
 
 from rest_framework import viewsets
 from rest_framework import status
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.models import User
@@ -58,7 +58,7 @@ class UserViewSet(ModelListDelete, viewsets.ModelViewSet):
                 user_serializer.errors.update(pass_serializer.errors)
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    @detail_route(permission_classes=[IsSelfOrForbidden])
+    @action(permission_classes=[IsSelfOrForbidden])
     def set_password(self, request, pk=None):
         user = self.get_object()
         serializer = PasswordSerializer(data=request.DATA)
