@@ -31,17 +31,22 @@ DATABASES = {
     }
 }
 
+# Little hack to disable caching
 if config.getboolean_d('cache', 'use_cache', False):
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': config.get('cache', 'location'),
-            'TIMEOUT': config.getint_d('cache', 'timeout', 300),
-            'OPTIONS': {
-                'MAX_ENTRIES': config.getint_d('cache', 'max_entries', 1000),
-            }
+    cache_backend = 'django.core.cache.backends.memcached.MemcachedCache'
+else:
+    cache_backend = 'django.core.cache.backends.dummy.DummyCache'
+
+CACHES = {
+    'default': {
+        'BACKEND': cache_backend,
+        'LOCATION': config.get('cache', 'location'),
+        'TIMEOUT': config.getint_d('cache', 'timeout', 300),
+        'OPTIONS': {
+            'MAX_ENTRIES': config.getint_d('cache', 'max_entries', 1000),
         }
     }
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
