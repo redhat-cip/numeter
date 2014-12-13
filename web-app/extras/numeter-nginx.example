@@ -5,6 +5,17 @@ server {
     access_log /var/log/nginx/numeter_webapp_access.log;
     error_log /var/log/nginx/numeter_webapp_error.log;
 
+    # enable gzip compression
+    gzip on;
+    gzip_min_length  1100;
+    gzip_buffers  4 32k;
+    gzip_types    text/plain application/x-javascript text/xml text/css application/json;
+    gzip_vary on;
+
+    location ~ ^/static/rest_framework/(.*)$ {
+        alias /usr/local/lib/python2.7/dist-packages/rest_framework/static/rest_framework/$1;
+    }
+
     location ~ ^/static/(.*)$ {
         alias @APP_DIR@/static/$1;
     }
