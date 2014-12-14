@@ -125,8 +125,9 @@ Copy the site template in your apache configuration: ::
 
     cp web-app/extras/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
     # For packaged setup /usr/share/doc/numeter/webapp/numeter-webapp
+    RESTFW_DIR=$(dirname $(python -c 'import rest_framework;print rest_framework.__file__'))
     NUMETER_DIR=$(dirname $(python -c 'import numeter_webapp;print numeter_webapp.__file__'))
-    sed -i "s#@APP_DIR@#$NUMETER_DIR# ; s/ServerName.*/ServerName YoursServer/" /etc/apache2/sites-available/numeter-webapp
+    sed -i "s#@APP_DIR@#$NUMETER_DIR# ; "s#@RESTFW_DIR@#$RESTFW_DIR# ; s/ServerName.*/ServerName YoursServer/" /etc/apache2/sites-available/numeter-webapp
     a2ensite numeter-webapp
 
 .. note::

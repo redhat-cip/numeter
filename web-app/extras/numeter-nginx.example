@@ -13,7 +13,7 @@ server {
     gzip_vary on;
 
     location ~ ^/static/rest_framework/(.*)$ {
-        alias /usr/local/lib/python2.7/dist-packages/rest_framework/static/rest_framework/$1;
+        alias @RESTFW_DIR@/static/rest_framework/$1;
     }
 
     location ~ ^/static/(.*)$ {

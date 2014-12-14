@@ -121,6 +121,7 @@ EOF
     # Configure web server
     unlink /etc/nginx/sites-enabled/default
     NUMETER_DIR=$(dirname $(python -c 'import numeter_webapp;print numeter_webapp.__file__'))
+    RESTFW_DIR=$(dirname $(python -c 'import rest_framework;print rest_framework.__file__'))
 
     # Apache
     a2enmod wsgi
@@ -128,6 +129,7 @@ EOF
     cd /opt/numeter && cp web-app/extras/numeter-apache.example /etc/apache2/sites-available/numeter-webapp
     a2ensite numeter-webapp
     sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/apache2/sites-available/numeter-webapp
+    sed -i "s#@RESTFW_DIR@#$RESTFW_DIR#g" /etc/apache2/sites-available/numeter-webapp
     sed -i "s/:80/:81/g" /etc/apache2/sites-available/numeter-webapp
     sed -i "s/80/81/g" /etc/apache2/ports.conf
     /etc/init.d/apache2 restart
@@ -136,6 +138,7 @@ EOF
     cd /opt/numeter && cp web-app/extras/numeter-nginx.example /etc/nginx/sites-available/numeter-webapp
     ln -s /etc/nginx/sites-available/numeter-webapp /etc/nginx/sites-enabled/
     sed -i "s#@APP_DIR@#$NUMETER_DIR#g" /etc/nginx/sites-available/numeter-webapp
+    sed -i "s#@RESTFW_DIR@#$RESTFW_DIR#g" /etc/nginx/sites-available/numeter-webapp
     /etc/init.d/nginx restart
     # uwsgi
     cd /opt/numeter && cp web-app/extras/numeter_webapp.ini.example /etc/uwsgi/apps-available/numeter_webapp.ini

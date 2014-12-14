@@ -5,13 +5,20 @@
 
     DocumentRoot @APP_DIR@/
 
-    Alias /static @APP_DIR@/static/
+    AliasMatch ^/static/rest_framework/(.*)$ @RESTFW_DIR@/static/rest_framework/$1
+    AliasMatch ^/static/(.*)$ @APP_DIR@/static/$1
+
     Alias /media /var/www/numeter/media/ 
 
     WSGIScriptAlias / @APP_DIR@/web_app/wsgi.py
     WSGIPassAuthorization On
 
     <Directory @APP_DIR@/ >
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    <Directory @RESTFW_DIR@/ >
         Order deny,allow
         Allow from all
     </Directory>
