@@ -39,11 +39,9 @@ Quick exemple of python-oslo.messaging installation
 
   apt-get install python-oslo.messaging
 
-**From sources :** ::
+**From sources :** (Get tested version) ::
 
-  git clone https://github.com/openstack/oslo.messaging
-  cd oslo.messaging
-  python setup.py install
+  pip install git+git://github.com/openstack/oslo.messaging.git@7914181398630cbcbc25543d72871ccf812df517
 
 
 Numeter common

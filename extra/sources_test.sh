@@ -48,9 +48,7 @@ setup_numeter(){
 setup_oslo_messaging(){
     # Depends
     apt-get install -y python-kombu
-    cd /opt && git clone https://github.com/openstack/oslo.messaging
-    cd /opt/oslo.messaging && git checkout $OSLO_MESSAGING_FREEZE
-    cd /opt/oslo.messaging && python setup.py install
+    pip install git+git://github.com/openstack/oslo.messaging.git@$OSLO_MESSAGING_FREEZE
 }
 
 config_poller(){
