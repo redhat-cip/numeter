@@ -29,7 +29,7 @@ You need ``Django >= 1.5`` so you need at least ``wheezy-backports`` sources. Yo
     apt-get update
     apt-get install -t wheezy-backports python-django python-mimeparse
  
-    pip install djangorestframework
+    pip install djangorestframework==2.4.0
     pip install django-filter
 
 Numeter Webapp setup

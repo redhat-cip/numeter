@@ -28,7 +28,7 @@ setup_numeter(){
         apt-get install -y -t wheezy-backports python-django python-mimeparse
     fi
 
-    pip install djangorestframework
+    pip install djangorestframework==2.4.0
     pip install django-filter
 
     cd /opt && git clone https://github.com/enovance/numeter

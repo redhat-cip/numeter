@@ -163,7 +163,7 @@ setup_numeter(){
         apt-get install --force-yes -q -y -t wheezy-backports python-django python-mimeparse
     fi
 
-    pip install djangorestframework
+    pip install djangorestframework==2.4.0
     pip install django-filter
 
     for package in {numeter-poller,numeter-storage,numeter-webapp}; do
