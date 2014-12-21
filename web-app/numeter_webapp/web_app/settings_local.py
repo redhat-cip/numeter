@@ -31,6 +31,9 @@ DATABASES = {
     }
 }
 
+# Add default console backend for mails
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Little hack to disable caching
 if config.getboolean_d('cache', 'use_cache', False):
     cache_backend = 'django.core.cache.backends.memcached.MemcachedCache'
