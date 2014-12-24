@@ -15,6 +15,7 @@ class User_Form(forms.ModelForm):
         model = User
         fields = ('username', 'email', 'password', 'graph_lib', 'is_superuser', 'groups')
         widgets = {
+          'is_superuser': forms.CheckboxInput({'ng-model': 'tabIndex.form.is_superuser'}),
           'username': forms.TextInput({'placeholder':_('Username'),'class':'span', 'ng-model': 'tabIndex.form.username'}),
           'email': forms.TextInput({'placeholder':_('Email'),'class':'span', 'ng-model': 'tabIndex.form.email'}),
           'password': forms.PasswordInput({'placeholder':_('Password'),'class':'span', 'ng-model': 'tabIndex.form.password'}),
