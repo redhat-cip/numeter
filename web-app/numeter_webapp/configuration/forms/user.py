@@ -70,6 +70,8 @@ class User_CreationForm(User_Form):
       'ng-model': 'tabIndex.form.password2'
     }))
     class Meta(User_Form.Meta):
+        fields = ('username', 'email', 'password', 'password2',
+                  'graph_lib', 'is_superuser', 'groups')
         exclude = ('last_login', 'is_staff', 'date_joined', 'is_active')
 
     def clean_password2(self):
