@@ -1,5 +1,7 @@
 <img src="https://raw.githubusercontent.com/enovance/numeter/master/docs/img/numeter_banner.png" width='500px'>
 
+[![Build Status](https://travis-ci.org/enovance/numeter.svg?branch=master)](https://travis-ci.org/enovance/numeter)
+
 Numeter is a new and dynamic graphing solution made by some of the 
 folks at eNovance. We use it as part of our cloud solutions. It is 
 based on Python, sexy and highly scalable.
